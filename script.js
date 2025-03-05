@@ -147,7 +147,6 @@ function updateCards() {
 
         indicesToShow.forEach(index => {
             const indexData = indices[index];
-
             const card = document.createElement("div");
             card.classList.add("card");
             if (favorites.has(index)) card.classList.add("favorite");
@@ -183,7 +182,7 @@ function updateCards() {
 
             card.addEventListener("click", (e) => {
                 if (e.target.closest(".market-status")) return;
-                const item = card.dataset.index || card.dataset.market;
+                const item = card.dataset.index;
                 if (item) {
                     if (favorites.has(item)) {
                         favorites.delete(item);
@@ -191,12 +190,6 @@ function updateCards() {
                     } else {
                         favorites.add(item);
                         card.classList.add("favorite");
-                        setTimeout(() => {
-                            if (favorites.has(item)) {
-                                card.classList.remove("favorite");
-                                favorites.delete(item);
-                            }
-                        }, 3000);
                     }
                     updateCards();
                 }
@@ -308,20 +301,14 @@ function updateCards() {
 
             card.addEventListener("click", (e) => {
                 if (e.target.closest(".market-status")) return;
-                const market = card.dataset.market;
-                if (market) {
-                    if (favorites.has(market)) {
-                        favorites.delete(market);
+                const item = card.dataset.market;
+                if (item) {
+                    if (favorites.has(item)) {
+                        favorites.delete(item);
                         card.classList.remove("favorite");
                     } else {
-                        favorites.add(market);
+                        favorites.add(item);
                         card.classList.add("favorite");
-                        setTimeout(() => {
-                            if (favorites.has(market)) {
-                                card.classList.remove("favorite");
-                                favorites.delete(market);
-                            }
-                        }, 3000);
                     }
                     updateCards();
                 }
