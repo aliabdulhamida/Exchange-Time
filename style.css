@@ -29,29 +29,42 @@ body {
     background: var(--primary-bg);
 }
 
-/* Header styling with increased spacing */
 #header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     background: var(--primary-bg);
-    padding: 15px 20px; /* Increased padding */
+    padding: 15px 20px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 15px; /* Added gap for spacing between header elements */
+    gap: 15px;
     z-index: 1000;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 #region-options,
-#search-box,
+#search-container,
 #view-toggle {
     display: flex;
     align-items: center;
+}
+
+#search-container {
+    flex-grow: 1;
+    margin: 0 20px;
+}
+
+#search-box {
+    flex-grow: 1;
+}
+
+#logo {
+    height: 30px;
+    margin-left: 10px;
 }
 
 #region-filter {
@@ -66,18 +79,13 @@ body {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="%23fff"><polygon points="0,0 10,0 5,5"/></svg>');
     background-repeat: no-repeat;
     background-position: right 10px center;
-    padding-right: 2rem; 
+    padding-right: 2rem;
 }
 
 #region-filter:focus {
     outline: none;
     border-color: var(--open);
     box-shadow: 0 0 5px var(--open);
-}
-
-#search-box {
-    flex-grow: 1;
-    margin: 0 20px;
 }
 
 #search {
@@ -99,7 +107,7 @@ body {
 
 #view-toggle {
     display: flex;
-    gap: 15px; 
+    gap: 15px;
 }
 
 #toggle-view, #toggle-favorites {
@@ -124,11 +132,11 @@ body {
 section {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem; 
+    gap: 1.5rem;
     justify-content: center;
-    max-width: 1400px; 
+    max-width: 1400px;
     width: 100%;
-    padding-top: 20px; 
+    padding-top: 20px;
 }
 
 .card {
@@ -150,7 +158,7 @@ section {
 
 .card.minimized {
     opacity: 0.85;
-    padding: 1rem; 
+    padding: 1rem;
 }
 
 .card-header {
@@ -242,7 +250,7 @@ section {
     #header {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 15px; 
+        gap: 15px;
         padding: 10px 15px;
     }
 
@@ -256,9 +264,13 @@ section {
         gap: 10px;
     }
 
-    #search-box {
+    #search-container {
         grid-column: 1 / 3;
-        margin: 10px 0 0 0; 
+        margin: 10px 0 0 0;
+    }
+
+    #logo {
+        display: none;
     }
 
     #toggle-view, #toggle-favorites {
@@ -267,7 +279,7 @@ section {
     }
 
     .card {
-        width: 90%; 
+        width: 90%;
         max-width: 200px;
         margin: 0 auto;
         padding: 1rem;
