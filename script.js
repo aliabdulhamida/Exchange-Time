@@ -14,7 +14,7 @@ const marketHours = {
     BorsaItaliana: { open: "09:00", close: "17:30", timezone: "Europe/Rome", region: "Europe", city: "Milan" },
     WSE: { open: "09:00", close: "17:30", timezone: "Europe/Warsaw", region: "Europe", city: "Warsaw" },
     OSE: { open: "09:00", close: "16:20", timezone: "Europe/Oslo", region: "Europe", city: "Oslo" },
-    ISE: { open: "09:30", close: "17:30", timezone: "Europe/Dublin", region: "Europe", city: "Dublin" },
+    ISE: { open: "09:00", close: "17:30", timezone: "Europe/Dublin", region: "Europe", city: "Dublin" },
     JPX: { 
         open1: "09:00", close1: "11:30", 
         open2: "12:30", close2: "15:00",
@@ -31,7 +31,7 @@ const marketHours = {
     TWSE: { open: "09:00", close: "13:30", timezone: "Asia/Taipei", region: "Asia", city: "Taipei" },
     SGX: { open: "09:00", close: "17:00", timezone: "Asia/Singapore", region: "Asia", city: "Singapore" },
     TASE: { open: "09:30", close: "17:30", timezone: "Asia/Jerusalem", region: "Asia", city: "Tel Aviv" },
-    IDX: { open: "09:00", close: "15:30", timezone: "Asia/Jakarta", region: "Asia", city: "Jakarta" },
+    IDX: { open: "09:00", close: "15:00", timezone: "Asia/Jakarta", region: "Asia", city: "Jakarta" },
     SET: { open: "10:00", close: "16:30", timezone: "Asia/Bangkok", region: "Asia", city: "Bangkok" },
     PSE: { open: "09:30", close: "15:30", timezone: "Asia/Manila", region: "Asia", city: "Manila" },
     HOSE: { open: "09:00", close: "15:00", timezone: "Asia/Ho_Chi_Minh", region: "Asia", city: "Ho Chi Minh City" },
@@ -54,7 +54,7 @@ const marketHours = {
 
 const indices = {
     SP500: { name: "S&P 500", region: "North America", city: "New York", symbol: "^GSPC" },
-    DJIA: { name: "Dow Jones", region: "North America", city: "New York", symbol: "^DJI" },
+    DJIA: { name: "Dow Jones Industrial Average", region: "North America", city: "New York", symbol: "^DJI" },
     NASDAQ100: { name: "Nasdaq 100", region: "North America", city: "New York", symbol: "^NDX" },
     TSXCOMP: { name: "S&P/TSX Composite", region: "North America", city: "Toronto", symbol: "^GSPTSE" },
     FTSE100: { name: "FTSE 100", region: "Europe", city: "London", symbol: "^FTSE" },
@@ -70,15 +70,15 @@ const indices = {
     SSECOMP: { name: "SSE Composite", region: "Asia", city: "Shanghai", symbol: "000001.SS" },
     ASX200: { name: "S&P/ASX 200", region: "Australia", city: "Sydney", symbol: "^AXJO" },
     NZX50: { name: "NZX 50", region: "Australia", city: "Wellington", symbol: "^NZ50" },
-    JTOPI: { name: "Johannesburg Top 40", region: "Africa", city: "Johannesburg", symbol: "^JTOPI" },
+    JTOPI: { name: "Johannesburg Top 40", region: "Africa", city: "Johannesburg", symbol: "JTOPI.JO" },
     IBOV: { name: "Ibovespa", region: "South America", city: "São Paulo", symbol: "^BVSP" },
     MERVAL: { name: "Merval", region: "South America", city: "Buenos Aires", symbol: "^MERV" }
 };
 
 // Initialize real-time value and change properties
 Object.keys(indices).forEach(key => {
-    indices[key].value = 0;
-    indices[key].change = 0;
+    indices[key].value = "N/A"; // Display "N/A" until data is received
+    indices[key].change = "N/A"; // Display "N/A" until data is received
 });
 
 let isMinimized = false;
@@ -93,22 +93,29 @@ const socket = new WebSocket(`wss://ws.finnhub.io?token=${finnhubApiKey}`);
 socket.onopen = () => {
     console.log("WebSocket connected");
     Object.keys(indices).forEach(index => {
+        console.log(`Subscribing to ${indices[index].symbol}`);
         socket.send(JSON.stringify({ type: "subscribe", symbol: indices[index].symbol }));
     });
 };
 
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
+    console.log("WebSocket message received:", data); // Debug incoming data
     if (data.type === "trade" && data.data) {
         data.data.forEach(trade => {
             const indexKey = Object.keys(indices).find(key => indices[key].symbol === trade.s);
             if (indexKey) {
-                const lastValue = indices[indexKey].value || trade.p;
-                indices[indexKey].value = trade.p;
+                const lastValue = indices[indexKey].value === "N/A" ? trade.p : parseFloat(indices[indexKey].value);
+                indices[indexKey].value = trade.p.toLocaleString();
                 indices[indexKey].change = ((trade.p - lastValue) / lastValue * 100).toFixed(2);
+                console.log(`${indexKey}: Updated value = ${indices[indexKey].value}, change = ${indices[indexKey].change}%`);
+            } else {
+                console.log(`No matching index found for symbol: ${trade.s}`);
             }
         });
         updateCards();
+    } else {
+        console.log("Non-trade message or no data:", data);
     }
 };
 
@@ -201,9 +208,9 @@ function updateCards() {
                     </div>
                     <div class="card-body">
                         <h3>${indexData.name}</h3>
-                        <div class="index-value">${indexData.value.toLocaleString()}</div>
+                        <div class="index-value">${indexData.value}</div>
                         <div class="index-change ${indexData.change >= 0 ? 'positive' : 'negative'}">
-                            ${indexData.change >= 0 ? '+' : ''}${indexData.change}%
+                            ${indexData.change === "N/A" ? "N/A" : (indexData.change >= 0 ? '+' : '') + indexData.change + '%'}
                         </div>
                     </div>
                 `;
@@ -214,7 +221,7 @@ function updateCards() {
                     </div>
                     <div class="card-body">
                         <h3>${indexData.name}</h3>
-                        <div class="index-value">${indexData.value.toLocaleString()}</div>
+                        <div class="index-value">${indexData.value}</div>
                     </div>
                 `;
             }
