@@ -29,42 +29,29 @@ body {
     background: var(--primary-bg);
 }
 
+/* Header styling with increased spacing */
 #header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     background: var(--primary-bg);
-    padding: 15px 20px;
+    padding: 15px 20px; /* Increased padding */
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 15px;
+    gap: 15px; /* Added gap for spacing between header elements */
     z-index: 1000;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 #region-options,
-#search-container,
+#search-box,
 #view-toggle {
     display: flex;
     align-items: center;
-}
-
-#search-container {
-    flex-grow: 1;
-    margin: 0 20px;
-}
-
-#search-box {
-    flex-grow: 1;
-}
-
-#logo {
-    height: 30px;
-    margin-left: 10px;
 }
 
 #region-filter {
@@ -79,13 +66,18 @@ body {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="%23fff"><polygon points="0,0 10,0 5,5"/></svg>');
     background-repeat: no-repeat;
     background-position: right 10px center;
-    padding-right: 2rem;
+    padding-right: 2rem; /* Adjusted for arrow */
 }
 
 #region-filter:focus {
     outline: none;
     border-color: var(--open);
     box-shadow: 0 0 5px var(--open);
+}
+
+#search-box {
+    flex-grow: 1;
+    margin: 0 20px; /* Increased margin for more space */
 }
 
 #search {
@@ -107,7 +99,7 @@ body {
 
 #view-toggle {
     display: flex;
-    gap: 15px;
+    gap: 15px; /* Increased gap between buttons */
 }
 
 #toggle-view, #toggle-favorites {
@@ -129,14 +121,15 @@ body {
     transform: scale(0.98);
 }
 
+/* Market section with increased spacing */
 section {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 1.5rem; /* Increased from 0.7rem to 1.5rem for more space between cards */
     justify-content: center;
-    max-width: 1400px;
+    max-width: 1400px; /* Adjusted from 10000px for better control */
     width: 100%;
-    padding-top: 20px;
+    padding-top: 20px; /* Added padding to separate from header */
 }
 
 .card {
@@ -157,8 +150,8 @@ section {
 }
 
 .card.minimized {
-    opacity: 0.85;
-    padding: 1rem;
+    opacity: 0.85; /* Increased from 0.5 for better visibility */
+    padding: 1rem; /* Slightly reduced padding in minimized state */
 }
 
 .card-header {
@@ -246,11 +239,12 @@ section {
     transition: width 1s ease;
 }
 
+/* Mobile adjustments */
 @media (max-width: 600px) {
     #header {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 15px;
+        gap: 15px; 
         padding: 10px 15px;
     }
 
@@ -264,13 +258,9 @@ section {
         gap: 10px;
     }
 
-    #search-container {
+    #search-box {
         grid-column: 1 / 3;
-        margin: 10px 0 0 0;
-    }
-
-    #logo {
-        display: none;
+        margin: 10px 0 0 0; 
     }
 
     #toggle-view, #toggle-favorites {
@@ -279,7 +269,7 @@ section {
     }
 
     .card {
-        width: 90%;
+        width: 90%; 
         max-width: 200px;
         margin: 0 auto;
         padding: 1rem;
