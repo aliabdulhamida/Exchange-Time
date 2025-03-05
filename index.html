@@ -1,25 +1,13 @@
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <title>Exchange Time</title>
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png">
-<link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
-  <link rel="stylesheet" href="./style.css">
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8377777238288489"
-     crossorigin="anonymous"></script>
-
-</head>
-<body>
-<!-- partial:index.partial.html -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exchange Time</title>
-    <link rel="stylesheet" href="styles.css">
-    <script defer src="script.js"></script>
+    <title>Exchange & Indices Time</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="stylesheet" href="./style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8377777238288489" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="header">
@@ -31,23 +19,25 @@
                 <option value="Asia">Asia</option>
                 <option value="Australia">Australia</option>
                 <option value="Africa">Africa</option>
+                <option value="South America">South America</option>
             </select>
         </div>
         <div id="view-toggle">
+            <div id="mode-toggle">
+                <button id="toggle-exchanges" class="mode-btn active">Exchanges</button>
+                <button id="toggle-indices" class="mode-btn">Indices</button>
+            </div>
             <button id="toggle-view">Minimize</button>
             <button id="toggle-favorites">Favorites</button>
         </div>
         <div id="search-box">
-            <input type="text" id="search" placeholder="Search Market or City..." />
+            <input type="text" id="search" placeholder="Search Market, Index, or City..." />
         </div>
     </div>
+    <div id="disclaimer" style="display: none;">Disclaimer: The data shown is not actual data and is a work in progress.</div>
     <section id="market-section">
-        <!-- Market cards will be dynamically inserted here -->
+        <!-- Market or Index cards will be dynamically inserted here -->
     </section>
-</body>
-</html>
-<!-- partial -->
-  <script  src="./script.js"></script>
-
+    <script src="./script.js"></script>
 </body>
 </html>
