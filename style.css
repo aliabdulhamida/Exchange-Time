@@ -272,7 +272,6 @@ section {
         width: 100%; /* Adjusted from 100% for slight margin */
         max-width: 220px;
         margin: 0 auto;
-        margin-right: 0.1px;
         padding: 0.8rem;
     }
 }
