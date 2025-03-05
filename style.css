@@ -66,7 +66,7 @@ body {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="%23fff"><polygon points="0,0 10,0 5,5"/></svg>');
     background-repeat: no-repeat;
     background-position: right 10px center;
-    padding-right: 2rem; /* Adjusted for arrow */
+    padding-right: 2rem; 
 }
 
 #region-filter:focus {
@@ -77,7 +77,7 @@ body {
 
 #search-box {
     flex-grow: 1;
-    margin: 0 20px; /* Increased margin for more space */
+    margin: 0 20px;
 }
 
 #search {
@@ -99,7 +99,7 @@ body {
 
 #view-toggle {
     display: flex;
-    gap: 15px; /* Increased gap between buttons */
+    gap: 15px; 
 }
 
 #toggle-view, #toggle-favorites {
@@ -121,15 +121,14 @@ body {
     transform: scale(0.98);
 }
 
-/* Market section with increased spacing */
 section {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem; /* Increased from 0.7rem to 1.5rem for more space between cards */
+    gap: 1.5rem; 
     justify-content: center;
-    max-width: 1400px; /* Adjusted from 10000px for better control */
+    max-width: 1400px; 
     width: 100%;
-    padding-top: 20px; /* Added padding to separate from header */
+    padding-top: 20px; 
 }
 
 .card {
@@ -150,8 +149,8 @@ section {
 }
 
 .card.minimized {
-    opacity: 0.85; /* Increased from 0.5 for better visibility */
-    padding: 1rem; /* Slightly reduced padding in minimized state */
+    opacity: 0.85;
+    padding: 1rem; 
 }
 
 .card-header {
@@ -239,7 +238,6 @@ section {
     transition: width 1s ease;
 }
 
-/* Mobile adjustments */
 @media (max-width: 600px) {
     #header {
         display: grid;
