@@ -53,32 +53,72 @@ const marketHours = {
 };
 
 const indices = {
-    SP500: { name: "S&P 500", region: "North America", city: "New York", value: 5200.45, change: 1.23 },
-    DJIA: { name: "Dow Jones", region: "North America", city: "New York", value: 39000.12, change: -0.45 },
-    NASDAQ100: { name: "Nasdaq 100", region: "North America", city: "New York", value: 18000.78, change: 0.89 },
-    TSXCOMP: { name: "S&P/TSX Composite", region: "North America", city: "Toronto", value: 22000.34, change: 0.56 },
-    FTSE100: { name: "FTSE 100", region: "Europe", city: "London", value: 7500.34, change: 0.56 },
-    DAX: { name: "DAX", region: "Europe", city: "Frankfurt", value: 16000.67, change: -0.12 },
-    CAC40: { name: "CAC 40", region: "Europe", city: "Paris", value: 7200.89, change: 0.34 },
-    IBEX35: { name: "IBEX 35", region: "Europe", city: "Madrid", value: 10000.23, change: 0.78 },
-    FTSEMIB: { name: "FTSE MIB", region: "Europe", city: "Milan", value: 28000.45, change: -0.23 },
-    NIKKEI225: { name: "Nikkei 225", region: "Asia", city: "Tokyo", value: 38000.23, change: 1.45 },
-    HSI: { name: "Hang Seng Index", region: "Asia", city: "Hong Kong", value: 16500.45, change: -0.78 },
-    SENSEX: { name: "BSE Sensex", region: "Asia", city: "Mumbai", value: 65000.67, change: 0.23 },
-    NIFTY50: { name: "NIFTY 50", region: "Asia", city: "Mumbai", value: 19500.89, change: 0.45 },
-    KOSPI: { name: "KOSPI", region: "Asia", city: "Seoul", value: 2500.12, change: -0.34 },
-    SSECOMP: { name: "SSE Composite", region: "Asia", city: "Shanghai", value: 3200.34, change: 0.67 },
-    ASX200: { name: "S&P/ASX 200", region: "Australia", city: "Sydney", value: 7200.12, change: 0.67 },
-    NZX50: { name: "NZX 50", region: "Australia", city: "Wellington", value: 11500.56, change: -0.12 },
-    JTOPI: { name: "Johannesburg Top 40", region: "Africa", city: "Johannesburg", value: 68000.89, change: -0.34 },
-    IBOV: { name: "Ibovespa", region: "South America", city: "São Paulo", value: 120000.34, change: 0.89 },
-    MERVAL: { name: "Merval", region: "South America", city: "Buenos Aires", value: 95000.67, change: 1.23 }
+    SP500: { name: "S&P 500", region: "North America", city: "New York", symbol: "^GSPC" },
+    DJIA: { name: "Dow Jones", region: "North America", city: "New York", symbol: "^DJI" },
+    NASDAQ100: { name: "Nasdaq 100", region: "North America", city: "New York", symbol: "^NDX" },
+    TSXCOMP: { name: "S&P/TSX Composite", region: "North America", city: "Toronto", symbol: "^GSPTSE" },
+    FTSE100: { name: "FTSE 100", region: "Europe", city: "London", symbol: "^FTSE" },
+    DAX: { name: "DAX", region: "Europe", city: "Frankfurt", symbol: "^GDAXI" },
+    CAC40: { name: "CAC 40", region: "Europe", city: "Paris", symbol: "^FCHI" },
+    IBEX35: { name: "IBEX 35", region: "Europe", city: "Madrid", symbol: "^IBEX" },
+    FTSEMIB: { name: "FTSE MIB", region: "Europe", city: "Milan", symbol: "FTSEMIB.MI" },
+    NIKKEI225: { name: "Nikkei 225", region: "Asia", city: "Tokyo", symbol: "^N225" },
+    HSI: { name: "Hang Seng Index", region: "Asia", city: "Hong Kong", symbol: "^HSI" },
+    SENSEX: { name: "BSE Sensex", region: "Asia", city: "Mumbai", symbol: "^BSESN" },
+    NIFTY50: { name: "NIFTY 50", region: "Asia", city: "Mumbai", symbol: "^NSEI" },
+    KOSPI: { name: "KOSPI", region: "Asia", city: "Seoul", symbol: "^KS11" },
+    SSECOMP: { name: "SSE Composite", region: "Asia", city: "Shanghai", symbol: "000001.SS" },
+    ASX200: { name: "S&P/ASX 200", region: "Australia", city: "Sydney", symbol: "^AXJO" },
+    NZX50: { name: "NZX 50", region: "Australia", city: "Wellington", symbol: "^NZ50" },
+    JTOPI: { name: "Johannesburg Top 40", region: "Africa", city: "Johannesburg", symbol: "^JTOPI" },
+    IBOV: { name: "Ibovespa", region: "South America", city: "São Paulo", symbol: "^BVSP" },
+    MERVAL: { name: "Merval", region: "South America", city: "Buenos Aires", symbol: "^MERV" }
 };
+
+// Initialize real-time value and change properties
+Object.keys(indices).forEach(key => {
+    indices[key].value = 0;
+    indices[key].change = 0;
+});
 
 let isMinimized = false;
 let showFavoritesOnly = false;
 let favorites = new Set();
 let showIndices = false;
+
+// Finnhub WebSocket setup
+const finnhubApiKey = "cv4do51r01qn2ga9jptgcv4do51r01qn2ga9jpu0"; // Replace with your Finnhub API key
+const socket = new WebSocket(`wss://ws.finnhub.io?token=${finnhubApiKey}`);
+
+socket.onopen = () => {
+    console.log("WebSocket connected");
+    Object.keys(indices).forEach(index => {
+        socket.send(JSON.stringify({ type: "subscribe", symbol: indices[index].symbol }));
+    });
+};
+
+socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.type === "trade" && data.data) {
+        data.data.forEach(trade => {
+            const indexKey = Object.keys(indices).find(key => indices[key].symbol === trade.s);
+            if (indexKey) {
+                const lastValue = indices[indexKey].value || trade.p;
+                indices[indexKey].value = trade.p;
+                indices[indexKey].change = ((trade.p - lastValue) / lastValue * 100).toFixed(2);
+            }
+        });
+        updateCards();
+    }
+};
+
+socket.onerror = (error) => {
+    console.error("WebSocket error:", error);
+};
+
+socket.onclose = () => {
+    console.log("WebSocket closed");
+};
 
 function getTimeInMinutes(date, timezone) {
     const options = { timeZone: timezone, hour12: false, hour: "2-digit", minute: "2-digit" };
@@ -131,6 +171,7 @@ function updateCards() {
     const regionFilter = document.getElementById("region-filter").value;
     const searchQuery = document.getElementById("search").value.toLowerCase();
     const marketSection = document.getElementById("market-section");
+
     marketSection.innerHTML = "";
 
     const disclaimer = document.getElementById("disclaimer");
@@ -351,7 +392,7 @@ document.getElementById("toggle-indices").addEventListener("click", function() {
 document.addEventListener("DOMContentLoaded", () => {
     setBodyPadding();
     updateCards();
-    setInterval(updateCards, 1000);
+    setInterval(updateCards, 5000); // Update every 5 seconds for market clocks
 });
 
 window.addEventListener("resize", setBodyPadding);
