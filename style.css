@@ -270,8 +270,8 @@ section {
 
     .card {
         width: 90%; 
-        max-width: 220px;
+        max-width: 200px;
         margin: 0 auto;
-        padding: 0.8rem;
+        padding: 1rem;
     }
 }
