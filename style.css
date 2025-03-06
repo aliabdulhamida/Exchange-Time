@@ -449,12 +449,9 @@ section {
 
 /* Media Query for Mobile */
 @media (max-width: 700px) {
-  #card {
-        width: 30px;
-  }
     #header {
-        justify-content: space-between;
-        flex-wrap: nowrap;
+        flex-direction: column; /* Stack items vertically */
+        align-items: stretch; /* Stretch items to full width */
         padding: 10px 15px;
     }
     #region-options {
@@ -462,29 +459,26 @@ section {
     }
     #view-toggle {
         display: flex;
-        flex: 0 0 auto;
-        justifiy-content: space-between;
-        gap: 15px;
+        justify-content: flex-start; /* Space out mode-toggle and calendar */
+        gap: 25px;
+        order: 1; /* Place view-toggle first */
     }
-    #view-toggle #toggle-view, #view-toggle #toggle-favorites {
+    #view-toggle #toggle-view, 
+    #view-toggle #toggle-favorites {
         display: none; /* Hide minimize and favorites toggles in header */
     }
-  
-  #mode-toggle {
-    flex: 1; 
-  }
-  
-  #toggle-calendar {
-    flex: 0 0 auto;
-  }
-    
+    #mode-toggle {
+        flex: 1; /* Allow mode-toggle to grow */
+    }
+    #toggle-calendar {
+        flex: 0 0 auto; /* Keep calendar button size fixed */
+    }
     #search-box {
-        flex-grow: 0;
-        width: auto;
-        margin: 0;
+        order: 2; /* Place search-box below view-toggle */
+        margin-top: 10px; /* Add some spacing */
     }
     #search {
-        width: 160px; /* Adjust width for better fit */
+        width: 100%; /* Full width in mobile view */
     }
     #floating-filter-btn {
         display: block; /* Show floating button on mobile */
