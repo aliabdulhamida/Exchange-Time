@@ -324,6 +324,7 @@ const marketHours = {
         "2025-12-25": { reason: "Christmas Day", closeEarly: false },
         "2025-12-26": { reason: "Boxing Day", closeEarly: false },
         "2025-12-31": { reason: "New Year's Eve", closeEarly: true, earlyCloseTime: "12:30" },
+
     }
 },
     OMX: {
