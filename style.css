@@ -462,9 +462,9 @@ section {
     }
     #view-toggle {
         display: flex;
-        flex-wrap: wrap;
+        flex: 0 0 auto;
         justifiy-content: space-between;
-        gap: 10px;
+        gap: 15px;
     }
     #view-toggle #toggle-view, #view-toggle #toggle-favorites {
         display: none; /* Hide minimize and favorites toggles in header */
