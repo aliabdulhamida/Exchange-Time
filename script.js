@@ -297,8 +297,14 @@ const marketHours = {
         region: "Europe",
         city: "Madrid",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2025-04-18": { reason: "Good Friday", closeEarly: false }
+             "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+        "2025-04-18": { reason: "Good Friday", closeEarly: false },
+        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+        "2025-05-01": { reason: "Labour Day", closeEarly: false },
+        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+        "2025-12-26": { reason: "Christmas Holiday", closeEarly: false }
+
+
         }
     },
     OMX: {
@@ -308,8 +314,18 @@ const marketHours = {
         region: "Europe",
         city: "Stockholm",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2025-04-18": { reason: "Good Friday", closeEarly: false }
+        "2025-04-18": { reason: "Good Friday", closeEarly: false },
+        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+        "2025-05-01": { reason: "Labour Day", closeEarly: false },
+        "2025-05-29": { reason: "Ascension Day", closeEarly: false },
+        "2025-06-06": { reason: "National Day", closeEarly: false },
+        "2025-06-20": { reason: "Midsummer Eve OBS", closeEarly: false },
+        "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
+        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+        "2025-12-26": { reason: "Boxing Day", closeEarly: false },
+        "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
+
+
         }
     },
     MOEX: {
@@ -319,8 +335,12 @@ const marketHours = {
         region: "Europe",
         city: "Moscow",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+            "2025-05-01": { reason: "International Labour Day", closeEarly: false },
+        "2025-05-09": { reason: "Victory Day", closeEarly: false },
+        "2025-06-12": { reason: "Declaration of Russian Sovereignty", closeEarly: false },
+        "2025-11-04": { reason: "National Unity Day", closeEarly: false },
+        "2025-12-31": { reason: "New Year's Eve Holiday", closeEarly: false }
+    }
     },
     BorsaItaliana: {
         open: "09:00",
@@ -330,8 +350,15 @@ const marketHours = {
         city: "Milan",
         holidays: {
             "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2025-04-18": { reason: "Good Friday", closeEarly: false }
-        }
+        "2025-04-18": { reason: "Good Friday", closeEarly: false },
+        "2025-04-21": { reason: "Easter", closeEarly: false },
+        "2025-05-01": { reason: "Labour Day", closeEarly: false },
+        "2025-08-15": { reason: "Assumption Day", closeEarly: false },
+        "2025-12-24": { reason: "Christmas", closeEarly: false },
+        "2025-12-25": { reason: "Christmas", closeEarly: false },
+        "2025-12-26": { reason: "St. Stephen's Day", closeEarly: false },
+        "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
+    }
     },
     WSE: {
         open: "09:00",
@@ -340,9 +367,17 @@ const marketHours = {
         region: "Europe",
         city: "Warsaw",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2025-04-18": { reason: "Good Friday", closeEarly: false }
-        }
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+        "2025-05-01": { reason: "State Holiday/Labour Day", closeEarly: false },
+        "2025-06-19": { reason: "Corpus Christi", closeEarly: false },
+        "2025-08-15": { reason: "Assumption Day", closeEarly: false },
+        "2025-11-11": { reason: "Day of Independence", closeEarly: false },
+        "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
+        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+        "2025-12-26": { reason: "Christmas Holiday", closeEarly: false },
+        "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
+    }
     },
     OSE: {
         open: "09:00",
@@ -351,9 +386,17 @@ const marketHours = {
         region: "Europe",
         city: "Oslo",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2025-04-18": { reason: "Good Friday", closeEarly: false }
-        }
+            "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
+        "2025-04-18": { reason: "Good Friday", closeEarly: false },
+        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+        "2025-05-01": { reason: "Labour Day", closeEarly: false },
+        "2025-05-29": { reason: "Ascension Day", closeEarly: false },
+        "2025-06-09": { reason: "Whitmonday", closeEarly: false },
+        "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
+        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+        "2025-12-26": { reason: "Boxing Day", closeEarly: false },
+        "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
+    }
     },
     ISE: {
         open: "09:00",
@@ -362,9 +405,13 @@ const marketHours = {
         region: "Europe",
         city: "Dublin",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2025-04-18": { reason: "Good Friday", closeEarly: false }
-        }
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+        "2025-05-01": { reason: "Labour Day", closeEarly: false },
+        "2025-05-05": { reason: "May Bank Holiday", closeEarly: false },
+        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+        "2025-12-26": { reason: "Christmas Holiday", closeEarly: false }
+    }
     },
     JPX: {
         open1: "09:00", close1: "11:30",
@@ -373,9 +420,21 @@ const marketHours = {
         region: "Asia",
         city: "Tokyo",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2025-02-11": { reason: "National Foundation Day", closeEarly: false }
-        }
+            "2025-02-11": { reason: "National Founding Day", closeEarly: false },
+        "2025-02-24": { reason: "Emperor's Birthday OBS", closeEarly: false },
+        "2025-03-20": { reason: "Vernal Equinox", closeEarly: false },
+        "2025-04-29": { reason: "Showa Day (formerly Greenery Day)", closeEarly: false },
+        "2025-05-05": { reason: "Children's Day", closeEarly: false },
+        "2025-05-06": { reason: "Greenery Day (formerly National Holiday) OBS", closeEarly: false },
+        "2025-07-21": { reason: "Marine Day", closeEarly: false },
+        "2025-08-11": { reason: "Mountain Day", closeEarly: false },
+        "2025-09-15": { reason: "Respect for the Aged Day", closeEarly: false },
+        "2025-09-23": { reason: "Autumn Equinox", closeEarly: false },
+        "2025-10-13": { reason: "Health-Sports Day", closeEarly: false },
+        "2025-11-03": { reason: "Culture Day", closeEarly: false },
+        "2025-11-24": { reason: "Labour Thanksgiving Day OBS", closeEarly: false },
+        "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
+    }
     },
     HKEX: {
         open: "09:30",
@@ -384,9 +443,21 @@ const marketHours = {
         region: "Asia",
         city: "Hong Kong",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2025-04-18": { reason: "Good Friday", closeEarly: false }
-        }
+            "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
+        "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
+        "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
+        "2025-04-04": { reason: "Ching Ming Festival", closeEarly: false },
+        "2025-04-18": { reason: "Good Friday", closeEarly: false },
+        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+        "2025-05-01": { reason: "Labour Day", closeEarly: false },
+        "2025-05-05": { reason: "Buddha's Birthday*", closeEarly: false },
+        "2025-07-01": { reason: "SAR Establishment Day", closeEarly: false },
+        "2025-10-01": { reason: "Chinese National Day", closeEarly: false },
+        "2025-10-07": { reason: "Day Following Mid-autumn Festival*", closeEarly: false },
+        "2025-10-29": { reason: "Chung Yeung Day*", closeEarly: false },
+        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+        "2025-12-26": { reason: "Christmas Holiday", closeEarly: false }
+    }
     },
     SSE: {
         open: "09:30",
@@ -395,8 +466,25 @@ const marketHours = {
         region: "Asia",
         city: "Shanghai",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+            "2025-01-28": { reason: "Lunar NY Eve 1", closeEarly: false },
+        "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
+        "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
+        "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
+        "2025-02-03": { reason: "Lunar New Year 6", closeEarly: false },
+        "2025-02-04": { reason: "Lunar New Year 7", closeEarly: false },
+        "2025-04-04": { reason: "Ching Ming Festival", closeEarly: false },
+        "2025-05-01": { reason: "Labour Day 1", closeEarly: false },
+        "2025-05-02": { reason: "Labour Day Holiday", closeEarly: false },
+        "2025-05-05": { reason: "Labour Day Holiday 2", closeEarly: false },
+        "2025-06-02": { reason: "Dragon Boat Festival Holiday", closeEarly: false },
+        "2025-10-01": { reason: "National Day 1", closeEarly: false },
+        "2025-10-02": { reason: "National Day 2", closeEarly: false },
+        "2025-10-03": { reason: "National Day 3", closeEarly: false },
+        "2025-10-06": { reason: "National Day 6", closeEarly: false },
+        "2025-10-06": { reason: "Mid-autumn Festival*", closeEarly: false },
+        "2025-10-07": { reason: "National Day 7", closeEarly: false },
+        "2025-10-08": { reason: "National Day 8", closeEarly: false }
+    }
     },
     SZSE: {
         open: "09:30",
@@ -405,8 +493,25 @@ const marketHours = {
         region: "Asia",
         city: "Shenzhen",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+            "2025-01-28": { reason: "Lunar NY Eve 1", closeEarly: false },
+        "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
+        "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
+        "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
+        "2025-02-03": { reason: "Lunar New Year 6", closeEarly: false },
+        "2025-02-04": { reason: "Lunar New Year 7", closeEarly: false },
+        "2025-04-04": { reason: "Ching Ming Festival", closeEarly: false },
+        "2025-05-01": { reason: "Labour Day 1", closeEarly: false },
+        "2025-05-02": { reason: "Labour Day Holiday", closeEarly: false },
+        "2025-05-05": { reason: "Labour Day Holiday 2", closeEarly: false },
+        "2025-06-02": { reason: "Dragon Boat Festival Holiday", closeEarly: false },
+        "2025-10-01": { reason: "National Day 1", closeEarly: false },
+        "2025-10-02": { reason: "National Day 2", closeEarly: false },
+        "2025-10-03": { reason: "National Day 3", closeEarly: false },
+        "2025-10-06": { reason: "National Day 6", closeEarly: false },
+        "2025-10-06": { reason: "Mid-autumn Festival*", closeEarly: false },
+        "2025-10-07": { reason: "National Day 7", closeEarly: false },
+        "2025-10-08": { reason: "National Day 8", closeEarly: false }
+    }
     },
     BSE: {
         open: "09:15",
@@ -415,8 +520,22 @@ const marketHours = {
         region: "Asia",
         city: "Mumbai",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+            "2025-02-26": { reason: "Mahashivratri*", closeEarly: false },
+        "2025-03-14": { reason: "Holi (2nd day)*", closeEarly: false },
+        "2025-03-31": { reason: "Ramzan-id (Id-ul-fitar)*", closeEarly: false },
+        "2025-04-10": { reason: "Mahavir Jayanti*", closeEarly: false },
+        "2025-04-14": { reason: "Dr. Babsaheb Ambedkar Jayanti", closeEarly: false },
+        "2025-04-18": { reason: "Good Friday", closeEarly: false },
+        "2025-05-01": { reason: "Maharashtra or May Day", closeEarly: false },
+        "2025-08-15": { reason: "Independence Day", closeEarly: false },
+        "2025-08-27": { reason: "Ganesh Chaturthi*", closeEarly: false },
+        "2025-10-02": { reason: "Mahatma Gandhi's Birthday", closeEarly: false },
+        "2025-10-02": { reason: "Dasara*", closeEarly: false },
+        "2025-10-21": { reason: "Diwali Amavasya (Muhurat trading)*", closeEarly: false },
+        "2025-10-22": { reason: "Diwali (Bali Pratipada)", closeEarly: false },
+        "2025-11-05": { reason: "Guru Nanak Jayanti*", closeEarly: false },
+        "2025-12-25": { reason: "Christmas Day", closeEarly: false }
+    }
     },
     NSE: {
         open: "09:15",
@@ -425,8 +544,22 @@ const marketHours = {
         region: "Asia",
         city: "Mumbai",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+            "2025-02-26": { reason: "Mahashivratri*", closeEarly: false },
+        "2025-03-14": { reason: "Holi (2nd day)*", closeEarly: false },
+        "2025-03-31": { reason: "Ramzan-id (Id-ul-fitar)*", closeEarly: false },
+        "2025-04-10": { reason: "Mahavir Jayanti*", closeEarly: false },
+        "2025-04-14": { reason: "Dr. Babsaheb Ambedkar Jayanti", closeEarly: false },
+        "2025-04-18": { reason: "Good Friday", closeEarly: false },
+        "2025-05-01": { reason: "Maharashtra or May Day", closeEarly: false },
+        "2025-08-15": { reason: "Independence Day", closeEarly: false },
+        "2025-08-27": { reason: "Ganesh Chaturthi*", closeEarly: false },
+        "2025-10-02": { reason: "Mahatma Gandhi's Birthday", closeEarly: false },
+        "2025-10-02": { reason: "Dasara*", closeEarly: false },
+        "2025-10-21": { reason: "Diwali Amavasya (Muhurat trading)*", closeEarly: false },
+        "2025-10-22": { reason: "Diwali (Bali Pratipada)", closeEarly: false },
+        "2025-11-05": { reason: "Guru Nanak Jayanti*", closeEarly: false },
+        "2025-12-25": { reason: "Christmas Day", closeEarly: false }
+    }
     },
     KRX: {
         open: "09:00",
@@ -435,8 +568,24 @@ const marketHours = {
         region: "Asia",
         city: "Seoul",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+            "2025-01-27": { reason: "Lunar New Year Additional Holiday", closeEarly: false },
+        "2025-01-28": { reason: "Lunar New Year's Eve", closeEarly: false },
+        "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
+        "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
+        "2025-03-03": { reason: "Independence Movement Day OBS", closeEarly: false },
+        "2025-05-01": { reason: "Labour Day", closeEarly: false },
+        "2025-05-05": { reason: "Children's Day", closeEarly: false },
+        "2025-05-06": { reason: "Buddha's Birthday", closeEarly: false },
+        "2025-06-06": { reason: "Memorial Day", closeEarly: false },
+        "2025-08-15": { reason: "Liberation Day", closeEarly: false },
+        "2025-10-03": { reason: "National Foundation Day", closeEarly: false },
+        "2025-10-06": { reason: "Harvest Moon Festival Day", closeEarly: false },
+        "2025-10-07": { reason: "Harvest Moon Festival Holiday", closeEarly: false },
+        "2025-10-08": { reason: "Harvest Moon Festival Additional Holiday", closeEarly: false },
+        "2025-10-09": { reason: "Hangul Day", closeEarly: false },
+        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+        "2025-12-31": { reason: "Last Day of Year", closeEarly: false }
+    }
     },
     TWSE: {
         open: "09:00",
@@ -445,8 +594,21 @@ const marketHours = {
         region: "Asia",
         city: "Taipei",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+            "2025-01-23": { reason: "Lunar New Year - No Trading 2", closeEarly: false },
+        "2025-01-24": { reason: "Lunar New Year - No Trading 1", closeEarly: false },
+        "2025-01-27": { reason: "Additional Lunar New Year Holiday", closeEarly: false },
+        "2025-01-28": { reason: "Lunar New Year's Eve", closeEarly: false },
+        "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
+        "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
+        "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
+        "2025-02-28": { reason: "Peace Memorial Day", closeEarly: false },
+        "2025-04-03": { reason: "Ching Ming Festival", closeEarly: false },
+        "2025-04-04": { reason: "Children's Day", closeEarly: false },
+        "2025-05-01": { reason: "Labour Day", closeEarly: false },
+        "2025-05-30": { reason: "Dragon Boat Festival", closeEarly: false },
+        "2025-10-06": { reason: "Mid-Autumn Festival", closeEarly: false },
+        "2025-10-10": { reason: "National Day", closeEarly: false }
+    }
     },
     SGX: {
         open: "09:00",
@@ -485,8 +647,25 @@ const marketHours = {
         region: "Asia",
         city: "Bangkok",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+    "2025-02-12": { "reason": "Makha Bucha Day", "closeEarly": false },
+    "2025-04-07": { "reason": "Shakri Day OBS", "closeEarly": false },
+    "2025-04-14": { "reason": "Songkran Festival 2", "closeEarly": false },
+    "2025-04-15": { "reason": "Songkran Festival 3", "closeEarly": false },
+    "2025-05-01": { "reason": "Labour Day", "closeEarly": false },
+    "2025-05-05": { "reason": "Coronation Day OBS", "closeEarly": false },
+    "2025-05-12": { "reason": "Vishaka Bucha Day", "closeEarly": false },
+    "2025-06-02": { "reason": "Special Holiday", "closeEarly": false },
+    "2025-06-03": { "reason": "Queen Suthida's Birthday", "closeEarly": false },
+    "2025-07-10": { "reason": "Asarnha Bucha Day", "closeEarly": false },
+    "2025-07-28": { "reason": "King's Birthday", "closeEarly": false },
+    "2025-08-11": { "reason": "Special Holiday 2", "closeEarly": false },
+    "2025-08-12": { "reason": "Queen's Birthday", "closeEarly": false },
+    "2025-10-13": { "reason": "King Bhumibol Adulyadej Memorial Day", "closeEarly": false },
+    "2025-10-23": { "reason": "King Chulalongkorn Memorial Day", "closeEarly": false },
+    "2025-12-05": { "reason": "King Rama IX's Birthday", "closeEarly": false },
+    "2025-12-10": { "reason": "Constitution Day", "closeEarly": false },
+    "2025-12-31": { "reason": "New Year's Eve", "closeEarly": false }
+}
     },
     PSE: {
         open: "09:30",
@@ -495,8 +674,23 @@ const marketHours = {
         region: "Asia",
         city: "Manila",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+    "2025-01-29": { "reason": "Chinese New Year", "closeEarly": false },
+    "2025-03-31": { "reason": "Eid-ul Fitre", "closeEarly": false },
+    "2025-04-09": { "reason": "Araw Ng Kagitingan", "closeEarly": false },
+    "2025-04-17": { "reason": "Holy Thursday", "closeEarly": false },
+    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
+    "2025-05-01": { "reason": "Labour Day", "closeEarly": false },
+    "2025-06-06": { "reason": "Eid-ul Adha", "closeEarly": false },
+    "2025-06-12": { "reason": "Independence Day", "closeEarly": false },
+    "2025-08-21": { "reason": "Nino Aquino Day", "closeEarly": false },
+    "2025-08-25": { "reason": "National Heroes Day", "closeEarly": false },
+    "2025-10-31": { "reason": "All Saints Additional Obs.", "closeEarly": false },
+    "2025-12-08": { "reason": "Immaculate Conception", "closeEarly": false },
+    "2025-12-24": { "reason": "Christmas Eve", "closeEarly": false },
+    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false },
+    "2025-12-30": { "reason": "Rizal Day", "closeEarly": false },
+    "2025-12-31": { "reason": "Bank Holiday", "closeEarly": false }
+}
     },
     HOSE: {
         open: "09:00",
@@ -535,8 +729,14 @@ const marketHours = {
         region: "Australia",
         city: "Sydney",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+    "2025-01-27": { "reason": "Australia Day OBS", "closeEarly": false },
+    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
+    "2025-04-21": { "reason": "Easter Monday", "closeEarly": false },
+    "2025-04-25": { "reason": "ANZAC Day", "closeEarly": false },
+    "2025-06-09": { "reason": "King's Birthday", "closeEarly": false },
+    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false },
+    "2025-12-26": { "reason": "Boxing Day", "closeEarly": false }
+}
     },
     NZX: {
         open: "10:00",
@@ -545,8 +745,16 @@ const marketHours = {
         region: "Australia",
         city: "Wellington",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+    "2025-02-06": { "reason": "Waitangi Day", "closeEarly": false },
+    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
+    "2025-04-21": { "reason": "Easter Monday", "closeEarly": false },
+    "2025-04-25": { "reason": "ANZAC Day", "closeEarly": false },
+    "2025-06-02": { "reason": "King's Birthday", "closeEarly": false },
+    "2025-06-20": { "reason": "Matariki Day", "closeEarly": false },
+    "2025-10-27": { "reason": "Labour Day", "closeEarly": false },
+    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false },
+    "2025-12-26": { "reason": "Boxing Day", "closeEarly": false }
+}
     },
     JSE: {
         open: "09:00",
@@ -625,8 +833,19 @@ const marketHours = {
         region: "South America",
         city: "Santiago",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
+    "2025-05-01": { "reason": "Labour Day", "closeEarly": false },
+    "2025-05-21": { "reason": "Battle of Iquique/Navy Day", "closeEarly": false },
+    "2025-06-20": { "reason": "National Day of Native Peoples", "closeEarly": false },
+    "2025-07-16": { "reason": "Solemnity of Virgin of Carmen", "closeEarly": false },
+    "2025-08-15": { "reason": "Assumption Day", "closeEarly": false },
+    "2025-09-18": { "reason": "Independence Day", "closeEarly": false },
+    "2025-09-19": { "reason": "Army Day", "closeEarly": false },
+    "2025-10-31": { "reason": "Evangelical Church Day", "closeEarly": false },
+    "2025-12-08": { "reason": "Immaculate Conception", "closeEarly": false },
+    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false },
+    "2025-12-31": { "reason": "Bank Holiday", "closeEarly": false }
+}
     },
     BVC: {
         open: "09:00",
@@ -635,8 +854,23 @@ const marketHours = {
         region: "South America",
         city: "Bogotá",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+    "2025-03-24": { "reason": "St. Joseph's Day OBS", "closeEarly": false },
+    "2025-04-17": { "reason": "Holy Thursday", "closeEarly": false },
+    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
+    "2025-05-01": { "reason": "Labour Day", "closeEarly": false },
+    "2025-06-02": { "reason": "Ascension", "closeEarly": false },
+    "2025-06-23": { "reason": "Corpus Christi", "closeEarly": false },
+    "2025-06-30": { "reason": "Sacred Heart", "closeEarly": false },
+    "2025-06-30": { "reason": "Sts. Peter and Paul OBS", "closeEarly": false },
+    "2025-08-07": { "reason": "Battle of Boyaca", "closeEarly": false },
+    "2025-08-18": { "reason": "Assumption Day OBS", "closeEarly": false },
+    "2025-10-13": { "reason": "Race Day OBS", "closeEarly": false },
+    "2025-11-03": { "reason": "All Saints' Day OBS", "closeEarly": false },
+    "2025-11-17": { "reason": "Independence of Cartagena OBS", "closeEarly": false },
+    "2025-12-08": { "reason": "Immaculate Conception", "closeEarly": false },
+    "2025-12-25": { "reason": "Christmas", "closeEarly": false },
+    "2025-12-31": { "reason": "Last business day of year", "closeEarly": false }
+}
     },
     BVL: {
         open: "09:00",
@@ -645,8 +879,18 @@ const marketHours = {
         region: "South America",
         city: "Lima",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+    "2025-04-17": { "reason": "Holy Thursday", "closeEarly": false },
+    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
+    "2025-05-01": { "reason": "Labour Day", "closeEarly": false },
+    "2025-07-23": { "reason": "Dia de la Fuerza Aerea", "closeEarly": false },
+    "2025-07-28": { "reason": "Independence Day 1", "closeEarly": false },
+    "2025-07-29": { "reason": "Independence Day 2", "closeEarly": false },
+    "2025-08-06": { "reason": "Battle of Junin", "closeEarly": false },
+    "2025-10-08": { "reason": "Combat of Angamos", "closeEarly": false },
+    "2025-12-08": { "reason": "Immaculate Conception", "closeEarly": false },
+    "2025-12-09": { "reason": "Battle of Ayacucho", "closeEarly": false },
+    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false }
+}
     },
     BVBA: {
         open: "11:00",
@@ -655,68 +899,31 @@ const marketHours = {
         region: "South America",
         city: "Buenos Aires",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+    "2025-03-03": { "reason": "Carnival Monday", "closeEarly": false },
+    "2025-03-04": { "reason": "Carnival Tuesday", "closeEarly": false },
+    "2025-03-24": { "reason": "Truth and Justice Day", "closeEarly": false },
+    "2025-04-02": { "reason": "Malvinas Islands Memorial", "closeEarly": false },
+    "2025-04-17": { "reason": "Holy Thursday", "closeEarly": false },
+    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
+    "2025-05-01": { "reason": "Workers' Day", "closeEarly": false },
+    "2025-05-02": { "reason": "Bridge Holiday 1", "closeEarly": false },
+    "2025-06-16": { "reason": "Martin Miguel de Guemes Day OBS", "closeEarly": false },
+    "2025-06-20": { "reason": "Flag Day", "closeEarly": false },
+    "2025-07-09": { "reason": "Independence Day", "closeEarly": false },
+    "2025-08-15": { "reason": "Bridge Holiday 2", "closeEarly": false },
+    "2025-11-21": { "reason": "Bridge Holiday 3", "closeEarly": false },
+    "2025-11-24": { "reason": "National Sovereignty Day OBS", "closeEarly": false },
+    "2025-12-08": { "reason": "Immaculate Conception", "closeEarly": false },
+    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false }
+}
     }
-};
-
-// Indices object
-const indices = {
-    SPY: { name: "SPDR S&P 500 ETF", region: "North America", city: "New York", symbol: "SPY", value: "N/A", change: "N/A" },
-    QQQ: { name: "Invesco QQQ Trust", region: "North America", city: "New York", symbol: "QQQ", value: "N/A", change: "N/A" },
-    DIA: { name: "SPDR Dow Jones Industrial Average ETF", region: "North America", city: "New York", symbol: "DIA", value: "N/A", change: "N/A" }
 };
 
 // State variables
 let currentRegion = "all";
 let isMinimized = false;
 let showFavoritesOnly = false;
-let showIndices = false;
 let favorites = new Set();
-
-// Polygon.io WebSocket setup
-const polygonApiKey = "O1l93TNLLysETJkr1NwyMuPZS5ZpoX6p"; // Replace with your Polygon.io API key
-const socket = new WebSocket("wss://socket.polygon.io/stocks");
-
-socket.onopen = () => {
-    console.log("WebSocket connected to Polygon.io");
-    socket.send(JSON.stringify({ action: "auth", params: polygonApiKey }));
-};
-
-socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log("WebSocket message received:", data);
-
-    if (data && data[0] && data[0].status === "auth_success") {
-        console.log("Authentication successful");
-        Object.keys(indices).forEach(index => {
-            const symbol = indices[index].symbol;
-            console.log(`Subscribing to T.${symbol}`);
-            socket.send(JSON.stringify({ action: "subscribe", params: `T.${symbol}` }));
-        });
-        return;
-    }
-
-    if (data && Array.isArray(data)) {
-        data.forEach(message => {
-            if (message.ev === "T") {
-                const symbol = message.sym;
-                const price = message.p;
-                const indexKey = Object.keys(indices).find(key => indices[key].symbol === symbol);
-                if (indexKey) {
-                    const lastValue = indices[indexKey].value === "N/A" ? price : parseFloat(indices[indexKey].value.replace(/,/g, ""));
-                    indices[indexKey].value = price.toLocaleString();
-                    indices[indexKey].change = ((price - lastValue) / lastValue * 100).toFixed(2);
-                    console.log(`${indexKey}: Updated value = ${indices[indexKey].value}, change = ${indices[indexKey].change}%`);
-                }
-            }
-        });
-        updateCards();
-    }
-};
-
-socket.onerror = (error) => console.error("WebSocket error:", error);
-socket.onclose = () => console.log("WebSocket closed");
 
 // Helper functions
 function isMarketClosedOnHoliday(market, currentDate) {
@@ -776,42 +983,108 @@ function generateCalendar(year, region) {
     const calendarDiv = document.getElementById('calendar');
     calendarDiv.innerHTML = '';
 
+    // Define weekday names starting with Sunday to match Date.getDay()
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
     for (let month = 0; month < 12; month++) {
         const monthDiv = document.createElement('div');
         monthDiv.className = 'calendar-month';
-        monthDiv.innerHTML = `<h3>${new Date(year, month, 1).toLocaleString('default', { month: 'long', year: 'numeric' })}</h3>`;
-        
-        const firstDay = new Date(year, month, 1).getDay();
+        monthDiv.innerHTML = `<h2>${new Date(year, month, 1).toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>`;
+
+        // Create container for the calendar grid
+        const gridDiv = document.createElement('div');
+        gridDiv.className = 'calendar-grid';
+
+        // Add weekday headers
+        const weekdayRow = document.createElement('div');
+        weekdayRow.className = 'calendar-row';
+        weekdays.forEach(day => {
+            const dayCell = document.createElement('div');
+            dayCell.className = 'calendar-day weekday';
+            dayCell.textContent = day;
+            weekdayRow.appendChild(dayCell);
+        });
+        gridDiv.appendChild(weekdayRow);
+
+        // Calculate days and alignment
+        const firstDay = new Date(year, month, 1).getDay(); // 0 = Sunday
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        let dayHTML = '';
+        // Create the days row
+        const daysRow = document.createElement('div');
+        daysRow.className = 'calendar-row';
+
+        // Add empty cells for days before the first of the month
         for (let i = 0; i < firstDay; i++) {
-            dayHTML += '<div class="calendar-day"></div>';
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'calendar-day empty';
+            daysRow.appendChild(emptyCell);
         }
 
+        // Add days of the month
         for (let day = 1; day <= daysInMonth; day++) {
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            let className = 'calendar-day';
-            let marketsClosed = [];
+            const dayCell = document.createElement('div');
+            dayCell.className = 'calendar-day';
+            dayCell.textContent = day;
 
+            let marketsClosed = [];
             for (let market in marketHours) {
-                if ((region === "all" || marketHours[market].region === region) && marketHours[market].holidays && marketHours[market].holidays[dateStr]) {
+                if ((region === "all" || marketHours[market].region === region) && 
+                    marketHours[market].holidays && 
+                    marketHours[market].holidays[dateStr]) {
                     const holiday = marketHours[market].holidays[dateStr];
-                    marketsClosed.push(`${market} (${holiday.reason})`);
+                    marketsClosed.push(`${market}: ${holiday.reason}`);
                 }
             }
 
             if (marketsClosed.length > 0) {
-                className += ' holiday';
-                dayHTML += `<div class="calendar-day ${className}" title="${marketsClosed.join(', ')}">${day}</div>`;
-            } else {
-                dayHTML += `<div class="calendar-day ${className}">${day}</div>`;
+                dayCell.classList.add('holiday');
+                dayCell.dataset.holidays = JSON.stringify(marketsClosed);
+                dayCell.addEventListener('click', () => showHolidayPanel(dateStr, marketsClosed));
             }
+
+            daysRow.appendChild(dayCell);
         }
 
-        monthDiv.innerHTML += `<div style="display: flex; flex-wrap: wrap;">${dayHTML}</div>`;
+        // Ensure the row has at least 7 cells per week, adding empty cells if needed
+        while (daysRow.children.length % 7 !== 0) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'calendar-day empty';
+            daysRow.appendChild(emptyCell);
+        }
+
+        gridDiv.appendChild(daysRow);
+        monthDiv.appendChild(gridDiv);
         calendarDiv.appendChild(monthDiv);
     }
+}
+
+// New function to show holiday panel
+function showHolidayPanel(dateStr, holidays) {
+    const modal = document.getElementById('calendar-modal');
+    const modalContent = modal.querySelector('.modal-content');
+
+    // Remove any existing holiday panel to prevent multiple panels
+    const existingPanel = modalContent.querySelector('.holiday-panel');
+    if (existingPanel) existingPanel.remove();
+
+    // Create the new holiday panel
+    const holidayPanel = document.createElement('div');
+    holidayPanel.className = 'holiday-panel';
+    holidayPanel.innerHTML = `
+        <h3>Holidays on ${new Date(dateStr).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h3>
+        <ul>${holidays.map(holiday => `<li>${holiday}</li>`).join('')}</ul>
+        <button class="close-panel">Close</button>
+    `;
+
+    // Append the panel to modal-content, not directly to the modal
+    modalContent.appendChild(holidayPanel);
+
+    // Add event listener to close only the panel, not the modal
+    document.querySelector('.close-panel').addEventListener('click', () => {
+        holidayPanel.remove();
+    });
 }
 
 function updateCards() {
@@ -822,209 +1095,146 @@ function updateCards() {
     if (!marketSection) return;
 
     marketSection.innerHTML = "";
-    const disclaimer = document.getElementById("disclaimer");
-    disclaimer.style.display = showIndices ? "block" : "none";
 
-    if (showIndices) {
-        let indicesToShow = Object.keys(indices).filter(index => {
-            const indexData = indices[index];
-            const regionMatch = regionFilter === "all" || indexData.region === regionFilter;
-            const searchMatch = index.toLowerCase().includes(searchQuery) || indexData.name.toLowerCase().includes(searchQuery) || indexData.city.toLowerCase().includes(searchQuery);
-            const favoriteMatch = !showFavoritesOnly || favorites.has(index);
-            return regionMatch && searchMatch && favoriteMatch;
-        });
+    let marketsToShow = Object.keys(marketHours).filter(market => {
+        const marketData = marketHours[market];
+        const regionMatch = regionFilter === "all" || marketData.region === regionFilter;
+        const searchMatch = market.toLowerCase().includes(searchQuery) || marketData.city.toLowerCase().includes(searchQuery);
+        const favoriteMatch = !showFavoritesOnly || favorites.has(market);
+        return regionMatch && searchMatch && favoriteMatch;
+    });
 
-        indicesToShow.forEach(index => {
-            const indexData = indices[index];
-            const card = document.createElement("div");
-            card.classList.add("card");
-            if (favorites.has(index)) card.classList.add("favorite");
-            if (isMinimized) card.classList.add("minimized");
-            card.dataset.index = index;
+    marketsToShow.forEach(market => {
+        const marketData = marketHours[market];
+        const timezone = marketData.timezone;
+        const city = marketData.city;
 
-            if (!isMinimized) {
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div class="date">${indexData.city}</div>
-                    </div>
-                    <div class="card-body">
-                        <h3>${indexData.name}</h3>
-                        <div class="index-value">${indexData.value}</div>
-                        <div class="index-change ${indexData.change >= 0 ? 'positive' : 'negative'}">
-                            ${indexData.change === "N/A" ? "N/A" : (indexData.change >= 0 ? '+' : '') + indexData.change + '%'}
-                        </div>
-                    </div>
-                `;
+        const now = new Date();
+        const timeDetails = getTimeDetails(now, timezone);
+        const currentTime = timeDetails.hour * 60 + timeDetails.minute;
+        const fullTime = `${timeDetails.hour.toString().padStart(2, '0')}:${timeDetails.minute.toString().padStart(2, '0')}:${timeDetails.second.toString().padStart(2, '0')}`;
+
+        const dateOptions = { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' };
+        const formatter = new Intl.DateTimeFormat('en-CA', dateOptions);
+        const currentDate = formatter.format(now);
+
+        let isOpen = false;
+        let openTime = null, closeTime = null;
+        const holiday = isMarketClosedOnHoliday(market, currentDate);
+
+        if (holiday) {
+            if (holiday.closeEarly) {
+                openTime = convertToMinutes(marketData.open);
+                closeTime = convertToMinutes(holiday.earlyCloseTime);
+                isOpen = currentTime >= openTime && currentTime < closeTime;
             } else {
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div class="date">${indexData.city}</div>
-                    </div>
-                    <div class="card-body">
-                        <h3>${indexData.name}</h3>
-                        <div class="index-value">${indexData.value}</div>
-                    </div>
-                `;
+                isOpen = false;
             }
-
-            marketSection.appendChild(card);
-
-            card.addEventListener("click", (e) => {
-                if (e.target.closest(".market-status")) return;
-                const item = card.dataset.index;
-                if (item) {
-                    if (favorites.has(item)) {
-                        favorites.delete(item);
-                        card.classList.remove("favorite");
-                    } else {
-                        favorites.add(item);
-                        card.classList.add("favorite");
-                    }
-                    updateCards();
-                }
-            });
-        });
-    } else {
-        let marketsToShow = Object.keys(marketHours).filter(market => {
-            const marketData = marketHours[market];
-            const regionMatch = regionFilter === "all" || marketData.region === regionFilter;
-            const searchMatch = market.toLowerCase().includes(searchQuery) || marketData.city.toLowerCase().includes(searchQuery);
-            const favoriteMatch = !showFavoritesOnly || favorites.has(market);
-            return regionMatch && searchMatch && favoriteMatch;
-        });
-
-        marketsToShow.forEach(market => {
-            const marketData = marketHours[market];
-            const timezone = marketData.timezone;
-            const city = marketData.city;
-
-            const now = new Date();
-            const timeDetails = getTimeDetails(now, timezone);
-            const currentTime = timeDetails.hour * 60 + timeDetails.minute;
-            const fullTime = `${timeDetails.hour.toString().padStart(2, '0')}:${timeDetails.minute.toString().padStart(2, '0')}:${timeDetails.second.toString().padStart(2, '0')}`;
-
-            const dateOptions = { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' };
-            const formatter = new Intl.DateTimeFormat('en-CA', dateOptions);
-            const currentDate = formatter.format(now);
-
-            let isOpen = false;
-            let openTime = null, closeTime = null;
-            const holiday = isMarketClosedOnHoliday(market, currentDate);
-
-            if (holiday) {
-                if (holiday.closeEarly) {
-                    openTime = convertToMinutes(marketData.open);
-                    closeTime = convertToMinutes(holiday.earlyCloseTime);
-                    isOpen = currentTime >= openTime && currentTime < closeTime;
-                } else {
-                    isOpen = false;
-                }
-            } else {
-                if (market === "JPX") {
-                    const openTime1 = convertToMinutes(marketData.open1);
-                    const closeTime1 = convertToMinutes(marketData.close1);
-                    const openTime2 = convertToMinutes(marketData.open2);
-                    const closeTime2 = convertToMinutes(marketData.close2);
-
-                    if (currentTime >= openTime1 && currentTime < closeTime1) {
-                        isOpen = true;
-                        openTime = openTime1;
-                        closeTime = closeTime1;
-                    } else if (currentTime >= openTime2 && currentTime < closeTime2) {
-                        isOpen = true;
-                        openTime = openTime2;
-                        closeTime = closeTime2;
-                    }
-                } else {
-                    openTime = convertToMinutes(marketData.open);
-                    closeTime = convertToMinutes(marketData.close);
-                    isOpen = currentTime >= openTime && currentTime < closeTime;
-                }
-            }
-
-            const openDisplay = openTime !== null ? formatHoursMinutes(openTime) : "N/A";
-            const closeDisplay = closeTime !== null ? formatHoursMinutes(closeTime) : "N/A";
-
-            let hoursDisplay;
+        } else {
             if (market === "JPX") {
-                hoursDisplay = `Session 1: ${marketData.open1} - ${marketData.close1}, Session 2: ${marketData.open2} - ${marketData.close2}`;
-            } else {
-                hoursDisplay = `Open: ${openDisplay} - Close: ${closeDisplay}`;
-            }
+                const openTime1 = convertToMinutes(marketData.open1);
+                const closeTime1 = convertToMinutes(marketData.close1);
+                const openTime2 = convertToMinutes(marketData.open2);
+                const closeTime2 = convertToMinutes(marketData.close2);
 
-            let timeLeft;
-            if (holiday && !holiday.closeEarly) {
-                timeLeft = `Market Closed (${holiday.reason})`;
-            } else {
-                timeLeft = isOpen ? formatTimeLeft(closeTime - currentTime) : formatTimeLeft(getTimeUntilOpen(market, currentTime));
-            }
-
-            const remainingTimePercent = isOpen ? ((closeTime - currentTime) / (closeTime - openTime)) * 100 : 0;
-
-            const card = document.createElement("div");
-            card.classList.add("card");
-            if (favorites.has(market)) card.classList.add("favorite");
-            if (isMinimized) card.classList.add("minimized");
-            card.dataset.market = market;
-
-            if (!isMinimized) {
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div class="date">${city}</div>
-                        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                            ${isOpen ? "OPEN" : "CLOSED"}
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h3>${market} Market</h3>
-                        <p>${hoursDisplay}</p>
-                        <div class="digital-clock">
-                            <span class="visually-hidden">Current Time: ${fullTime}</span>
-                            <span class="time-display">${fullTime}</span>
-                        </div>
-                        <div class="progress">
-                            <span>Time Left: <span class="time-left">${timeLeft}</span></span>
-                            <div class="progress-bar">
-                                <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                card.innerHTML = `
-                    <div class="card-header">
-                        <div class="date">${city}</div>
-                        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                            ${isOpen ? "OPEN" : "CLOSED"}
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="digital-clock">
-                            <span class="visually-hidden">Current Time: ${fullTime}</span>
-                            <span class="time-display">${fullTime}</span>
-                        </div>
-                    </div>
-                `;
-            }
-
-            marketSection.appendChild(card);
-
-            card.addEventListener("click", (e) => {
-                if (e.target.closest(".market-status")) return;
-                const item = card.dataset.market;
-                if (item) {
-                    if (favorites.has(item)) {
-                        favorites.delete(item);
-                        card.classList.remove("favorite");
-                    } else {
-                        favorites.add(item);
-                        card.classList.add("favorite");
-                    }
-                    updateCards();
+                if (currentTime >= openTime1 && currentTime < closeTime1) {
+                    isOpen = true;
+                    openTime = openTime1;
+                    closeTime = closeTime1;
+                } else if (currentTime >= openTime2 && currentTime < closeTime2) {
+                    isOpen = true;
+                    openTime = openTime2;
+                    closeTime = closeTime2;
                 }
-            });
+            } else {
+                openTime = convertToMinutes(marketData.open);
+                closeTime = convertToMinutes(marketData.close);
+                isOpen = currentTime >= openTime && currentTime < closeTime;
+            }
+        }
+
+        const openDisplay = openTime !== null ? formatHoursMinutes(openTime) : "N/A";
+        const closeDisplay = closeTime !== null ? formatHoursMinutes(closeTime) : "N/A";
+
+        let hoursDisplay;
+        if (market === "JPX") {
+            hoursDisplay = `Session 1: ${marketData.open1} - ${marketData.close1}, Session 2: ${marketData.open2} - ${marketData.close2}`;
+        } else {
+            hoursDisplay = `Open: ${openDisplay} - Close: ${closeDisplay}`;
+        }
+
+        let timeLeft;
+        if (holiday && !holiday.closeEarly) {
+            timeLeft = `Market Closed (${holiday.reason})`;
+        } else {
+            timeLeft = isOpen ? formatTimeLeft(closeTime - currentTime) : formatTimeLeft(getTimeUntilOpen(market, currentTime));
+        }
+
+        const remainingTimePercent = isOpen ? ((closeTime - currentTime) / (closeTime - openTime)) * 100 : 0;
+
+        const card = document.createElement("div");
+        card.classList.add("card");
+        if (favorites.has(market)) card.classList.add("favorite");
+        if (isMinimized) card.classList.add("minimized");
+        card.dataset.market = market;
+
+        if (!isMinimized) {
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="date">${city}</div>
+                    <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+                        ${isOpen ? "OPEN" : "CLOSED"}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>${market} Market</h3>
+                    <p>${hoursDisplay}</p>
+                    <div class="digital-clock">
+                        <span class="visually-hidden">Current Time: ${fullTime}</span>
+                        <span class="time-display">${fullTime}</span>
+                    </div>
+                    <div class="progress">
+                        <span>Time Left: <span class="time-left">${timeLeft}</span></span>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="date">${city}</div>
+                    <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+                        ${isOpen ? "OPEN" : "CLOSED"}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="digital-clock">
+                        <span class="visually-hidden">Current Time: ${fullTime}</span>
+                        <span class="time-display">${fullTime}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        marketSection.appendChild(card);
+
+        card.addEventListener("click", (e) => {
+            if (e.target.closest(".market-status")) return;
+            const item = card.dataset.market;
+            if (item) {
+                if (favorites.has(item)) {
+                    favorites.delete(item);
+                    card.classList.remove("favorite");
+                } else {
+                    favorites.add(item);
+                    card.classList.add("favorite");
+                }
+                updateCards();
+            }
         });
-    }
+    });
 }
 
 function setBodyPadding() {
@@ -1038,14 +1248,22 @@ function updateUI() {
         el.value = currentRegion;
     });
     document.querySelectorAll("#toggle-view, .toggle-view").forEach(b => {
-        b.textContent = isMinimized ? "Show Details" : "Minimize";
+        b.textContent = isMinimized ? "Details" : "Minimize";
     });
     document.querySelectorAll("#toggle-favorites, .toggle-favorites").forEach(b => {
         b.textContent = showFavoritesOnly ? "Show All" : "Favorites";
     });
 }
 
+function toggleFilterButtonVisibility(show) {
+    const filterButton = document.getElementById("floating-filter-btn");
+    if (filterButton) {
+        filterButton.style.display = show ? "block" : "none";
+    }
+}
+
 function setupEventListeners() {
+    // Existing event listeners (unchanged)
     document.querySelectorAll("#region-filter, .region-filter").forEach(el => {
         el.addEventListener("change", function() {
             currentRegion = this.value;
@@ -1055,16 +1273,7 @@ function setupEventListeners() {
     });
 
     document.getElementById("toggle-exchanges")?.addEventListener("click", function() {
-        showIndices = false;
         this.classList.add("active");
-        document.getElementById("toggle-indices")?.classList.remove("active");
-        updateCards();
-    });
-
-    document.getElementById("toggle-indices")?.addEventListener("click", function() {
-        showIndices = true;
-        this.classList.add("active");
-        document.getElementById("toggle-exchanges")?.classList.remove("active");
         updateCards();
     });
 
@@ -1084,30 +1293,51 @@ function setupEventListeners() {
         });
     });
 
+    // Updated event listener for opening the calendar modal
     document.getElementById("toggle-calendar")?.addEventListener("click", function() {
         const modal = document.getElementById("calendar-modal");
         const region = document.getElementById("region-filter")?.value || "all";
+        // Set the modal's region filter to the header's current region
+        document.getElementById("calendar-region-filter").value = region;
         generateCalendar(2025, region);
         modal.style.display = "block";
     });
 
+    // New event listener for the modal's region filter
+    document.getElementById("calendar-region-filter")?.addEventListener("change", function() {
+        const year = 2025; // Hardcoded for now, as per current implementation
+        const region = this.value;
+        generateCalendar(year, region);
+    });
+
     document.getElementById("search")?.addEventListener("input", updateCards);
 
+    // Existing mobile filter panel event listeners (unchanged)
     document.getElementById("floating-filter-btn")?.addEventListener("click", function() {
         const panel = document.getElementById("filter-panel");
-        panel.style.display = panel.style.display === "block" ? "none" : "block";
+        if (panel) {
+            panel.style.display = "block";
+            toggleFilterButtonVisibility(false);
+        }
     });
 
     window.addEventListener("click", function(event) {
         const panel = document.getElementById("filter-panel");
         const btn = document.getElementById("floating-filter-btn");
         if (panel && btn && !panel.contains(event.target) && !btn.contains(event.target)) {
-            panel.style.display = "none";
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+                toggleFilterButtonVisibility(true);
+            }
         }
     });
 
     document.getElementById("close-filter-panel")?.addEventListener("click", function() {
-        document.getElementById("filter-panel").style.display = "none";
+        const panel = document.getElementById("filter-panel");
+        if (panel) {
+            panel.style.display = "none";
+            toggleFilterButtonVisibility(true);
+        }
     });
 
     document.getElementsByClassName("close")[0]?.addEventListener("click", function() {
