@@ -448,29 +448,43 @@ section {
 }
 
 /* Media Query for Mobile */
-@media (max-width: 600px) {
+@media (max-width: 700px) {
+  #card {
+        width: 30px;
+  }
     #header {
         justify-content: space-between;
         flex-wrap: nowrap;
-        padding: 10px;
+        padding: 10px 15px;
     }
     #region-options {
         display: none; /* Hide region filter in header */
     }
     #view-toggle {
         display: flex;
+        flex-wrap: wrap;
+        justifiy-content: space-between;
         gap: 10px;
     }
     #view-toggle #toggle-view, #view-toggle #toggle-favorites {
         display: none; /* Hide minimize and favorites toggles in header */
     }
+  
+  #mode-toggle {
+    flex: 1; 
+  }
+  
+  #toggle-calendar {
+    flex: 0 0 auto;
+  }
+    
     #search-box {
         flex-grow: 0;
         width: auto;
         margin: 0;
     }
     #search {
-        width: 150px; /* Adjust width for better fit */
+        width: 160px; /* Adjust width for better fit */
     }
     #floating-filter-btn {
         display: block; /* Show floating button on mobile */
