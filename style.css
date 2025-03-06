@@ -74,16 +74,39 @@ body {
 
 /* Make the modal content position relative */
 .modal-content {
+    background-color: var(--card-bg);
+    margin: 5% auto; /* Keep reduced margin */
+    padding: 15px; /* Increase padding for touch comfort */
+    border: 1px solid #888;
+    width: 92%; /* Slightly wider for better readability */
+    max-width: 600px; /* Unchanged max-width */
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
+    overflow-y: auto; /* Ensure scrolling */
+    max-height: 85vh; /* Allow more visible content */
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 4px;
+}
+.modal-content::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 4px;
+}
+.modal-content::-webkit-scrollbar-track {
+    background: #222127;
 }
 
 /* Position the region filter at the top-right corner */
 #calendar-region-filter {
-    position: absolute;
-    top: 15px; /* Adjusted for mobile */
-    right: 55px; /* Adjusted for mobile */
-    z-index: 1003;
-    width: 150px; /* Fixed width for consistency */
+    position: relative;
+    top: 0;
+    right: 0;
+    margin: 15px 0; /* Increase margin for spacing */
+    width: 100%; /* Full width */
+    padding: 0.8rem 1rem; /* Larger padding for touch */
+    font-size: 1rem; /* Larger text */
 }
 
 
@@ -332,6 +355,15 @@ section {
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    padding: 5px 10px; /* Add padding */
+    background: rgba(255, 255, 255, 0.1); /* Subtle background */
+    border-radius: 50%; /* Circular button */
+    line-height: 1; /* Adjust line height */
+    min-width: 44px; /* WCAG-compliant */
+    min-height: 44px; /* WCAG-compliant */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .close:hover,
@@ -339,6 +371,7 @@ section {
     color: #fff;
     text-decoration: none;
     cursor: pointer;
+    background: var(--open); /* Highlight on hover */
 }
 
 #calendar {
@@ -385,6 +418,11 @@ section {
     font-weight: 600;
     transition: background 0.3s ease;
     cursor: pointer;
+    transition: background 0.3s ease, transform 0.1s ease; /* Add transform for feedback */
+}
+
+.calendar-day:active {
+    transform: scale(0.95); /* Slight shrink on tap */
 }
 
 .calendar-day:hover {
@@ -425,6 +463,7 @@ section {
     color: #e0e0e0;
     z-index: 1002;
     border: 1px solid #333;
+    max-width: 500px;
 }
 
 .holiday-panel h3 {
@@ -578,13 +617,27 @@ section {
         display: block; /* Show floating button on mobile */
     }
   .calendar-grid {
-        grid-template-columns: repeat(3, 1fr); /* 3 columns on small screens */
+        grid-template-columns: repeat(7, 1fr); /* 7 days per row */
+        gap: 5px;
+        padding: 10px;
+    
     }
     .calendar-day {
         width: 40px;
         height: 40px;
         font-size: 0.9rem;
+        padding: 5px; /* Add padding for touch */
+        min-width: 44px; /* WCAG-compliant touch target */
+        min-height: 44px; /* WCAG-compliant touch target */
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
+  
+  font-size: 0.8rem; /* Slightly smaller for headers */
+        padding: 2px;
+    }
+  
     .calendar-month h2 {
         font-size: 1.2rem; /* Smaller headers on mobile */
     }
@@ -592,6 +645,8 @@ section {
         position: relative; /* Move to flow with content on mobile */
         top: 0;
         right: 0;
+      margin-top: 10px; /* Adjust spacing after header */
+    }
         margin: 10px 0; /* Add margin for spacing */
         width: 100%; /* Full width on mobile */
     }
@@ -600,11 +655,25 @@ section {
         padding: 10px; /* Further reduced padding */
     }
     .holiday-panel {
-        top: 50%; /* Center vertically */
-        width: 90%; /* Full width on mobile */
-        padding: 15px; /* Reduced padding */
-        overflow-y: auto; /* Allow scrolling if content is long */
-        max-height: 70vh; /* Limit height to avoid covering screen */
+        top: 50%;
+        width: 90%; /* Full width with slight margin */
+        padding: 15px;
+        overflow-y: auto;
+        max-height: 70vh;
+        font-size: 0.9rem; /* Smaller text for fit */
+    }
+
+ .holiday-panel h3 {
+        font-size: 1.2rem; /* Adjusted header size */
+    }
+
+    .holiday-panel li {
+        padding: 8px 0; /* Increase padding for readability */
+    }
+
+    .holiday-panel .close-panel {
+        padding: 10px 20px;
+        font-size: 0.9rem;
     }
   
 }
