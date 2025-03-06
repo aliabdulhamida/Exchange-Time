@@ -52,27 +52,11 @@ const marketHours = {
     BVBA: { open: "11:00", close: "17:00", timezone: "America/Argentina/Buenos_Aires", region: "South America", city: "Buenos Aires" }
 };
 
+// Indices object for SPY, QQQ, and DIA
 const indices = {
-    SP500: { name: "S&P 500", region: "North America", city: "New York", symbol: "^GSPC" },
-    DJIA: { name: "Dow Jones Industrial Average", region: "North America", city: "New York", symbol: "^DJI" },
-    NASDAQ100: { name: "Nasdaq 100", region: "North America", city: "New York", symbol: "^NDX" },
-    TSXCOMP: { name: "S&P/TSX Composite", region: "North America", city: "Toronto", symbol: "^GSPTSE" },
-    FTSE100: { name: "FTSE 100", region: "Europe", city: "London", symbol: "^FTSE" },
-    DAX: { name: "DAX", region: "Europe", city: "Frankfurt", symbol: "^GDAXI" },
-    CAC40: { name: "CAC 40", region: "Europe", city: "Paris", symbol: "^FCHI" },
-    IBEX35: { name: "IBEX 35", region: "Europe", city: "Madrid", symbol: "^IBEX" },
-    FTSEMIB: { name: "FTSE MIB", region: "Europe", city: "Milan", symbol: "FTSEMIB.MI" },
-    NIKKEI225: { name: "Nikkei 225", region: "Asia", city: "Tokyo", symbol: "^N225" },
-    HSI: { name: "Hang Seng Index", region: "Asia", city: "Hong Kong", symbol: "^HSI" },
-    SENSEX: { name: "BSE Sensex", region: "Asia", city: "Mumbai", symbol: "^BSESN" },
-    NIFTY50: { name: "NIFTY 50", region: "Asia", city: "Mumbai", symbol: "^NSEI" },
-    KOSPI: { name: "KOSPI", region: "Asia", city: "Seoul", symbol: "^KS11" },
-    SSECOMP: { name: "SSE Composite", region: "Asia", city: "Shanghai", symbol: "000001.SS" },
-    ASX200: { name: "S&P/ASX 200", region: "Australia", city: "Sydney", symbol: "^AXJO" },
-    NZX50: { name: "NZX 50", region: "Australia", city: "Wellington", symbol: "^NZ50" },
-    JTOPI: { name: "Johannesburg Top 40", region: "Africa", city: "Johannesburg", symbol: "JTOPI.JO" },
-    IBOV: { name: "Ibovespa", region: "South America", city: "São Paulo", symbol: "^BVSP" },
-    MERVAL: { name: "Merval", region: "South America", city: "Buenos Aires", symbol: "^MERV" }
+    SPY: { name: "SPDR S&P 500 ETF", region: "North America", city: "New York", symbol: "SPY" },
+    QQQ: { name: "Invesco QQQ Trust", region: "North America", city: "New York", symbol: "QQQ" },
+    DIA: { name: "SPDR Dow Jones Industrial Average ETF", region: "North America", city: "New York", symbol: "DIA" },
 };
 
 // Initialize real-time value and change properties
@@ -86,36 +70,49 @@ let showFavoritesOnly = false;
 let favorites = new Set();
 let showIndices = false;
 
-// Finnhub WebSocket setup
-const finnhubApiKey = "cv4do51r01qn2ga9jptgcv4do51r01qn2ga9jpu0"; // Replace with your Finnhub API key
-const socket = new WebSocket(`wss://ws.finnhub.io?token=${finnhubApiKey}`);
+// Polygon.io WebSocket setup
+const polygonApiKey = "O1l93TNLLysETJkr1NwyMuPZS5ZpoX6p"; // Replace with your Polygon.io API key
+const socket = new WebSocket("wss://socket.polygon.io/stocks");
 
 socket.onopen = () => {
-    console.log("WebSocket connected");
-    Object.keys(indices).forEach(index => {
-        console.log(`Subscribing to ${indices[index].symbol}`);
-        socket.send(JSON.stringify({ type: "subscribe", symbol: indices[index].symbol }));
-    });
+    console.log("WebSocket connected to Polygon.io");
+    // Authenticate with Polygon.io
+    socket.send(JSON.stringify({ action: "auth", params: polygonApiKey }));
 };
 
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    console.log("WebSocket message received:", data); // Debug incoming data
-    if (data.type === "trade" && data.data) {
-        data.data.forEach(trade => {
-            const indexKey = Object.keys(indices).find(key => indices[key].symbol === trade.s);
-            if (indexKey) {
-                const lastValue = indices[indexKey].value === "N/A" ? trade.p : parseFloat(indices[indexKey].value);
-                indices[indexKey].value = trade.p.toLocaleString();
-                indices[indexKey].change = ((trade.p - lastValue) / lastValue * 100).toFixed(2);
-                console.log(`${indexKey}: Updated value = ${indices[indexKey].value}, change = ${indices[indexKey].change}%`);
-            } else {
-                console.log(`No matching index found for symbol: ${trade.s}`);
+    console.log("WebSocket message received:", data);
+
+    // Handle authentication response
+    if (data && data[0] && data[0].status === "auth_success") {
+        console.log("Authentication successful");
+        Object.keys(indices).forEach(index => {
+            const symbol = indices[index].symbol;
+            console.log(`Subscribing to T.${symbol}`);
+            socket.send(JSON.stringify({ action: "subscribe", params: `T.${symbol}` }));
+        });
+        return; // Exit after subscribing
+    }
+
+    // Handle trade messages
+    if (data && Array.isArray(data)) {
+        data.forEach(message => {
+            if (message.ev === "T") { // Trade event
+                const symbol = message.sym;
+                const price = message.p;
+                const indexKey = Object.keys(indices).find(key => indices[key].symbol === symbol);
+                if (indexKey) {
+                    const lastValue = indices[indexKey].value === "N/A" ? price : parseFloat(indices[indexKey].value.replace(/,/g, ""));
+                    indices[indexKey].value = price.toLocaleString();
+                    indices[indexKey].change = ((price - lastValue) / lastValue * 100).toFixed(2);
+                    console.log(`${indexKey}: Updated value = ${indices[indexKey].value}, change = ${indices[indexKey].change}%`);
+                } else {
+                    console.log(`No matching index found for symbol: ${symbol}`);
+                }
             }
         });
         updateCards();
-    } else {
-        console.log("Non-trade message or no data:", data);
     }
 };
 
