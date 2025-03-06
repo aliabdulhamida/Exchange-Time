@@ -29,6 +29,7 @@
             </div>
             <button id="toggle-view">Minimize</button>
             <button id="toggle-favorites">Favorites</button>
+            <button id="toggle-calendar">Calendar</button>
         </div>
         <div id="search-box">
             <input type="text" id="search" placeholder="Search Market, Index, or City..." />
@@ -38,6 +39,30 @@
     <section id="market-section">
         <!-- Market or Index cards will be dynamically inserted here -->
     </section>
+    <div id="calendar-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h2 style="color:white;">Market Holidays</h2>
+            <div id="calendar"></div>
+        </div>
+    </div>
+    <!-- Floating Filter Button (visible on mobile) -->
+    <div id="floating-filter-btn">Filters</div>
+    <!-- Filter Panel (hidden by default, shown on mobile when button is clicked) -->
+    <div id="filter-panel">
+        <button id="close-filter-panel">Close</button>
+        <select class="region-filter">
+            <option value="all">All Regions</option>
+            <option value="North America">North America</option>
+            <option value="Europe">Europe</option>
+            <option value="Asia">Asia</option>
+            <option value="Australia">Australia</option>
+            <option value="Africa">Africa</option>
+            <option value="South America">South America</option>
+        </select>
+        <button class="toggle-view">Minimize</button>
+        <button class="toggle-favorites">Favorites</button>
+    </div>
     <script src="./script.js"></script>
 </body>
 </html>
