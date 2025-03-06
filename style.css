@@ -13,6 +13,7 @@
     --favorite-border: rgba(255, 238, 46, 0.37);
     --positive: #00cc00;
     --negative: #ff3333;
+    --modal-bg: rgba(0, 0, 0, 0.8);
 }
 
 * {
@@ -129,7 +130,7 @@ body {
     background: var(--button-hover);
 }
 
-#toggle-view, #toggle-favorites {
+#toggle-view, #toggle-favorites, #toggle-calendar {
     background: var(--button-bg);
     color: white;
     padding: 0.8rem 1.5rem;
@@ -140,11 +141,11 @@ body {
     font-weight: 600;
 }
 
-#toggle-view:hover, #toggle-favorites:hover {
+#toggle-view:hover, #toggle-favorites:hover, #toggle-calendar:hover {
     background: var(--open);
 }
 
-#toggle-view:active, #toggle-favorites:active {
+#toggle-view:active, #toggle-favorites:active, #toggle-calendar:active {
     transform: scale(0.98);
 }
 
@@ -169,7 +170,7 @@ section {
 }
 
 .card.favorite {
-    -webkit-box-shadow:0px 0px 3px 1px rgba(241,255,46,0.26);
+    -webkit-box-shadow: 0px 0px 3px 1px rgba(241,255,46,0.26);
     -moz-box-shadow: 0px 0px 3px 1px rgba(241,255,46,0.26);
     box-shadow: 0px 0px 3px 1px rgba(241,255,46,0.26);
 }
@@ -298,65 +299,190 @@ section {
     margin: 0 auto 20px auto;
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: var(--modal-bg);
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#calendar {
+    margin-top: 10px;
+}
+
+.calendar-month {
+    margin-bottom: 20px;
+}
+
+.calendar-month h3 {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.calendar-day {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    margin: 2px;
+    background: #222127;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.calendar-day.holiday {
+    background: var(--closed);
+    color: #fff;
+}
+
+/* Floating Filter Button */
+#floating-filter-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--open);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    z-index: 1002;
+    display: none; /* Hidden by default, shown on mobile */
+}
+
+/* Filter Panel */
+#filter-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--card-bg);
+    padding: 20px;
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1001;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Close Button in Filter Panel */
+#close-filter-panel {
+    background: none;
+    color: #fff;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+/* Style filter panel elements to match header */
+#filter-panel .region-filter {
+    background: none;
+    color: #fff;
+    padding: 0.7rem 1rem;
+    border: 0.5px solid var(--input-border);
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="%23fff"><polygon points="0,0 10,0 5,5"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 2rem;
+}
+
+#filter-panel .region-filter:focus {
+    outline: none;
+    border-color: var(--open);
+    box-shadow: 0 0 5px var(--open);
+}
+
+#filter-panel .toggle-view,
+#filter-panel .toggle-favorites {
+    background: var(--button-bg);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+#filter-panel .toggle-view:hover,
+#filter-panel .toggle-favorites:hover {
+    background: var(--open);
+}
+
+/* Media Query for Mobile */
 @media (max-width: 600px) {
     #header {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+        justify-content: space-between;
+        flex-wrap: nowrap;
         padding: 10px;
     }
-
+    #region-options {
+        display: none; /* Hide region filter in header */
+    }
     #view-toggle {
         display: flex;
-        flex-direction: column;
         gap: 10px;
     }
-
-    #mode-toggle {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background: none;
-        border-radius: 0;
+    #view-toggle #toggle-view, #view-toggle #toggle-favorites {
+        display: none; /* Hide minimize and favorites toggles in header */
     }
-
-    #region-filter, .mode-btn, #toggle-view, #toggle-favorites {
-        width: 100%;
-        padding: 0.6rem;
-        font-size: 0.9rem;
+    #search-box {
+        flex-grow: 0;
+        width: auto;
+        margin: 0;
     }
-
-    .mode-btn {
-        background: var(--button-bg);
-        border-radius: 30px;
-    }
-
-    .mode-btn.active {
-        background: var(--open);
-    }
-
     #search {
-        padding: 0.75rem;
-        font-size: 1rem;
+        width: 150px; /* Adjust width for better fit */
     }
-
-    .card {
-        width: 90%;
-        max-width: 200px;
-        margin: 0 auto;
-        padding: 1rem;
+    #floating-filter-btn {
+        display: block; /* Show floating button on mobile */
     }
+}
 
-    .index-value {
-        font-size: 1.4rem;
+/* Media Query for Desktop */
+@media (min-width: 601px) {
+    #floating-filter-btn {
+        display: none; /* Hide floating button on desktop */
     }
-
-    .index-change {
-        font-size: 1rem;
-    }
-
-    #disclaimer {
-        padding: 8px;
-        font-size: 0.9rem;
+    #filter-panel {
+        display: none; /* Ensure filter panel is hidden on desktop */
     }
 }
