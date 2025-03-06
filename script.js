@@ -303,10 +303,29 @@ const marketHours = {
         "2025-05-01": { reason: "Labour Day", closeEarly: false },
         "2025-12-25": { reason: "Christmas Day", closeEarly: false },
         "2025-12-26": { reason: "Christmas Holiday", closeEarly: false }
-
-
         }
     },
+  
+  LSE: {
+    open: "08:00",
+    close: "16:30",
+    timezone: "Europe/London",
+    region: "Europe",
+    city: "London",
+    holidays: {
+        // 2025 Holidays
+        "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+        "2025-04-18": { reason: "Good Friday", closeEarly: false },
+        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+        "2025-05-05": { reason: "Early May Bank Holiday", closeEarly: false },
+        "2025-05-26": { reason: "Spring Bank Holiday", closeEarly: false },
+        "2025-08-25": { reason: "Summer Bank Holiday", closeEarly: false },
+        "2025-12-24": { reason: "Christmas Eve", closeEarly: true, earlyCloseTime: "12:30" },
+        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+        "2025-12-26": { reason: "Boxing Day", closeEarly: false },
+        "2025-12-31": { reason: "New Year's Eve", closeEarly: true, earlyCloseTime: "12:30" },
+    }
+},
     OMX: {
         open: "09:00",
         close: "17:30",
