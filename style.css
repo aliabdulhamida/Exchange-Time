@@ -503,23 +503,16 @@ section {
 }
 
 #floating-filter-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: var(--open);
-  color: white;
-  padding: 10px 20px 10px 40px; /* Extra padding-left for icon */
-  border-radius: 30px;
-  cursor: pointer;
-  z-index: 1002;
-  display: none; /* Hidden by default, shown on mobile */
-  font-family: 'Oswald', sans-serif;
-  font-weight: 600;
-  text-transform: uppercase;
-  background-image: url('./Filter-icon.svg'); /* Adjust path if needed */
-  background-size: 20px 20px; /* Size of the icon */
-  background-repeat: no-repeat;
-  background-position: 10px center; /* Icon on the left */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--open);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    z-index: 1002;
+    display: none; 
 }
 
 #filter-panel {
