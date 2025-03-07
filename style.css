@@ -42,10 +42,10 @@ h3 {
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Nunito', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Oswald', sans-serif; /* Changed from Nunito */
 }
 
 body {
@@ -120,12 +120,6 @@ body {
 }
 
 #region-filter:focus, #calendar-region-filter:focus {
-    outline: none;
-    border-color: var(--open);
-    box-shadow: 0 0 5px var(--open);
-}
-
-#region-filter:focus {
     outline: none;
     border-color: var(--open);
     box-shadow: 0 0 5px var(--open);
@@ -509,16 +503,23 @@ section {
 }
 
 #floating-filter-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--open);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 30px;
-    cursor: pointer;
-    z-index: 1002;
-    display: none; 
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--open);
+  color: white;
+  padding: 10px 20px 10px 40px; /* Extra padding-left for icon */
+  border-radius: 30px;
+  cursor: pointer;
+  z-index: 1002;
+  display: none; /* Hidden by default, shown on mobile */
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  background-image: url('./Filter-icon.svg'); /* Adjust path if needed */
+  background-size: 20px 20px; /* Size of the icon */
+  background-repeat: no-repeat;
+  background-position: 10px center; /* Icon on the left */
 }
 
 #filter-panel {
@@ -663,10 +664,6 @@ section {
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-  
-  font-size: 0.8rem; 
-        padding: 2px;
     }
   
     .calendar-month h2 {
