@@ -90,7 +90,7 @@ body {
     font-size: 1rem;
     cursor: pointer;
     appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="%23fff"><polygon points="0,0 10,0 5,5"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" fill="%23fff"><polygon points="0,0 10,0 5,5"/></svg>');
     background-repeat: no-repeat;
     background-position: right 10px center;
     padding-right: 2rem;
