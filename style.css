@@ -736,6 +736,10 @@ section {
     background-color: none;
 }
 
+@media (max-width: 400px) {
+    .card {
+        width: 80%; 
+    }
 
 @media (min-width: 901px) {
     .calendar-grid {
