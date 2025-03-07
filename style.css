@@ -593,6 +593,10 @@ section {
 }
 
 @media (max-width: 600px) {
+    .card {
+        width: calc(50% - 0.75rem); /* 50% of container width minus half the gap */
+    }
+  
     #header {
         display: flex;
         flex-direction: row;
