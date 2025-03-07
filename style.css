@@ -1,19 +1,44 @@
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap');
 
 :root {
-    --primary-bg: #0F0F0F;
-    --card-bg: #151419;
-    --text: #e0e0e0;
-    --open: #01c3a8;
-    --closed: #a63d2a;
-    --input-bg: #333;
-    --button-bg: #222127;
-    --button-hover: #444;
-    --input-border: #555;
-    --favorite-border: rgba(255, 238, 46, 0.37);
-    --positive: #00cc00;
-    --negative: #ff3333;
-    --modal-bg: rgba(0, 0, 0, 0.3);
+/* Core background and text colors */
+--primary-bg: #08090b;        /* Almost pure black with a faint cool tint */
+--card-bg: #121316;           /* Deepest black-gray for cards */
+--text: #b8bec6;             /* Slightly muted light gray for readability */
+
+/* Status/accent colors */
+--open: #007a6e;             /* Very dark teal for active/open states */
+--closed: #b33936;           /* Darkened red for closed states */
+
+/* Interactive elements */
+--input-bg: #1e2024;          /* Near-black for input fields */
+--button-bg: #0f1013;         /* Pure black-adjacent for buttons */
+--button-hover: #2c2e34;      /* Very dark gray for hover states */
+--input-border: #3c3f47;      /* Subtle black-gray border */
+
+/* Special elements */
+--favorite-border: rgba(184, 147, 0, 0.3);  /* Deep, muted gold */
+--positive: #2e7031;          /* Very dark green for success */
+--negative: #a62828;          /* Deep black-red for errors/warnings */
+--modal-bg: rgba(5, 6, 8, 0.9);  /* Near-pure black overlay with max opacity */
+}
+
+h1, h2, h3 {
+  font-weight: 600; /* Oswald’s semi-bold for strong headers */
+  text-transform: uppercase; /* Oswald shines with uppercase */
+  letter-spacing: 1px; /* Adds a modern touch */
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
 }
 
 * {
@@ -170,6 +195,7 @@ section {
     width: 320px;
     box-shadow: 1px 12px 25px rgba(0, 0, 0, 0.7);
     cursor: pointer;
+    font-weight: 400;
 }
 
 .card.favorite {
