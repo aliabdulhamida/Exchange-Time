@@ -87,17 +87,6 @@ body {
     max-height: 85vh; /* Allow more visible content */
 }
 
-.modal-content::-webkit-scrollbar {
-    width: 4px;
-}
-.modal-content::-webkit-scrollbar-thumb {
-    background-color: white;
-    border-radius: 4px;
-}
-.modal-content::-webkit-scrollbar-track {
-    background: #222127;
-}
-
 /* Position the region filter at the top-right corner */
 #calendar-region-filter {
     position: relative;
