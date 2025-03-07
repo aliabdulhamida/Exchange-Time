@@ -532,12 +532,20 @@ section {
 
 /* Close Button in Filter Panel */
 #close-filter-panel {
-    background: none;
-    color: #fff;
-    border: none;
-    font-size: 1rem;
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
     cursor: pointer;
-    align-self: flex-end;
+    padding: 5px 10px; /* Add padding */
+    background: #222127;; /* Subtle background */
+    border-radius: 100%; /* Circular button */
+    line-height: 1; /* Adjust line height */
+    min-width: 44px; /* WCAG-compliant */
+    min-height: 44px; /* WCAG-compliant */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Style filter panel elements to match header */
