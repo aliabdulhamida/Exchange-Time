@@ -1292,11 +1292,6 @@ function setupEventListeners() {
         });
     });
 
-    document.getElementById("toggle-exchanges")?.addEventListener("click", function() {
-        this.classList.add("active");
-        updateCards();
-    });
-
     document.querySelectorAll("#toggle-view, .toggle-view").forEach(btn => {
         btn.addEventListener("click", function() {
             isMinimized = !isMinimized;
