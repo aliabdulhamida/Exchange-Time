@@ -645,6 +645,19 @@ section {
     .card {
         width: calc(50% - 1.2rem); /* 50% of container width minus half the gap */
     }
+
+  #footer {
+        padding: 15px 0;
+    }
+
+    .footer-content {
+        gap: 8px;
+    }
+
+    .footer-content p,
+    .footer-link {
+        font-size: 0.8rem;
+    }
   
     #header {
         display: flex;
