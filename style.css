@@ -327,13 +327,13 @@ section {
 .close {
     color: #aaa;
     float: right;
-    font-size: 28px;
+    font-size: 25px;
     font-weight: bold;
     cursor: pointer;
-    padding: 5px 10px; /* Add padding */
+    padding: 0px; /* Add padding */
     background: rgba(255, 255, 255, 0.1); /* Subtle background */
     border-radius: 50%; /* Circular button */
-    line-height: 1; /* Adjust line height */
+    line-height: 0; /* Adjust line height */
     min-width: 44px;
     min-height: 44px; 
     display: flex;
@@ -542,7 +542,8 @@ section {
     font-weight: bold;
     cursor: pointer;
     padding: 5px 10px; 
-    background: #222127;; 
+    background: #222127;
+    border: none;
     border-radius: 100%; 
     line-height: 1; 
     min-width: 44px; 
@@ -550,6 +551,13 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+#close-filter-panel:hover {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    background: var(--open);
 }
 
 #filter-panel .region-filter {
