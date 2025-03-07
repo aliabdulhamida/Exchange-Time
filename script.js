@@ -1085,27 +1085,39 @@ function showHolidayPanel(dateStr, holidays) {
     const modal = document.getElementById('calendar-modal');
     const modalContent = modal.querySelector('.modal-content');
 
-    // Remove any existing holiday panel to prevent multiple panels
-    const existingPanel = modalContent.querySelector('.holiday-panel');
+    // Show the modal if not already visible
+    if (modal.style.display !== 'block') {
+        modal.style.display = 'block';
+    }
+
+    // Remove any existing holiday panel
+    const existingPanel = document.querySelector('.holiday-panel');
     if (existingPanel) existingPanel.remove();
 
     // Create the new holiday panel
     const holidayPanel = document.createElement('div');
     holidayPanel.className = 'holiday-panel';
+    holidayPanel.style.position = 'fixed';
+    holidayPanel.style.top = '50%';
+    holidayPanel.style.left = '50%';
+    holidayPanel.style.transform = 'translate(-50%, -50%)';
+    holidayPanel.style.zIndex = '1002';
     holidayPanel.innerHTML = `
         <h3>Holidays on ${new Date(dateStr).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h3>
         <ul>${holidays.map(holiday => `<li>${holiday}</li>`).join('')}</ul>
         <button class="close-panel">Close</button>
     `;
 
-    // Append the panel to modal-content, not directly to the modal
-    modalContent.appendChild(holidayPanel);
+    // Append to body
+    document.body.appendChild(holidayPanel);
 
-    // Add event listener to close only the panel, not the modal
-    document.querySelector('.close-panel').addEventListener('click', () => {
+    // Close button event listener
+    holidayPanel.querySelector('.close-panel').addEventListener('click', () => {
         holidayPanel.remove();
+        // Note: Modal remains open unless closed separately
     });
 }
+
 
 function updateCards() {
     const regionFilter = document.getElementById("region-filter")?.value || "all";
