@@ -96,6 +96,52 @@ body {
     padding-right: 2rem;
 }
 
+#footer {
+    background: var(--primary-bg); /* Matches body background */
+    color: var(--text); /* Matches text color */
+    padding: 20px 0;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    border-top: 1px solid var(--input-border); /* Subtle separation */
+    margin-top: 40px; /* Space above footer */
+  padding-bottom: 8px;
+
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-content p {
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin: 0;
+}
+
+.footer-link {
+    color: var(--open); /* Matches interactive elements */
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #fff; /* Brightens on hover */
+    text-decoration: underline;
+}
+
+.footer-link:active {
+    color: var(--closed); /* Darkens slightly when clicked */
+}
+
 .modal-content {
     margin: 0% auto; 
     padding: 15px; 
