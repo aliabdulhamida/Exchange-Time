@@ -1219,7 +1219,7 @@ function updateCards() {
                     </div>
                 </div>
                 <div class="card-body">
-                    <h3>${market} Market</h3>
+                    <h3>${market}</h3>
                     <p>${hoursDisplay}</p>
                     <div class="digital-clock">
                         <span class="visually-hidden">Current Time: ${fullTime}</span>
