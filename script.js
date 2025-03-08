@@ -1013,7 +1013,6 @@ function generateCalendar(year, region) {
     const calendarDiv = document.getElementById('calendar');
     calendarDiv.innerHTML = '';
 
-    // Define weekday names starting with Sunday to match Date.getDay()
     const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     for (let month = 0; month < 12; month++) {
@@ -1021,7 +1020,6 @@ function generateCalendar(year, region) {
         monthDiv.className = 'calendar-month';
         monthDiv.innerHTML = `<h2>${new Date(year, month, 1).toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>`;
 
-        // Create container for the calendar grid
         const gridDiv = document.createElement('div');
         gridDiv.className = 'calendar-grid';
 
@@ -1036,27 +1034,33 @@ function generateCalendar(year, region) {
         });
         gridDiv.appendChild(weekdayRow);
 
-        // Calculate days and alignment
+        // Calculate the first day and number of days in the month
         const firstDay = new Date(year, month, 1).getDay(); // 0 = Sunday
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        // Create the days row
-        const daysRow = document.createElement('div');
-        daysRow.className = 'calendar-row';
+        let currentDay = 1;
+        let weekRow = document.createElement('div');
+        weekRow.className = 'calendar-row';
 
         // Add empty cells for days before the first of the month
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement('div');
             emptyCell.className = 'calendar-day empty';
-            daysRow.appendChild(emptyCell);
+            weekRow.appendChild(emptyCell);
         }
 
-        // Add days of the month
-        for (let day = 1; day <= daysInMonth; day++) {
-            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        // Add days of the month, creating new rows for each week
+        while (currentDay <= daysInMonth) {
+            if (weekRow.children.length === 7) {
+                gridDiv.appendChild(weekRow);
+                weekRow = document.createElement('div');
+                weekRow.className = 'calendar-row';
+            }
+
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(currentDay).padStart(2, '0')}`;
             const dayCell = document.createElement('div');
             dayCell.className = 'calendar-day';
-            dayCell.textContent = day;
+            dayCell.textContent = currentDay;
 
             let marketsClosed = [];
             for (let market in marketHours) {
@@ -1074,17 +1078,18 @@ function generateCalendar(year, region) {
                 dayCell.addEventListener('click', () => showHolidayPanel(dateStr, marketsClosed));
             }
 
-            daysRow.appendChild(dayCell);
+            weekRow.appendChild(dayCell);
+            currentDay++;
         }
 
-        // Ensure the row has at least 7 cells per week, adding empty cells if needed
-        while (daysRow.children.length % 7 !== 0) {
+        // Add empty cells to complete the last week
+        while (weekRow.children.length < 7) {
             const emptyCell = document.createElement('div');
             emptyCell.className = 'calendar-day empty';
-            daysRow.appendChild(emptyCell);
+            weekRow.appendChild(emptyCell);
         }
+        gridDiv.appendChild(weekRow);
 
-        gridDiv.appendChild(daysRow);
         monthDiv.appendChild(gridDiv);
         calendarDiv.appendChild(monthDiv);
     }
