@@ -647,7 +647,7 @@ section {
     width: 90%;
     margin: 100px auto 40px; /* Space for fixed header and footer */
     padding: 20px;
-    background: var(--card-bg);
+    background: white;
     border-radius: 12px;
     box-shadow: 1px 12px 25px rgba(0, 0, 0, 0.7);
 }
