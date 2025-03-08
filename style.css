@@ -498,7 +498,7 @@ section {
     padding: 10px;
     background: none;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    min-width: 315px; /* Ensures grid is wide enough: 7 * 45px */
+    min-width: 250px; /* Ensures grid is wide enough: 7 * 45px */
 }
 
 .calendar-row {
