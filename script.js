@@ -1160,58 +1160,84 @@ function updateCards() {
         const formatter = new Intl.DateTimeFormat('en-CA', dateOptions);
         const currentDate = formatter.format(now);
 
+        // Get the current weekday in the market's timezone
+        const weekday = now.toLocaleString('en-US', { timeZone: timezone, weekday: 'long' });
+
         let isOpen = false;
         let openTime = null, closeTime = null;
-        const holiday = isMarketClosedOnHoliday(market, currentDate);
 
-        if (holiday) {
-            if (holiday.closeEarly) {
-                openTime = convertToMinutes(marketData.open);
-                closeTime = convertToMinutes(holiday.earlyCloseTime);
-                isOpen = currentTime >= openTime && currentTime < closeTime;
-            } else {
-                isOpen = false;
-            }
+        // Always use the default open and close times
+        if (market === "JPX") {
+            openTime = convertToMinutes(marketData.open1); // Use first session open for display
+            closeTime = convertToMinutes(marketData.close2); // Use second session close for display
         } else {
-            if (market === "JPX") {
-                const openTime1 = convertToMinutes(marketData.open1);
-                const closeTime1 = convertToMinutes(marketData.close1);
-                const openTime2 = convertToMinutes(marketData.open2);
-                const closeTime2 = convertToMinutes(marketData.close2);
+            openTime = convertToMinutes(marketData.open);
+            closeTime = convertToMinutes(marketData.close);
+        }
 
-                if (currentTime >= openTime1 && currentTime < closeTime1) {
-                    isOpen = true;
-                    openTime = openTime1;
-                    closeTime = closeTime1;
-                } else if (currentTime >= openTime2 && currentTime < closeTime2) {
-                    isOpen = true;
-                    openTime = openTime2;
-                    closeTime = closeTime2;
-                }
+        // Check if it's a weekend or holiday
+        let nextOpenDate = new Date(now);
+        let nextOpenTime = openTime;
+        let daysToAdd = 0;
+
+        // Advance to the next trading day
+        do {
+            nextOpenDate.setDate(nextOpenDate.getDate() + (daysToAdd === 0 ? 1 : 1)); // Start with next day, then increment
+            const nextDateStr = nextOpenDate.toLocaleString('en-CA', { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' });
+            const nextWeekday = nextOpenDate.toLocaleString('en-US', { timeZone: timezone, weekday: 'long' });
+            const isHoliday = isMarketClosedOnHoliday(market, nextDateStr);
+
+            if (nextWeekday === 'Saturday' || nextWeekday === 'Sunday' || (isHoliday && !isHoliday.closeEarly)) {
+                daysToAdd++;
             } else {
-                openTime = convertToMinutes(marketData.open);
-                closeTime = convertToMinutes(marketData.close);
-                isOpen = currentTime >= openTime && currentTime < closeTime;
+                break; // Found the next trading day
+            }
+        } while (daysToAdd < 7); // Limit to a week to avoid infinite loops
+
+        // Calculate time until next open
+        const currentTotalMinutes = currentTime + (now.getHours() * 60 + now.getMinutes()); // Adjust for current day
+        let timeUntilNextOpen = nextOpenTime - currentTime;
+        if (daysToAdd > 0) {
+            timeUntilNextOpen += daysToAdd * 24 * 60; // Add minutes for each day
+        }
+        if (timeUntilNextOpen < 0) {
+            timeUntilNextOpen += 24 * 60; // Handle cases where next open is on the same day but after current time
+        }
+
+        // Set isOpen based on current day (only if it's a trading day and within hours)
+        if (weekday !== 'Saturday' && weekday !== 'Sunday') {
+            const holiday = isMarketClosedOnHoliday(market, currentDate);
+            if (!holiday || (holiday && holiday.closeEarly && currentTime >= openTime && currentTime < convertToMinutes(holiday.earlyCloseTime))) {
+                if (market === "JPX") {
+                    const openTime1 = convertToMinutes(marketData.open1);
+                    const closeTime1 = convertToMinutes(marketData.close1);
+                    const openTime2 = convertToMinutes(marketData.open2);
+                    const closeTime2 = convertToMinutes(marketData.close2);
+                    isOpen = (currentTime >= openTime1 && currentTime < closeTime1) || (currentTime >= openTime2 && currentTime < closeTime2);
+                } else {
+                    isOpen = currentTime >= openTime && currentTime < closeTime;
+                }
             }
         }
 
-           marketStatusHistory[market] = isOpen;
+        // Check if the market has just opened to play the sound
+        const previousStatus = marketStatusHistory[market];
+        if (previousStatus === false && isOpen === true) {
+            playMarketOpenSound();
+        }
+        marketStatusHistory[market] = isOpen;
 
-        const openDisplay = openTime !== null ? formatHoursMinutes(openTime) : "N/A";
-        const closeDisplay = closeTime !== null ? formatHoursMinutes(closeTime) : "N/A";
+        // Set the timeLeft display
+        let timeLeft = isOpen ? formatTimeLeft(closeTime - currentTime) : formatTimeLeft(timeUntilNextOpen);
+
+        const openDisplay = formatHoursMinutes(openTime);
+        const closeDisplay = formatHoursMinutes(closeTime);
 
         let hoursDisplay;
         if (market === "JPX") {
             hoursDisplay = `Session 1: ${marketData.open1} - ${marketData.close1}, Session 2: ${marketData.open2} - ${marketData.close2}`;
         } else {
             hoursDisplay = `Open: ${openDisplay} - Close: ${closeDisplay}`;
-        }
-
-        let timeLeft;
-        if (holiday && !holiday.closeEarly) {
-            timeLeft = `Market Closed (${holiday.reason})`;
-        } else {
-            timeLeft = isOpen ? formatTimeLeft(closeTime - currentTime) : formatTimeLeft(getTimeUntilOpen(market, currentTime));
         }
 
         const remainingTimePercent = isOpen ? ((closeTime - currentTime) / (closeTime - openTime)) * 100 : 0;
