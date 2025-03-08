@@ -641,6 +641,7 @@ section {
     background: var(--open);
 }
 
+/* Privacy Policy Container */
 .privacy-policy {
     max-width: 900px;
     width: 90%;
@@ -657,7 +658,7 @@ section {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #fff;
+    color: black;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -667,7 +668,7 @@ section {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #fff;
+    color: black;
     margin: 30px 0 15px;
 }
 
@@ -685,7 +686,7 @@ section {
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.6;
-    color: var(--text);
+    color: black;
     margin-bottom: 15px;
 }
 
@@ -700,7 +701,7 @@ section {
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.6;
-    color: var(--text);
+    color: black;
     margin-bottom: 10px;
 }
 
@@ -713,7 +714,6 @@ section {
 }
 
 .privacy-policy a:hover {
-    color: #fff;
     text-decoration: underline;
 }
 
