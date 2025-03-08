@@ -142,6 +142,51 @@ body {
     color: var(--closed); /* Darkens slightly when clicked */
 }
 
+#footerprivacy {
+    background: whtie;
+    color: var(--text);
+    padding: 20px 0;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    border-top: 1px solid var(--input-border);
+    margin-top: 40px;
+    padding-bottom: 8px;
+}
+
+.footerprivacy-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.footerprivacy-content p {
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin: 0;
+}
+
+.footerprivacy-link {
+    color: var(--open);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footerprivacy-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.footerprivacy-link:active {
+    color: var(--closed);
+}
+
 .modal-content {
     margin: 0% auto; 
     padding: 15px; 
