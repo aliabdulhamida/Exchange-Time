@@ -717,7 +717,7 @@ const marketHours = {
         close: "15:00",
         timezone: "Asia/Ho_Chi_Minh",
         region: "Asia",
-        city: "Ho Chi Minh City",
+        city: "Ho Chi Minh",
         holidays: {
             "2025-01-01": { reason: "New Year's Day", closeEarly: false }
         }
