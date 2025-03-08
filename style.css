@@ -496,7 +496,7 @@ section {
     grid-auto-rows: 45px; /* Consistent row height, adjust as needed */
     gap: 5px; /* Space between cells */
     padding: 10px;
-    background: #000;
+    background: none;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     min-width: 315px; /* Ensures grid is wide enough: 7 * 45px */
 }
