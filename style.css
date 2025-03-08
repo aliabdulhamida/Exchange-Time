@@ -801,7 +801,7 @@ section {
 
 @media (max-width: 600px) {
     .card {
-        width: calc(50% - 1.2rem);
+        width: calc(50% -rem);
     }
     .privacy-policy {
         margin: 80px auto 30px;
