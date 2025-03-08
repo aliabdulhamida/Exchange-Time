@@ -601,7 +601,7 @@ section {
 
 #floating-filter-btn {
     position: fixed;
-    bottom: 80px;
+    bottom: 50px;
     right: 20px;
     background: var(--open);
     color: white;
