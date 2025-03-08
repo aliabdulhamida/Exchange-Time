@@ -11,7 +11,7 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8377777238288489" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div id="main-container">
+  <div id="main-container">
     <div id="header">
         <div id="region-options">
             <select id="region-filter">
@@ -24,6 +24,9 @@
                 <option value="South America">South America</option>
             </select>
         </div>
+      
+      
+      
         <div id="view-toggle">
             <div id="mode-toggle"></div>
             <button id="toggle-view">Minimize</button>
@@ -33,8 +36,7 @@
         <div id="search-box">
             <input type="text" id="search" placeholder="Search"/>
         </div>
-
-        
+      
  <!-- TradingView Widget BEGIN -->
 <div class="tradingview-widget-container">
   <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
@@ -66,14 +68,51 @@
   </script>
 </div>
 <!-- TradingView Widget END -->
-    </div>  
-        
-        <section id="market-section"></section>
-    <!-- Add this audio element for the market open sound -->
-    <audio id="market-open-sound" src="sound.mp3" preload="auto"></audio>
+      
+    </div>
+
     <section id="market-section">
+      
     </section>
-    
+    <aside id="right-container">
+          <!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+  {
+  "feedMode": "all_symbols",
+  "isTransparent": false,
+  "displayMode": "adaptive",
+  "width": 400,
+  "height": 550,
+  "colorTheme": "dark",
+  "locale": "en"
+}
+  </script>
+</div>
+<!-- TradingView Widget END -->
+    </aside>
+   <!-- TradingView Widget BEGIN -->
+    <div id="new-container">
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+  {
+  "colorTheme": "dark",
+  "isTransparent": false,
+  "width": "400",
+  "height": "550",
+  "locale": "en",
+  "importanceFilter": "-1,0,1",
+  "countryFilter": "ar,au,br,ca,cn,fr,de,in,id,it,jp,kr,mx,ru,sa,za,tr,gb,us,eu"
+}
+  </script>
+</div>
+<!-- TradingView Widget END -->
+       </div>
+   
 <div id="calendar-modal" class="modal">
     <div class="modal-content">
         <span class="close">×</span>
@@ -108,12 +147,17 @@
         <button class="toggle-view">Minimize</button>
         <button class="toggle-favorites">Favorites</button>
     </div>
-<footer id="footer">
+ 
+  </script>
+</div>
+<!-- TradingView Widget END -->
+  
+    <script src="./script.js"></script>
+  <footer id="footer">
         <div class="footer-content">
             <p>© 2025 Exchange Time. All rights reserved. MIT Licence <a href="Privacy-Policy.html">Privacy Policy</a> 
         </div>
     </footer>
-    <script src="./script.js"></script>
-    </div>
+  </div>
 </body>
 </html>
