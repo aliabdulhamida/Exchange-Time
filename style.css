@@ -470,7 +470,7 @@ section {
 
 #calendar {
     margin-top: 10px;
-  
+    
 }
 
 .calendar-month {
@@ -492,31 +492,35 @@ section {
 }
 
 .calendar-grid {
-    display: grid;
-    gap: 5px;
+    grid-template-columns: repeat(7, 1fr); /* 7 equal-width columns */
+    grid-auto-rows: 45px; /* Consistent row height, adjust as needed */
+    gap: 5px; /* Space between cells */
     padding: 10px;
     background: #000;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    min-width: 315px; /* Ensures grid is wide enough: 7 * 45px */
 }
 
 .calendar-row {
-    display: contents; 
+    display: flex; /* Replace display: contents with flex to maintain row structure */
+    justify-content: space-between;
 }
 
 .calendar-day {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 45px;
-    height: 45px;
+    width: 40px;              /* Equal width and height for a square */
+    height: 40px;             /* Slightly less than 45px to fit within the cell */
+    border-radius: 50%;   
+    text-align: center;
+    line-height: 45px; /* Matches grid-auto-rows for vertical centering */
     color: #fff;
-    padding: 0px;
-    border-radius: 30px;
+    margin: 2.5px auto;       /* Centers horizontally; 2.5px top/bottom spacing */
+    display: flex;            /* Enables centering of text */
+    align-items: center;      /* Centers text vertically */
+    justify-content: center;
     font-size: 0.8rem;
     font-weight: 600;
     transition: background 0.3s ease;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.1s ease; 
 }
 
 .calendar-day:active {
@@ -528,10 +532,9 @@ section {
 }
 
 .calendar-day.weekday {
-    background: none;
     font-weight: 700;
     cursor: default;
-    position: relative;
+};
 }
 
 .calendar-day.weekday::after {
@@ -554,9 +557,8 @@ section {
     background: #a63d2a;
     color: #fff;
     font-weight: 700;
-    width: 0px; 
-    height: 0px; 
-    padding: 0;
+    /* No width: 0px or height: 0px to maintain grid integrity */
+    
 }
 
 .calendar-day.holiday:hover {
