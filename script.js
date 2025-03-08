@@ -944,6 +944,16 @@ let currentRegion = "all";
 let isMinimized = false;
 let showFavoritesOnly = false;
 let favorites = new Set();
+let marketStatusHistory = {};
+
+function playMarketOpenSound() {
+    const sound = document.getElementById("market-open-sound");
+    if (sound) {
+        sound.play().catch(error => {
+            console.error("Error playing sound:", error);
+        });
+    }
+}
 
 // Helper functions
 function isMarketClosedOnHoliday(market, currentDate) {
@@ -1184,6 +1194,8 @@ function updateCards() {
                 isOpen = currentTime >= openTime && currentTime < closeTime;
             }
         }
+
+           marketStatusHistory[market] = isOpen;
 
         const openDisplay = openTime !== null ? formatHoursMinutes(openTime) : "N/A";
         const closeDisplay = closeTime !== null ? formatHoursMinutes(closeTime) : "N/A";
