@@ -34,30 +34,29 @@
         </div>
 
         
-        <!-- TradingView Widget BEGIN -->
+ <!-- TradingView Widget BEGIN -->
 <div class="tradingview-widget-container">
-  <div class="tradingview-widget-container__widget"></div>
   <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
   {
   "symbols": [
-   {
-      "description": "Nasdaq",
-      "proName": "NASDAQ:NDX"
-    },
     {
-      "description": "S6P 500",
+      "description": "S&P 500",
       "proName": "CAPITALCOM:US500"
     },
     {
-      "description": "Dow Jones",
+      "description": "NASDAQ",
+      "proName": "CAPITALCOM:US100"
+    },
+    {
+      "description": "DOW JONES",
       "proName": "CAPITALCOM:US30"
     },
     {
-      "description": "Bitcoin",
-      "proName": "CRYPTO:BTCUSD"
-    },
+      "description": "BITCOIN",
+      "proName": "INDEX:BTCUSD"
+    }
   ],
-  "showSymbolLogo": false,
+  "showSymbolLogo": true,
   "isTransparent": true,
   "displayMode": "adaptive",
   "colorTheme": "dark",
