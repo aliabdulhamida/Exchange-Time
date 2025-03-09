@@ -1384,19 +1384,29 @@ document.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("resize", setBodyPadding);
 
 // Event-Listener für den "Market Summary" Button
-document.getElementById("toggle-market-summary").addEventListener("click", () => {
-    document.getElementById("market-summary-modal").style.display = "block";
-});
-
-// Event-Listener für den Schließen-Button im Modal
-document.querySelector("#market-summary-modal .close").addEventListener("click", () => {
-    document.getElementById("market-summary-modal").style.display = "none";
-});
-
-// Schließen des Modals, wenn außerhalb geklickt wird
-window.addEventListener("click", (event) => {
+document.addEventListener("DOMContentLoaded", () => {
+    const toggleButton = document.getElementById("toggle-market-summary");
     const modal = document.getElementById("market-summary-modal");
-    if (event.target === modal) {
+    const closeButton = document.querySelector("#market-summary-modal .close");
+
+    // Open modal on click or touch
+    toggleButton.addEventListener("click", () => {
+        modal.style.display = "block";
+    });
+    toggleButton.addEventListener("touchstart", (e) => {
+        e.preventDefault(); // Prevent click event overlap
+        modal.style.display = "block";
+    });
+
+    // Close modal with button
+    closeButton.addEventListener("click", () => {
         modal.style.display = "none";
-    }
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
 });
