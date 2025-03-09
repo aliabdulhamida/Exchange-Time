@@ -827,5 +827,6 @@ section {
     }
   .table-container th, .table-container td {
     padding: 1px;
+    text-align: center;
 }
 }
