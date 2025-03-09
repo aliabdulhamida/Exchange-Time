@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exchange Time</title> 
+    <title>Exchange Time</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png">
     <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
@@ -11,10 +11,130 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8377777238288489" crossorigin="anonymous"></script>
 </head>
 <body>
-  <div id="main-container">
-    <div id="header">
-        <div id="region-options">
-            <select id="region-filter">
+    <div id="main-container">
+        <header id="header">
+            <div id="region-options">
+                <select id="region-filter" class="select">
+                    <option value="all">All Regions</option>
+                    <option value="North America">North America</option>
+                    <option value="Europe">Europe</option>
+                    <option value="Asia">Asia</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Africa">Africa</option>
+                    <option value="South America">South America</option>
+                </select>
+            </div>
+            <div id="view-toggle">
+                <div id="mode-toggle"></div>
+                <button id="toggle-view" class="btn">Minimize</button>
+                <button id="toggle-favorites" class="btn">Favorites</button>
+                <button id="toggle-calendar" class="btn">Calendar</button>
+            </div>
+            <div id="search-box">
+                <input type="text" id="search" placeholder="Search" aria-label="Search markets">
+            </div>
+            <!-- TradingView Widget BEGIN -->
+            <div class="tradingview-widget-container">
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                {
+                    "symbols": [
+                        {
+                            "description": "S&P 500",
+                            "proName": "CAPITALCOM:US500"
+                        },
+                        {
+                            "description": "NASDAQ",
+                            "proName": "CAPITALCOM:US100"
+                        },
+                        {
+                            "description": "DOW JONES",
+                            "proName": "CAPITALCOM:US30"
+                        },
+                        {
+                            "description": "BITCOIN",
+                            "proName": "INDEX:BTCUSD"
+                        }
+                    ],
+                    "showSymbolLogo": true,
+                    "isTransparent": true,
+                    "displayMode": "adaptive",
+                    "colorTheme": "dark",
+                    "locale": "en"
+                }
+                </script>
+            </div>
+            <!-- TradingView Widget END -->
+        </header>
+        <section id="market-section"></section>
+        <aside id="right-container">
+            <!-- TradingView Widget BEGIN -->
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <div class="tradingview-widget-copyright">
+                    <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
+                        <span class="blue-text">TradingView</span>
+                    </a>
+                </div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                {
+                    "feedMode": "all_symbols",
+                    "isTransparent": false,
+                    "displayMode": "adaptive",
+                    "width": 400,
+                    "height": 650,
+                    "colorTheme": "dark",
+                    "locale": "en"
+                }
+                </script>
+            </div>
+            <!-- TradingView Widget END -->
+        </aside>
+        <div id="new-container">
+            <!-- TradingView Widget BEGIN -->
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <div class="tradingview-widget-copyright">
+                    <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
+                        <span class="blue-text">TradingView</span>
+                    </a>
+                </div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+                {
+                    "colorTheme": "dark",
+                    "isTransparent": false,
+                    "width": "400",
+                    "height": "650",
+                    "locale": "en",
+                    "importanceFilter": "-1,0,1",
+                    "countryFilter": "ar,au,br,ca,cn,fr,de,in,id,it,jp,kr,mx,ru,sa,za,tr,gb,us,eu"
+                }
+                </script>
+            </div>
+            <!-- TradingView Widget END -->
+        </div>
+        <div id="calendar-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">×</span>
+                <h2>Market Holidays</h2>
+                <select id="calendar-region-filter" class="select">
+                    <option value="all">All Regions</option>
+                    <option value="North America">North America</option>
+                    <option value="Europe">Europe</option>
+                    <option value="Asia">Asia</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Africa">Africa</option>
+                    <option value="South America">South America</option>
+                </select>
+                <div id="calendar"></div>
+            </div>
+        </div>
+        <div id="floating-filter-btn">Filter</div>
+        <div id="filter-panel">
+            <button id="close-filter-panel">
+                <span class="visually-hidden">Close filter panel</span>
+                ×
+            </button>
+            <select class="region-filter select">
                 <option value="all">All Regions</option>
                 <option value="North America">North America</option>
                 <option value="Europe">Europe</option>
@@ -23,141 +143,14 @@
                 <option value="Africa">Africa</option>
                 <option value="South America">South America</option>
             </select>
+            <button class="toggle-view btn">Minimize</button>
+            <button class="toggle-favorites btn">Favorites</button>
         </div>
-      
-      
-      
-        <div id="view-toggle">
-            <div id="mode-toggle"></div>
-            <button id="toggle-view">Minimize</button>
-            <button id="toggle-favorites">Favorites</button>
-            <button id="toggle-calendar">Calendar</button>
-        </div>
-        <div id="search-box">
-            <input type="text" id="search" placeholder="Search"/>
-        </div>
-      
- <!-- TradingView Widget BEGIN -->
-<div class="tradingview-widget-container">
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-  {
-  "symbols": [
-    {
-      "description": "S&P 500",
-      "proName": "CAPITALCOM:US500"
-    },
-    {
-      "description": "NASDAQ",
-      "proName": "CAPITALCOM:US100"
-    },
-    {
-      "description": "DOW JONES",
-      "proName": "CAPITALCOM:US30"
-    },
-    {
-      "description": "BITCOIN",
-      "proName": "INDEX:BTCUSD"
-    }
-  ],
-  "showSymbolLogo": true,
-  "isTransparent": true,
-  "displayMode": "adaptive",
-  "colorTheme": "dark",
-  "locale": "en"
-}
-  </script>
-</div>
-<!-- TradingView Widget END -->
-      
+        <script src="./script.js"></script>
     </div>
-
-    <section id="market-section">
-      
-    </section>
-    <aside id="right-container">
-          <!-- TradingView Widget BEGIN -->
-<div class="tradingview-widget-container">
-  <div class="tradingview-widget-container__widget"></div>
-  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">TradingView</span></a></div>
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-  {
-  "feedMode": "all_symbols",
-  "isTransparent": false,
-  "displayMode": "adaptive",
-  "width": 400,
-  "height": 650,
-  "colorTheme": "dark",
-  "locale": "en"
-}
-  </script>
-</div>
-<!-- TradingView Widget END -->
-    </aside>
-   <!-- TradingView Widget BEGIN -->
-    <div id="new-container">
-<div class="tradingview-widget-container">
-  <div class="tradingview-widget-container__widget"></div>
- <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">TradingView</span></a></div>
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
-  {
-  "colorTheme": "dark",
-  "isTransparent": false,
-  "width": "400",
-  "height": "650",
-  "locale": "en",
-  "importanceFilter": "-1,0,1",
-  "countryFilter": "ar,au,br,ca,cn,fr,de,in,id,it,jp,kr,mx,ru,sa,za,tr,gb,us,eu"
-}
-  </script>
-</div>
-<!-- TradingView Widget END -->
-       </div>
-   
-<div id="calendar-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">×</span>
-        <h2 style="color:white;">Market Holidays</h2>
-        <select id="calendar-region-filter">
-            <option value="all">All Regions</option>
-            <option value="North America">North America</option>
-            <option value="Europe">Europe</option>
-            <option value="Asia">Asia</option>
-            <option value="Australia">Australia</option>
-            <option value="Africa">Africa</option>
-            <option value="South America">South America</option>
-        </select>
-        <div id="calendar"></div>
-    </div>
-</div>
-    <div id="floating-filter-btn">Filter</div>
-    <div id="filter-panel">
-        <button id="close-filter-panel">
-    <span class="visually-hidden">Close filter panel</span>
-    ×
-</button>
-        <select class="region-filter">
-            <option value="all">All Regions</option>
-            <option value="North America">North America</option>
-            <option value="Europe">Europe</option>
-            <option value="Asia">Asia</option>
-            <option value="Australia">Australia</option>
-            <option value="Africa">Africa</option>
-            <option value="South America">South America</option>
-        </select>
-        <button class="toggle-view">Minimize</button>
-        <button class="toggle-favorites">Favorites</button>
-    </div>
- 
-  </script>
-</div>
-<!-- TradingView Widget END -->
-  
-    <script src="./script.js"></script>
-  
-  </div>
-<footer id="footer">
+    <footer id="footer">
         <div class="footer-content">
-            <p>© 2025 Exchange Time. All rights reserved. MIT Licence <a href="Privacy-Policy.html">Privacy Policy</a> 
+            <p>© 2025 Exchange Time. All rights reserved. MIT Licence <a href="Privacy-Policy.html">Privacy Policy</a></p>
         </div>
     </footer>
 </body>
