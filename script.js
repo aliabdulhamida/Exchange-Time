@@ -939,54 +939,55 @@ const marketHours = {
     }
 };
 
-// State variables
-let currentRegion = "all";
-let isMinimized = false;
-let showFavoritesOnly = false;
-let favorites = new Set();
-let marketStatusHistory = {};
+// State variables for managing UI and market status
+let currentRegion = "all";           // Default region filter
+let isMinimized = false;             // Toggle for minimized card view
+let showFavoritesOnly = false;       // Toggle for showing only favorite markets
+let favorites = new Set();           // Set of favorite markets
+let marketStatusHistory = {};        // Tracks open/closed status history
 
+// Plays a sound when a market opens
 function playMarketOpenSound() {
     const sound = document.getElementById("market-open-sound");
     if (sound) {
-        sound.play().catch(error => {
-            console.error("Error playing sound:", error);
-        });
+        sound.play().catch(error => console.error("Error playing sound:", error));
     }
 }
 
-// Helper functions
+// Checks if a market is closed due to a holiday
 function isMarketClosedOnHoliday(market, currentDate) {
     const marketData = marketHours[market];
-    if (!marketData.holidays) return false;
-    return marketData.holidays[currentDate] || false;
+    return marketData.holidays?.[currentDate] || false;
 }
 
+// Converts a Date object to minutes since midnight in a specific timezone
 function getTimeInMinutes(date, timezone) {
     const options = { timeZone: timezone, hour12: false, hour: "2-digit", minute: "2-digit" };
-    const timeString = date.toLocaleTimeString("en-US", options);
-    const [hour, minute] = timeString.split(":").map(Number);
+    const [hour, minute] = date.toLocaleTimeString("en-US", options).split(":").map(Number);
     return hour * 60 + minute;
 }
 
+// Gets detailed time (hours, minutes, seconds) in a specific timezone
 function getTimeDetails(date, timezone) {
     const options = { timeZone: timezone, hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" };
-    const timeString = date.toLocaleTimeString("en-US", options);
-    const [hour, minute, second] = timeString.split(":").map(Number);
+    const [hour, minute, second] = date.toLocaleTimeString("en-US", options).split(":").map(Number);
     return { hour, minute, second };
 }
 
+// Converts a time string (e.g., "09:30") to minutes since midnight
 function convertToMinutes(timeStr) {
     const [hours, minutes] = timeStr.split(":").map(Number);
     return hours * 60 + minutes;
 }
 
+// Formats minutes into "HH:MM" format
 function formatHoursMinutes(minutes) {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
 }
 
+// Formats remaining time into "Xh Ym" or "Market Closed"
 function formatTimeLeft(minutes) {
     if (minutes <= 0) return "Market Closed";
     const hours = Math.floor(minutes / 60);
@@ -994,6 +995,7 @@ function formatTimeLeft(minutes) {
     return `${hours}h ${mins}m`;
 }
 
+// Calculates minutes until the next market opening
 function getTimeUntilOpen(market, currentTime) {
     const marketData = marketHours[market];
     const timezone = marketData.timezone;
@@ -1009,8 +1011,10 @@ function getTimeUntilOpen(market, currentTime) {
     }
 }
 
+// Generates a calendar displaying holidays for a given year and region
 function generateCalendar(year, region) {
     const calendarDiv = document.getElementById('calendar');
+    if (!calendarDiv) return;
     calendarDiv.innerHTML = '';
 
     const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -1034,22 +1038,21 @@ function generateCalendar(year, region) {
         });
         gridDiv.appendChild(weekdayRow);
 
-        // Calculate the first day and number of days in the month
-        const firstDay = new Date(year, month, 1).getDay(); // 0 = Sunday
+        const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
         let currentDay = 1;
         let weekRow = document.createElement('div');
         weekRow.className = 'calendar-row';
 
-        // Add empty cells for days before the first of the month
+        // Add empty cells before the first day
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement('div');
             emptyCell.className = 'calendar-day empty';
             weekRow.appendChild(emptyCell);
         }
 
-        // Add days of the month, creating new rows for each week
+        // Populate days of the month
         while (currentDay <= daysInMonth) {
             if (weekRow.children.length === 7) {
                 gridDiv.appendChild(weekRow);
@@ -1065,8 +1068,7 @@ function generateCalendar(year, region) {
             let marketsClosed = [];
             for (let market in marketHours) {
                 if ((region === "all" || marketHours[market].region === region) && 
-                    marketHours[market].holidays && 
-                    marketHours[market].holidays[dateStr]) {
+                    marketHours[market].holidays?.[dateStr]) {
                     const holiday = marketHours[market].holidays[dateStr];
                     marketsClosed.push(`${market}: ${holiday.reason}`);
                 }
@@ -1082,7 +1084,7 @@ function generateCalendar(year, region) {
             currentDay++;
         }
 
-        // Add empty cells to complete the last week
+        // Fill remaining cells in the last week
         while (weekRow.children.length < 7) {
             const emptyCell = document.createElement('div');
             emptyCell.className = 'calendar-day empty';
@@ -1095,21 +1097,16 @@ function generateCalendar(year, region) {
     }
 }
 
-// New function to show holiday panel
+// Displays a panel with holiday details for a specific date
 function showHolidayPanel(dateStr, holidays) {
     const modal = document.getElementById('calendar-modal');
-    const modalContent = modal.querySelector('.modal-content');
-
-    // Show the modal if not already visible
     if (modal.style.display !== 'block') {
         modal.style.display = 'block';
     }
 
-    // Remove any existing holiday panel
     const existingPanel = document.querySelector('.holiday-panel');
     if (existingPanel) existingPanel.remove();
 
-    // Create the new holiday panel
     const holidayPanel = document.createElement('div');
     holidayPanel.className = 'holiday-panel';
     holidayPanel.style.position = 'fixed';
@@ -1123,17 +1120,14 @@ function showHolidayPanel(dateStr, holidays) {
         <button class="close-panel">Close</button>
     `;
 
-    // Append to body
     document.body.appendChild(holidayPanel);
 
-    // Close button event listener
     holidayPanel.querySelector('.close-panel').addEventListener('click', () => {
         holidayPanel.remove();
-        // Note: Modal remains open unless closed separately
     });
 }
 
-
+// Updates the market cards based on filters and current time
 function updateCards() {
     const regionFilter = document.getElementById("region-filter")?.value || "all";
     const searchQuery = document.getElementById("search")?.value.toLowerCase() || "";
@@ -1162,32 +1156,26 @@ function updateCards() {
         const fullTime = `${timeDetails.hour.toString().padStart(2, '0')}:${timeDetails.minute.toString().padStart(2, '0')}:${timeDetails.second.toString().padStart(2, '0')}`;
 
         const dateOptions = { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' };
-        const formatter = new Intl.DateTimeFormat('en-CA', dateOptions);
-        const currentDate = formatter.format(now);
-
-        // Get the current weekday in the market's timezone
+        const currentDate = new Intl.DateTimeFormat('en-CA', dateOptions).format(now);
         const weekday = now.toLocaleString('en-US', { timeZone: timezone, weekday: 'long' });
 
         let isOpen = false;
         let openTime = null, closeTime = null;
 
-        // Always use the default open and close times
         if (market === "JPX") {
-            openTime = convertToMinutes(marketData.open1); // Use first session open for display
-            closeTime = convertToMinutes(marketData.close2); // Use second session close for display
+            openTime = convertToMinutes(marketData.open1);
+            closeTime = convertToMinutes(marketData.close2);
         } else {
             openTime = convertToMinutes(marketData.open);
             closeTime = convertToMinutes(marketData.close);
         }
 
-        // Check if it's a weekend or holiday
         let nextOpenDate = new Date(now);
         let nextOpenTime = openTime;
         let daysToAdd = 0;
 
-        // Advance to the next trading day
         do {
-            nextOpenDate.setDate(nextOpenDate.getDate() + (daysToAdd === 0 ? 1 : 1)); // Start with next day, then increment
+            nextOpenDate.setDate(nextOpenDate.getDate() + (daysToAdd === 0 ? 1 : 1));
             const nextDateStr = nextOpenDate.toLocaleString('en-CA', { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' });
             const nextWeekday = nextOpenDate.toLocaleString('en-US', { timeZone: timezone, weekday: 'long' });
             const isHoliday = isMarketClosedOnHoliday(market, nextDateStr);
@@ -1195,21 +1183,13 @@ function updateCards() {
             if (nextWeekday === 'Saturday' || nextWeekday === 'Sunday' || (isHoliday && !isHoliday.closeEarly)) {
                 daysToAdd++;
             } else {
-                break; // Found the next trading day
+                break;
             }
-        } while (daysToAdd < 7); // Limit to a week to avoid infinite loops
+        } while (daysToAdd < 7);
 
-        // Calculate time until next open
-        const currentTotalMinutes = currentTime + (now.getHours() * 60 + now.getMinutes()); // Adjust for current day
-        let timeUntilNextOpen = nextOpenTime - currentTime;
-        if (daysToAdd > 0) {
-            timeUntilNextOpen += daysToAdd * 24 * 60; // Add minutes for each day
-        }
-        if (timeUntilNextOpen < 0) {
-            timeUntilNextOpen += 24 * 60; // Handle cases where next open is on the same day but after current time
-        }
+        let timeUntilNextOpen = nextOpenTime - currentTime + (daysToAdd * 24 * 60);
+        if (timeUntilNextOpen < 0) timeUntilNextOpen += 24 * 60;
 
-        // Set isOpen based on current day (only if it's a trading day and within hours)
         if (weekday !== 'Saturday' && weekday !== 'Sunday') {
             const holiday = isMarketClosedOnHoliday(market, currentDate);
             if (!holiday || (holiday && holiday.closeEarly && currentTime >= openTime && currentTime < convertToMinutes(holiday.earlyCloseTime))) {
@@ -1225,25 +1205,19 @@ function updateCards() {
             }
         }
 
-        // Check if the market has just opened to play the sound
         const previousStatus = marketStatusHistory[market];
         if (previousStatus === false && isOpen === true) {
             playMarketOpenSound();
         }
         marketStatusHistory[market] = isOpen;
 
-        // Set the timeLeft display
-        let timeLeft = isOpen ? formatTimeLeft(closeTime - currentTime) : formatTimeLeft(timeUntilNextOpen);
-
+        const timeLeft = isOpen ? formatTimeLeft(closeTime - currentTime) : formatTimeLeft(timeUntilNextOpen);
         const openDisplay = formatHoursMinutes(openTime);
         const closeDisplay = formatHoursMinutes(closeTime);
 
-        let hoursDisplay;
-        if (market === "JPX") {
-            hoursDisplay = `Session 1: ${marketData.open1} - ${marketData.close1}, Session 2: ${marketData.open2} - ${marketData.close2}`;
-        } else {
-            hoursDisplay = `Open: ${openDisplay} - Close: ${closeDisplay}`;
-        }
+        let hoursDisplay = market === "JPX" 
+            ? `Session 1: ${marketData.open1} - ${marketData.close1}, Session 2: ${marketData.open2} - ${marketData.close2}`
+            : `Open: ${openDisplay} - Close: ${closeDisplay}`;
 
         const remainingTimePercent = isOpen ? ((closeTime - currentTime) / (closeTime - openTime)) * 100 : 0;
 
@@ -1253,45 +1227,41 @@ function updateCards() {
         if (isMinimized) card.classList.add("minimized");
         card.dataset.market = market;
 
-        if (!isMinimized) {
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="date">${city}</div>
-                    <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                        ${isOpen ? "OPEN" : "CLOSED"}
+        card.innerHTML = !isMinimized ? `
+            <div class="card-header">
+                <div class="date">${city}</div>
+                <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+                    ${isOpen ? "OPEN" : "CLOSED"}
+                </div>
+            </div>
+            <div class="card-body">
+                <h3>${market}</h3>
+                <p>${hoursDisplay}</p>
+                <div class="digital-clock">
+                    <span class="visually-hidden">Current Time: ${fullTime}</span>
+                    <span class="time-display">${fullTime}</span>
+                </div>
+                <div class="progress">
+                    <span>Time Left: <span class="time-left">${timeLeft}</span></span>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <h3>${market}</h3>
-                    <p>${hoursDisplay}</p>
-                    <div class="digital-clock">
-                        <span class="visually-hidden">Current Time: ${fullTime}</span>
-                        <span class="time-display">${fullTime}</span>
-                    </div>
-                    <div class="progress">
-                        <span>Time Left: <span class="time-left">${timeLeft}</span></span>
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
-                        </div>
-                    </div>
+            </div>
+        ` : `
+            <div class="card-header">
+                <div class="date">${city}</div>
+                <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+                    ${isOpen ? "OPEN" : "CLOSED"}
                 </div>
-            `;
-        } else {
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="date">${city}</div>
-                    <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                        ${isOpen ? "OPEN" : "CLOSED"}
-                    </div>
+            </div>
+            <div class="card-body">
+                <div class="digital-clock">
+                    <span class="visually-hidden">Current Time: ${fullTime}</span>
+                    <span class="time-display">${fullTime}</span>
                 </div>
-                <div class="card-body">
-                    <div class="digital-clock">
-                        <span class="visually-hidden">Current Time: ${fullTime}</span>
-                        <span class="time-display">${fullTime}</span>
-                    </div>
-                </div>
-            `;
-        }
+            </div>
+        `;
 
         marketSection.appendChild(card);
 
@@ -1299,56 +1269,44 @@ function updateCards() {
             if (e.target.closest(".market-status")) return;
             const item = card.dataset.market;
             if (item) {
-                if (favorites.has(item)) {
-                    favorites.delete(item);
-                    card.classList.remove("favorite");
-                } else {
-                    favorites.add(item);
-                    card.classList.add("favorite");
-                }
+                favorites.has(item) ? favorites.delete(item) : favorites.add(item);
                 updateCards();
             }
         });
     });
 }
 
+// Adjusts body padding based on header height
 function setBodyPadding() {
     const header = document.getElementById("header");
-    const headerHeight = header ? header.offsetHeight : 0;
-    document.body.style.paddingTop = `${headerHeight}px`;
+    document.body.style.paddingTop = header ? `${header.offsetHeight}px` : "0";
 }
 
+// Updates UI elements to reflect current state
 function updateUI() {
-    document.querySelectorAll("#region-filter, .region-filter").forEach(el => {
-        el.value = currentRegion;
-    });
-    document.querySelectorAll("#toggle-view, .toggle-view").forEach(b => {
-        b.textContent = isMinimized ? "Details" : "Minimize";
-    });
-    document.querySelectorAll("#toggle-favorites, .toggle-favorites").forEach(b => {
-        b.textContent = showFavoritesOnly ? "Show All" : "Favorites";
-    });
+    document.querySelectorAll("#region-filter, .region-filter").forEach(el => el.value = currentRegion);
+    document.querySelectorAll("#toggle-view, .toggle-view").forEach(b => b.textContent = isMinimized ? "Details" : "Minimize");
+    document.querySelectorAll("#toggle-favorites, .toggle-favorites").forEach(b => b.textContent = showFavoritesOnly ? "Show All" : "Favorites");
 }
 
+// Toggles visibility of the floating filter button
 function toggleFilterButtonVisibility(show) {
     const filterButton = document.getElementById("floating-filter-btn");
-    if (filterButton) {
-        filterButton.style.display = show ? "block" : "none";
-    }
+    if (filterButton) filterButton.style.display = show ? "block" : "none";
 }
 
+// Sets up all event listeners
 function setupEventListeners() {
-    // Existing event listeners (unchanged)
     document.querySelectorAll("#region-filter, .region-filter").forEach(el => {
-        el.addEventListener("change", function() {
-            currentRegion = this.value;
+        el.addEventListener("change", () => {
+            currentRegion = el.value;
             updateUI();
             updateCards();
         });
     });
 
     document.querySelectorAll("#toggle-view, .toggle-view").forEach(btn => {
-        btn.addEventListener("click", function() {
+        btn.addEventListener("click", () => {
             isMinimized = !isMinimized;
             updateUI();
             updateCards();
@@ -1356,34 +1314,28 @@ function setupEventListeners() {
     });
 
     document.querySelectorAll("#toggle-favorites, .toggle-favorites").forEach(btn => {
-        btn.addEventListener("click", function() {
+        btn.addEventListener("click", () => {
             showFavoritesOnly = !showFavoritesOnly;
             updateUI();
             updateCards();
         });
     });
 
-    // Updated event listener for opening the calendar modal
-    document.getElementById("toggle-calendar")?.addEventListener("click", function() {
+    document.getElementById("toggle-calendar")?.addEventListener("click", () => {
         const modal = document.getElementById("calendar-modal");
         const region = document.getElementById("region-filter")?.value || "all";
-        // Set the modal's region filter to the header's current region
         document.getElementById("calendar-region-filter").value = region;
         generateCalendar(2025, region);
         modal.style.display = "block";
     });
 
-    // New event listener for the modal's region filter
     document.getElementById("calendar-region-filter")?.addEventListener("change", function() {
-        const year = 2025; // Hardcoded for now, as per current implementation
-        const region = this.value;
-        generateCalendar(year, region);
+        generateCalendar(2025, this.value);
     });
 
     document.getElementById("search")?.addEventListener("input", updateCards);
 
-    // Existing mobile filter panel event listeners (unchanged)
-    document.getElementById("floating-filter-btn")?.addEventListener("click", function() {
+    document.getElementById("floating-filter-btn")?.addEventListener("click", () => {
         const panel = document.getElementById("filter-panel");
         if (panel) {
             panel.style.display = "block";
@@ -1391,18 +1343,16 @@ function setupEventListeners() {
         }
     });
 
-    window.addEventListener("click", function(event) {
+    window.addEventListener("click", (event) => {
         const panel = document.getElementById("filter-panel");
         const btn = document.getElementById("floating-filter-btn");
-        if (panel && btn && !panel.contains(event.target) && !btn.contains(event.target)) {
-            if (panel.style.display === "block") {
-                panel.style.display = "none";
-                toggleFilterButtonVisibility(true);
-            }
+        if (panel && btn && !panel.contains(event.target) && !btn.contains(event.target) && panel.style.display === "block") {
+            panel.style.display = "none";
+            toggleFilterButtonVisibility(true);
         }
     });
 
-    document.getElementById("close-filter-panel")?.addEventListener("click", function() {
+    document.getElementById("close-filter-panel")?.addEventListener("click", () => {
         const panel = document.getElementById("filter-panel");
         if (panel) {
             panel.style.display = "none";
@@ -1410,25 +1360,23 @@ function setupEventListeners() {
         }
     });
 
-    document.getElementsByClassName("close")[0]?.addEventListener("click", function() {
+    document.querySelector(".close")?.addEventListener("click", () => {
         document.getElementById("calendar-modal").style.display = "none";
     });
 
-    window.addEventListener("click", function(event) {
+    window.addEventListener("click", (event) => {
         const modal = document.getElementById("calendar-modal");
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
+        if (event.target === modal) modal.style.display = "none";
     });
 }
 
-// DOM content loaded handler
+// Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
     setBodyPadding();
     setupEventListeners();
     updateUI();
     updateCards();
-    setInterval(updateCards, 1000); // Update every second for market clocks
+    setInterval(updateCards, 1000); // Update every second
 });
 
 window.addEventListener("resize", setBodyPadding);
