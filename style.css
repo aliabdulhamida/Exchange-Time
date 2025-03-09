@@ -135,6 +135,7 @@ ul {
 }
 
 th, td {
+    color: white;
     border: 1px solid black;
     padding: 15px;
 }
