@@ -52,7 +52,7 @@ body {
     display: block;
     min-height: 76vh;
     background: var(--primary-bg);
-    
+    padding: 50px;
 }
 
 #main-container {
@@ -70,7 +70,7 @@ body {
     left: 0;
     width: 100%;
     background: var(--primary-bg);
-    padding: 15px 20px;
+    padding: 10px 50px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -80,7 +80,6 @@ body {
     z-index: 1000;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     border-bottom: 1px solid var(--input-border);
-   
 }
 
 #region-options,
@@ -122,7 +121,7 @@ body {
 #market-section {
     grid-area: market; /* Main container in the center */
   padding: 20px;
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 #right-container {
@@ -821,35 +820,48 @@ section {
     .privacy-policy li {
         font-size: 0.9rem;
     }
-    .main-container {
-        display: grid !important;
-        grid-template-columns: 1fr !important;
-        grid-template-rows: auto !important;
-        grid-template-areas: "market" !important;
-        gap: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        min-width: 0 !important;
-        width: 100% !important;
+
+    #main-container {
+        display: grid;
+        grid-template-columns: 2fr; /* Single column layout */
+        grid-template-areas: "market"; /* Only market section visible */
+        gap: 0; /* Remove gaps */
+        width: 100%; /* Full width */
+        padding: 0; /* Remove padding */
+        margin: 0; /* Remove margins */
     }
-  
+
     #market-section {
-        grid-template-columns: 1fr; /* Single column */
-        grid-template-areas: "market"; /* Only show market area */
-        gap: 10; /* Remove gap for single-column layout */
-        padding: 0;
-        width: 100%;
+        grid-area: market;
+        display: flex; /* Use Flexbox for centering */
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        width: 100%; /* Full width */
+        padding: 20px; /* Consistent padding */
+        box-sizing: border-box;
     }
+
+    #market-section section {
+        display: flex;
+        flex-wrap: wrap; /* Allow cards to wrap */
+        justify-content: center; /* Center cards horizontally */
+        gap: 1.5rem; /* Maintain spacing between cards */
+        max-width: 100%; /* Prevent overflow */
+        padding: 0; /* Remove extra padding */
+        width: 100%; /* Full width */
+    }
+
+    .card {
+        width: 100%; /* Responsive width */
+        max-width: 300px; /* Cap the width */
+        margin: 0 auto; /* Center individual cards */
+    }
+
+    /* Hide other sections as already in your code */
     #right-container, #new-container {
         display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
     }
-    #right-container > *, #new-container > * {
-        display: none !important;
-    }
+}
     #footer {
         padding: 15px 0;
     }
