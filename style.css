@@ -58,6 +58,14 @@ h3 {
     font-size: 1.5rem;
 }
 
+p {
+  font-weight: 200;
+}
+
+ul {
+  font-weight: 200; 
+}
+
 /* Buttons */
 .btn {
     background: var(--button-bg);
@@ -117,6 +125,18 @@ h3 {
     padding: 10px;
     margin-top: 50px; /* Space for fixed header */
     padding-right: 50px;
+}
+
+.table-container{
+    color: white;
+    border-radius: 12px;
+    margin: 15px;
+    text-align: center;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 15px;
 }
 
 #header {
