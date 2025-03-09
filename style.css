@@ -297,8 +297,8 @@ section {
     flex-wrap: wrap;
     gap: 1.5rem;
     justify-content: space-evenly;
-    max-width: 1300px;
-    padding: 10px;
+    max-width: 1000px;
+    padding: 1px;
     width: 100%;
     padding-top: 50px;
 }
@@ -308,10 +308,11 @@ section {
     border-radius: 12px;
     padding: 1.2rem;
     text-align: center;
-    width: 320px;
+    width: 250px;
     box-shadow: 1px 12px 25px rgba(0, 0, 0, 0.7);
     cursor: pointer;
     font-weight: 400;
+    max-height: 250px;
 }
 
 .card.favorite {
