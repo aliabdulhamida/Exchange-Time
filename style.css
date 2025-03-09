@@ -59,10 +59,11 @@ body {
 
 #main-container {
     display: grid;
-    grid-template-columns: 1fr 1px; /* Main content + right sidebar */
-    grid-template-areas: "market right";
-    gap: 200px;
-    padding: 10px;
+    grid-template-columns: 200px 1fr 200px; /* Left: 200px, Main: flexible, Right: 200px */
+    grid-template-areas: "left market right"; /* Areas for new, main, and right containers */
+    gap: 20px; /* Space between columns */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #header {
@@ -121,22 +122,22 @@ body {
 }
 
 #market-section {
-    grid-area: market;
+    grid-area: market; /* Main container in the center */
 }
 
 #right-container {
-    grid-area: right; /* First row, second column */
-    padding: 40px;
+    grid-area: right; /* Right container on the right */
+    padding: 20px;
     box-sizing: border-box;
+}
 
-}
 #new-container {
-    grid-area: right; /* Second row, second column */
-    margin-top: 600px;
-    padding: 40px;
+    grid-area: left; /* Place new-container on the left */
+    padding: 20px;
     box-sizing: border-box;
-    
+    /* Removed margin-top: 600px; as it’s no longer needed with grid positioning */
 }
+
 .footer-content {
     max-width: 5000px;
     margin: 0 auto;
@@ -830,10 +831,13 @@ section {
         min-width: 0 !important;
         width: 100% !important;
     }
+  
     #market-section {
-        grid-area: market !important;
-        width: 100% !important;
-        min-width: 0 !important;
+        grid-template-columns: 1fr; /* Single column */
+        grid-template-areas: "market"; /* Only show market area */
+        gap: 10; /* Remove gap for single-column layout */
+        padding: 0;
+        width: 100%;
     }
     #right-container, #new-container {
         display: none !important;
