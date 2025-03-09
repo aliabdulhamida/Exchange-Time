@@ -127,7 +127,7 @@ ul {
     padding-right: 50px;
 }
 
-.table-container{
+.table-container {
     color: white;
     border-radius: 12px;
     margin: 15px;
@@ -135,9 +135,9 @@ ul {
 }
 
 th, td {
-    color: white;
     border: 1px solid black;
     padding: 15px;
+    color: white;
 }
 
 #header {
@@ -824,4 +824,7 @@ section {
     #floating-filter-btn {
         display: block;
     }
+  .table-container th, .table-container td {
+    padding: 1px;
+}
 }
