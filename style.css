@@ -160,19 +160,21 @@ th, td {
 
 #market-section {
     grid-area: market;
-    padding: 20px;
+    padding: 0px;
     height: 80vh;
     overflow-y: auto;
 }
 
 #right-container {
     grid-area: right;
-    padding: 20px;
+    padding: 0px;
+    margin-left: 100px;
 }
 
 #new-container {
     grid-area: left;
-    padding: 20px;
+    padding: 0px;
+    
 }
 
 #footer {
