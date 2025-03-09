@@ -49,17 +49,15 @@ h3 {
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    display: block;
     min-height: 76vh;
     background: var(--primary-bg);
+    
 }
 
 #main-container {
     display: grid;
-    grid-template-columns: 200px 1fr 200px; /* Left: 200px, Main: flexible, Right: 200px */
+    grid-template-columns: 400px 4fr 400px; /* Left: 200px, Main: flexible, Right: 200px */
     grid-template-areas: "left market right"; /* Areas for new, main, and right containers */
     gap: 20px; /* Space between columns */
     width: 100%;
@@ -123,6 +121,8 @@ body {
 
 #market-section {
     grid-area: market; /* Main container in the center */
+  padding: 20px;
+    box-sizing: border-box;
 }
 
 #right-container {
