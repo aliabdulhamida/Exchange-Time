@@ -1304,6 +1304,8 @@ function setupEventListeners() {
             updateCards();
         });
     });
+  
+  
 
     document.querySelectorAll("#toggle-view, .toggle-view").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1380,3 +1382,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("resize", setBodyPadding);
+
+// Event-Listener für den "Market Summary" Button
+document.getElementById("toggle-market-summary").addEventListener("click", () => {
+    document.getElementById("market-summary-modal").style.display = "block";
+});
+
+// Event-Listener für den Schließen-Button im Modal
+document.querySelector("#market-summary-modal .close").addEventListener("click", () => {
+    document.getElementById("market-summary-modal").style.display = "none";
+});
+
+// Schließen des Modals, wenn außerhalb geklickt wird
+window.addEventListener("click", (event) => {
+    const modal = document.getElementById("market-summary-modal");
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+});
