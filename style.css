@@ -369,8 +369,7 @@ th, td {
     border-radius: 30px;
     cursor: pointer;
     z-index: 1002;
-    display: flex;
-    justify-content: space-between;
+    display: none;
 }
 
 #filter-panel {
@@ -380,8 +379,7 @@ th, td {
     width: 100%;
     background: var(--card-bg);
     padding: 15px;
-    display: flex;
-    justify-content: space-between;
+    display: none;
     gap: 10px;
     z-index: 1001;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
