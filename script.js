@@ -1033,12 +1033,13 @@ async function fetchStockData(stockSymbol, startDate, endDate) {
     }
 }
 
-// Calculate investment for a single stock (initial + monthly)
+// Calculate investment for a single stock (initial + monthly) and track daily values
 function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerStock, startDate, endDate) {
     let totalShares = 0;
     let totalInvested = 0;
     const start = new Date(startDate);
     const end = new Date(endDate);
+    const valueOverTime = [];
 
     // Initial investment at start date
     const startPrice = data[0].close;
@@ -1048,27 +1049,101 @@ function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerS
         totalInvested += initialAmountPerStock;
     }
 
-    // Monthly investments
+    // Track value for each date
     let currentDate = new Date(start);
-    currentDate.setMonth(currentDate.getMonth() + 1); // Start from next month
-    while (currentDate <= end) {
-        const firstOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-        const firstOfMonthStr = firstOfMonth.toISOString().split('T')[0];
-        const priceData = data.find(d => d.date >= firstOfMonthStr) || data[0];
-        if (priceData && monthlyAmountPerStock > 0) {
-            const sharesBought = monthlyAmountPerStock / priceData.close;
+    let nextInvestmentDate = new Date(start);
+    nextInvestmentDate.setMonth(nextInvestmentDate.getMonth() + 1);
+    nextInvestmentDate.setDate(1);
+
+    for (const day of data) {
+        const currentDay = new Date(day.date);
+
+        // Add monthly investment if it's the first trading day of the month
+        if (monthlyAmountPerStock > 0 && currentDay >= nextInvestmentDate && currentDay <= end) {
+            const sharesBought = monthlyAmountPerStock / day.close;
             totalShares += sharesBought;
             totalInvested += monthlyAmountPerStock;
+            nextInvestmentDate.setMonth(nextInvestmentDate.getMonth() + 1);
         }
-        currentDate.setMonth(currentDate.getMonth() + 1);
+
+        // Record portfolio value for this day
+        valueOverTime.push({
+            date: day.date,
+            value: totalShares * day.close
+        });
     }
 
     const finalPrice = data[data.length - 1].close;
     const finalValue = totalShares * finalPrice;
-    return { totalInvested, finalValue, totalShares };
+    return { totalInvested, finalValue, totalShares, valueOverTime };
 }
 
-// Backtest form submission handler (portfolio sum with initial + monthly)
+// Generate portfolio chart
+function generatePortfolioChart(dates, portfolioValues) {
+    const ctx = document.getElementById('portfolio-chart').getContext('2d');
+    
+    // Destroy existing chart if it exists to avoid overlap
+    if (window.portfolioChart instanceof Chart) {
+        window.portfolioChart.destroy();
+    }
+
+    window.portfolioChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Portfolio Value (€)',
+                data: portfolioValues,
+                borderColor: '#00cc00',
+                backgroundColor: 'rgba(0, 204, 0, 0.1)',
+                fill: true,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#fff'
+                    },
+                    ticks: {
+                        color: '#fff',
+                        maxTicksLimit: 10 // Limit number of labels for readability
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Value (€)',
+                        color: '#fff'
+                    },
+                    ticks: {
+                        color: '#fff'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#fff'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Backtest form submission handler (portfolio sum with chart)
 document.getElementById('backtest-form').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -1123,7 +1198,8 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
     let portfolioShares = 0;
     let allValid = true;
     let errorMessages = [];
-
+    const portfolioValuesOverTime = {};
+    
     // Split amounts equally among stocks
     const initialAmountPerStock = initialAmount / stockSymbols.length;
     const monthlyAmountPerStock = monthlyAmount / stockSymbols.length;
@@ -1132,7 +1208,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         const stockSymbol = stockSymbols[index];
         if (result.status === 'fulfilled' && result.value && !result.value.error && result.value.length >= 2) {
             const data = result.value;
-            const { totalInvested, finalValue, totalShares } = calculateStockInvestment(
+            const { totalInvested, finalValue, totalShares, valueOverTime } = calculateStockInvestment(
                 data,
                 initialAmountPerStock,
                 monthlyAmountPerStock,
@@ -1143,6 +1219,11 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
             portfolioTotalInvested += totalInvested;
             portfolioFinalValue += finalValue;
             portfolioShares += totalShares;
+
+            // Aggregate daily portfolio values
+            valueOverTime.forEach(({ date, value }) => {
+                portfolioValuesOverTime[date] = (portfolioValuesOverTime[date] || 0) + value;
+            });
         } else {
             allValid = false;
             const errorMsg = result.value?.error || result.reason?.message || "Unknown error";
@@ -1168,12 +1249,20 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                     </p>
                 </div>
             </div>
+            <canvas id="portfolio-chart" style="margin-top: 20px;"></canvas>
         `;
+
+        // Prepare chart data
+        const dates = Object.keys(portfolioValuesOverTime).sort();
+        const portfolioValues = dates.map(date => portfolioValuesOverTime[date]);
+
+        resultDiv.innerHTML = resultHTML;
+        generatePortfolioChart(dates, portfolioValues);
     } else {
         resultHTML = `<p style='color: red;'>${errorMessages.join('<br>')}. <a href="https://cors-anywhere.herokuapp.com/" target="_blank">Ensure proxy is active</a>.</p>`;
+        resultDiv.innerHTML = resultHTML;
     }
 
-    resultDiv.innerHTML = resultHTML || "<p>No results to display. Check your inputs or internet connection.</p>";
     resultsPanel.style.display = 'block';
     backtestModal.style.display = 'none';
 });
@@ -1575,30 +1664,40 @@ function setupEventListeners() {
 
     document.getElementById("search")?.addEventListener("input", updateCards);
 
-    document.getElementById("floating-filter-btn")?.addEventListener("click", () => {
+    document.addEventListener("DOMContentLoaded", () => {
+    let justOpened = false;
+
+    document.getElementById("floating-filter-btn")?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        console.log("Button clicked");
         const panel = document.getElementById("filter-panel");
         if (panel) {
-            panel.style.display = "block";
+            console.log("Opening panel");
+            panel.classList.add("filter-panel-open");
             toggleFilterButtonVisibility(false);
+            justOpened = true;
+            setTimeout(() => { justOpened = false; }, 100);
+        } else {
+            console.log("Panel not found");
         }
     });
 
     window.addEventListener("click", (event) => {
+        if (justOpened) return;
         const panel = document.getElementById("filter-panel");
         const btn = document.getElementById("floating-filter-btn");
-        if (panel && btn && !panel.contains(event.target) && !btn.contains(event.target) && panel.style.display === "block") {
-            panel.style.display = "none";
+        if (panel && btn && !panel.contains(event.target) && !btn.contains(event.target) && panel.classList.contains("filter-panel-open")) {
+            console.log("Closing panel");
+            panel.classList.remove("filter-panel-open");
             toggleFilterButtonVisibility(true);
         }
     });
 
-    document.getElementById("close-filter-panel")?.addEventListener("click", () => {
-        const panel = document.getElementById("filter-panel");
-        if (panel) {
-            panel.style.display = "none";
-            toggleFilterButtonVisibility(true);
-        }
-    });
+    function toggleFilterButtonVisibility(show) {
+        const filterButton = document.getElementById("floating-filter-btn");
+        if (filterButton) filterButton.style.display = show ? "block" : "none";
+    }
+});
 
     document.querySelector(".close")?.addEventListener("click", () => {
         document.getElementById("calendar-modal").style.display = "none";
