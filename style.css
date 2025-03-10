@@ -29,7 +29,6 @@
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
     background: var(--primary-bg);
     margin-top: 20px;
     margin-left: 20px;
