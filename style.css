@@ -29,7 +29,6 @@
 /* Layout */
 body {
     display: flex;
-    flex-direction: column;
     background: var(--primary-bg);
     margin-left: 20px;
 }
