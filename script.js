@@ -946,18 +946,46 @@ let showFavoritesOnly = false;       // Toggle for showing only favorite markets
 let favorites = new Set();           // Set of favorite markets
 let marketStatusHistory = {};        // Tracks open/closed status history
 
-// Modal and panel elements
+const closeButton = document.querySelector("#closeButton");
+
+// Modal and panel toggle logic
+const calendarModal = document.getElementById('calendar-modal');
+const closeCalendar = document.getElementById('close');
+
 const calendarPanel = document.getElementById('calendar-panel');
 const toggleCalendar = document.getElementById('toggle-calendar');
-const closeCalendar = document.getElementById('close');
+const closePanel = document.getElementById('close-panel');
+
 const marketSummaryModal = document.getElementById('market-summary-modal');
 const toggleMarketSummary = document.getElementById('toggle-market-summary');
 const closeMarketSummary = document.getElementById('closesummary');
+
 const backtestModal = document.getElementById('backtest-modal');
 const toggleBacktest = document.getElementById('toggle-backtest');
 const closeBacktest = document.getElementById('close-backtest');
+
 const resultsPanel = document.getElementById('backtest-results-panel');
 const closeResults = document.getElementById('close-results');
+
+
+
+toggleMarketSummary.addEventListener('click', () => {
+    marketSummaryModal.style.display = 'block';
+});
+closeMarketSummary.addEventListener('click', () => {
+    marketSummaryModal.style.display = 'none';
+});
+
+toggleBacktest.addEventListener('click', () => {
+    backtestModal.style.display = 'block';
+});
+closeBacktest.addEventListener('click', () => {
+    backtestModal.style.display = 'none';
+});
+
+closeResults.addEventListener('click', () => {
+    resultsPanel.style.display = 'none';
+});
 
 // Fetch stock data with proxy
 async function fetchStockData(stockSymbol, startDate, endDate) {
@@ -1075,18 +1103,39 @@ function generatePortfolioChart(dates, portfolioValues) {
             maintainAspectRatio: false,
             scales: {
                 x: {
-                    title: { display: true, text: 'Date', color: '#fff' },
-                    ticks: { color: '#fff', maxTicksLimit: 10 },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#fff'
+                    },
+                    ticks: {
+                        color: '#fff',
+                        maxTicksLimit: 10 // Limit number of labels for readability
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
                 },
                 y: {
-                    title: { display: true, text: 'Value (€)', color: '#fff' },
-                    ticks: { color: '#fff' },
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    title: {
+                        display: true,
+                        text: 'Value (€)',
+                        color: '#fff'
+                    },
+                    ticks: {
+                        color: '#fff'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
                 }
             },
             plugins: {
-                legend: { labels: { color: '#fff' } }
+                legend: {
+                    labels: {
+                        color: '#fff'
+                    }
+                }
             }
         }
     });
@@ -1158,7 +1207,11 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         if (result.status === 'fulfilled' && result.value && !result.value.error && result.value.length >= 2) {
             const data = result.value;
             const { totalInvested, finalValue, totalShares, valueOverTime } = calculateStockInvestment(
-                data, initialAmountPerStock, monthlyAmountPerStock, startDate, endDate
+                data,
+                initialAmountPerStock,
+                monthlyAmountPerStock,
+                startDate,
+                endDate
             );
 
             portfolioTotalInvested += totalInvested;
@@ -1217,6 +1270,8 @@ function setHeaderHeight() {
     const header = document.getElementById('header');
     document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
 }
+window.addEventListener('load', setHeaderHeight);
+window.addEventListener('resize', setHeaderHeight);
 
 // Plays a sound when a market opens
 function playMarketOpenSound() {
@@ -1500,38 +1555,38 @@ function updateCards() {
         card.dataset.market = market;
 
         card.innerHTML = !isMinimized ? `
-            <div class="card-header">
-                <div class="date">${city}</div>
-                <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                    ${isOpen ? "OPEN" : "CLOSED"}
-                </div>
+    <div class="card-header">
+        <div class="date">${city}</div>
+        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+            ${isOpen ? "OPEN" : "CLOSED"}
+        </div>
+    </div>
+    <div class="card-body">
+        <h3>${market}</h3>
+        <p>${hoursDisplay}</p>
+        <div class="digital-clock">
+            <span class="time-display">${fullTime}</span>
+        </div>
+        <div class="progress">
+            <span>Time Left: <span class="time-left">${timeLeft}</span></span>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
             </div>
-            <div class="card-body">
-                <h3>${market}</h3>
-                <p>${hoursDisplay}</p>
-                <div class="digital-clock">
-                    <span class="time-display">${fullTime}</span>
-                </div>
-                <div class="progress">
-                    <span>Time Left: <span class="time-left">${timeLeft}</span></span>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
-                    </div>
-                </div>
-            </div>
-        ` : `
-            <div class="card-header">
-                <div class="date">${city}</div>
-                <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                    ${isOpen ? "OPEN" : "CLOSED"}
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="digital-clock">
-                    <span class="time-display">${fullTime}</span>
-                </div>
-            </div>
-        `;
+        </div>
+    </div>
+` : `
+    <div class="card-header">
+        <div class="date">${city}</div>
+        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+            ${isOpen ? "OPEN" : "CLOSED"}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="digital-clock">
+            <span class="time-display">${fullTime}</span>
+        </div>
+    </div>
+`;
 
         marketSection.appendChild(card);
 
@@ -1567,7 +1622,6 @@ function toggleFilterButtonVisibility(show) {
 
 // Sets up all event listeners
 function setupEventListeners() {
-    // Region filter change
     document.querySelectorAll("#region-filter, .region-filter").forEach(el => {
         el.addEventListener("change", () => {
             currentRegion = el.value;
@@ -1575,8 +1629,9 @@ function setupEventListeners() {
             updateCards();
         });
     });
+  
+  
 
-    // Toggle view (minimize/details)
     document.querySelectorAll("#toggle-view, .toggle-view").forEach(btn => {
         btn.addEventListener("click", () => {
             isMinimized = !isMinimized;
@@ -1585,7 +1640,6 @@ function setupEventListeners() {
         });
     });
 
-    // Toggle favorites
     document.querySelectorAll("#toggle-favorites, .toggle-favorites").forEach(btn => {
         btn.addEventListener("click", () => {
             showFavoritesOnly = !showFavoritesOnly;
@@ -1594,7 +1648,6 @@ function setupEventListeners() {
         });
     });
 
-    // Toggle calendar modal with calendar generation
     document.getElementById("toggle-calendar")?.addEventListener("click", () => {
         const modal = document.getElementById("calendar-modal");
         const region = document.getElementById("region-filter")?.value || "all";
@@ -1603,79 +1656,54 @@ function setupEventListeners() {
         modal.style.display = "block";
     });
 
-    // Calendar region filter change
     document.getElementById("calendar-region-filter")?.addEventListener("change", function() {
         generateCalendar(2025, this.value);
     });
 
-    // Search input
     document.getElementById("search")?.addEventListener("input", updateCards);
 
-    // Floating filter button and panel toggle
+    document.addEventListener("DOMContentLoaded", () => {
     let justOpened = false;
+
     document.getElementById("floating-filter-btn")?.addEventListener("click", (event) => {
         event.stopPropagation();
+        console.log("Button clicked");
         const panel = document.getElementById("filter-panel");
         if (panel) {
+            console.log("Opening panel");
             panel.classList.add("filter-panel-open");
             toggleFilterButtonVisibility(false);
             justOpened = true;
             setTimeout(() => { justOpened = false; }, 100);
+        } else {
+            console.log("Panel not found");
         }
     });
 
-    // Window click to close filter panel
     window.addEventListener("click", (event) => {
         if (justOpened) return;
         const panel = document.getElementById("filter-panel");
         const btn = document.getElementById("floating-filter-btn");
         if (panel && btn && !panel.contains(event.target) && !btn.contains(event.target) && panel.classList.contains("filter-panel-open")) {
+            console.log("Closing panel");
             panel.classList.remove("filter-panel-open");
             toggleFilterButtonVisibility(true);
         }
     });
 
-    // Close calendar modal
+    function toggleFilterButtonVisibility(show) {
+        const filterButton = document.getElementById("floating-filter-btn");
+        if (filterButton) filterButton.style.display = show ? "block" : "none";
+    }
+});
+
     document.querySelector(".close")?.addEventListener("click", () => {
         document.getElementById("calendar-modal").style.display = "none";
     });
 
-    // Close calendar modal when clicking outside
     window.addEventListener("click", (event) => {
         const modal = document.getElementById("calendar-modal");
         if (event.target === modal) modal.style.display = "none";
-    });
-
-    // Toggle market summary modal
-    toggleMarketSummary?.addEventListener('click', () => {
-        marketSummaryModal.style.display = 'block';
-    });
-
-    // Close market summary modal
-    closeMarketSummary?.addEventListener('click', () => {
-        marketSummaryModal.style.display = 'none';
-    });
-
-    // Close market summary modal when clicking outside
-    window.addEventListener("click", (event) => {
-        if (event.target === marketSummaryModal) {
-            marketSummaryModal.style.display = "none";
-        }
-    });
-
-    // Toggle backtest modal
-    toggleBacktest?.addEventListener('click', () => {
-        backtestModal.style.display = 'block';
-    });
-
-    // Close backtest modal
-    closeBacktest?.addEventListener('click', () => {
-        backtestModal.style.display = 'none';
-    });
-
-    // Close results panel
-    closeResults?.addEventListener('click', () => {
-        resultsPanel.style.display = 'none';
     });
 }
 
@@ -1688,7 +1716,42 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(updateCards, 1000); // Update every second
 });
 
-// Additional window listeners
 window.addEventListener("resize", setBodyPadding);
-window.addEventListener('load', setHeaderHeight);
-window.addEventListener('resize', setHeaderHeight);
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('close').addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Select elements once
+    const toggleButton = document.getElementById("toggle-market-summary");
+    const modal = document.getElementById("market-summary-modal");
+    const closeButton = document.getElementById("closesummary"); // Adjust based on your HTML
+
+    // Open modal on click or touch
+    toggleButton.addEventListener("click", () => {
+        modal.style.display = "block";
+    });
+    toggleButton.addEventListener("touchstart", (e) => {
+        e.preventDefault(); // Prevent click event overlap
+        modal.style.display = "block";
+    });
+
+    // Close modal with button
+    closeButton.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+
