@@ -16,6 +16,7 @@
     --negative: #a62828;
     --modal-bg: rgba(50, 50, 50, 0.2);
     --header-height: 0px;
+    --highlight: #01c3a8;
 }
 
 /* Reset */
@@ -547,7 +548,7 @@ th, td {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: var(--modal-bg);
+    backdrop-filter: blur(2px);
 }
 
 .modal-content {
@@ -563,6 +564,116 @@ th, td {
     left: 50%;
     transform: translate(-50%, -50%);
     max-height: 85vh;
+}
+
+#backtest-modal .modal-content {
+    padding: 40px 50px;
+}
+
+#backtest-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#backtest-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#backtest-form label {
+    color: var(--text);
+    font-weight: 500;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+}
+
+#backtest-form .form-control {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: #fff;
+    padding: 0.9rem 1.5rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#backtest-form .form-control:focus {
+    border-color: var(--highlight);
+    box-shadow: 0 0 8px rgba(1, 195, 168, 0.3);
+    outline: none;
+}
+
+#backtest-form button {
+    background: var(--open);
+    padding: 1rem;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+#close-backtest {
+  position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--closed);
+    color: white;
+    padding: 5px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+#close:hover {
+    background: #a62828;
+}
+
+#backtest-form button:hover {
+    background: #005a50;
+    transform: translateY(-2px);
+}
+
+#result {
+    margin-top: 30px;
+}
+
+#result .card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    color: var(--text);
+    transition: transform 0.2s ease;
+}
+
+#result .card:hover {
+    transform: translateY(-5px);
+}
+
+#result .card h5 {
+    color: #fff;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+}
+
+#result .card p {
+    font-size: 0.95rem;
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+/* Spinner for Loading */
+.spinner-border {
+    border-color: var(--highlight);
+    border-right-color: transparent;
 }
 
 /* Privacy Policy */
