@@ -150,7 +150,8 @@ p, ul { font-weight: 300; }
     gap: 20px;
     width: 100%;
     padding: 10px 50px 10px 10px;
-    margin-top: 50px;
+    margin-top: 20px;
+    margin-left: 20px;
 }
 
 #market-section {
