@@ -30,7 +30,7 @@ body {
     display: flex;
     flex-direction: column;
     background: var(--primary-bg);
-    margin-top: 20px;
+    margin-top: 50px;
     margin-left: 20px;
 }
 
@@ -304,7 +304,7 @@ th, td {
     transform: translate(-50%, -50%);
     z-index: 1002;
     background-color: #1a1a1e;
-    padding: 20px;
+    padding: 30px;
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
     color: #e0e0e0;
@@ -336,18 +336,23 @@ th, td {
 }
 
 .holiday-panel .close-panel {
-    background: #222127;
-    color: #fff;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--closed);
+    color: white;
+    padding: 5px 16px;
     border: none;
-    padding: 10px 20px;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 800;
     transition: background 0.3s ease;
+    text-align: center;
 }
 
 .holiday-panel .close-panel:hover {
-    background: #01c3a8;
+    background: #a62828;
 }
 
 .holiday-panel::-webkit-scrollbar {
