@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8377777238288489" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div id="main-container">
@@ -245,41 +246,15 @@ The 10-year Treasury yield was at 4.31%, up from 4.28% the previous day, with a 
             </div>
         </div>
 
-<div id="backtest-results-panel" class="panel">
+ <div id="backtest-results-panel" class="panel">
             <div class="panel-content">
                 <button id="close-results" class="btn">×</button>
                 <h2 style="color:white;">Backtest Results</h2>
                 <div id="result"></div>
+                <canvas id="portfolio-chart" style="margin-top: 20px;"></canvas>
             </div>
         </div>
 
-
-        <div id="floating-filter-btn">Filter</div>
-        <div id="filter-panel">
-            <button id="close-filter-panel">×
-            </button>
-            <select class="region-filter select">
-                <option value="all">All Regions</option>
-                <option value="North America">North America</option>
-                <option value="Europe">Europe</option>
-                <option value="Asia">Asia</option>
-                <option value="Australia">Australia</option>
-                <option value="Africa">Africa</option>
-                <option value="South America">South America</option>
-            </select>
-            <button class="toggle-view btn">Minimize</button>
-            <button class="toggle-favorites btn">Favorites</button>
-        </div>
-        <script src="./script.js"></script>
-    </div>
-<!-- New Backtest Results Panel -->
-        <div id="backtest-results-panel" class="panel">
-            <div class="panel-content">
-                <button id="close-results" class="btn">×</button>
-                <h2 style="color:white;">Backtest Results</h2>
-                <div id="result"></div>
-            </div>
-        </div>
         <div id="floating-filter-btn">Filter</div>
         <div id="filter-panel">
             <button id="close-filter-panel">×</button>
@@ -296,6 +271,7 @@ The 10-year Treasury yield was at 4.31%, up from 4.28% the previous day, with a 
             <button class="toggle-favorites btn">Favorites</button>
         </div>
     </div>
+
     <footer id="footer">
         <div class="footer-content">
             <p>© 2025 Exchange Time. All rights reserved. MIT Licence <a href="Privacy-Policy.html">Privacy Policy</a></p>
