@@ -305,12 +305,12 @@ th, td {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1002;
-    background-color: #1a1a1e;
+    background-color: rgba(0, 0, 0, 0.95);
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
     color: #e0e0e0;
-    border: 1px solid #333;
+    border: 1px solid var(--input-border);
     width: 90%;
     max-width: 500px;
     max-height: 70vh;
@@ -552,18 +552,19 @@ th, td {
 }
 
 .modal-content {
-    background-color: #000;
+    background-color: rgba(0, 0, 0, 0.95);
     padding: 30px;
     border-radius: 30px;
     width: 90%;
     max-width: 600px;
-    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow);
     overflow-y: auto;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     max-height: 85vh;
+    border: 1px solid var(--input-border);
 }
 
 #backtest-modal .modal-content {
@@ -574,6 +575,68 @@ th, td {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+.panel {
+    display: none;
+    position: fixed;
+    z-index: 1002; /* Higher than modal to ensure visibility */
+    right: 20px;
+    top: 20px;
+    width: 400px;
+    height: calc(100% - 40px);
+    background-color: rgba(0, 0, 0, 0.95);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--input-border);
+}
+
+.panel-content {
+    padding: 30px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+#close-results {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--closed);
+    padding: 5px 16px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+#close-results:hover {
+    background: #a62828;
+}
+
+#result {
+    margin-top: 20px;
+}
+
+#result .card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    color: var(--text);
+    transition: transform 0.2s ease;
+
+}
+
+#result .card h5 {
+    color: #fff;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+}
+
+#result .card p {
+    font-size: 0.95rem;
+    margin: 8px 0;
+    line-height: 1.5;
 }
 
 #backtest-form .form-group {
@@ -638,36 +701,6 @@ th, td {
 #backtest-form button:hover {
     background: #005a50;
     transform: translateY(-2px);
-}
-
-#result {
-    margin-top: 30px;
-}
-
-#result .card {
-    background: var(--card-bg);
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow);
-    color: var(--text);
-    transition: transform 0.2s ease;
-}
-
-#result .card:hover {
-    transform: translateY(-5px);
-}
-
-#result .card h5 {
-    color: #fff;
-    font-size: 1.4rem;
-    margin-bottom: 15px;
-}
-
-#result .card p {
-    font-size: 0.95rem;
-    margin: 8px 0;
-    line-height: 1.5;
 }
 
 /* Spinner for Loading */
