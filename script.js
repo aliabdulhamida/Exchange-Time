@@ -940,33 +940,21 @@ const marketHours = {
 };
 
 // State variables for managing UI and market status
-let currentRegion = "all";
-let isMinimized = false;
-let showFavoritesOnly = false;
-let favorites = new Set();
-let marketStatusHistory = {};
+let currentRegion = "all";           // Default region filter
+let isMinimized = false;             // Toggle for minimized card view
+let showFavoritesOnly = false;       // Toggle for showing only favorite markets
+let favorites = new Set();           // Set of favorite markets
+let marketStatusHistory = {};        // Tracks open/closed status history
 
-// Modal and panel elements
-const calendarModal = document.getElementById('calendar-modal');
-const toggleCalendarModal = document.getElementById('toggle-calendar-modal');
-const closeCalendarModal = document.getElementById('close-calendar-modal');
+const closeButton = document.querySelector("#closeButton");
 
-const calendarPanel = document.getElementById('calendar-panel');
-const toggleCalendarPanel = document.getElementById('toggle-calendar-panel');
-const closeCalendarPanel = document.getElementById('close-calendar-panel');
+function setHeaderHeight() {
+    const header = document.getElementById('header');
+    document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+}
 
-const marketSummaryModal = document.getElementById('market-summary-modal');
-const toggleMarketSummary = document.getElementById('toggle-market-summary');
-const closeMarketSummary = document.getElementById('closesummary');
-
-const backtestModal = document.getElementById('backtest-modal');
-const toggleBacktest = document.getElementById('toggle-backtest');
-const closeBacktest = document.getElementById('close-backtest');
-
-const resultsPanel = document.getElementById('backtest-results-panel');
-const closeResults = document.getElementById('close-results');
-
-// **Utility Functions**
+window.addEventListener('load', setHeaderHeight);
+window.addEventListener('resize', setHeaderHeight);
 
 // Plays a sound when a market opens
 function playMarketOpenSound() {
@@ -1033,7 +1021,6 @@ function getTimeUntilOpen(market, currentTime) {
     }
 }
 
-// Generates a calendar displaying holidays for a given year and region
 // Generates a calendar displaying holidays for a given year and region
 function generateCalendar(year, region) {
     const calendarDiv = document.getElementById('calendar');
@@ -1198,7 +1185,7 @@ function updateCards() {
         let daysToAdd = 0;
 
         do {
-            nextOpenDate.setDate(nextOpenDate.getDate() + (daysToAdd === 0 ? 0 : 1));
+            nextOpenDate.setDate(nextOpenDate.getDate() + (daysToAdd === 0 ? 1 : 1));
             const nextDateStr = nextOpenDate.toLocaleString('en-CA', { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' });
             const nextWeekday = nextOpenDate.toLocaleString('en-US', { timeZone: timezone, weekday: 'long' });
             const isHoliday = isMarketClosedOnHoliday(market, nextDateStr);
@@ -1251,38 +1238,38 @@ function updateCards() {
         card.dataset.market = market;
 
         card.innerHTML = !isMinimized ? `
-            <div class="card-header">
-                <div class="date">${city}</div>
-                <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                    ${isOpen ? "OPEN" : "CLOSED"}
-                </div>
+    <div class="card-header">
+        <div class="date">${city}</div>
+        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+            ${isOpen ? "OPEN" : "CLOSED"}
+        </div>
+    </div>
+    <div class="card-body">
+        <h3>${market}</h3>
+        <p>${hoursDisplay}</p>
+        <div class="digital-clock">
+            <span class="time-display">${fullTime}</span>
+        </div>
+        <div class="progress">
+            <span>Time Left: <span class="time-left">${timeLeft}</span></span>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
             </div>
-            <div class="card-body">
-                <h3>${market}</h3>
-                <p>${hoursDisplay}</p>
-                <div class="digital-clock">
-                    <span class="time-display">${fullTime}</span>
-                </div>
-                <div class="progress">
-                    <span>Time Left: <span class="time-left">${timeLeft}</span></span>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
-                    </div>
-                </div>
-            </div>
-        ` : `
-            <div class="card-header">
-                <div class="date">${city}</div>
-                <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                    ${isOpen ? "OPEN" : "CLOSED"}
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="digital-clock">
-                    <span class="time-display">${fullTime}</span>
-                </div>
-            </div>
-        `;
+        </div>
+    </div>
+` : `
+    <div class="card-header">
+        <div class="date">${city}</div>
+        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+            ${isOpen ? "OPEN" : "CLOSED"}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="digital-clock">
+            <span class="time-display">${fullTime}</span>
+        </div>
+    </div>
+`;
 
         marketSection.appendChild(card);
 
@@ -1316,18 +1303,6 @@ function toggleFilterButtonVisibility(show) {
     if (filterButton) filterButton.style.display = show ? "block" : "none";
 }
 
-const ctx = document.getElementById('portfolio-chart').getContext('2d');
-new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['Jan', 'Feb', 'Mar'],
-        datasets: [{
-            label: 'Portfolio Value',
-            data: [1000, 1100, 1200]
-        }]
-    }
-});
-
 // Sets up all event listeners
 function setupEventListeners() {
     document.querySelectorAll("#region-filter, .region-filter").forEach(el => {
@@ -1337,6 +1312,8 @@ function setupEventListeners() {
             updateCards();
         });
     });
+  
+  
 
     document.querySelectorAll("#toggle-view, .toggle-view").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1354,61 +1331,17 @@ function setupEventListeners() {
         });
     });
 
-    if (toggleCalendarModal && calendarModal) {
-        toggleCalendarModal.addEventListener("click", () => {
-            const region = document.getElementById("region-filter")?.value || "all";
-            generateCalendar(2025, region);
-            calendarModal.style.display = "block";
-        });
-    }
+    document.getElementById("toggle-calendar")?.addEventListener("click", () => {
+        const modal = document.getElementById("calendar-modal");
+        const region = document.getElementById("region-filter")?.value || "all";
+        document.getElementById("calendar-region-filter").value = region;
+        generateCalendar(2025, region);
+        modal.style.display = "block";
+    });
 
-    if (closeCalendarModal && calendarModal) {
-        closeCalendarModal.addEventListener("click", () => {
-            calendarModal.style.display = "none";
-        });
-    }
-
-    if (toggleCalendarPanel && calendarPanel) {
-        toggleCalendarPanel.addEventListener("click", () => {
-            calendarPanel.style.display = "block";
-        });
-    }
-
-    if (closeCalendarPanel && calendarPanel) {
-        closeCalendarPanel.addEventListener("click", () => {
-            calendarPanel.style.display = "none";
-        });
-    }
-
-    if (toggleMarketSummary && marketSummaryModal) {
-        toggleMarketSummary.addEventListener("click", () => {
-            marketSummaryModal.style.display = "block";
-        });
-    }
-
-    if (closeMarketSummary && marketSummaryModal) {
-        closeMarketSummary.addEventListener("click", () => {
-            marketSummaryModal.style.display = "none";
-        });
-    }
-
-    if (toggleBacktest && backtestModal) {
-        toggleBacktest.addEventListener("click", () => {
-            backtestModal.style.display = "block";
-        });
-    }
-
-    if (closeBacktest && backtestModal) {
-        closeBacktest.addEventListener("click", () => {
-            backtestModal.style.display = "none";
-        });
-    }
-
-    if (closeResults && resultsPanel) {
-        closeResults.addEventListener("click", () => {
-            resultsPanel.style.display = "none";
-        });
-    }
+    document.getElementById("calendar-region-filter")?.addEventListener("change", function() {
+        generateCalendar(2025, this.value);
+    });
 
     document.getElementById("search")?.addEventListener("input", updateCards);
 
@@ -1437,26 +1370,7 @@ function setupEventListeners() {
         }
     });
 
-    window.addEventListener("click", (event) => {
-        if (event.target === calendarModal) calendarModal.style.display = "none";
-        if (event.target === marketSummaryModal) marketSummaryModal.style.display = "none";
-        if (event.target === backtestModal) backtestModal.style.display = "none";
-    });
-}
-
-document.getElementById("toggle-calendar")?.addEventListener("click", () => {
-        const modal = document.getElementById("calendar-modal");
-        const region = document.getElementById("region-filter")?.value || "all";
-        document.getElementById("calendar-region-filter").value = region;
-        generateCalendar(2025, region);
-        modal.style.display = "block";
-    });
-
-    document.getElementById("calendar-region-filter")?.addEventListener("change", function() {
-        generateCalendar(2025, this.value);
-    });
-
-document.querySelector(".close")?.addEventListener("click", () => {
+    document.querySelector(".close")?.addEventListener("click", () => {
         document.getElementById("calendar-modal").style.display = "none";
     });
 
@@ -1464,7 +1378,7 @@ document.querySelector(".close")?.addEventListener("click", () => {
         const modal = document.getElementById("calendar-modal");
         if (event.target === modal) modal.style.display = "none";
     });
-
+}
 
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
@@ -1472,7 +1386,45 @@ document.addEventListener("DOMContentLoaded", () => {
     setupEventListeners();
     updateUI();
     updateCards();
-    setInterval(updateCards, 1000); // Update every 5 seconds for performance
+    setInterval(updateCards, 1000); // Update every second
 });
 
 window.addEventListener("resize", setBodyPadding);
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('close').addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Select elements once
+    const toggleButton = document.getElementById("toggle-market-summary");
+    const modal = document.getElementById("market-summary-modal");
+    const closeButton = document.getElementById("closesummary"); // Adjust based on your HTML
+
+    // Open modal on click or touch
+    toggleButton.addEventListener("click", () => {
+        modal.style.display = "block";
+    });
+    toggleButton.addEventListener("touchstart", (e) => {
+        e.preventDefault(); // Prevent click event overlap
+        modal.style.display = "block";
+    });
+
+    // Close modal with button
+    closeButton.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+
