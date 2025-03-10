@@ -946,6 +946,8 @@ let showFavoritesOnly = false;       // Toggle for showing only favorite markets
 let favorites = new Set();           // Set of favorite markets
 let marketStatusHistory = {};        // Tracks open/closed status history
 
+const closeButton = document.querySelector("#closeButton");
+
 // Plays a sound when a market opens
 function playMarketOpenSound() {
     const sound = document.getElementById("market-open-sound");
@@ -1228,40 +1230,38 @@ function updateCards() {
         card.dataset.market = market;
 
         card.innerHTML = !isMinimized ? `
-            <div class="card-header">
-                <div class="date">${city}</div>
-                <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                    ${isOpen ? "OPEN" : "CLOSED"}
-                </div>
+    <div class="card-header">
+        <div class="date">${city}</div>
+        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+            ${isOpen ? "OPEN" : "CLOSED"}
+        </div>
+    </div>
+    <div class="card-body">
+        <h3>${market}</h3>
+        <p>${hoursDisplay}</p>
+        <div class="digital-clock">
+            <span class="time-display">${fullTime}</span>
+        </div>
+        <div class="progress">
+            <span>Time Left: <span class="time-left">${timeLeft}</span></span>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
             </div>
-            <div class="card-body">
-                <h3>${market}</h3>
-                <p>${hoursDisplay}</p>
-                <div class="digital-clock">
-                    <span class="visually-hidden">Current Time: ${fullTime}</span>
-                    <span class="time-display">${fullTime}</span>
-                </div>
-                <div class="progress">
-                    <span>Time Left: <span class="time-left">${timeLeft}</span></span>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
-                    </div>
-                </div>
-            </div>
-        ` : `
-            <div class="card-header">
-                <div class="date">${city}</div>
-                <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                    ${isOpen ? "OPEN" : "CLOSED"}
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="digital-clock">
-                    <span class="visually-hidden">Current Time: ${fullTime}</span>
-                    <span class="time-display">${fullTime}</span>
-                </div>
-            </div>
-        `;
+        </div>
+    </div>
+` : `
+    <div class="card-header">
+        <div class="date">${city}</div>
+        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+            ${isOpen ? "OPEN" : "CLOSED"}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="digital-clock">
+            <span class="time-display">${fullTime}</span>
+        </div>
+    </div>
+`;
 
         marketSection.appendChild(card);
 
@@ -1383,11 +1383,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 window.addEventListener("resize", setBodyPadding);
 
-// Event-Listener für den "Market Summary" Button
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('close').addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
+
 document.addEventListener("DOMContentLoaded", () => {
+    // Select elements once
     const toggleButton = document.getElementById("toggle-market-summary");
     const modal = document.getElementById("market-summary-modal");
-    const closeButton = document.querySelector("#market-summary-modal .close");
+    const closeButton = document.getElementById("closesummary"); // Adjust based on your HTML
 
     // Open modal on click or touch
     toggleButton.addEventListener("click", () => {
