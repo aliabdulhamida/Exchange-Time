@@ -948,6 +948,228 @@ let marketStatusHistory = {};        // Tracks open/closed status history
 
 const closeButton = document.querySelector("#closeButton");
 
+const calendarModal = document.getElementById('calendar-modal');
+const toggleCalendar = document.getElementById('toggle-calendar');
+const closeCalendar = document.getElementById('close');
+
+const marketSummaryModal = document.getElementById('market-summary-modal');
+const toggleMarketSummary = document.getElementById('toggle-market-summary');
+const closeMarketSummary = document.getElementById('closesummary');
+
+const backtestModal = document.getElementById('backtest-modal');
+const toggleBacktest = document.getElementById('toggle-backtest');
+const closeBacktest = document.getElementById('close-backtest');
+
+toggleCalendar.addEventListener('click', () => {
+    calendarModal.style.display = 'block';
+});
+closeCalendar.addEventListener('click', () => {
+    calendarModal.style.display = 'none';
+});
+
+toggleMarketSummary.addEventListener('click', () => {
+    marketSummaryModal.style.display = 'block';
+});
+closeMarketSummary.addEventListener('click', () => {
+    marketSummaryModal.style.display = 'none';
+});
+
+toggleBacktest.addEventListener('click', () => {
+    backtestModal.style.display = 'block';
+});
+closeBacktest.addEventListener('click', () => {
+    backtestModal.style.display = 'none';
+});
+
+// Date conversion and validation functions
+function convertDateFormat(dateStr) {
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) {
+        throw new Error("Invalid date format. Please use yyyy-dd-mm.");
+    }
+    const year = parseInt(parts[0], 10);
+    const day = parseInt(parts[1], 10);
+    const month = parseInt(parts[2], 10);
+    if (isNaN(year) || isNaN(day) || isNaN(month)) {
+        throw new Error("Invalid date components.");
+    }
+    if (!isValidDate(year, month, day)) {
+        throw new Error("Invalid date.");
+    }
+    const monthStr = month.toString().padStart(2, '0');
+    const dayStr = day.toString().padStart(2, '0');
+    return `${year}-${monthStr}-${dayStr}`;
+}
+
+function formatDateToYDM(dateStr) {
+    const [year, month, day] = dateStr.split('-');
+    return `${year}-${day.padStart(2, '0')}-${month.padStart(2, '0')}`;
+}
+
+function isValidDate(year, month, day) {
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() + 1 === month && date.getDate() === day;
+}
+
+// Fetch stock data
+async function fetchStockData(stockSymbol, startDate, endDate) {
+    const baseUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}`;
+    const startTimestamp = Math.floor(new Date(startDate).getTime() / 1000);
+    const endTimestamp = Math.floor(new Date(endDate).getTime() / 1000);
+    const url = `${baseUrl}?period1=${startTimestamp}&period2=${endTimestamp}&interval=1d`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (!data.chart || data.chart.error || !data.chart.result || !data.chart.result[0]) {
+            throw new Error("No data available");
+        }
+        const timestamps = data.chart.result[0].timestamp;
+        const closes = data.chart.result[0].indicators.quote[0].close;
+        return timestamps.map((time, index) => ({
+            date: new Date(time * 1000).toISOString().split('T')[0],
+            close: closes[index]
+        }));
+    } catch (error) {
+        console.error(`Error fetching data for ${stockSymbol}:`, error);
+        return null;
+    }
+}
+
+// Calculate monthly investment
+function calculateMonthlyInvestment(data, monthlyAmount, startDate, endDate) {
+    let totalShares = 0;
+    let totalInvested = 0;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    let currentDate = new Date(start);
+
+    while (currentDate <= end) {
+        const firstOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const firstOfMonthStr = firstOfMonth.toISOString().split('T')[0];
+        const priceData = data.find(d => d.date >= firstOfMonthStr) || data[0]; // Use first available price after month start
+        if (priceData) {
+            const sharesBought = monthlyAmount / priceData.close;
+            totalShares += sharesBought;
+            totalInvested += monthlyAmount;
+        }
+        currentDate.setMonth(currentDate.getMonth() + 1);
+    }
+
+    const finalPrice = data[data.length - 1].close;
+    const finalValue = totalShares * finalPrice;
+    return { totalInvested, finalValue, totalShares };
+}
+
+// Backtest form submission handler
+document.getElementById('backtest-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const stocksInput = document.getElementById('stocks').value.toUpperCase();
+    const stockSymbols = stocksInput.split(',').map(s => s.trim()).filter(s => s !== '');
+    const amount = parseFloat(document.getElementById('amount').value);
+    const isMonthly = document.getElementById('monthly-toggle').checked;
+    const startDateInput = document.getElementById('start').value;
+    const endDateInput = document.getElementById('end').value;
+    const resultDiv = document.getElementById('result');
+
+    let startDate, endDate;
+    try {
+        startDate = convertDateFormat(startDateInput);
+        endDate = convertDateFormat(endDateInput);
+    } catch (error) {
+        resultDiv.innerHTML = `<p style='color: red;'>${error.message}</p>`;
+        return;
+    }
+
+    if (stockSymbols.length === 0) {
+        resultDiv.innerHTML = "<p style='color: red;'>Please enter at least one stock symbol!</p>";
+        return;
+    }
+    if (isNaN(amount) || amount <= 0) {
+        resultDiv.innerHTML = "<p style='color: red;'>Investment amount must be a positive number!</p>";
+        return;
+    }
+    if (new Date(startDate) >= new Date(endDate)) {
+        resultDiv.innerHTML = "<p style='color: red;'>Start date must be before end date!</p>";
+        return;
+    }
+
+    resultDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+
+    const promises = stockSymbols.map(symbol => fetchStockData(symbol, startDate, endDate));
+    const results = await Promise.allSettled(promises);
+
+    let resultHTML = "";
+    results.forEach((result, index) => {
+        const stockSymbol = stockSymbols[index];
+        if (result.status === 'fulfilled' && result.value && result.value.length >= 2) {
+            const data = result.value;
+            const displayStart = formatDateToYDM(data[0].date);
+            const displayEnd = formatDateToYDM(data[data.length - 1].date);
+
+            let totalInvested, finalValue, profit, totalShares;
+            if (isMonthly) {
+                const monthlyResult = calculateMonthlyInvestment(data, amount, startDate, endDate);
+                totalInvested = monthlyResult.totalInvested;
+                finalValue = monthlyResult.finalValue;
+                totalShares = monthlyResult.totalShares;
+                profit = finalValue - totalInvested;
+            } else {
+                const startPrice = data[0].close;
+                const endPrice = data[data.length - 1].close;
+                totalShares = amount / startPrice;
+                totalInvested = amount;
+                finalValue = totalShares * endPrice;
+                profit = finalValue - totalInvested;
+            }
+
+            resultHTML += `
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">${stockSymbol}</h5>
+                        <p>Period: ${displayStart} to ${displayEnd}</p>
+                        ${isMonthly ? '' : `<p>Start Price: ${data[0].close.toFixed(2)} €</p>`}
+                        <p>End Price: ${data[data.length - 1].close.toFixed(2)} €</p>
+                        <p>Total Invested: ${totalInvested.toFixed(2)} €</p>
+                        <p>Final Value: ${finalValue.toFixed(2)} €</p>
+                        <p>Shares: ${totalShares.toFixed(4)}</p>
+                        <p style="color: ${profit >= 0 ? 'var(--positive)' : 'var(--negative)'}">
+                            ${profit >= 0 ? 'Profit' : 'Loss'}: ${profit.toFixed(2)} €
+                        </p>
+                    </div>
+                </div>
+            `;
+        } else {
+            resultHTML += `<p style='color: red;'>No valid data found for ${stockSymbol}.</p>`;
+        }
+    });
+
+    resultDiv.innerHTML = resultHTML || "<p>No results to display.</p>";
+});
+
+// Dynamic header height adjustment
+function setHeaderHeight() {
+    const header = document.getElementById('header');
+    document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+}
+window.addEventListener('load', setHeaderHeight);
+window.addEventListener('resize', setHeaderHeight);
+
+// Toggle investment type label dynamically
+document.getElementById('monthly-toggle').addEventListener('change', function() {
+    const label = document.querySelector('#amount-group label');
+    label.textContent = this.checked ? 'Monthly Investment (€):' : 'Investment Amount (€):';
+});
+
+// Dynamic header height adjustment (from your original request)
+function setHeaderHeight() {
+    const header = document.getElementById('header');
+    document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+}
+window.addEventListener('load', setHeaderHeight);
+window.addEventListener('resize', setHeaderHeight);
+
 function setHeaderHeight() {
     const header = document.getElementById('header');
     document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
@@ -1427,3 +1649,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
