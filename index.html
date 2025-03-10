@@ -162,7 +162,6 @@
                     </div>
                     <button type="submit" class="btn">Calculate</button>
                 </form>
-                <div id="result" class="mt-4"></div>
             </div>
         </div>
         <!-- Neues Modal für Market Summary -->
@@ -248,6 +247,16 @@ The 10-year Treasury yield was at 4.31%, up from 4.28% the previous day, with a 
                 </div>
             </div>
         </div>
+
+<div id="backtest-results-panel" class="panel">
+            <div class="panel-content">
+                <button id="close-results" class="btn">×</button>
+                <h2 style="color:white;">Backtest Results</h2>
+                <div id="result"></div>
+            </div>
+        </div>
+
+
         <div id="floating-filter-btn">Filter</div>
         <div id="filter-panel">
             <button id="close-filter-panel">×
@@ -265,6 +274,30 @@ The 10-year Treasury yield was at 4.31%, up from 4.28% the previous day, with a 
             <button class="toggle-favorites btn">Favorites</button>
         </div>
         <script src="./script.js"></script>
+    </div>
+<!-- New Backtest Results Panel -->
+        <div id="backtest-results-panel" class="panel">
+            <div class="panel-content">
+                <button id="close-results" class="btn">×</button>
+                <h2 style="color:white;">Backtest Results</h2>
+                <div id="result"></div>
+            </div>
+        </div>
+        <div id="floating-filter-btn">Filter</div>
+        <div id="filter-panel">
+            <button id="close-filter-panel">×</button>
+            <select class="region-filter select">
+                <option value="all">All Regions</option>
+                <option value="North America">North America</option>
+                <option value="Europe">Europe</option>
+                <option value="Asia">Asia</option>
+                <option value="Australia">Australia</option>
+                <option value="Africa">Africa</option>
+                <option value="South America">South America</option>
+            </select>
+            <button class="toggle-view btn">Minimize</button>
+            <button class="toggle-favorites btn">Favorites</button>
+        </div>
     </div>
     <footer id="footer">
         <div class="footer-content">
