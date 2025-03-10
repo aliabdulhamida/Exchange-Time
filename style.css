@@ -299,6 +299,25 @@ th, td {
     background: #8a2f20;
 }
 
+#close-calendar-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--closed);
+    color: white;
+    padding: 5px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+#close-calendar-modal:hover { /* Fixed selector typo */
+    background: #a62828;
+}
+
 /* Holiday Panel */
 .holiday-panel {
     position: fixed;
