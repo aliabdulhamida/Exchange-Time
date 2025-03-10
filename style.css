@@ -15,6 +15,7 @@
     --positive: #2e7031;
     --negative: #a62828;
     --modal-bg: rgba(50, 50, 50, 0.2);
+    --header-height: 0px;
 }
 
 /* Reset */
@@ -30,7 +31,6 @@ body {
     display: flex;
     flex-direction: column;
     background: var(--primary-bg);
-    margin-top: 50px;
     margin-left: 20px;
 }
 
@@ -150,6 +150,7 @@ p, ul { font-weight: 300; }
     grid-template-areas: "left market right";
     gap: 20px;
     width: 100%;
+    margin-top: var(--header-height);
 }
 
 #market-section {
@@ -624,7 +625,6 @@ th, td {
         gap: 0;
         padding: 0;
         margin: 0;
-        margin-top: 30px;
         margin-bottom: 30px;
     }
 
