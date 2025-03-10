@@ -1119,7 +1119,7 @@ function showHolidayPanel(dateStr, holidays) {
     holidayPanel.innerHTML = `
         <h3>Holidays on ${new Date(dateStr).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h3>
         <ul>${holidays.map(holiday => `<li>${holiday}</li>`).join('')}</ul>
-        <button class="close-panel">Close</button>
+        <button class="close-panel">×</button>
     `;
 
     document.body.appendChild(holidayPanel);
