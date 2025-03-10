@@ -948,6 +948,7 @@ let marketStatusHistory = {};        // Tracks open/closed status history
 
 const closeButton = document.querySelector("#closeButton");
 
+// Modal toggle logic
 const calendarModal = document.getElementById('calendar-modal');
 const toggleCalendar = document.getElementById('toggle-calendar');
 const closeCalendar = document.getElementById('close');
@@ -959,6 +960,9 @@ const closeMarketSummary = document.getElementById('closesummary');
 const backtestModal = document.getElementById('backtest-modal');
 const toggleBacktest = document.getElementById('toggle-backtest');
 const closeBacktest = document.getElementById('close-backtest');
+
+const resultsPanel = document.getElementById('backtest-results-panel');
+const closeResults = document.getElementById('close-results');
 
 toggleCalendar.addEventListener('click', () => {
     calendarModal.style.display = 'block';
@@ -979,6 +983,10 @@ toggleBacktest.addEventListener('click', () => {
 });
 closeBacktest.addEventListener('click', () => {
     backtestModal.style.display = 'none';
+});
+
+closeResults.addEventListener('click', () => {
+    resultsPanel.style.display = 'none';
 });
 
 // Date conversion and validation functions
@@ -1011,28 +1019,47 @@ function isValidDate(year, month, day) {
     return date.getFullYear() === year && date.getMonth() + 1 === month && date.getDate() === day;
 }
 
-// Fetch stock data
+// Fetch stock data with proxy
 async function fetchStockData(stockSymbol, startDate, endDate) {
     const baseUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}`;
     const startTimestamp = Math.floor(new Date(startDate).getTime() / 1000);
     const endTimestamp = Math.floor(new Date(endDate).getTime() / 1000);
-    const url = `${baseUrl}?period1=${startTimestamp}&period2=${endTimestamp}&interval=1d`;
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const url = `${proxyUrl}${baseUrl}?period1=${startTimestamp}&period2=${endTimestamp}&interval=1d`;
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept': 'application/json',
+                'Origin': window.location.origin
+            }
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! Status: ${response.status}, Details: ${errorText}`);
+        }
+
         const data = await response.json();
         if (!data.chart || data.chart.error || !data.chart.result || !data.chart.result[0]) {
-            throw new Error("No data available");
+            throw new Error(data.chart?.error?.description || "No data available for this symbol or period.");
         }
+
         const timestamps = data.chart.result[0].timestamp;
         const closes = data.chart.result[0].indicators.quote[0].close;
+
+        if (!timestamps || !closes || timestamps.length === 0 || closes.length === 0) {
+            throw new Error("No valid price data returned.");
+        }
+
         return timestamps.map((time, index) => ({
             date: new Date(time * 1000).toISOString().split('T')[0],
             close: closes[index]
         }));
     } catch (error) {
-        console.error(`Error fetching data for ${stockSymbol}:`, error);
-        return null;
+        console.error(`Fetch error for ${stockSymbol}:`, error.message);
+        return { error: error.message };
     }
 }
 
@@ -1047,7 +1074,7 @@ function calculateMonthlyInvestment(data, monthlyAmount, startDate, endDate) {
     while (currentDate <= end) {
         const firstOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const firstOfMonthStr = firstOfMonth.toISOString().split('T')[0];
-        const priceData = data.find(d => d.date >= firstOfMonthStr) || data[0]; // Use first available price after month start
+        const priceData = data.find(d => d.date >= firstOfMonthStr) || data[0];
         if (priceData) {
             const sharesBought = monthlyAmount / priceData.close;
             totalShares += sharesBought;
@@ -1079,23 +1106,32 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         endDate = convertDateFormat(endDateInput);
     } catch (error) {
         resultDiv.innerHTML = `<p style='color: red;'>${error.message}</p>`;
+        resultsPanel.style.display = 'block';
+        backtestModal.style.display = 'none'; // Close modal on error
         return;
     }
 
     if (stockSymbols.length === 0) {
         resultDiv.innerHTML = "<p style='color: red;'>Please enter at least one stock symbol!</p>";
+        resultsPanel.style.display = 'block';
+        backtestModal.style.display = 'none';
         return;
     }
     if (isNaN(amount) || amount <= 0) {
         resultDiv.innerHTML = "<p style='color: red;'>Investment amount must be a positive number!</p>";
+        resultsPanel.style.display = 'block';
+        backtestModal.style.display = 'none';
         return;
     }
     if (new Date(startDate) >= new Date(endDate)) {
         resultDiv.innerHTML = "<p style='color: red;'>Start date must be before end date!</p>";
+        resultsPanel.style.display = 'block';
+        backtestModal.style.display = 'none';
         return;
     }
 
-    resultDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+    resultDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div><p>Loading data...</p></div>';
+    resultsPanel.style.display = 'block';
 
     const promises = stockSymbols.map(symbol => fetchStockData(symbol, startDate, endDate));
     const results = await Promise.allSettled(promises);
@@ -1103,7 +1139,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
     let resultHTML = "";
     results.forEach((result, index) => {
         const stockSymbol = stockSymbols[index];
-        if (result.status === 'fulfilled' && result.value && result.value.length >= 2) {
+        if (result.status === 'fulfilled' && result.value && !result.value.error && result.value.length >= 2) {
             const data = result.value;
             const displayStart = formatDateToYDM(data[0].date);
             const displayEnd = formatDateToYDM(data[data.length - 1].date);
@@ -1141,11 +1177,14 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 </div>
             `;
         } else {
-            resultHTML += `<p style='color: red;'>No valid data found for ${stockSymbol}.</p>`;
+            const errorMsg = result.value?.error || result.reason?.message || "Unknown error";
+            resultHTML += `<p style='color: red;'>Failed to fetch data for ${stockSymbol}: ${errorMsg}. <a href="https://cors-anywhere.herokuapp.com/" target="_blank">Ensure proxy is active</a>.</p>`;
         }
     });
 
-    resultDiv.innerHTML = resultHTML || "<p>No results to display.</p>";
+    resultDiv.innerHTML = resultHTML || "<p>No results to display. Check your inputs or internet connection.</p>";
+    resultsPanel.style.display = 'block';
+    backtestModal.style.display = 'none'; // Close modal after results
 });
 
 // Dynamic header height adjustment
@@ -1161,22 +1200,6 @@ document.getElementById('monthly-toggle').addEventListener('change', function() 
     const label = document.querySelector('#amount-group label');
     label.textContent = this.checked ? 'Monthly Investment (€):' : 'Investment Amount (€):';
 });
-
-// Dynamic header height adjustment (from your original request)
-function setHeaderHeight() {
-    const header = document.getElementById('header');
-    document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
-}
-window.addEventListener('load', setHeaderHeight);
-window.addEventListener('resize', setHeaderHeight);
-
-function setHeaderHeight() {
-    const header = document.getElementById('header');
-    document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
-}
-
-window.addEventListener('load', setHeaderHeight);
-window.addEventListener('resize', setHeaderHeight);
 
 // Plays a sound when a market opens
 function playMarketOpenSound() {
