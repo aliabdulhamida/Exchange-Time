@@ -948,8 +948,8 @@ let marketStatusHistory = {};        // Tracks open/closed status history
 
 const closeButton = document.querySelector("#closeButton");
 
-// Modal toggle logic
-const calendarModal = document.getElementById('calendar-modal');
+// Modal and panel toggle logic
+const calendarPanel = document.getElementById('calendar-panel');
 const toggleCalendar = document.getElementById('toggle-calendar');
 const closeCalendar = document.getElementById('close');
 
@@ -965,10 +965,10 @@ const resultsPanel = document.getElementById('backtest-results-panel');
 const closeResults = document.getElementById('close-results');
 
 toggleCalendar.addEventListener('click', () => {
-    calendarModal.style.display = 'block';
+    calendarPanel.style.display = 'block';
 });
 closeCalendar.addEventListener('click', () => {
-    calendarModal.style.display = 'none';
+    calendarPanel.style.display = 'none';
 });
 
 toggleMarketSummary.addEventListener('click', () => {
@@ -988,36 +988,6 @@ closeBacktest.addEventListener('click', () => {
 closeResults.addEventListener('click', () => {
     resultsPanel.style.display = 'none';
 });
-
-// Date conversion and validation functions
-function convertDateFormat(dateStr) {
-    const parts = dateStr.split('-');
-    if (parts.length !== 3) {
-        throw new Error("Invalid date format. Please use yyyy-dd-mm.");
-    }
-    const year = parseInt(parts[0], 10);
-    const day = parseInt(parts[1], 10);
-    const month = parseInt(parts[2], 10);
-    if (isNaN(year) || isNaN(day) || isNaN(month)) {
-        throw new Error("Invalid date components.");
-    }
-    if (!isValidDate(year, month, day)) {
-        throw new Error("Invalid date.");
-    }
-    const monthStr = month.toString().padStart(2, '0');
-    const dayStr = day.toString().padStart(2, '0');
-    return `${year}-${monthStr}-${dayStr}`;
-}
-
-function formatDateToYDM(dateStr) {
-    const [year, month, day] = dateStr.split('-');
-    return `${year}-${day.padStart(2, '0')}-${month.padStart(2, '0')}`;
-}
-
-function isValidDate(year, month, day) {
-    const date = new Date(year, month - 1, day);
-    return date.getFullYear() === year && date.getMonth() + 1 === month && date.getDate() === day;
-}
 
 // Fetch stock data with proxy
 async function fetchStockData(stockSymbol, startDate, endDate) {
@@ -1063,22 +1033,32 @@ async function fetchStockData(stockSymbol, startDate, endDate) {
     }
 }
 
-// Calculate monthly investment
-function calculateMonthlyInvestment(data, monthlyAmount, startDate, endDate) {
+// Calculate investment for a single stock (initial + monthly)
+function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerStock, startDate, endDate) {
     let totalShares = 0;
     let totalInvested = 0;
     const start = new Date(startDate);
     const end = new Date(endDate);
-    let currentDate = new Date(start);
 
+    // Initial investment at start date
+    const startPrice = data[0].close;
+    if (initialAmountPerStock > 0) {
+        const initialShares = initialAmountPerStock / startPrice;
+        totalShares += initialShares;
+        totalInvested += initialAmountPerStock;
+    }
+
+    // Monthly investments
+    let currentDate = new Date(start);
+    currentDate.setMonth(currentDate.getMonth() + 1); // Start from next month
     while (currentDate <= end) {
         const firstOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const firstOfMonthStr = firstOfMonth.toISOString().split('T')[0];
         const priceData = data.find(d => d.date >= firstOfMonthStr) || data[0];
-        if (priceData) {
-            const sharesBought = monthlyAmount / priceData.close;
+        if (priceData && monthlyAmountPerStock > 0) {
+            const sharesBought = monthlyAmountPerStock / priceData.close;
             totalShares += sharesBought;
-            totalInvested += monthlyAmount;
+            totalInvested += monthlyAmountPerStock;
         }
         currentDate.setMonth(currentDate.getMonth() + 1);
     }
@@ -1088,28 +1068,17 @@ function calculateMonthlyInvestment(data, monthlyAmount, startDate, endDate) {
     return { totalInvested, finalValue, totalShares };
 }
 
-// Backtest form submission handler
+// Backtest form submission handler (portfolio sum with initial + monthly)
 document.getElementById('backtest-form').addEventListener('submit', async function(event) {
     event.preventDefault();
 
     const stocksInput = document.getElementById('stocks').value.toUpperCase();
     const stockSymbols = stocksInput.split(',').map(s => s.trim()).filter(s => s !== '');
-    const amount = parseFloat(document.getElementById('amount').value);
-    const isMonthly = document.getElementById('monthly-toggle').checked;
-    const startDateInput = document.getElementById('start').value;
-    const endDateInput = document.getElementById('end').value;
+    const initialAmount = parseFloat(document.getElementById('initial-amount').value);
+    const monthlyAmount = parseFloat(document.getElementById('monthly-amount').value);
+    const startDate = document.getElementById('start').value;
+    const endDate = document.getElementById('end').value;
     const resultDiv = document.getElementById('result');
-
-    let startDate, endDate;
-    try {
-        startDate = convertDateFormat(startDateInput);
-        endDate = convertDateFormat(endDateInput);
-    } catch (error) {
-        resultDiv.innerHTML = `<p style='color: red;'>${error.message}</p>`;
-        resultsPanel.style.display = 'block';
-        backtestModal.style.display = 'none'; // Close modal on error
-        return;
-    }
 
     if (stockSymbols.length === 0) {
         resultDiv.innerHTML = "<p style='color: red;'>Please enter at least one stock symbol!</p>";
@@ -1117,8 +1086,20 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         backtestModal.style.display = 'none';
         return;
     }
-    if (isNaN(amount) || amount <= 0) {
-        resultDiv.innerHTML = "<p style='color: red;'>Investment amount must be a positive number!</p>";
+    if (isNaN(initialAmount) || initialAmount < 0) {
+        resultDiv.innerHTML = "<p style='color: red;'>Initial amount must be a non-negative number!</p>";
+        resultsPanel.style.display = 'block';
+        backtestModal.style.display = 'none';
+        return;
+    }
+    if (isNaN(monthlyAmount) || monthlyAmount < 0) {
+        resultDiv.innerHTML = "<p style='color: red;'>Monthly amount must be a non-negative number!</p>";
+        resultsPanel.style.display = 'block';
+        backtestModal.style.display = 'none';
+        return;
+    }
+    if (initialAmount === 0 && monthlyAmount === 0) {
+        resultDiv.innerHTML = "<p style='color: red;'>At least one of initial or monthly amount must be greater than zero!</p>";
         resultsPanel.style.display = 'block';
         backtestModal.style.display = 'none';
         return;
@@ -1133,58 +1114,68 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
     resultDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div><p>Loading data...</p></div>';
     resultsPanel.style.display = 'block';
 
+    // Fetch data for all stocks
     const promises = stockSymbols.map(symbol => fetchStockData(symbol, startDate, endDate));
     const results = await Promise.allSettled(promises);
 
-    let resultHTML = "";
+    let portfolioTotalInvested = 0;
+    let portfolioFinalValue = 0;
+    let portfolioShares = 0;
+    let allValid = true;
+    let errorMessages = [];
+
+    // Split amounts equally among stocks
+    const initialAmountPerStock = initialAmount / stockSymbols.length;
+    const monthlyAmountPerStock = monthlyAmount / stockSymbols.length;
+
     results.forEach((result, index) => {
         const stockSymbol = stockSymbols[index];
         if (result.status === 'fulfilled' && result.value && !result.value.error && result.value.length >= 2) {
             const data = result.value;
-            const displayStart = formatDateToYDM(data[0].date);
-            const displayEnd = formatDateToYDM(data[data.length - 1].date);
+            const { totalInvested, finalValue, totalShares } = calculateStockInvestment(
+                data,
+                initialAmountPerStock,
+                monthlyAmountPerStock,
+                startDate,
+                endDate
+            );
 
-            let totalInvested, finalValue, profit, totalShares;
-            if (isMonthly) {
-                const monthlyResult = calculateMonthlyInvestment(data, amount, startDate, endDate);
-                totalInvested = monthlyResult.totalInvested;
-                finalValue = monthlyResult.finalValue;
-                totalShares = monthlyResult.totalShares;
-                profit = finalValue - totalInvested;
-            } else {
-                const startPrice = data[0].close;
-                const endPrice = data[data.length - 1].close;
-                totalShares = amount / startPrice;
-                totalInvested = amount;
-                finalValue = totalShares * endPrice;
-                profit = finalValue - totalInvested;
-            }
-
-            resultHTML += `
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">${stockSymbol}</h5>
-                        <p>Period: ${displayStart} to ${displayEnd}</p>
-                        ${isMonthly ? '' : `<p>Start Price: ${data[0].close.toFixed(2)} €</p>`}
-                        <p>End Price: ${data[data.length - 1].close.toFixed(2)} €</p>
-                        <p>Total Invested: ${totalInvested.toFixed(2)} €</p>
-                        <p>Final Value: ${finalValue.toFixed(2)} €</p>
-                        <p>Shares: ${totalShares.toFixed(4)}</p>
-                        <p style="color: ${profit >= 0 ? 'var(--positive)' : 'var(--negative)'}">
-                            ${profit >= 0 ? 'Profit' : 'Loss'}: ${profit.toFixed(2)} €
-                        </p>
-                    </div>
-                </div>
-            `;
+            portfolioTotalInvested += totalInvested;
+            portfolioFinalValue += finalValue;
+            portfolioShares += totalShares;
         } else {
+            allValid = false;
             const errorMsg = result.value?.error || result.reason?.message || "Unknown error";
-            resultHTML += `<p style='color: red;'>Failed to fetch data for ${stockSymbol}: ${errorMsg}. <a href="https://cors-anywhere.herokuapp.com/" target="_blank">Ensure proxy is active</a>.</p>`;
+            errorMessages.push(`Failed to fetch data for ${stockSymbol}: ${errorMsg}`);
         }
     });
 
+    let resultHTML = "";
+    if (allValid) {
+        const portfolioProfit = portfolioFinalValue - portfolioTotalInvested;
+        resultHTML = `
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Portfolio: ${stockSymbols.join(', ')}</h5>
+                    <p>Period: ${startDate} to ${endDate}</p>
+                    <p>Initial Investment: ${initialAmount.toFixed(2)} €</p>
+                    <p>Monthly Investment: ${monthlyAmount.toFixed(2)} €</p>
+                    <p>Total Invested: ${portfolioTotalInvested.toFixed(2)} €</p>
+                    <p>Final Value: ${portfolioFinalValue.toFixed(2)} €</p>
+                    <p>Total Shares: ${portfolioShares.toFixed(4)}</p>
+                    <p style="color: ${portfolioProfit >= 0 ? 'var(--positive)' : 'var(--negative)'}">
+                        ${portfolioProfit >= 0 ? 'Profit' : 'Loss'}: ${portfolioProfit.toFixed(2)} €
+                    </p>
+                </div>
+            </div>
+        `;
+    } else {
+        resultHTML = `<p style='color: red;'>${errorMessages.join('<br>')}. <a href="https://cors-anywhere.herokuapp.com/" target="_blank">Ensure proxy is active</a>.</p>`;
+    }
+
     resultDiv.innerHTML = resultHTML || "<p>No results to display. Check your inputs or internet connection.</p>";
     resultsPanel.style.display = 'block';
-    backtestModal.style.display = 'none'; // Close modal after results
+    backtestModal.style.display = 'none';
 });
 
 // Dynamic header height adjustment
@@ -1194,12 +1185,6 @@ function setHeaderHeight() {
 }
 window.addEventListener('load', setHeaderHeight);
 window.addEventListener('resize', setHeaderHeight);
-
-// Toggle investment type label dynamically
-document.getElementById('monthly-toggle').addEventListener('change', function() {
-    const label = document.querySelector('#amount-group label');
-    label.textContent = this.checked ? 'Monthly Investment (€):' : 'Investment Amount (€):';
-});
 
 // Plays a sound when a market opens
 function playMarketOpenSound() {
