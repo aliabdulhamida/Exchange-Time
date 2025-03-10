@@ -1472,7 +1472,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupEventListeners();
     updateUI();
     updateCards();
-    setInterval(updateCards, 1000); // Update every 5 seconds for performance
+    setInterval(updateCards, 1000); 
 });
 
 window.addEventListener("resize", setBodyPadding);
