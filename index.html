@@ -29,6 +29,7 @@
                 <button id="toggle-view" class="btn">Minimize</button>
                 <button id="toggle-favorites" class="btn">Favorites</button>
                 <button id="toggle-calendar" class="btn">Calendar</button>
+                <button id="toggle-backtest" class="btn">Backtest</button>
                 <button id="toggle-market-summary" class="btn">Market Summary</button>
                 <!-- Neuer Button -->
             </div>
@@ -130,9 +131,41 @@
                 <div id="calendar"></div>
             </div>
         </div>
+       <!-- Backtest Modal with Monthly Investment -->
+        <div id="backtest-modal" class="modal">
+            <div class="modal-content">
+                <button id="close-backtest" class="btn">×</button>
+                <h2 style="color:white;">Stock Backtest Tool</h2>
+                <form id="backtest-form">
+                    <div class="form-group">
+                        <label for="stocks">Stock Symbols (comma-separated):</label>
+                        <input type="text" class="form-control" id="stocks" placeholder="e.g., AAPL, TSLA" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="investment-type">Investment Type:</label>
+                        <div class="investment-toggle">
+                            <input type="checkbox" id="monthly-toggle" name="investment-type">
+                            <label for="monthly-toggle">Monthly Investment</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="amount-group">
+                        <label for="amount">Investment Amount (€):</label>
+                        <input type="number" class="form-control" id="amount" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="start">Start Date (yyyy-dd-mm):</label>
+                        <input type="text" class="form-control" id="start" placeholder="yyyy-dd-mm" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end">End Date (yyyy-dd-mm):</label>
+                        <input type="text" class="form-control" id="end" placeholder="yyyy-dd-mm" required>
+                    </div>
+                    <button type="submit" class="btn">Calculate</button>
+                </form>
+                <div id="result" class="mt-4"></div>
+            </div>
+        </div>
         <!-- Neues Modal für Market Summary -->
-
-
 <div id="market-summary-modal" class="modal">
     <div class="modal-content">
         <button id="closesummary" class="btn">×</button>
