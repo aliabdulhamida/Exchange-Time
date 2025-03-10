@@ -116,7 +116,7 @@
         </div>
         <div id="calendar-modal" class="modal">
             <div class="modal-content">
-                <span class="close">×</span>
+                <button id="close" class="btn">×</button>
                 <h2 style="color:white;">Market Holidays</h2>
                 <select id="calendar-region-filter" class="select">
                     <option value="all">All Regions</option>
@@ -131,10 +131,12 @@
             </div>
         </div>
         <!-- Neues Modal für Market Summary -->
-        <div id="market-summary-modal" class="modal">
-            <div class="modal-content">
-                <span class="close">×</span>
-                <h2 style="color:white;">Market Summary</h2>
+
+
+<div id="market-summary-modal" class="modal">
+    <div class="modal-content">
+        <button id="closesummary" class="btn">×</button>
+      <h2 style="color:white;">Market Summary</h2>
               <p style="color:white;">07.03.2025</p>
                 <div id="market-summary-content"><br></br>
                   <h3 style="color:white;">Key Points</h3>    <ul style="color:white;">
@@ -215,9 +217,7 @@ The 10-year Treasury yield was at 4.31%, up from 4.28% the previous day, with a 
         </div>
         <div id="floating-filter-btn">Filter</div>
         <div id="filter-panel">
-            <button id="close-filter-panel">
-                <span class="visually-hidden">Close filter panel</span>
-                ×
+            <button id="close-filter-panel">×
             </button>
             <select class="region-filter select">
                 <option value="all">All Regions</option>
