@@ -423,6 +423,7 @@ th, td {
 
 /* Footer */
 #footer, #footerprivacy {
+    margin-top: auto;
     background: var(--primary-bg);
     color: var(--text);
     padding: 10px 0;
