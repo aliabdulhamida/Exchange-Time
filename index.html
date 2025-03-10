@@ -142,23 +142,20 @@
                         <input type="text" class="form-control" id="stocks" placeholder="e.g., AAPL, TSLA" required>
                     </div>
                     <div class="form-group">
-                        <label for="investment-type">Investment Type:</label>
-                        <div class="investment-toggle">
-                            <input type="checkbox" id="monthly-toggle" name="investment-type">
-                            <label for="monthly-toggle">Monthly Investment</label>
-                        </div>
-                    </div>
-                    <div class="form-group" id="amount-group">
-                        <label for="amount">Investment Amount (€):</label>
-                        <input type="number" class="form-control" id="amount" step="0.01" required>
+                        <label for="initial-amount">Initial Amount (€):</label>
+                        <input type="number" class="form-control" id="initial-amount" step="0.01" min="0" value="0" required>
                     </div>
                     <div class="form-group">
-                        <label for="start">Start Date (yyyy-dd-mm):</label>
-                        <input type="text" class="form-control" id="start" placeholder="yyyy-dd-mm" required>
+                        <label for="monthly-amount">Monthly Amount (€):</label>
+                        <input type="number" class="form-control" id="monthly-amount" step="0.01" min="0" value="0" required>
                     </div>
                     <div class="form-group">
-                        <label for="end">End Date (yyyy-dd-mm):</label>
-                        <input type="text" class="form-control" id="end" placeholder="yyyy-dd-mm" required>
+                        <label for="start">Start Date:</label>
+                        <input type="date" class="form-control" id="start" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end">End Date:</label>
+                        <input type="date" class="form-control" id="end" required>
                     </div>
                     <button type="submit" class="btn">Calculate</button>
                 </form>
