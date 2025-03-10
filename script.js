@@ -949,6 +949,10 @@ let marketStatusHistory = {};        // Tracks open/closed status history
 const closeButton = document.querySelector("#closeButton");
 
 // Modal and panel toggle logic
+const calendarModal = document.getElementById('calendar-modal');
+const toggleCalendarModal = document.getElementById('toggle-calendar');
+const closeCalendarModal = document.getElementById('close');
+
 const calendarPanel = document.getElementById('calendar-panel');
 const toggleCalendar = document.getElementById('toggle-calendar');
 const closeCalendar = document.getElementById('close');
@@ -965,10 +969,10 @@ const resultsPanel = document.getElementById('backtest-results-panel');
 const closeResults = document.getElementById('close-results');
 
 toggleCalendar.addEventListener('click', () => {
-    calendarPanel.style.display = 'block';
+    calendarModal.style.display = 'block';
 });
 closeCalendar.addEventListener('click', () => {
-    calendarPanel.style.display = 'none';
+    calendarModal.style.display = 'none';
 });
 
 toggleMarketSummary.addEventListener('click', () => {
