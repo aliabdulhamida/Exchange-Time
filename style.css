@@ -921,36 +921,47 @@ th, td {
         --favorite-border: rgba(184, 147, 0, 0.3);
         --positive: #2e7031;
         --negative: #a62828;
-        --modal-bg: rgba(50, 50, 50, 0.2);
+        --modal-bg: rgba(240, 240, 240, 0.9);
         --header-height: 0px;
         --highlight: #01c3a8;
     }
-}
 
-/* Custom */
+    .card {
+        color: var(--text);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 
-@media (prefers-color-scheme: custom) {
-    :root {
-        --primary-bg: #f0f0f0;
-        --card-bg: #fff;
-        --text: #333;
-        --open: #007a6e;
-        --closed: #b33936;
-        --input-bg: #f0f0f0;
-        --button-bg: #007a6e;
-        --button-hover: #005a50;
-        --input-border: #ccc;
-        --favorite-border: rgba(184, 147, 0, 0.3);
-        --positive: #2e7031;
-        --negative: #a62828;
-        --modal-bg: rgba(50, 50, 50, 0.2);
-        --header-height: 0px;
-        --highlight: #01c3a8;
+    .card-body h3 {
+        color: var(--text);
+    }
+
+    .digital-clock {
+        color: var(--text);
+    }
+
+    .progress span {
+        color: var(--text);
+    }
+
+    .modal-content {
+        background-color: var(--card-bg);
+        color: var(--text);
+    }
+
+    .panel {
+        background-color: var(--card-bg);
+    }
+
+    #search {
+        color: var(--text);
+    }
+
+    .select {
+        color: var(--text);
     }
 }
 
 /* Custom Media Query */
-
 @media (max-width: 600px) {
     body {
         margin-left: 0;
