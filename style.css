@@ -903,6 +903,10 @@ th, td {
         --header-height: 0px;
         --highlight: #01c3a8;
     }
+
+    .modal-content {
+        color: var(--text);
+    }
 }
 
 /* Light Mode */
@@ -944,8 +948,8 @@ th, td {
     }
 
     .modal-content {
-        background-color: var(--card-bg);
-        color: var(--text);
+        background-color: var(--card-bg) !important;
+        color: var(--text) !important;
     }
 
     .panel {
