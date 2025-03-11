@@ -987,6 +987,13 @@ closeResults.addEventListener('click', () => {
     resultsPanel.style.display = 'none';
 });
 
+// Close modal when clicking outside
+window.addEventListener('click', (event) => {
+    if (event.target === backtestModal) {
+        backtestModal.style.display = 'none';
+    }
+});
+
 // Fetch stock data with proxy
 async function fetchStockData(stockSymbol, startDate, endDate) {
     const baseUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}`;
@@ -1048,7 +1055,6 @@ function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerS
     }
 
     // Track value for each date
-    let currentDate = new Date(start);
     let nextInvestmentDate = new Date(start);
     nextInvestmentDate.setMonth(nextInvestmentDate.getMonth() + 1);
     nextInvestmentDate.setDate(1);
@@ -1078,7 +1084,13 @@ function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerS
 
 // Generate portfolio chart
 function generatePortfolioChart(dates, portfolioValues) {
-    const ctx = document.getElementById('portfolio-chart').getContext('2d');
+    const canvas = document.getElementById('portfolio-chart');
+    
+    // Set fixed size for chart
+    canvas.style.width = '800px';  
+    canvas.style.height = '200px';
+    
+    const ctx = canvas.getContext('2d');
     
     // Destroy existing chart if it exists to avoid overlap
     if (window.portfolioChart instanceof Chart) {
@@ -1232,22 +1244,13 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
     let resultHTML = "";
     if (allValid) {
         const portfolioProfit = portfolioFinalValue - portfolioTotalInvested;
+        const profitPercent = (portfolioProfit / portfolioTotalInvested) * 100;
+        const profitColor = portfolioFinalValue >= portfolioTotalInvested ? "#00ff00" : "#ff0000";
         resultHTML = `
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Portfolio: ${stockSymbols.join(', ')}</h5>
-                    <p>Period: ${startDate} to ${endDate}</p>
-                    <p>Initial Investment: ${initialAmount.toFixed(2)} €</p>
-                    <p>Monthly Investment: ${monthlyAmount.toFixed(2)} €</p>
-                    <p>Total Invested: ${portfolioTotalInvested.toFixed(2)} €</p>
-                    <p>Final Value: ${portfolioFinalValue.toFixed(2)} €</p>
-                    <p>Total Shares: ${portfolioShares.toFixed(4)}</p>
-                    <p style="color: ${portfolioProfit >= 0 ? 'var(--positive)' : 'var(--negative)'}">
-                        ${portfolioProfit >= 0 ? 'Profit' : 'Loss'}: ${portfolioProfit.toFixed(2)} €
-                    </p>
-                </div>
-            </div>
-            <canvas id="portfolio-chart" style="margin-top: 20px;"></canvas>
+            <p style="color: ${profitColor};">Portfolio total invested: €${portfolioTotalInvested.toFixed(2)}</p>
+            <p style="color: ${profitColor};">Portfolio final value: €${portfolioFinalValue.toFixed(2)}</p>
+            <p style="color: ${profitColor};">Portfolio profit: €${portfolioProfit.toFixed(2)} (${profitPercent.toFixed(2)}%)</p>
+            <p style="color: ${profitColor};">Portfolio shares: ${portfolioShares.toFixed(2)}</p>
         `;
 
         // Prepare chart data
