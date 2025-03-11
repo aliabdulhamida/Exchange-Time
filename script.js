@@ -940,20 +940,21 @@ const marketHours = {
 };
 
 // State variables for managing UI and market status
-let currentRegion = "all";
-let isMinimized = false;
-let showFavoritesOnly = false;
-let favorites = new Set();
-let marketStatusHistory = {};
+let currentRegion = "all";           // Default region filter
+let isMinimized = false;             // Toggle for minimized card view
+let showFavoritesOnly = false;       // Toggle for showing only favorite markets
+let favorites = new Set();           // Set of favorite markets
+let marketStatusHistory = {};        // Tracks open/closed status history
 
-// Modal and panel elements
+const closeButton = document.querySelector("#closeButton");
+
+// Modal and panel toggle logic
 const calendarModal = document.getElementById('calendar-modal');
-const toggleCalendarModal = document.getElementById('toggle-calendar-modal');
-const closeCalendarModal = document.getElementById('close-calendar-modal');
+const closeCalendar = document.getElementById('close');
 
 const calendarPanel = document.getElementById('calendar-panel');
-const toggleCalendarPanel = document.getElementById('toggle-calendar-panel');
-const closeCalendarPanel = document.getElementById('close-calendar-panel');
+const toggleCalendar = document.getElementById('toggle-calendar');
+const closePanel = document.getElementById('close-panel');
 
 const marketSummaryModal = document.getElementById('market-summary-modal');
 const toggleMarketSummary = document.getElementById('toggle-market-summary');
@@ -966,7 +967,311 @@ const closeBacktest = document.getElementById('close-backtest');
 const resultsPanel = document.getElementById('backtest-results-panel');
 const closeResults = document.getElementById('close-results');
 
-// **Utility Functions**
+
+
+toggleMarketSummary.addEventListener('click', () => {
+    marketSummaryModal.style.display = 'block';
+});
+closeMarketSummary.addEventListener('click', () => {
+    marketSummaryModal.style.display = 'none';
+});
+
+toggleBacktest.addEventListener('click', () => {
+    backtestModal.style.display = 'block';
+});
+closeBacktest.addEventListener('click', () => {
+    backtestModal.style.display = 'none';
+});
+
+closeResults.addEventListener('click', () => {
+    resultsPanel.style.display = 'none';
+});
+
+// Fetch stock data with proxy
+async function fetchStockData(stockSymbol, startDate, endDate) {
+    const baseUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}`;
+    const startTimestamp = Math.floor(new Date(startDate).getTime() / 1000);
+    const endTimestamp = Math.floor(new Date(endDate).getTime() / 1000);
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const url = `${proxyUrl}${baseUrl}?period1=${startTimestamp}&period2=${endTimestamp}&interval=1d`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept': 'application/json',
+                'Origin': window.location.origin
+            }
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! Status: ${response.status}, Details: ${errorText}`);
+        }
+
+        const data = await response.json();
+        if (!data.chart || data.chart.error || !data.chart.result || !data.chart.result[0]) {
+            throw new Error(data.chart?.error?.description || "No data available for this symbol or period.");
+        }
+
+        const timestamps = data.chart.result[0].timestamp;
+        const closes = data.chart.result[0].indicators.quote[0].close;
+
+        if (!timestamps || !closes || timestamps.length === 0 || closes.length === 0) {
+            throw new Error("No valid price data returned.");
+        }
+
+        return timestamps.map((time, index) => ({
+            date: new Date(time * 1000).toISOString().split('T')[0],
+            close: closes[index]
+        }));
+    } catch (error) {
+        console.error(`Fetch error for ${stockSymbol}:`, error.message);
+        return { error: error.message };
+    }
+}
+
+// Calculate investment for a single stock (initial + monthly) and track daily values
+function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerStock, startDate, endDate) {
+    let totalShares = 0;
+    let totalInvested = 0;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const valueOverTime = [];
+
+    // Initial investment at start date
+    const startPrice = data[0].close;
+    if (initialAmountPerStock > 0) {
+        const initialShares = initialAmountPerStock / startPrice;
+        totalShares += initialShares;
+        totalInvested += initialAmountPerStock;
+    }
+
+    // Track value for each date
+    let currentDate = new Date(start);
+    let nextInvestmentDate = new Date(start);
+    nextInvestmentDate.setMonth(nextInvestmentDate.getMonth() + 1);
+    nextInvestmentDate.setDate(1);
+
+    for (const day of data) {
+        const currentDay = new Date(day.date);
+
+        // Add monthly investment if it's the first trading day of the month
+        if (monthlyAmountPerStock > 0 && currentDay >= nextInvestmentDate && currentDay <= end) {
+            const sharesBought = monthlyAmountPerStock / day.close;
+            totalShares += sharesBought;
+            totalInvested += monthlyAmountPerStock;
+            nextInvestmentDate.setMonth(nextInvestmentDate.getMonth() + 1);
+        }
+
+        // Record portfolio value for this day
+        valueOverTime.push({
+            date: day.date,
+            value: totalShares * day.close
+        });
+    }
+
+    const finalPrice = data[data.length - 1].close;
+    const finalValue = totalShares * finalPrice;
+    return { totalInvested, finalValue, totalShares, valueOverTime };
+}
+
+// Generate portfolio chart
+function generatePortfolioChart(dates, portfolioValues) {
+    const ctx = document.getElementById('portfolio-chart').getContext('2d');
+    
+    // Destroy existing chart if it exists to avoid overlap
+    if (window.portfolioChart instanceof Chart) {
+        window.portfolioChart.destroy();
+    }
+
+    window.portfolioChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Portfolio Value (€)',
+                data: portfolioValues,
+                borderColor: '#00cc00',
+                backgroundColor: 'rgba(0, 204, 0, 0.1)',
+                fill: true,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#fff'
+                    },
+                    ticks: {
+                        color: '#fff',
+                        maxTicksLimit: 10 // Limit number of labels for readability
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Value (€)',
+                        color: '#fff'
+                    },
+                    ticks: {
+                        color: '#fff'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#fff'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Backtest form submission handler (portfolio sum with chart)
+document.getElementById('backtest-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const stocksInput = document.getElementById('stocks').value.toUpperCase();
+    const stockSymbols = stocksInput.split(',').map(s => s.trim()).filter(s => s !== '');
+    const initialAmount = parseFloat(document.getElementById('initial-amount').value);
+    const monthlyAmount = parseFloat(document.getElementById('monthly-amount').value);
+    const startDate = document.getElementById('start').value;
+    const endDate = document.getElementById('end').value;
+    const resultDiv = document.getElementById('result');
+
+    if (stockSymbols.length === 0) {
+        resultDiv.innerHTML = "<p style='color: red;'>Please enter at least one stock symbol!</p>";
+        resultsPanel.style.display = 'block';
+        backtestModal.style.display = 'none';
+        return;
+    }
+    if (isNaN(initialAmount) || initialAmount < 0) {
+        resultDiv.innerHTML = "<p style='color: red;'>Initial amount must be a non-negative number!</p>";
+        resultsPanel.style.display = 'block';
+        backtestModal.style.display = 'none';
+        return;
+    }
+    if (isNaN(monthlyAmount) || monthlyAmount < 0) {
+        resultDiv.innerHTML = "<p style='color: red;'>Monthly amount must be a non-negative number!</p>";
+        resultsPanel.style.display = 'block';
+        backtestModal.style.display = 'none';
+        return;
+    }
+    if (initialAmount === 0 && monthlyAmount === 0) {
+        resultDiv.innerHTML = "<p style='color: red;'>At least one of initial or monthly amount must be greater than zero!</p>";
+        resultsPanel.style.display = 'block';
+        backtestModal.style.display = 'none';
+        return;
+    }
+    if (new Date(startDate) >= new Date(endDate)) {
+        resultDiv.innerHTML = "<p style='color: red;'>Start date must be before end date!</p>";
+        resultsPanel.style.display = 'block';
+        backtestModal.style.display = 'none';
+        return;
+    }
+
+    resultDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div><p>Loading data...</p></div>';
+    resultsPanel.style.display = 'block';
+
+    // Fetch data for all stocks
+    const promises = stockSymbols.map(symbol => fetchStockData(symbol, startDate, endDate));
+    const results = await Promise.allSettled(promises);
+
+    let portfolioTotalInvested = 0;
+    let portfolioFinalValue = 0;
+    let portfolioShares = 0;
+    let allValid = true;
+    let errorMessages = [];
+    const portfolioValuesOverTime = {};
+    
+    // Split amounts equally among stocks
+    const initialAmountPerStock = initialAmount / stockSymbols.length;
+    const monthlyAmountPerStock = monthlyAmount / stockSymbols.length;
+
+    results.forEach((result, index) => {
+        const stockSymbol = stockSymbols[index];
+        if (result.status === 'fulfilled' && result.value && !result.value.error && result.value.length >= 2) {
+            const data = result.value;
+            const { totalInvested, finalValue, totalShares, valueOverTime } = calculateStockInvestment(
+                data,
+                initialAmountPerStock,
+                monthlyAmountPerStock,
+                startDate,
+                endDate
+            );
+
+            portfolioTotalInvested += totalInvested;
+            portfolioFinalValue += finalValue;
+            portfolioShares += totalShares;
+
+            // Aggregate daily portfolio values
+            valueOverTime.forEach(({ date, value }) => {
+                portfolioValuesOverTime[date] = (portfolioValuesOverTime[date] || 0) + value;
+            });
+        } else {
+            allValid = false;
+            const errorMsg = result.value?.error || result.reason?.message || "Unknown error";
+            errorMessages.push(`Failed to fetch data for ${stockSymbol}: ${errorMsg}`);
+        }
+    });
+
+    let resultHTML = "";
+    if (allValid) {
+        const portfolioProfit = portfolioFinalValue - portfolioTotalInvested;
+        resultHTML = `
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Portfolio: ${stockSymbols.join(', ')}</h5>
+                    <p>Period: ${startDate} to ${endDate}</p>
+                    <p>Initial Investment: ${initialAmount.toFixed(2)} €</p>
+                    <p>Monthly Investment: ${monthlyAmount.toFixed(2)} €</p>
+                    <p>Total Invested: ${portfolioTotalInvested.toFixed(2)} €</p>
+                    <p>Final Value: ${portfolioFinalValue.toFixed(2)} €</p>
+                    <p>Total Shares: ${portfolioShares.toFixed(4)}</p>
+                    <p style="color: ${portfolioProfit >= 0 ? 'var(--positive)' : 'var(--negative)'}">
+                        ${portfolioProfit >= 0 ? 'Profit' : 'Loss'}: ${portfolioProfit.toFixed(2)} €
+                    </p>
+                </div>
+            </div>
+            <canvas id="portfolio-chart" style="margin-top: 20px;"></canvas>
+        `;
+
+        // Prepare chart data
+        const dates = Object.keys(portfolioValuesOverTime).sort();
+        const portfolioValues = dates.map(date => portfolioValuesOverTime[date]);
+
+        resultDiv.innerHTML = resultHTML;
+        generatePortfolioChart(dates, portfolioValues);
+    } else {
+        resultHTML = `<p style='color: red;'>${errorMessages.join('<br>')}. <a href="https://cors-anywhere.herokuapp.com/" target="_blank">Ensure proxy is active</a>.</p>`;
+        resultDiv.innerHTML = resultHTML;
+    }
+
+    resultsPanel.style.display = 'block';
+    backtestModal.style.display = 'none';
+});
+
+// Dynamic header height adjustment
+function setHeaderHeight() {
+    const header = document.getElementById('header');
+    document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+}
+window.addEventListener('load', setHeaderHeight);
+window.addEventListener('resize', setHeaderHeight);
 
 // Plays a sound when a market opens
 function playMarketOpenSound() {
@@ -1033,7 +1338,6 @@ function getTimeUntilOpen(market, currentTime) {
     }
 }
 
-// Generates a calendar displaying holidays for a given year and region
 // Generates a calendar displaying holidays for a given year and region
 function generateCalendar(year, region) {
     const calendarDiv = document.getElementById('calendar');
@@ -1198,7 +1502,7 @@ function updateCards() {
         let daysToAdd = 0;
 
         do {
-            nextOpenDate.setDate(nextOpenDate.getDate() + (daysToAdd === 0 ? 0 : 1));
+            nextOpenDate.setDate(nextOpenDate.getDate() + (daysToAdd === 0 ? 1 : 1));
             const nextDateStr = nextOpenDate.toLocaleString('en-CA', { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' });
             const nextWeekday = nextOpenDate.toLocaleString('en-US', { timeZone: timezone, weekday: 'long' });
             const isHoliday = isMarketClosedOnHoliday(market, nextDateStr);
@@ -1251,38 +1555,38 @@ function updateCards() {
         card.dataset.market = market;
 
         card.innerHTML = !isMinimized ? `
-            <div class="card-header">
-                <div class="date">${city}</div>
-                <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                    ${isOpen ? "OPEN" : "CLOSED"}
-                </div>
+    <div class="card-header">
+        <div class="date">${city}</div>
+        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+            ${isOpen ? "OPEN" : "CLOSED"}
+        </div>
+    </div>
+    <div class="card-body">
+        <h3>${market}</h3>
+        <p>${hoursDisplay}</p>
+        <div class="digital-clock">
+            <span class="time-display">${fullTime}</span>
+        </div>
+        <div class="progress">
+            <span>Time Left: <span class="time-left">${timeLeft}</span></span>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
             </div>
-            <div class="card-body">
-                <h3>${market}</h3>
-                <p>${hoursDisplay}</p>
-                <div class="digital-clock">
-                    <span class="time-display">${fullTime}</span>
-                </div>
-                <div class="progress">
-                    <span>Time Left: <span class="time-left">${timeLeft}</span></span>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
-                    </div>
-                </div>
-            </div>
-        ` : `
-            <div class="card-header">
-                <div class="date">${city}</div>
-                <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-                    ${isOpen ? "OPEN" : "CLOSED"}
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="digital-clock">
-                    <span class="time-display">${fullTime}</span>
-                </div>
-            </div>
-        `;
+        </div>
+    </div>
+` : `
+    <div class="card-header">
+        <div class="date">${city}</div>
+        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+            ${isOpen ? "OPEN" : "CLOSED"}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="digital-clock">
+            <span class="time-display">${fullTime}</span>
+        </div>
+    </div>
+`;
 
         marketSection.appendChild(card);
 
@@ -1316,18 +1620,6 @@ function toggleFilterButtonVisibility(show) {
     if (filterButton) filterButton.style.display = show ? "block" : "none";
 }
 
-const ctx = document.getElementById('portfolio-chart').getContext('2d');
-new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['Jan', 'Feb', 'Mar'],
-        datasets: [{
-            label: 'Portfolio Value',
-            data: [1000, 1100, 1200]
-        }]
-    }
-});
-
 // Sets up all event listeners
 function setupEventListeners() {
     document.querySelectorAll("#region-filter, .region-filter").forEach(el => {
@@ -1337,6 +1629,8 @@ function setupEventListeners() {
             updateCards();
         });
     });
+  
+  
 
     document.querySelectorAll("#toggle-view, .toggle-view").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1354,97 +1648,7 @@ function setupEventListeners() {
         });
     });
 
-    if (toggleCalendarModal && calendarModal) {
-        toggleCalendarModal.addEventListener("click", () => {
-            const region = document.getElementById("region-filter")?.value || "all";
-            generateCalendar(2025, region);
-            calendarModal.style.display = "block";
-        });
-    }
-
-    if (closeCalendarModal && calendarModal) {
-        closeCalendarModal.addEventListener("click", () => {
-            calendarModal.style.display = "none";
-        });
-    }
-
-    if (toggleCalendarPanel && calendarPanel) {
-        toggleCalendarPanel.addEventListener("click", () => {
-            calendarPanel.style.display = "block";
-        });
-    }
-
-    if (closeCalendarPanel && calendarPanel) {
-        closeCalendarPanel.addEventListener("click", () => {
-            calendarPanel.style.display = "none";
-        });
-    }
-
-    if (toggleMarketSummary && marketSummaryModal) {
-        toggleMarketSummary.addEventListener("click", () => {
-            marketSummaryModal.style.display = "block";
-        });
-    }
-
-    if (closeMarketSummary && marketSummaryModal) {
-        closeMarketSummary.addEventListener("click", () => {
-            marketSummaryModal.style.display = "none";
-        });
-    }
-
-    if (toggleBacktest && backtestModal) {
-        toggleBacktest.addEventListener("click", () => {
-            backtestModal.style.display = "block";
-        });
-    }
-
-    if (closeBacktest && backtestModal) {
-        closeBacktest.addEventListener("click", () => {
-            backtestModal.style.display = "none";
-        });
-    }
-
-    if (closeResults && resultsPanel) {
-        closeResults.addEventListener("click", () => {
-            resultsPanel.style.display = "none";
-        });
-    }
-
-    document.getElementById("search")?.addEventListener("input", updateCards);
-
-    document.getElementById("floating-filter-btn")?.addEventListener("click", () => {
-        const panel = document.getElementById("filter-panel");
-        if (panel) {
-            panel.style.display = "block";
-            toggleFilterButtonVisibility(false);
-        }
-    });
-
-    window.addEventListener("click", (event) => {
-        const panel = document.getElementById("filter-panel");
-        const btn = document.getElementById("floating-filter-btn");
-        if (panel && btn && !panel.contains(event.target) && !btn.contains(event.target) && panel.style.display === "block") {
-            panel.style.display = "none";
-            toggleFilterButtonVisibility(true);
-        }
-    });
-
-    document.getElementById("close-filter-panel")?.addEventListener("click", () => {
-        const panel = document.getElementById("filter-panel");
-        if (panel) {
-            panel.style.display = "none";
-            toggleFilterButtonVisibility(true);
-        }
-    });
-
-    window.addEventListener("click", (event) => {
-        if (event.target === calendarModal) calendarModal.style.display = "none";
-        if (event.target === marketSummaryModal) marketSummaryModal.style.display = "none";
-        if (event.target === backtestModal) backtestModal.style.display = "none";
-    });
-}
-
-document.getElementById("toggle-calendar")?.addEventListener("click", () => {
+    document.getElementById("toggle-calendar")?.addEventListener("click", () => {
         const modal = document.getElementById("calendar-modal");
         const region = document.getElementById("region-filter")?.value || "all";
         document.getElementById("calendar-region-filter").value = region;
@@ -1456,7 +1660,44 @@ document.getElementById("toggle-calendar")?.addEventListener("click", () => {
         generateCalendar(2025, this.value);
     });
 
-document.querySelector(".close")?.addEventListener("click", () => {
+    document.getElementById("search")?.addEventListener("input", updateCards);
+
+    document.addEventListener("DOMContentLoaded", () => {
+    let justOpened = false;
+
+    document.getElementById("floating-filter-btn")?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        console.log("Button clicked");
+        const panel = document.getElementById("filter-panel");
+        if (panel) {
+            console.log("Opening panel");
+            panel.classList.add("filter-panel-open");
+            toggleFilterButtonVisibility(false);
+            justOpened = true;
+            setTimeout(() => { justOpened = false; }, 100);
+        } else {
+            console.log("Panel not found");
+        }
+    });
+
+    window.addEventListener("click", (event) => {
+        if (justOpened) return;
+        const panel = document.getElementById("filter-panel");
+        const btn = document.getElementById("floating-filter-btn");
+        if (panel && btn && !panel.contains(event.target) && !btn.contains(event.target) && panel.classList.contains("filter-panel-open")) {
+            console.log("Closing panel");
+            panel.classList.remove("filter-panel-open");
+            toggleFilterButtonVisibility(true);
+        }
+    });
+
+    function toggleFilterButtonVisibility(show) {
+        const filterButton = document.getElementById("floating-filter-btn");
+        if (filterButton) filterButton.style.display = show ? "block" : "none";
+    }
+});
+
+    document.querySelector(".close")?.addEventListener("click", () => {
         document.getElementById("calendar-modal").style.display = "none";
     });
 
@@ -1464,7 +1705,7 @@ document.querySelector(".close")?.addEventListener("click", () => {
         const modal = document.getElementById("calendar-modal");
         if (event.target === modal) modal.style.display = "none";
     });
-
+}
 
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
@@ -1472,7 +1713,45 @@ document.addEventListener("DOMContentLoaded", () => {
     setupEventListeners();
     updateUI();
     updateCards();
-    setInterval(updateCards, 1000); 
+    setInterval(updateCards, 1000); // Update every second
 });
 
 window.addEventListener("resize", setBodyPadding);
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('close').addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Select elements once
+    const toggleButton = document.getElementById("toggle-market-summary");
+    const modal = document.getElementById("market-summary-modal");
+    const closeButton = document.getElementById("closesummary"); // Adjust based on your HTML
+
+    // Open modal on click or touch
+    toggleButton.addEventListener("click", () => {
+        modal.style.display = "block";
+    });
+    toggleButton.addEventListener("touchstart", (e) => {
+        e.preventDefault(); // Prevent click event overlap
+        modal.style.display = "block";
+    });
+
+    // Close modal with button
+    closeButton.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+
