@@ -17,7 +17,6 @@
     --modal-bg: rgba(50, 50, 50, 0.2);
     --header-height: 0px;
     --highlight: #01c3a8;
-    --shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Added to fix undefined variable */
 }
 
 /* Reset */
@@ -166,12 +165,12 @@ p, ul { font-weight: 300; }
 }
 
 #right-container { 
-    grid-area: right;
+  grid-area: right;
 }
 
 #new-container { 
-    grid-area: left; 
-    margin-left: 100px;
+  grid-area: left; 
+  margin-left: 100px;
 }
 
 /* Tabellen */
@@ -299,25 +298,6 @@ th, td {
     background: #8a2f20;
 }
 
-#close-calendar-modal {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--closed);
-    color: white;
-    padding: 5px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: background 0.3s ease;
-}
-
-#close-calendar-modal:hover { /* Fixed selector typo */
-    background: #a62828;
-}
-
 /* Holiday Panel */
 .holiday-panel {
     position: fixed;
@@ -440,6 +420,7 @@ th, td {
 #filter-panel .region-filter {
     padding: 0.7rem 1rem; /* Slight variation kept */
 }
+
 
 /* Footer */
 #footer, #footerprivacy {
@@ -643,6 +624,7 @@ th, td {
     box-shadow: var(--shadow);
     color: var(--text);
     transition: transform 0.2s ease;
+
 }
 
 #result .card h5 {
@@ -698,7 +680,7 @@ th, td {
 }
 
 #close-backtest {
-    position: absolute;
+  position: absolute;
     top: 15px;
     right: 15px;
     background: var(--closed);
@@ -712,7 +694,7 @@ th, td {
     transition: background 0.3s ease;
 }
 
-#close-backtest:hover { /* Fixed selector typo */
+#close:hover {
     background: #a62828;
 }
 
@@ -752,11 +734,11 @@ th, td {
 
 /* Responsive */
 @media (max-width: 800px) {
-    body, html {
-        height: 100%; /* Fixed missing semicolon */
-    }
-    
-    .card {
+  body, html {
+    height: 100%
+  }
+  
+  .card {
         width: calc(50% - 1rem);
     }
 
@@ -793,10 +775,11 @@ th, td {
 
     #market-section {
         display: flex;
+        flex-direction: column;
         min-height: 100vh;
         width: 100%;
         height: 100vh;
-        overflow-y: hidden; /* Fixed invalid value 'none' */
+        overflow-y: none;
     }
 
     #market-section section {
@@ -860,7 +843,7 @@ th, td {
   
     #search-box {
         margin-right: 0px;
-        padding: 0px; 
+        padding: 10;
         height: 50px;
         line-height: 40px;
         min-width: 70px;
@@ -871,8 +854,8 @@ th, td {
         justify-content: space-between;
     }
   
-    .table-container th, .table-container td {
-        padding: 1px;
-        text-align: center; 
-    }
+  .table-container th, .table-container td {
+    padding: 1px;
+    text-align: center; 
+  }
 }
