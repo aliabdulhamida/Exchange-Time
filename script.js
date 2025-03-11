@@ -996,162 +996,46 @@ window.addEventListener('click', (event) => {
 
 // Fetch stock data with proxy
 async function fetchStockData(stockSymbol, startDate, endDate) {
-    const baseUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}`;
-    const startTimestamp = Math.floor(new Date(startDate).getTime() / 1000);
-    const endTimestamp = Math.floor(new Date(endDate).getTime() / 1000);
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const url = `${proxyUrl}${baseUrl}?period1=${startTimestamp}&period2=${endTimestamp}&interval=1d`;
+    const apiKey = 'KYTKPTTYL2WQ2B1M'; // Sign up at https://www.alphavantage.co/support/#api-key
+    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stockSymbol}&apikey=${apiKey}&outputsize=full`;
+    const options = {
+        method: 'GET'
+    };
 
     try {
-        const response = await fetch(url, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Accept': 'application/json',
-                'Origin': window.location.origin
-            }
-        });
-
+        const response = await fetch(url, options);
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP error! Status: ${response.status}, Details: ${errorText}`);
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         const data = await response.json();
-        if (!data.chart || data.chart.error || !data.chart.result || !data.chart.result[0]) {
-            throw new Error(data.chart?.error?.description || "No data available for this symbol or period.");
+        if (!data || !data['Time Series (Daily)']) {
+            throw new Error("No valid data returned from API");
         }
 
-        const timestamps = data.chart.result[0].timestamp;
-        const closes = data.chart.result[0].indicators.quote[0].close;
+        const timeSeries = data['Time Series (Daily)'];
+        const priceHistory = [];
+        const start = new Date(startDate);
+        const end = new Date(endDate);
 
-        if (!timestamps || !closes || timestamps.length === 0 || closes.length === 0) {
-            throw new Error("No valid price data returned.");
+        for (let date in timeSeries) {
+            const currentDate = new Date(date);
+            if (currentDate >= start && currentDate <= end) {
+                priceHistory.push({
+                    date: date,
+                    close: parseFloat(timeSeries[date]['4. close'])
+                });
+            }
         }
 
-        return timestamps.map((time, index) => ({
-            date: new Date(time * 1000).toISOString().split('T')[0],
-            close: closes[index]
-        }));
+        return priceHistory;
+
     } catch (error) {
         console.error(`Fetch error for ${stockSymbol}:`, error.message);
         return { error: error.message };
     }
 }
 
-// Calculate investment for a single stock (initial + monthly) and track daily values
-function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerStock, startDate, endDate) {
-    let totalShares = 0;
-    let totalInvested = 0;
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const valueOverTime = [];
-
-    // Initial investment at start date
-    const startPrice = data[0].close;
-    if (initialAmountPerStock > 0) {
-        const initialShares = initialAmountPerStock / startPrice;
-        totalShares += initialShares;
-        totalInvested += initialAmountPerStock;
-    }
-
-    // Track value for each date
-    let nextInvestmentDate = new Date(start);
-    nextInvestmentDate.setMonth(nextInvestmentDate.getMonth() + 1);
-    nextInvestmentDate.setDate(1);
-
-    for (const day of data) {
-        const currentDay = new Date(day.date);
-
-        // Add monthly investment if it's the first trading day of the month
-        if (monthlyAmountPerStock > 0 && currentDay >= nextInvestmentDate && currentDay <= end) {
-            const sharesBought = monthlyAmountPerStock / day.close;
-            totalShares += sharesBought;
-            totalInvested += monthlyAmountPerStock;
-            nextInvestmentDate.setMonth(nextInvestmentDate.getMonth() + 1);
-        }
-
-        // Record portfolio value for this day
-        valueOverTime.push({
-            date: day.date,
-            value: totalShares * day.close
-        });
-    }
-
-    const finalPrice = data[data.length - 1].close;
-    const finalValue = totalShares * finalPrice;
-    return { totalInvested, finalValue, totalShares, valueOverTime };
-}
-
-// Generate portfolio chart
-function generatePortfolioChart(dates, portfolioValues) {
-    const canvas = document.getElementById('portfolio-chart');
-    
-    // Set fixed size for chart
-    canvas.style.width = '800px';  
-    canvas.style.height = '200px';
-    
-    const ctx = canvas.getContext('2d');
-    
-    // Destroy existing chart if it exists to avoid overlap
-    if (window.portfolioChart instanceof Chart) {
-        window.portfolioChart.destroy();
-    }
-
-    window.portfolioChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: [{
-                label: 'Portfolio Value (€)',
-                data: portfolioValues,
-                borderColor: '#00cc00',
-                backgroundColor: 'rgba(0, 204, 0, 0.1)',
-                fill: true,
-                tension: 0.1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Date',
-                        color: '#fff'
-                    },
-                    ticks: {
-                        color: '#fff',
-                        maxTicksLimit: 10 // Limit number of labels for readability
-                    },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Value (€)',
-                        color: '#fff'
-                    },
-                    ticks: {
-                        color: '#fff'
-                    },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#fff'
-                    }
-                }
-            }
-        }
-    });
-}
 
 // Backtest form submission handler (portfolio sum with chart)
 document.getElementById('backtest-form').addEventListener('submit', async function(event) {
