@@ -947,13 +947,21 @@ th, td {
         color: var(--text);
     }
 
-    .modal-content {
+    .modal-content,
+    .modal,
+    .holiday-panel,
+    .panel {
         background-color: var(--card-bg) !important;
         color: var(--text) !important;
     }
 
-    .panel {
-        background-color: var(--card-bg);
+    /* Override close buttons on modals/panels */
+    #close,
+    #closesummary,
+    #close-filter-panel,
+    #close-backtest {
+        background: var(--closed) !important;
+        color: white !important;
     }
 
     #search {
@@ -969,5 +977,33 @@ th, td {
 @media (max-width: 600px) {
     body {
         margin-left: 0;
+    }
+}
+
+/* Custom Media Query */
+@media (max-width: 400px) {
+    .card {
+        width: calc(100% - 20px);
+    }
+}
+
+/* Custom Media Query */
+@media (max-width: 300px) {
+    .card {
+        width: calc(100% - 10px);
+    }
+}
+
+/* Custom Media Query */
+@media (max-width: 200px) {
+    .card {
+        width: calc(100% - 5px);
+    }
+}
+
+/* Custom Media Query */
+@media (max-width: 100px) {
+    .card {
+        width: calc(100% - 2px);
     }
 }
