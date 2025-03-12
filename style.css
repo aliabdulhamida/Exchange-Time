@@ -45,7 +45,7 @@ h1, h2, h3 {
 h1 { font-size: 2.5rem; }
 h2 { font-size: 2rem; }
 h3 { font-size: 1.5rem; }
-p, ul { font-weight: 300; }
+p, ul { font-weight: 300; color: var(--text); }
 
 /* Buttons */
 .btn {
@@ -53,7 +53,7 @@ p, ul { font-weight: 300; }
     color: white;
     padding: 0.8rem 1rem;
     border: none;
-    border-radius: 30px;
+    border-radius: 15px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
@@ -108,7 +108,7 @@ p, ul { font-weight: 300; }
     background: none;
     color: #fff;
     padding: 0.75rem 1rem;
-    border-radius: 30px;
+    border-radius: 15px;
     font-size: 1rem;
     border: 1px solid var(--input-border);
     transition: border-color 0.3s ease;
@@ -167,13 +167,18 @@ p, ul { font-weight: 300; }
 }
 
 #right-container { 
-  grid-area: right;
-
+    grid-area: right;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 #new-container { 
-  grid-area: left; 
-  margin-left: 0px;
+    grid-area: left; 
+    margin-left: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 /* Tabellen */
@@ -872,6 +877,7 @@ th, td {
         padding: 0;
         margin: 0;
         margin-bottom: 30px;
+        overflow-y: none !important;
     }
 
     #market-section {
@@ -880,7 +886,7 @@ th, td {
         min-height: 100vh;
         width: 100%;
         height: calc(100vh - var(--header-height));
-        overflow-y: auto;
+        overflow-y: none !important;
         padding-top: 20px;
         margin-top: 65px;
     }
@@ -894,9 +900,9 @@ th, td {
     }
 
     .card {
-        width: 100%;
+        flex: 1 1 calc(25% - 20px);
         max-width: 300px;
-        margin: 0 auto;
+        margin: 10px;
     }
 
     #right-container,
@@ -961,7 +967,6 @@ th, td {
     padding: 1px;
     text-align: center; 
   }
-
  
 }
 
@@ -1114,30 +1119,3 @@ th, td {
     }
 }
 
-/* Custom Media Query */
-@media (max-width: 400px) {
-    .card {
-        width: calc(100% - 20px);
-    }
-}
-
-/* Custom Media Query */
-@media (max-width: 300px) {
-    .card {
-        width: calc(100% - 10px);
-    }
-}
-
-/* Custom Media Query */
-@media (max-width: 200px) {
-    .card {
-        width: calc(100% - 5px);
-    }
-}
-
-/* Custom Media Query */
-@media (max-width: 100px) {
-    .card {
-        width: calc(100% - 2px);
-    }
-}
