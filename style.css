@@ -236,7 +236,6 @@ th, td {
     gap: 5px;
     padding: 10px;
     background: none;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .calendar-row {
@@ -368,6 +367,16 @@ th, td {
 
 .holiday-panel::-webkit-scrollbar-track {
     background: #222;
+}
+
+.tradingview-widget-container {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 0rem;
+    text-align: center;
+    width: calc(25% - 20px);
+    cursor: pointer;
+    font-weight: 300;
 }
 
 /* Filter Panel */
@@ -773,9 +782,26 @@ th, td {
 }
 
 /* Responsive */
-@media (max-width: 800px) {
+@media (max-width: 700px) {
   body, html {
     height: 100%
+  }
+
+  .results-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+ .backtest-results-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 700px;
+    padding: 20px;
   }
   
   .card {
@@ -900,36 +926,13 @@ th, td {
     padding: 1px;
     text-align: center; 
   }
-}
 
-/* Dark Mode */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --primary-bg: #08090b;
-        --card-bg: #121316;
-        --text: #b8bec6;
-        --open: #007a6e;
-        --closed: #b33936;
-        --input-bg: #1e2024;
-        --button-bg: #0f1013;
-        --button-hover: #2c2e34;
-        --input-border: #3c3f47;
-        --favorite-border: rgba(184, 147, 0, 0.3);
-        --positive: #2e7031;
-        --negative: #a62828;
-        --modal-bg: rgba(50, 50, 50, 0.2);
-        --header-height: 0px;
-        --highlight: #01c3a8;
-    }
-
-    .modal-content {
-        color: var(--text);
-    }
+ 
 }
 
 /* Light Mode */
-
 @media (prefers-color-scheme: light) {
+    /* Root variables */
     :root {
         --primary-bg: #f0f0f0;
         --card-bg: #fff;
@@ -948,46 +951,124 @@ th, td {
         --highlight: #01c3a8;
     }
 
-    .card {
+    /* Text colors */
+    h1, h2, h3, p, li {
+        color: var(--text) !important;
+    }
+
+    /* Cards */
+    .card, .tradingview-widget-container {
         color: var(--text);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        background: var(--card-bg);
     }
 
-    .card-body h3 {
-        color: var(--text);
-    }
-
-    .digital-clock {
-        color: var(--text);
-    }
-
+    .card-body h3,
+    .digital-clock,
     .progress span {
         color: var(--text);
     }
 
+    /* Modal and Panels */
+    .modal {
+        background-color: rgba(255, 255, 255, 0.4) !important;
+    }
+
     .modal-content,
-    .modal,
     .holiday-panel,
     .panel {
         background-color: var(--card-bg) !important;
         color: var(--text) !important;
     }
 
-    /* Override close buttons on modals/panels */
+    /* Close buttons */
     #close,
     #closesummary,
     #close-filter-panel,
-    #close-backtest {
+    #close-backtest,
+    .holiday-panel .close-panel {
         background: var(--closed) !important;
         color: white !important;
     }
 
-    #search {
+    /* Forms */
+    #search,
+    .select {
         color: var(--text);
     }
 
-    .select {
+    /* Table */
+    .table-container,
+    th, td {
+        color: black;
+    }
+
+    /* Calendar */
+    .calendar-month {
+        background: none;
+    }
+
+    .calendar-day {
         color: var(--text);
+    }
+
+    .calendar-day.holiday {
+        background: #a63d2a;
+        color: #fff;
+    }
+
+    .calendar-day.holiday:hover {
+        background: #8a2f20;
+    }
+
+    .calendar-day.weekday::after {
+        background: var(--text);
+    }
+
+    /* Holiday Panel */
+    .holiday-panel {
+        background-color: rgba(0, 0, 0, 0.95);
+        color: #e0e0e0;
+        border: 1px solid var(--input-border);
+    }
+
+    .holiday-panel h3 {
+        color: #01c3a8;
+    }
+
+    .holiday-panel li {
+        border-bottom: 1px solid #444;
+    }
+
+    /* Privacy Policy */
+    .privacy-policy {
+        background: white;
+    }
+
+    .privacy-policy h1,
+    .privacy-policy p {
+        color: black;
+    }
+
+    /* Footer */
+    .footer-content p,
+    .footer-link {
+        color: var(--text);
+    }
+
+    .footer-content a {
+        color: var(--open);
+    }
+
+    .footer-content a:hover,
+    .footer-content a:visited,
+    .footer-content a:focus {
+        color: var(--closed);
+    }
+
+    .footer-content a:active,
+    .footer-content a:link {
+        color: var(--open);
     }
 }
 
