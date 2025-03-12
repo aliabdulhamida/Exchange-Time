@@ -1095,6 +1095,7 @@ function generatePortfolioChart(dates, portfolioValues) {
     
     // Ensure the container has a height
     chartDiv.style.minHeight = '400px';
+    chart.Div.style.width = '100%';
 
     // Validate data
     if (!dates || !portfolioValues || dates.length === 0) {
@@ -1217,7 +1218,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         return;
     }
 
-    resultDiv.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div><p>Loading data...</p></div>';
+    resultDiv.innerHTML = '<div class="text-center" style="color: white;"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div><p>Loading data...</p></div>';
     resultsPanel.style.display = 'block';
 
     // Fetch data for all stocks
@@ -1267,43 +1268,51 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         const portfolioProfit = portfolioFinalValue - portfolioTotalInvested;
         const profitPercent = (portfolioProfit / portfolioTotalInvested) * 100;
         const profitColor = portfolioFinalValue >= portfolioTotalInvested ? "#00ff00" : "#ff0000";
+        const isMobile = window.matchMedia("(max-width: 800px)").matches;
+        const mobileStyles = isMobile ? "padding: 0; width: 100%;" : "padding: 10px; width: 100%;";
         
         resultHTML = `
-            <div class="results-container" style="margin-bottom: 40px;">
-            <div class="portfolio-metrics">
-                <h3 style="color: white">Portfolio Performance Summary</h3>
-                <div class="metrics-grid">
-                <div class="metric-card">
-                    <span class="metric-label" style="color: white">Total Investment</span>
-                    <span class="metric-value" style="color: #2196F3">€${portfolioTotalInvested.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                </div>
-                <div class="metric-card">
-                    <span class="metric-label" style="color: white">Current Value</span>
-                    <span class="metric-value" style="color: ${portfolioFinalValue >= portfolioTotalInvested ? '#4CAF50' : '#F44336'}">
-                    €${portfolioFinalValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                    </span>
-                </div>
-                <div class="metric-card">
-                    <span class="metric-label" style="color: white">Total Return</span>
-                    <span class="metric-value" style="color: ${portfolioProfit >= 0 ? '#4CAF50' : '#F44336'}">
-                    €${portfolioProfit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                    <small>(${profitPercent >= 0 ? '+' : ''}${profitPercent.toFixed(2)}%)</small>
-                    </span>
-                </div>
-                <div class="metric-card">
-                    <span class="metric-label" style="color: white">Total Shares</span>
-                    <span class="metric-value" style="color: #607D8B">
-                    ${portfolioShares.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                    </span>
-                </div>
-                </div>
-
+            <div class="results-container" style="margin-bottom: 40px; padding: 10px;">
+              
+            <div class="portfolio-metrics" style="width: 100%;">
+            <h3 style="color: white; text-align: start; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 30px;">Portfolio Performance Summary</h3>
+            <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; width: 100%;">
+            <div class="metric-card" style="background: rgba(33, 33, 33, 0.9); padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                <span class="metric-label" style="color: white; font-size: clamp(0.9rem, 3vw, 1.1rem); display: block; margin-bottom: 8px;">Total Investment</span>
+                <span class="metric-value" style="color: #2196F3; font-size: clamp(1.1rem, 3.5vw, 1.3rem); font-weight: bold;">€${portfolioTotalInvested.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
             </div>
-            <div class="chart-container">
-                <h3 style="color: white">Portfolio Value Over Time</h3>
-                <div id="portfolio-chart">
+            <div class="metric-card" style="background: rgba(33, 33, 33, 0.9); padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                <span class="metric-label" style="color: white; font-size: clamp(0.9rem, 3vw, 1.1rem); display: block; margin-bottom: 8px;">Current Value</span>
+                <span class="metric-value" style="color: ${portfolioFinalValue >= portfolioTotalInvested ? '#4CAF50' : '#F44336'}; font-size: clamp(1.1rem, 3.5vw, 1.3rem); font-weight: bold;">
+                €${portfolioFinalValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                </span>
+            </div>
+            <div class="metric-card" style="background: rgba(33, 33, 33, 0.9); padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                <span class="metric-label" style="color: white; font-size: clamp(0.9rem, 3vw, 1.1rem); display: block; margin-bottom: 8px;">Total Return</span>
+                <span class="metric-value" style="color: ${portfolioProfit >= 0 ? '#4CAF50' : '#F44336'}; font-size: clamp(1.1rem, 3.5vw, 1.3rem); font-weight: bold;">
+                €${portfolioProfit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                <small style="font-size: clamp(0.8rem, 2.5vw, 1rem);">(${profitPercent >= 0 ? '+' : ''}${profitPercent.toFixed(2)}%)</small>
+                </span>
+            </div>
+            <div class="metric-card" style="background: rgba(33, 33, 33, 0.9); padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                <span class="metric-label" style="color: white; font-size: clamp(0.9rem, 3vw, 1.1rem); display: block; margin-bottom: 8px;">Total Shares</span>
+                <span class="metric-value" style="color: #607D8B; font-size: clamp(1.1rem, 3.5vw, 1.3rem); font-weight: bold;">
+                ${portfolioShares.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                </span>
+            </div>
+            </div>
+            </div>
+            <div class="chart-container" style="width: 100%; margin-top: 30px;">
+            <h3 style="color: white; text-align: start; font-size: clamp(1.2rem, 4vw, 1.5rem);">Portfolio Value Over Time</h3>
+            <div id="portfolio-chart" style="
                 margin-top: 20px;
-                </div>
+                background-color: rgb(255, 255, 255);
+                border-radius: 8px;
+                padding: 15px;
+                height: min(400px, 70vh);
+                width: 100%;
+                overflow: hidden;
+            "></div>
             </div>
             </div>
         `;
