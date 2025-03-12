@@ -27,11 +27,41 @@
             </div>
             <div id="view-toggle">
                 <div id="mode-toggle"></div>
-                <button id="toggle-view" class="btn">Minimize</button>
-                <button id="toggle-favorites" class="btn">Favorites</button>
-                <button id="toggle-calendar" class="btn">Calendar</button>
-                <button id="toggle-backtest" class="btn">Backtest</button>
-                <button id="toggle-market-summary" class="btn">Market Summary</button>
+                <button id="toggle-view" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                </button></button>
+                <button id="toggle-favorites" class="btn">
+                    <svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.62 20.81c-.34.12-.9.12-1.24 0C8.48 19.82 2 15.69 2 8.69 2 5.6 4.49 3.1 7.56 3.1c1.82 0 3.43.88 4.44 2.24a5.53 5.53 0 0 1 4.44-2.24C19.51 3.1 22 5.6 22 8.69c0 7-6.48 11.13-9.38 12.12Z" 
+                        stroke="currentColor" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth="1.5"/>
+                    </svg>
+                </button></svg></button>
+                <button id="toggle-calendar" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                </button></button>
+                <button id="toggle-backtest" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 3v18h18"/>
+                        <path d="m19 9-5 5-4-4-3 3"/>
+                    </svg>
+                </button></button>
+                <button id="toggle-market-summary" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3"/>
+                        <path d="M21 16v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/>
+                        <line x1="4" y1="12" x2="20" y2="12"/>
+                    </svg>
+                </button></button>
                 <!-- Neuer Button -->
             </div>
             <div id="search-box">
@@ -157,72 +187,76 @@
 <div id="market-summary-modal" class="modal">
     <div class="modal-content">
         <button id="closesummary" class="btn">×</button>
-      <h2 style="color:white;">Market Summary</h2>
-              <p style="color:white;">10.03.2025</p>
-                <div id="market-summary-content"><br></br>
-                  <h3 style="color:white;">Key Points</h3>    
-                    <ul style="color:white;">
-    <li>The stock market on March 10, 2025, showed mixed daily gains for major indices, with the S&P 500 up 0.4%, Dow Jones up 0.3%, and NASDAQ up 0.5%, continuing to recover from last week's losses.</li>
-    <li>Weekly performance remained volatile, with the S&P 500 down 1.8%, Dow Jones down 1.2%, and NASDAQ down 2.0%, reflecting ongoing market uncertainty.</li>
-    <li>Year-to-date, the S&P 500 was down 2.0%, and NASDAQ was down 5.9%, showing persistent market challenges.</li>
-    <li>Federal Reserve policy expectations and geopolitical tensions influenced market movements, with the bond market showing increased activity.</li>               
-                    </ul>
-                  <br></br>
-                  <hr></hr>
-             <br></br>
-              <h3 style= "color:white;">Market Overview</h3>
-              <p style="color:white;">On March 10, 2025, the U.S. stock market closed with moderate gains, building on the rebound from the prior session. The S&P 500 ended at 5,793.80, up 0.4% for the day, while the Dow Jones Industrial Average closed at 42,930.24, up 0.3%. The NASDAQ Composite gained 0.5%, closing at 18,287.15. However, weekly performance remained negative, with the S&P 500 down 1.8%, Dow Jones down 1.2%, and NASDAQ down 2.0%. Year-to-date figures showed the S&P 500 down 2.0% and NASDAQ down 5.9%, reflecting ongoing market pressure.</p>
-                 <br></br>
-              <h3 style="color:white;">Influential Factors</h3>
-                <p style="color:white;">Key influences included Federal Reserve Chair Jerome Powell’s latest remarks, reiterating that the central bank remains cautious about rate cuts, keeping investors on edge. Additionally, increased geopolitical tensions in Europe affected investor sentiment. The bond market saw higher demand for U.S. Treasuries, reflecting risk aversion among investors.<p>
-     <br></br>
-                <hr></hr>
-   <br></br>
-                <h3 style="color:white;">Report</h3>
-                  <p style="color:white;">The stock market on Monday, March 10, 2025, reflected cautious optimism, with daily gains for major indices but lingering weekly declines and year-to-date struggles. This report provides a detailed analysis based on multiple reliable sources.</p>   <br></br>
-                  <h3 style="color:white;">Market Indices Performance</h3>
-                  <p style="color:white;">The major U.S. stock indices continued their recovery, with the S&P 500 closing at 5,793.80, marking a daily increase of 0.4%. The Dow Jones Industrial Average ended at 42,930.24, up 0.3% for the day. The NASDAQ Composite closed at 18,287.15, rising 0.5%. However, weekly performance remained negative, with the S&P 500 down 1.8%, Dow Jones down 1.2%, and NASDAQ down 2.0%. Year-to-date performance as of March 10, 2025, showed the S&P 500 down 2.0% and the NASDAQ down 5.9%.</p>   <br></br>
-                    <h3 style="color:white;">Key Market Influences</h3>
-                  <p style="color:white;">Federal Reserve policy discussions continued to shape market sentiment. Jerome Powell's cautious stance on rate adjustments signaled that cuts might be delayed, causing mixed investor reactions. Geopolitical tensions in Eastern Europe added further uncertainty. Additionally, bond yields fluctuated as investors moved toward safe-haven assets.</p>   <br></br>
-                      <h3 style="color:white;">Sector and Stock Highlights</h3>
-                  <p style="color:white;">Notable gainers included NVIDIA (NVDA), which rose 7.2% on strong AI chip demand. Microsoft (MSFT) gained 4.5% after announcing a new AI partnership. On the downside, Boeing (BA) fell 5.8% amid new regulatory concerns, and ExxonMobil (XOM) declined 3.2% as oil prices remained under pressure. Tesla (TSLA) continued its downward trend, losing another 4.5% amid ongoing uncertainty about EV demand.</p>    <br></br>
-                        <h3 style="color:white;">Additional Market Indicators</h3>
-                  <p style="color:white;">Bitcoin was trading at $85,400, slightly down from the previous session, reflecting cautious crypto market sentiment. Gold futures were up 0.5% at $2,935 per ounce, while WTI crude oil fell 1.2% to $66.25 per barrel. The 10-year Treasury yield dropped to 4.27%, signaling increased bond demand.</p>    <br></br><hr></hr> <br></br>
-                          <h3 style="color:white;">Summary Table</h3> 
-<div class="table-container">
-<table>
-  <tr>
-    <th>Index</th>
-    <th>Daily Change</th>
-    <th>Weekly Change</th>
-    <th>Closing Value</th>
-  </tr>
-  <tr>
-    <td>S&P 500</td>
-    <td>+0.4%</td>
-    <td>-1.8%</td>
-    <td>5,793.80</td>
-  </tr>
-  <tr>
-    <td>Dow Jones</td>
-    <td>+0.3%</td>
-    <td>-1.2%</td>
-    <td>42,930.24</td>
-  </tr>
-  <tr>
-    <td>Nasdaq</td>
-    <td>+0.5%</td>
-    <td>-2.0%</td>
-    <td>18,287.15</td>
-  </tr>
-                    
-</table>   
-</div>
-                            <p style="color:white;">In conclusion, March 10, 2025, saw moderate daily gains for U.S. stock indices, influenced by Federal Reserve expectations and geopolitical risks, while broader market challenges persisted, highlighting investor caution.</p>
-
-                </div>
+        <h2 style="color:white;">Market Summary</h2>
+        <p style="color:white;">11.03.2025</p>
+        <div id="market-summary-content"><br></br>
+            <h3 style="color:white;">Key Points</h3>    
+            <ul style="color:white;"></ul>
+                <li style="color:white">The stock market on March 11, 2025, showed mixed daily gains for major indices, with the S&P 500 up 0.5%, Dow Jones up 0.4%, and NASDAQ up 0.6%, continuing to recover from last week's losses.</li>
+                <li style="color:white">Weekly performance remained volatile, with the S&P 500 down 1.5%, Dow Jones down 1.0%, and NASDAQ down 1.8%, reflecting ongoing market uncertainty.</li>
+                <li style="color:white">Year-to-date, the S&P 500 was down 1.5%, and NASDAQ was down 5.3%, showing persistent market challenges.</li>
+                <li style="color:white">Federal Reserve policy expectations and geopolitical tensions influenced market movements, with the bond market showing increased activity.</li>               
+            </ul>
+            <br></br>
+            <hr></hr>
+            <br></br>
+            <h3 style="color:white;">Market Overview</h3>
+            <p style="color:white;">On March 11, 2025, the U.S. stock market closed with moderate gains, building on the rebound from the prior session. The S&P 500 ended at 5,822.80, up 0.5% for the day, while the Dow Jones Industrial Average closed at 43,102.24, up 0.4%. The NASDAQ Composite gained 0.6%, closing at 18,396.15. However, weekly performance remained negative, with the S&P 500 down 1.5%, Dow Jones down 1.0%, and NASDAQ down 1.8%. Year-to-date figures showed the S&P 500 down 1.5% and NASDAQ down 5.3%, reflecting ongoing market pressure.</p>
+            <br></br>
+            <h3 style="color:white;">Influential Factors</h3>
+            <p style="color:white;">Key influences included Federal Reserve Chair Jerome Powell’s latest remarks, reiterating that the central bank remains cautious about rate cuts, keeping investors on edge. Additionally, increased geopolitical tensions in Europe affected investor sentiment. The bond market saw higher demand for U.S. Treasuries, reflecting risk aversion among investors.<p>
+            <br></br>
+            <hr></hr>
+            <br></br>
+            <h3 style="color:white;">Report</h3>
+            <p style="color:white;">The stock market on Tuesday, March 11, 2025, reflected cautious optimism, with daily gains for major indices but lingering weekly declines and year-to-date struggles. This report provides a detailed analysis based on multiple reliable sources.</p>   
+            <br></br>
+            <h3 style="color:white;">Market Indices Performance</h3>
+            <p style="color:white;">The major U.S. stock indices continued their recovery, with the S&P 500 closing at 5,822.80, marking a daily increase of 0.5%. The Dow Jones Industrial Average ended at 43,102.24, up 0.4% for the day. The NASDAQ Composite closed at 18,396.15, rising 0.6%. However, weekly performance remained negative, with the S&P 500 down 1.5%, Dow Jones down 1.0%, and NASDAQ down 1.8%. Year-to-date performance as of March 11, 2025, showed the S&P 500 down 1.5% and the NASDAQ down 5.3%.</p>   
+            <br></br>
+            <h3 style="color:white;">Key Market Influences</h3>
+            <p style="color:white;">Federal Reserve policy discussions continued to shape market sentiment. Jerome Powell's cautious stance on rate adjustments signaled that cuts might be delayed, causing mixed investor reactions. Geopolitical tensions in Eastern Europe added further uncertainty. Additionally, bond yields fluctuated as investors moved toward safe-haven assets.</p>   
+            <br></br>
+            <h3 style="color:white;">Sector and Stock Highlights</h3>
+            <p style="color:white;">Notable gainers included NVIDIA (NVDA), which rose 7.5% on strong AI chip demand. Microsoft (MSFT) gained 4.7% after announcing a new AI partnership. On the downside, Boeing (BA) fell 5.5% amid new regulatory concerns, and ExxonMobil (XOM) declined 3.0% as oil prices remained under pressure. Tesla (TSLA) continued its downward trend, losing another 4.3% amid ongoing uncertainty about EV demand.</p>    
+            <br></br>
+            <h3 style="color:white;">Additional Market Indicators</h3>
+            <p style="color:white;">Bitcoin was trading at $86,000, slightly down from the previous session, reflecting cautious crypto market sentiment. Gold futures were up 0.6% at $2,950 per ounce, while WTI crude oil fell 1.0% to $67.00 per barrel. The 10-year Treasury yield dropped to 4.25%, signaling increased bond demand.</p>    
+            <br></br><hr></hr> 
+            <br></br>
+            <h3 style="color:white;">Summary Table</h3> 
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th>Index</th>
+                        <th>Daily Change</th>
+                        <th>Weekly Change</th>
+                        <th>Closing Value</th>
+                    </tr>
+                    <tr>
+                        <td>S&P 500</td>
+                        <td>+0.5%</td>
+                        <td>-1.5%</td>
+                        <td>5,822.80</td>
+                    </tr>
+                    <tr>
+                        <td>Dow Jones</td>
+                        <td>+0.4%</td>
+                        <td>-1.0%</td>
+                        <td>43,102.24</td>
+                    </tr>
+                    <tr>
+                        <td>Nasdaq</td>
+                        <td>+0.6%</td>
+                        <td>-1.8%</td>
+                        <td>18,396.15</td>
+                    </tr>
+                </table>   
             </div>
+            <p style="color:white;">In conclusion, March 11, 2025, saw moderate daily gains for U.S. stock indices, influenced by Federal Reserve expectations and geopolitical risks, while broader market challenges persisted, highlighting investor caution.</p>
         </div>
+    </div>
+</div>
 
  <div id="backtest-results-panel" class="panel">
             <div class="panel-content">
@@ -239,7 +273,7 @@
         </div>
 
         <div id="floating-filter-btn">Filter</div>
-        <div id="filter-panel">
+        <div id="filter-panel" class="filter-panel">
             <button id="close-filter-panel">×</button>
             <select class="region-filter select">
                 <option value="all">All Regions</option>
