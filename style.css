@@ -628,7 +628,6 @@ th, td {
 }
 
 #result .card {
-    background: var(--card-bg);
     position: relative;
     border-radius: 12px;
     padding: 20px; /* Reduced padding */
