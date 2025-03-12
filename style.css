@@ -583,7 +583,7 @@ th, td {
     z-index: 1002; /* Higher than modal to ensure visibility */
     right: 20px;
     top: 20px;
-    width: 400px;
+    width: 1000px;
     height: calc(100% - 40px);
     background-color: rgba(0, 0, 0, 0.95);
     border-radius: 20px;
@@ -625,7 +625,7 @@ th, td {
     box-shadow: var(--shadow);
     color: var(--text);
     transition: transform 0.2s ease;
-    min-height: 200px; /* Ensure minimum height */
+    min-height: 100px; /* Ensure minimum height */
     display: flex;
     flex-direction: column;
     gap: 15px; /* Space between elements */
@@ -708,6 +708,22 @@ th, td {
     transform: translateY(-2px);
 }
 
+.error-message {
+    color: #f44336;
+    background: rgba(244, 67, 54, 0.1);
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.loading-message {
+    color: #ff9800;
+    background: rgba(255, 152, 0, 0.1);
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
 /* Spinner for Loading */
 .spinner-border {
     border-color: var(--highlight);
@@ -716,8 +732,10 @@ th, td {
 
 .chart-container {
     width: 100%;
-    max-width: 300px;
+    height: 100%;
     margin: 0 auto;
+    position: relative;
+
 }
 
 #portfolio-chart {
