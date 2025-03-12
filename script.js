@@ -996,46 +996,183 @@ window.addEventListener('click', (event) => {
 
 // Fetch stock data with proxy
 async function fetchStockData(stockSymbol, startDate, endDate) {
-    const apiKey = 'KYTKPTTYL2WQ2B1M'; // Sign up at https://www.alphavantage.co/support/#api-key
-    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stockSymbol}&apikey=${apiKey}&outputsize=full`;
-    const options = {
-        method: 'GET'
-    };
+    const baseUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}`;
+    const startTimestamp = Math.floor(new Date(startDate).getTime() / 1000);
+    const endTimestamp = Math.floor(new Date(endDate).getTime() / 1000);
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const url = `${proxyUrl}${baseUrl}?period1=${startTimestamp}&period2=${endTimestamp}&interval=1d`;
 
     try {
-        const response = await fetch(url, options);
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept': 'application/json',
+                'Origin': window.location.origin
+            }
+        });
+
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            const errorText = await response.text();
+            throw new Error(`HTTP error! Status: ${response.status}, Details: ${errorText}`);
         }
 
         const data = await response.json();
-        if (!data || !data['Time Series (Daily)']) {
-            throw new Error("No valid data returned from API");
+        if (!data.chart || data.chart.error || !data.chart.result || !data.chart.result[0]) {
+            throw new Error(data.chart?.error?.description || "No data available for this symbol or period.");
         }
 
-        const timeSeries = data['Time Series (Daily)'];
-        const priceHistory = [];
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+        const timestamps = data.chart.result[0].timestamp;
+        const closes = data.chart.result[0].indicators.quote[0].close;
 
-        for (let date in timeSeries) {
-            const currentDate = new Date(date);
-            if (currentDate >= start && currentDate <= end) {
-                priceHistory.push({
-                    date: date,
-                    close: parseFloat(timeSeries[date]['4. close'])
-                });
-            }
+        if (!timestamps || !closes || timestamps.length === 0 || closes.length === 0) {
+            throw new Error("No valid price data returned.");
         }
 
-        return priceHistory;
-
+        return timestamps.map((time, index) => ({
+            date: new Date(time * 1000).toISOString().split('T')[0],
+            close: closes[index]
+        }));
     } catch (error) {
         console.error(`Fetch error for ${stockSymbol}:`, error.message);
         return { error: error.message };
     }
 }
 
+// Calculate investment for a single stock (initial + monthly) and track daily values
+function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerStock, startDate, endDate) {
+    let totalShares = 0;
+    let totalInvested = 0;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const valueOverTime = [];
+
+    // Initial investment at start date
+    const startPrice = data[0].close;
+    if (initialAmountPerStock > 0) {
+        const initialShares = initialAmountPerStock / startPrice;
+        totalShares += initialShares;
+        totalInvested += initialAmountPerStock;
+    }
+
+    // Track value for each date
+    let nextInvestmentDate = new Date(start);
+    nextInvestmentDate.setMonth(nextInvestmentDate.getMonth() + 1);
+    nextInvestmentDate.setDate(1);
+
+    for (const day of data) {
+        const currentDay = new Date(day.date);
+
+        // Add monthly investment if it's the first trading day of the month
+        if (monthlyAmountPerStock > 0 && currentDay >= nextInvestmentDate && currentDay <= end) {
+            const sharesBought = monthlyAmountPerStock / day.close;
+            totalShares += sharesBought;
+            totalInvested += monthlyAmountPerStock;
+            nextInvestmentDate.setMonth(nextInvestmentDate.getMonth() + 1);
+        }
+
+        // Record portfolio value for this day
+        valueOverTime.push({
+            date: day.date,
+            value: totalShares * day.close
+        });
+    }
+
+    const finalPrice = data[data.length - 1].close;
+    const finalValue = totalShares * finalPrice;
+    return { totalInvested, finalValue, totalShares, valueOverTime };
+}
+
+// Generate portfolio chart
+function generatePortfolioChart(dates, portfolioValues) {
+    const chartDiv = document.getElementById('portfolio-chart');
+    if (!chartDiv) {
+        console.error('Chart container not found');
+        return;
+    }
+    
+    // Clear existing chart
+    chartDiv.innerHTML = '';
+    
+    // Ensure the container has a height
+    chartDiv.style.minHeight = '400px';
+
+    // Validate data
+    if (!dates || !portfolioValues || dates.length === 0) {
+        console.error('Invalid chart data');
+        return;
+    }
+
+    // Format data for ApexCharts
+    const data = dates.map((date, index) => ({
+        x: new Date(date).getTime(),
+        y: Number(portfolioValues[index])
+    })).filter(point => !isNaN(point.y));
+
+    const options = {
+        series: [{
+            name: 'Portfolio Value',
+            data: data
+        }],
+        chart: {
+            type: 'area',
+            stacked: false,
+            height: 350,
+            zoom: {
+                type: 'x',
+                enabled: true,
+                autoScaleYaxis: true
+            },
+            toolbar: {
+                autoSelected: 'zoom'
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        markers: {
+            size: 0,
+        },
+        title: {
+            text: 'Stock Price Movement',
+            align: 'left'
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.5,
+                opacityTo: 0,
+                stops: [0, 90, 100]
+            },
+        },
+        yaxis: {
+            labels: {
+                formatter: function (val) {
+                    return (val / 1000000).toFixed(0);
+                },
+            },
+            title: {
+                text: 'Price'
+            },
+        },
+        xaxis: {
+            type: 'datetime',
+        },
+        tooltip: {
+            shared: false,
+            y: {
+                formatter: function (val) {
+                    return (val / 1000000).toFixed(0)
+                }
+            }
+        }
+    };
+
+    // Create new ApexCharts instance and render
+    const chart = new ApexCharts(chartDiv, options);
+    chart.render();
+}
 
 // Backtest form submission handler (portfolio sum with chart)
 document.getElementById('backtest-form').addEventListener('submit', async function(event) {
@@ -1130,19 +1267,124 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         const portfolioProfit = portfolioFinalValue - portfolioTotalInvested;
         const profitPercent = (portfolioProfit / portfolioTotalInvested) * 100;
         const profitColor = portfolioFinalValue >= portfolioTotalInvested ? "#00ff00" : "#ff0000";
+        
         resultHTML = `
-            <p style="color: ${profitColor};">Portfolio total invested: €${portfolioTotalInvested.toFixed(2)}</p>
-            <p style="color: ${profitColor};">Portfolio final value: €${portfolioFinalValue.toFixed(2)}</p>
-            <p style="color: ${profitColor};">Portfolio profit: €${portfolioProfit.toFixed(2)} (${profitPercent.toFixed(2)}%)</p>
-            <p style="color: ${profitColor};">Portfolio shares: ${portfolioShares.toFixed(2)}</p>
-        `;
+            <div class="results-container" style="margin-bottom: 40px;">
+            <div class="portfolio-metrics">
+                <h3 style="color: white">Portfolio Performance Summary</h3>
+                <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="metric-label" style="color: white">Total Investment</span>
+                    <span class="metric-value" style="color: #2196F3">€${portfolioTotalInvested.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label" style="color: white">Current Value</span>
+                    <span class="metric-value" style="color: ${portfolioFinalValue >= portfolioTotalInvested ? '#4CAF50' : '#F44336'}">
+                    €${portfolioFinalValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                    </span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label" style="color: white">Total Return</span>
+                    <span class="metric-value" style="color: ${portfolioProfit >= 0 ? '#4CAF50' : '#F44336'}">
+                    €${portfolioProfit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                    <small>(${profitPercent >= 0 ? '+' : ''}${profitPercent.toFixed(2)}%)</small>
+                    </span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label" style="color: white">Total Shares</span>
+                    <span class="metric-value" style="color: #607D8B">
+                    ${portfolioShares.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                    </span>
+                </div>
+                </div>
 
-        // Prepare chart data
+            </div>
+            <div class="chart-container">
+                <h3 style="color: white">Portfolio Value Over Time</h3>
+                <div id="portfolio-chart">
+                margin-top: 20px;
+                </div>
+            </div>
+            </div>
+        `;
+        resultDiv.innerHTML = resultHTML;
+
+        // Create ApexCharts configuration
         const dates = Object.keys(portfolioValuesOverTime).sort();
         const portfolioValues = dates.map(date => portfolioValuesOverTime[date]);
 
-        resultDiv.innerHTML = resultHTML;
-        generatePortfolioChart(dates, portfolioValues);
+        const chartOptions = {
+            series: [{
+                name: 'Portfolio Value',
+                data: dates.map((date, index) => ({
+                    x: new Date(date).getTime(),
+                    y: portfolioValues[index]
+                }))
+            }],
+            chart: {
+                type: 'area',
+                height: 350,
+                zoom: {
+                    type: 'x',
+                    enabled: true,
+                    autoScaleYaxis: true
+                },
+                toolbar: {
+                    autoSelected: 'zoom'
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            markers: {
+                size: 0
+            },
+            title: {
+                text: 'Portfolio Value Over Time',
+                align: 'left'
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    inverseColors: false,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.1,
+                    stops: [0, 90, 100]
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Portfolio Value (€)'
+                },
+                labels: {
+                    formatter: function(val) {
+                        return '€' + val.toFixed(2);
+                    }
+                }
+            },
+            xaxis: {
+                type: 'datetime',
+                labels: {
+                    datetimeUTC: false
+                }
+            },
+            tooltip: {
+                x: {
+                    format: 'dd MMM yyyy'
+                },
+                y: {
+                    formatter: function(val) {
+                        return '€' + val.toFixed(2);
+                    }
+                }
+            }
+        };
+
+        // Create and render the chart
+        const chart = new ApexCharts(document.querySelector("#portfolio-chart"), chartOptions);
+        chart.render();
+
     } else {
         resultHTML = `<p style='color: red;'>${errorMessages.join('<br>')}. <a href="https://cors-anywhere.herokuapp.com/" target="_blank">Ensure proxy is active</a>.</p>`;
         resultDiv.innerHTML = resultHTML;
