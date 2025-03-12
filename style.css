@@ -795,7 +795,6 @@ th, td {
     gap: 15px;
     width: 90%;
     padding: 10px;
-    background: var(--card-bg);
 }
 
 .panel {
