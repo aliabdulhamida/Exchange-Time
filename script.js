@@ -1420,7 +1420,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 size: 0
             },
             title: {
-                text: 'Portfolio Value Over Time',
+                text: '',
                 align: 'left'
             },
             fill: {
@@ -1898,19 +1898,31 @@ function toggleFilterButtonVisibility(show) {
 
 document.addEventListener("DOMContentLoaded", () => {
     const filterBtn = document.getElementById("floating-filter-btn");
-    if (filterBtn) {
+    const panel = document.getElementById("filter-panel");
+    
+    if (filterBtn && panel) {
         filterBtn.addEventListener("click", (event) => {
             event.stopPropagation();
-            console.log("Button clicked");
-            const panel = document.getElementById("filter-panel");
-            if (panel) {
-                console.log("Opening panel");
-                panel.classList.add("filter-panel-open");
-                toggleFilterButtonVisibility(false);
-                justOpened = true;
-                setTimeout(() => { justOpened = false; }, 100);
-            } else {
-                console.log("Panel not found");
+            panel.style.display = panel.style.display === "none" || !panel.style.display ? "block" : "none";
+            panel.classList.toggle("filter-panel-open");
+            toggleFilterButtonVisibility(false);
+            
+            // Prevent immediate closure
+            const justOpened = true;
+            setTimeout(() => {
+                panel.dataset.justOpened = "false";
+            }, 100);
+        });
+
+        // Close panel when clicking outside
+        document.addEventListener("click", (event) => {
+            if (!panel.dataset.justOpened && 
+                !panel.contains(event.target) && 
+                !filterBtn.contains(event.target) && 
+                panel.classList.contains("filter-panel-open")) {
+                panel.style.display = "none";
+                panel.classList.remove("filter-panel-open");
+                toggleFilterButtonVisibility(true);
             }
         });
     }
