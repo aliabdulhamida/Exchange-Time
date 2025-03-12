@@ -469,9 +469,47 @@ th, td {
     cursor: pointer;
     font-weight: 300;
     max-height: 250px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                border 0.3s ease,
+                box-shadow 0.3s ease;
 }
 
-.card.favorite { box-shadow: 0px 0px 3px 1px rgba(241, 255, 46, 0.26); }
+.card:hover, .card.clicked {
+    border: 2px solid #fff;
+    transform: translateY(-5px);
+    box-shadow: 1px 15px 30px rgba(0, 0, 0, 0.8);
+}
+
+.card:active {
+    transform: scale(0.98);
+    border: 2px solid #fff;
+    animation: pulse 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card.favorite {
+    position: relative;
+    padding: 1rem;
+    border: 2px solid #fff;
+}
+
+.card.favorite:hover,
+.card.favorite.clicked {
+    border: 2px solid #fff;
+    transform: translateY(-5px);
+}
+
+.card.favorite:active {
+    transform: scale(0.98);
+    border: 2px solid #fff;
+    animation: pulse 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.98); }
+    50% { transform: scale(1.01); }
+    100% { transform: scale(0.98); }
+}
+
 .card.minimized { opacity: 0.85; padding: 1rem; }
 
 .card-header {
