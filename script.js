@@ -1272,38 +1272,110 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         const mobileStyles = isMobile ? "padding: 0; width: 100%;" : "padding: 10px; width: 100%;";
         
         resultHTML = `
-            <div class="results-container" style="margin-bottom: 40px; padding: 10px;">
-              
+            <div class="results-container" style="
+            margin-bottom: 40px; 
+            padding: 10px;
+            overflow: hidden;
+            ">
+
             <div class="portfolio-metrics" style="width: 100%;">
-            <h3 style="color: white; text-align: start; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 30px;">Portfolio Performance Summary</h3>
-            <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; width: 100%;">
-            <div class="metric-card" style="background: rgba(33, 33, 33, 0.9); padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                <span class="metric-label" style="color: white; font-size: clamp(0.9rem, 3vw, 1.1rem); display: block; margin-bottom: 8px;">Total Investment</span>
-                <span class="metric-value" style="color: #2196F3; font-size: clamp(1.1rem, 3.5vw, 1.3rem); font-weight: bold;">€${portfolioTotalInvested.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+            <div class="metrics-grid" style="
+            display: grid; 
+            grid-template-columns: 
+            repeat(auto-fit, 
+            minmax(240px, 1fr)); 
+            gap: 15px; 
+            width: 100%;
+            ">
+
+            <div class="metric-card" style="
+            background: rgba(33, 33, 33, 0.9); 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            ">
+
+                <span class="metric-label" style="
+                color: white; 
+                font-size: 
+                clamp(0.9rem, 3vw, 1.1rem); 
+                display: block; 
+                margin-bottom: 8px;
+                ">Total Investment</span>
+
+                <span class="metric-value" style="
+                color: #2196F3; 
+                font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
+                font-weight: bold;">€${portfolioTotalInvested.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
             </div>
-            <div class="metric-card" style="background: rgba(33, 33, 33, 0.9); padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                <span class="metric-label" style="color: white; font-size: clamp(0.9rem, 3vw, 1.1rem); display: block; margin-bottom: 8px;">Current Value</span>
-                <span class="metric-value" style="color: ${portfolioFinalValue >= portfolioTotalInvested ? '#4CAF50' : '#F44336'}; font-size: clamp(1.1rem, 3.5vw, 1.3rem); font-weight: bold;">
+
+            <div class="metric-card" style="
+            background: rgba(33, 33, 33, 0.9); 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            ">
+
+                <span class="metric-label" style="
+                color: white; 
+                font-size: clamp(0.9rem, 3vw, 1.1rem); 
+                display: block; 
+                margin-bottom: 8px;">Current Value</span>
+
+                <span class="metric-value" style="
+                color: ${portfolioFinalValue >= portfolioTotalInvested ? '#4CAF50' : '#F44336'}; 
+                font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
+                font-weight: bold;">
                 €${portfolioFinalValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                 </span>
+
             </div>
-            <div class="metric-card" style="background: rgba(33, 33, 33, 0.9); padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                <span class="metric-label" style="color: white; font-size: clamp(0.9rem, 3vw, 1.1rem); display: block; margin-bottom: 8px;">Total Return</span>
-                <span class="metric-value" style="color: ${portfolioProfit >= 0 ? '#4CAF50' : '#F44336'}; font-size: clamp(1.1rem, 3.5vw, 1.3rem); font-weight: bold;">
+
+            <div class="metric-card" style="
+            background: rgba(33, 33, 33, 0.9); 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            ">
+
+                <span class="metric-label" style="
+                color: white; 
+                font-size: clamp(0.9rem, 3vw, 1.1rem); 
+                display: block; 
+                margin-bottom: 8px;">Total Return</span>
+
+                <span class="metric-value" style="
+                color: ${portfolioProfit >= 0 ? '#4CAF50' : '#F44336'}; 
+                font-size: 
+                clamp(1.1rem, 3.5vw, 1.3rem); 
+                font-weight: bold;">
                 €${portfolioProfit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                 <small style="font-size: clamp(0.8rem, 2.5vw, 1rem);">(${profitPercent >= 0 ? '+' : ''}${profitPercent.toFixed(2)}%)</small>
                 </span>
             </div>
-            <div class="metric-card" style="background: rgba(33, 33, 33, 0.9); padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                <span class="metric-label" style="color: white; font-size: clamp(0.9rem, 3vw, 1.1rem); display: block; margin-bottom: 8px;">Total Shares</span>
-                <span class="metric-value" style="color: #607D8B; font-size: clamp(1.1rem, 3.5vw, 1.3rem); font-weight: bold;">
+
+            <div class="metric-card" style="
+            background: rgba(33, 33, 33, 0.9); 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            ">
+
+                <span class="metric-label" style="
+                color: white; 
+                font-size: clamp(0.9rem, 3vw, 1.1rem); 
+                display: block; 
+                margin-bottom: 8px;">Total Shares</span>
+                <span class="metric-value" style="
+                color: #607D8B; 
+                font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
+                font-weight: bold;">
                 ${portfolioShares.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                 </span>
             </div>
             </div>
             </div>
             <div class="chart-container" style="width: 100%; margin-top: 30px;">
-            <h3 style="color: white; text-align: start; font-size: clamp(1.2rem, 4vw, 1.5rem);">Portfolio Value Over Time</h3>
             <div id="portfolio-chart" style="
                 margin-top: 20px;
                 background-color: rgb(255, 255, 255);
@@ -1311,7 +1383,6 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 padding: 15px;
                 height: min(400px, 70vh);
                 width: 100%;
-                overflow: hidden;
             "></div>
             </div>
             </div>
@@ -1748,8 +1819,26 @@ function setBodyPadding() {
 // Updates UI elements to reflect current state
 function updateUI() {
     document.querySelectorAll("#region-filter, .region-filter").forEach(el => el.value = currentRegion);
-    document.querySelectorAll("#toggle-view, .toggle-view").forEach(b => b.textContent = isMinimized ? "Details" : "Minimize");
-    document.querySelectorAll("#toggle-favorites, .toggle-favorites").forEach(b => b.textContent = showFavoritesOnly ? "Show All" : "Favorites");
+    document.querySelectorAll("#toggle-view, .toggle-view").forEach(b => b.innerHTML = isMinimized ? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 5v14M5 12h14" />
+    </svg>` : `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M5 12h14" />
+    </svg>`);
+    document.querySelectorAll("#toggle-favorites, .toggle-favorites").forEach(b => b.innerHTML = `<svg
+      fill="${showFavoritesOnly ? '#fff' : 'none'}"
+      height="24"
+      viewBox="0 0 24 24"
+      width="24"  
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12.62 20.81c-.34.12-.9.12-1.24 0C8.48 19.82 2 15.69 2 8.69 2 5.6 4.49 3.1 7.56 3.1c1.82 0 3.43.88 4.44 2.24a5.53 5.53 0 0 1 4.44-2.24C19.51 3.1 22 5.6 22 8.69c0 7-6.48 11.13-9.38 12.12Z"
+        stroke="#fff"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+    </svg>`);
 }
 
 // Toggles visibility of the floating filter button
@@ -1800,23 +1889,31 @@ function setupEventListeners() {
 
     document.getElementById("search")?.addEventListener("input", updateCards);
 
-    document.addEventListener("DOMContentLoaded", () => {
-    let justOpened = false;
+let justOpened = false;
 
-    document.getElementById("floating-filter-btn")?.addEventListener("click", (event) => {
-        event.stopPropagation();
-        console.log("Button clicked");
-        const panel = document.getElementById("filter-panel");
-        if (panel) {
-            console.log("Opening panel");
-            panel.classList.add("filter-panel-open");
-            toggleFilterButtonVisibility(false);
-            justOpened = true;
-            setTimeout(() => { justOpened = false; }, 100);
-        } else {
-            console.log("Panel not found");
-        }
-    });
+function toggleFilterButtonVisibility(show) {
+    const filterButton = document.getElementById("floating-filter-btn");
+    if (filterButton) filterButton.style.display = show ? "block" : "none";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const filterBtn = document.getElementById("floating-filter-btn");
+    if (filterBtn) {
+        filterBtn.addEventListener("click", (event) => {
+            event.stopPropagation();
+            console.log("Button clicked");
+            const panel = document.getElementById("filter-panel");
+            if (panel) {
+                console.log("Opening panel");
+                panel.classList.add("filter-panel-open");
+                toggleFilterButtonVisibility(false);
+                justOpened = true;
+                setTimeout(() => { justOpened = false; }, 100);
+            } else {
+                console.log("Panel not found");
+            }
+        });
+    }
 
     window.addEventListener("click", (event) => {
         if (justOpened) return;
@@ -1828,11 +1925,6 @@ function setupEventListeners() {
             toggleFilterButtonVisibility(true);
         }
     });
-
-    function toggleFilterButtonVisibility(show) {
-        const filterButton = document.getElementById("floating-filter-btn");
-        if (filterButton) filterButton.style.display = show ? "block" : "none";
-    }
 });
 
     document.querySelector(".close")?.addEventListener("click", () => {
