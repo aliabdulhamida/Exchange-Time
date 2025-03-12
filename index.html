@@ -87,6 +87,10 @@
                         {
                             "description": "BITCOIN",
                             "proName": "INDEX:BTCUSD"
+                        },
+                        {
+                            "description": "DAX",
+                            "proName": "CAPITALCOM:DE40"
                         }
                     ],
                     "showSymbolLogo": true,
@@ -139,7 +143,10 @@
         </div>
         <div id="calendar-modal" class="modal">
             <div class="modal-content">
-                <button id="close" class="btn">×</button>
+                <button id="close" class="btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg></button>
                 <h2 style="color:white;">Market Holidays</h2>
                 <select id="calendar-region-filter" class="select">
                     <option value="all">All Regions</option>
@@ -156,7 +163,10 @@
        <!-- Backtest Modal with Monthly Investment -->
         <div id="backtest-modal" class="modal">
             <div class="modal-content">
-                <button id="close-backtest" class="btn">×</button>
+                <button id="close-backtest" class="btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg></button>
                 <h2 style="color:white;">Stock Backtest Tool</h2>
                 <form id="backtest-form">
                     <div class="form-group">
@@ -186,7 +196,10 @@
         <!-- Neues Modal für Market Summary -->
 <div id="market-summary-modal" class="modal">
     <div class="modal-content">
-        <button id="closesummary" class="btn">×</button>
+        <button id="closesummary" class="btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg></button>
         <h2 style="color:white;">Market Summary</h2>
         <p style="color:white;">11.03.2025</p>
         <div id="market-summary-content"><br></br>
@@ -260,7 +273,12 @@
 
  <div id="backtest-results-panel" class="panel">
             <div class="panel-content">
-                <button id="close-results" class="btn">×</button>
+                <button id="close-results" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button></button>
                 <h2 style="color:white;">Backtest Results</h2>
                 <!-- Fügen Sie dies innerhalb des backtest-form hinzu -->
 <div id="api-status" style="color: #ff9800; margin-top: 10px; display: none;">
@@ -272,9 +290,16 @@
             </div>
         </div>
 
-        <div id="floating-filter-btn">Filter</div>
+        <div id="floating-filter-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 12H18M3 6H21M9 18H15"/>
+            </svg>
+        </div></div>
         <div id="filter-panel" class="filter-panel">
-            <button id="close-filter-panel">×</button>
+            <button id="close-filter-panel"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg></button>
             <select class="region-filter select">
                 <option value="all">All Regions</option>
                 <option value="North America">North America</option>
