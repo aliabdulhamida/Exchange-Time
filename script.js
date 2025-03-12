@@ -1894,53 +1894,7 @@ function setupEventListeners() {
 
 let justOpened = false;
 
-function toggleFilterButtonVisibility(show) {
-    const filterButton = document.getElementById("floating-filter-btn");
-    if (filterButton) filterButton.style.display = show ? "block" : "none";
-}
 
-document.addEventListener("DOMContentLoaded", () => {
-    const filterBtn = document.getElementById("floating-filter-btn");
-    const panel = document.getElementById("filter-panel");
-    
-    if (filterBtn && panel) {
-        filterBtn.addEventListener("click", (event) => {
-            event.stopPropagation();
-            panel.style.display = panel.style.display === "none" || !panel.style.display ? "block" : "none";
-            panel.classList.toggle("filter-panel-open");
-            toggleFilterButtonVisibility(false);
-            
-            // Prevent immediate closure
-            const justOpened = true;
-            setTimeout(() => {
-                panel.dataset.justOpened = "false";
-            }, 100);
-        });
-
-        // Close panel when clicking outside
-        document.addEventListener("click", (event) => {
-            if (!panel.dataset.justOpened && 
-                !panel.contains(event.target) && 
-                !filterBtn.contains(event.target) && 
-                panel.classList.contains("filter-panel-open")) {
-                panel.style.display = "none";
-                panel.classList.remove("filter-panel-open");
-                toggleFilterButtonVisibility(true);
-            }
-        });
-    }
-
-    window.addEventListener("click", (event) => {
-        if (justOpened) return;
-        const panel = document.getElementById("filter-panel");
-        const btn = document.getElementById("floating-filter-btn");
-        if (panel && btn && !panel.contains(event.target) && !btn.contains(event.target) && panel.classList.contains("filter-panel-open")) {
-            console.log("Closing panel");
-            panel.classList.remove("filter-panel-open");
-            toggleFilterButtonVisibility(true);
-        }
-    });
-});
 
     document.querySelector(".close")?.addEventListener("click", () => {
         document.getElementById("calendar-modal").style.display = "none";
@@ -1959,6 +1913,72 @@ document.addEventListener("DOMContentLoaded", () => {
     updateUI();
     updateCards();
     setInterval(updateCards, 1000); // Update every second
+});
+
+function toggleFilterButtonVisibility(show) {
+    const filterButton = document.getElementById("floating-filter-btn");
+    // Only show on mobile devices (max-width: 768px)
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (filterButton) {
+        filterButton.style.display = (show && isMobile) ? "block" : "none";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const filterBtn = document.getElementById("floating-filter-btn");
+    const panel = document.getElementById("filter-panel");
+    const closeBtn = document.getElementById("close-filter-panel");
+    
+    // Initial visibility check
+    toggleFilterButtonVisibility(true);
+    
+    // Listen for window resize to update button visibility
+    window.addEventListener("resize", () => {
+        toggleFilterButtonVisibility(true);
+    });
+    
+    if (filterBtn && panel) {
+        filterBtn.addEventListener("click", (event) => {
+            event.stopPropagation();
+            panel.style.display = "block"; 
+            panel.classList.add("filter-panel-open");
+            filterBtn.style.display = "none"; 
+            
+            const justOpened = true;
+            setTimeout(() => {
+                panel.dataset.justOpened = "false";
+            }, 100);
+        });
+
+        if (closeBtn) {
+            closeBtn.addEventListener("click", () => {
+                panel.style.display = "none";
+                panel.classList.remove("filter-panel-open");
+                toggleFilterButtonVisibility(true); // Use toggle function instead of direct display
+            });
+        }
+
+        document.addEventListener("click", (event) => {
+            if (!panel.dataset.justOpened && 
+                !panel.contains(event.target) && 
+                !filterBtn.contains(event.target) && 
+                panel.classList.contains("filter-panel-open")) {
+                panel.style.display = "none";
+                panel.classList.remove("filter-panel-open");
+                toggleFilterButtonVisibility(true); // Use toggle function instead of direct display
+            }
+        });
+    }
+
+    window.addEventListener("click", (event) => {
+        if (justOpened) return;
+        const panel = document.getElementById("filter-panel");
+        const btn = document.getElementById("floating-filter-btn");
+        if (panel && btn && !panel.contains(event.target) && !btn.contains(event.target) && panel.classList.contains("filter-panel-open")) {
+            panel.classList.remove("filter-panel-open");
+            toggleFilterButtonVisibility(true); // Use toggle function instead of direct display
+        }
+    });
 });
 
 window.addEventListener("resize", setBodyPadding);
