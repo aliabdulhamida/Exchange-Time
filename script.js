@@ -945,6 +945,9 @@ let isMinimized = false;             // Toggle for minimized card view
 let showFavoritesOnly = false;       // Toggle for showing only favorite markets
 let favorites = new Set();           // Set of favorite markets
 let marketStatusHistory = {};        // Tracks open/closed status history
+let currentChart = null;
+let recommendationChart = null;
+let earningsChart = null;
 
 const closeButton = document.querySelector("#closeButton");
 
@@ -995,48 +998,51 @@ window.addEventListener('click', (event) => {
 });
 
 // Fetch stock data with proxy
-async function fetchStockData(stockSymbol, startDate, endDate) {
-    const baseUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}`;
-    const startTimestamp = Math.floor(new Date(startDate).getTime() / 1000);
-    const endTimestamp = Math.floor(new Date(endDate).getTime() / 1000);
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const url = `${proxyUrl}${baseUrl}?period1=${startTimestamp}&period2=${endTimestamp}&interval=1d`;
-
-    try {
-        const response = await fetch(url, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Accept': 'application/json',
-                'Origin': window.location.origin
+// Wait for DOM to be fully loaded before setting up stock data fetching
+document.addEventListener('DOMContentLoaded', () => {
+    async function fetchStockData(stockSymbol, startDate, endDate) {
+        try {
+            const period1 = Math.floor(new Date(startDate).getTime() / 1000);
+            const period2 = Math.floor(new Date(endDate).getTime() / 1000);
+            
+            // Yahoo Finance API endpoint with CORS proxy
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}?period1=${period1}&period2=${period2}&interval=1d`;
+            const url = proxyUrl + yahooUrl;
+            
+            const response = await fetch(url, {
+                headers: {
+                    'Origin': window.location.origin
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        });
+            
+            const data = await response.json();
+            
+            if (!data.chart || !data.chart.result || !data.chart.result[0]) {
+                throw new Error('Invalid data format received');
+            }
+            
+            const timestamps = data.chart.result[0].timestamp;
+            const closePrices = data.chart.result[0].indicators.quote[0].close;
+            
+            return timestamps.map((timestamp, index) => ({
+                date: new Date(timestamp * 1000).toISOString().split('T')[0],
+                close: closePrices[index]
+            })).filter(item => item.close !== null);
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP error! Status: ${response.status}, Details: ${errorText}`);
+        } catch (error) {
+            console.error(`Error fetching data for ${stockSymbol}:`, error.message);
+            return { error: error.message + '. Please activate the CORS proxy at https://cors-anywhere.herokuapp.com/' };
         }
-
-        const data = await response.json();
-        if (!data.chart || data.chart.error || !data.chart.result || !data.chart.result[0]) {
-            throw new Error(data.chart?.error?.description || "No data available for this symbol or period.");
-        }
-
-        const timestamps = data.chart.result[0].timestamp;
-        const closes = data.chart.result[0].indicators.quote[0].close;
-
-        if (!timestamps || !closes || timestamps.length === 0 || closes.length === 0) {
-            throw new Error("No valid price data returned.");
-        }
-
-        return timestamps.map((time, index) => ({
-            date: new Date(time * 1000).toISOString().split('T')[0],
-            close: closes[index]
-        }));
-    } catch (error) {
-        console.error(`Fetch error for ${stockSymbol}:`, error.message);
-        return { error: error.message };
     }
-}
+
+    // Make fetchStockData available globally
+    window.fetchStockData = fetchStockData;
+});
 
 // Calculate investment for a single stock (initial + monthly) and track daily values
 function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerStock, startDate, endDate) {
@@ -1473,6 +1479,74 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
     resultsPanel.style.display = 'block';
     backtestModal.style.display = 'none';
 });
+
+// Example API usage for stock analysis
+document.addEventListener("DOMContentLoaded", () => {
+    const analysisButton = document.getElementById("toggle-analysis");
+    const analysisModal = document.getElementById("analysis-modal");
+    const closeAnalysisButton = document.getElementById("close-analysis");
+    const stockSymbolInput = document.getElementById("stock-symbol");
+    const timeframeSelect = document.getElementById("analysis-timeframe");
+
+ 
+
+    function updateAnalysis(symbol) {
+        stockSymbolInput.value = symbol;
+        updateCharts(timeframeSelect.value);
+        updateTechnicalIndicators();
+    }
+
+    if (analysisButton) {
+        analysisButton.addEventListener("click", () => {
+            analysisModal.style.display = "block";
+            updateCharts(timeframeSelect.value);
+            updateTechnicalIndicators();
+        });
+    }
+
+    if (closeAnalysisButton) {
+        closeAnalysisButton.addEventListener("click", () => {
+            analysisModal.style.display = "none";
+        });
+    }
+
+    if (timeframeSelect) {
+        timeframeSelect.addEventListener("change", () => {
+            updateCharts(timeframeSelect.value);
+        });
+    }
+
+    if (stockSymbolInput) {
+        stockSymbolInput.addEventListener("change", () => {
+            updateCharts(timeframeSelect.value);
+            updateTechnicalIndicators();
+        });
+    }
+
+    window.addEventListener("click", (event) => {
+        if (event.target === analysisModal) {
+            analysisModal.style.display = "none";
+        }
+    });
+
+    // Initial load
+    updateCharts(timeframeSelect.value);
+
+    stockSymbolInput.addEventListener('change', (e) => {
+        const symbol = e.target.value.trim().toUpperCase();
+        if (symbol) {
+            updateAnalysis(symbol);
+        }
+    });
+
+    timeframeSelect.addEventListener('change', () => {
+        const symbol = stockSymbolInput.value.trim().toUpperCase();
+        if (symbol) {
+            updateAnalysis(symbol);
+        }
+    });
+});
+
 
 // Dynamic header height adjustment
 function setHeaderHeight() {
@@ -2019,3 +2093,4 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
