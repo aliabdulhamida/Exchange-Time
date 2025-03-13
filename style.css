@@ -500,7 +500,14 @@ th, td {
     border: 2px solid #fff;
 }
 
-.card.minimized { opacity: 0.85; padding: 1rem; }
+.card.minimized {
+    opacity: 0.85;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: space-between;
+    height: 80px; /* Reduced from 220px */
+}
 
 .card-header {
     display: flex;
@@ -1325,4 +1332,172 @@ th, td {
     .footer-content a:link {
         color: var(--open);
     }
+}
+
+#analysis-modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--modal-bg);
+    backdrop-filter: blur(4px);
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.tradingview-widget-container-chart {
+    position: start;
+}
+
+#analysis-modal .modal-content {
+    background-color: black;
+    color: var(--text);
+    border: 1px solid var(--input-border);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90vh;
+    padding: 30px;
+    position: relative;
+    margin: 0 auto;
+    box-shadow: var(--shadow);
+    overflow-y: auto;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+#close-analysis {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--closed);
+    color: #fff;
+    padding: 5px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#close-analysis:hover {
+    background: #a62828;
+}
+
+.analysis-container {
+    margin-top: 20px;
+}
+
+.analysis-header {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+#analysis-timeframe {
+    width: 150px;
+}
+
+#stock-symbol {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 8px 15px;
+    width: 200px;
+}
+
+.analysis-content {
+    display: space-between;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    height: calc(80vh - 120px);
+    overflow-y: auto;
+}
+
+
+#toggle-analysis {
+    background: var(--button-bg);
+    color: #fff;
+    padding: 0.8rem 1rem;
+    border: none;
+    border-radius: 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#toggle-analysis:hover {
+    background: var(--open);
+}
+
+#toggle-analysis:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+    .analysis-header {
+        flex-direction: column;
+    }
+    #stock-symbol {
+        width: 100%;
+    }
+    .analysis-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+@media (max-width: 600px) {
+    .tradingview-widget-container-chart,
+    .tradingview-widget-container,
+    .tradingview-widget-container-stock {
+        width: 95vw;
+        height: calc(50vh - 20px);
+        margin: 10px auto;
+        border-radius: 8px;
+    }
+}
+
+@media (max-width: 400px) {
+    .tradingview-widget-container-chart,
+    .tradingview-widget-container, 
+    .tradingview-widget-container-stock {
+        width: 90vw;
+        height: calc(40vh - 16px);
+        margin: 8px auto;
+        border-radius: 6px;
+    }
+}
+
+/* Tooltip Styles */
+.tooltip {
+    position: relative;
+}
+
+.tooltip:before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.tooltip:hover:before {
+    opacity: 1;
+    visibility: visible;
 }
