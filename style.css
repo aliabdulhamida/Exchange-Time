@@ -470,7 +470,7 @@ th, td {
     box-shadow: 1px 12px 25px rgba(0, 0, 0, 0.7);
     cursor: pointer;
     font-weight: 300;
-    max-height: 250px;
+    height: 220px;
     margin-top: 15px;
     display: flex;
     flex-direction: column;
