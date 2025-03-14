@@ -1337,7 +1337,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         } else {
             allValid = false;
             const errorMsg = result.value?.error || result.reason?.message || "Unknown error";
-            errorMessages.push(`Failed to fetch data for ${stockSymbol}: ${errorMsg}`);
+            errorMessages.push(`Failed to fetch data for ${stockSymbol}: ${errorMsg}, please reload the page and try again.`);
         }
     });
 
@@ -1384,7 +1384,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 <span class="metric-value" style="
                 color: #2196F3; 
                 font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
-                font-weight: bold;">€${portfolioTotalInvested.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                font-weight: bold;">$${portfolioTotalInvested.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
             </div>
 
             <div class="metric-card" style="
@@ -1404,7 +1404,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 color: ${portfolioFinalValue >= portfolioTotalInvested ? '#4CAF50' : '#F44336'}; 
                 font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
                 font-weight: bold;">
-                €${portfolioFinalValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                $${portfolioFinalValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                 </span>
 
             </div>
@@ -1427,7 +1427,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 font-size: 
                 clamp(1.1rem, 3.5vw, 1.3rem); 
                 font-weight: bold;">
-                €${portfolioProfit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                $${portfolioProfit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                 <small style="font-size: clamp(0.8rem, 2.5vw, 1rem);">(${profitPercent >= 0 ? '+' : ''}${profitPercent.toFixed(2)}%)</small>
                 </span>
             </div>
@@ -1513,11 +1513,11 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
             },
             yaxis: {
                 title: {
-                    text: 'Portfolio Value (€)'
+                    text: 'Portfolio Value ($)'
                 },
                 labels: {
                     formatter: function(val) {
-                        return '€' + val.toFixed(2);
+                        return '$' + val.toFixed(2);
                     }
                 }
             },
@@ -1533,7 +1533,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 },
                 y: {
                     formatter: function(val) {
-                        return '€' + val.toFixed(2);
+                        return '$' + val.toFixed(2);
                     }
                 }
             }
