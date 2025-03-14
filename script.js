@@ -1222,8 +1222,82 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         return;
     }
 
-    resultDiv.innerHTML = '<div class="text-center" style="color: white;"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div><p>Loading data...</p></div>';
+    resultDiv.innerHTML = `
+      <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100%; min-height: 400px;">
+        <div class="loader">
+          <div class="loader-animation"></div>
+          <style>
+            .loader {
+              width: 150px;
+              height: 150px;
+              line-height: 150px;
+              position: relative;
+              box-sizing: border-box;
+              text-align: center;
+              z-index: 0;
+              text-transform: uppercase;
+            }
+
+            .loader-animation {
+              width: 100%;
+              height: 100%;
+              position: relative;
+            }
+
+            .loader-animation:before,
+            .loader-animation:after {
+              opacity: 0;
+              box-sizing: border-box;
+              content: "\\0020";
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+              border: 5px solid #fff;
+              box-shadow: 0 0 50px #fff, inset 0 0 50px #fff;
+            }
+
+            .loader-animation:after {
+              z-index: 1;
+              -webkit-animation: gogoloader 2s infinite 1s;
+            }
+
+            .loader-animation:before {
+              z-index: 2;
+              -webkit-animation: gogoloader 2s infinite;
+            }
+
+            @-webkit-keyframes gogoloader {
+              0% {
+                -webkit-transform: scale(0);
+                opacity: 0;
+              }
+              50% {
+                opacity: 1;
+              }
+              100% {
+                -webkit-transform: scale(1);
+                opacity: 0;
+              }
+            }
+          </style>
+        </div>
+        
+      </div>
+    `;
     resultsPanel.style.display = 'block';
+
+    window.onload = () => document.querySelector(".loading").remove();
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("img").forEach(img => {
+        img.onerror = function() {
+          this.style.display = "none"; 
+        };
+      });
+    });
 
     // Fetch data for all stocks
     const promises = stockSymbols.map(symbol => fetchStockData(symbol, startDate, endDate));
