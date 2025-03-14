@@ -227,8 +227,8 @@ th, td {
     position: sticky;
     top: -35px;
     background: rgba(0, 0, 0, 0.95);
-    padding: 30px;
-    margin: -40px -40px 30px -40px;
+    padding: 15px; /* Reduced from 30px */
+    margin: -20px -20px 15px -20px; /* Reduced from -40px -40px 30px -40px */
     border-radius: 35px 35px 0 0;
     backdrop-filter: blur(15px);
     z-index: 1000;
@@ -1249,148 +1249,6 @@ th, td {
       }
 }
 
-/* Light Mode */
-@media (prefers-color-scheme: light) {
-    /* Root variables */
-    :root {
-        --primary-bg: #f0f0f0;
-        --card-bg: #fff;
-        --text: #333;
-        --open: #007a6e;
-        --closed: #b33936;
-        --input-bg: #f0f0f0;
-        --button-bg: #007a6e;
-        --button-hover: #005a50;
-        --input-border: #ccc;
-        --favorite-border: rgba(184, 147, 0, 0.3);
-        --positive: #2e7031;
-        --negative: #a62828;
-        --modal-bg: rgba(240, 240, 240, 0.9);
-        --header-height: 0px;
-        --highlight: #01c3a8;
-    }
-
-    /* Text colors */
-    h1, h2, h3, p, li {
-        color: var(--text) !important;
-    }
-
-    /* Cards */
-    .card, .tradingview-widget-container {
-        color: var(--text);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        background: var(--card-bg);
-    }
-
-    .card-body h3,
-    .digital-clock,
-    .progress span {
-        color: var(--text);
-    }
-
-    /* Modal and Panels */
-    .modal {
-        background-color: rgba(255, 255, 255, 0.4) !important;
-    }
-
-    .modal-content,
-    .holiday-panel,
-    .panel {
-        background-color: var(--card-bg) !important;
-        color: var(--text) !important;
-    }
-
-    /* Close buttons */
-    #close,
-    #closesummary,
-    #close-filter-panel,
-    #close-backtest,
-    .holiday-panel .close-panel {
-        background: var(--closed) !important;
-        color: white !important;
-    }
-
-    /* Forms */
-    #search,
-    .select {
-        color: var(--text);
-    }
-
-    /* Table */
-    .table-container,
-    th, td {
-        color: black;
-    }
-
-    /* Calendar */
-    .calendar-month {
-        background: none;
-    }
-
-    .calendar-day {
-        color: var(--text);
-    }
-
-    .calendar-day.holiday {
-        background: #a63d2a;
-        color: #fff;
-    }
-
-    .calendar-day.holiday:hover {
-        background: #8a2f20;
-    }
-
-    .calendar-day.weekday::after {
-        background: var(--text);
-    }
-
-    /* Holiday Panel */
-    .holiday-panel {
-        background-color: rgba(0, 0, 0, 0.95);
-        color: #e0e0e0;
-        border: 1px solid var(--input-border);
-    }
-
-    .holiday-panel h3 {
-        color: #01c3a8;
-    }
-
-    .holiday-panel li {
-        border-bottom: 1px solid #444;
-    }
-
-    /* Privacy Policy */
-    .privacy-policy {
-        background: white;
-    }
-
-    .privacy-policy h1,
-    .privacy-policy p {
-        color: black;
-    }
-
-    /* Footer */
-    .footer-content p,
-    .footer-link {
-        color: var(--text);
-    }
-
-    .footer-content a {
-        color: var(--open);
-    }
-
-    .footer-content a:hover,
-    .footer-content a:visited,
-    .footer-content a:focus {
-        color: var(--closed);
-    }
-
-    .footer-content a:active,
-    .footer-content a:link {
-        color: var(--open);
-    }
-}
-
 #analysis-modal {
     display: none;
     position: fixed;
@@ -1679,4 +1537,30 @@ th, td {
                 .image-overlay p {
                     margin: 0;
                     opacity: 0.8;
+                }
+
+                .stock-input-row {
+                    margin-bottom: 15px;
+                }
+                
+                .input-group {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                
+                .remove-stock {
+                    background: none;
+                    border: none;
+                    color: #ff4444;
+                    cursor: pointer;
+                    padding: 5px;
+                }
+                
+                .remove-stock:hover {
+                    color: #ff0000;
+                }
+                
+                .stock-symbol {
+                    flex: 1;
                 }
