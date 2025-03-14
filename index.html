@@ -200,73 +200,130 @@
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg></button>
+
         <h2 style="color:white;">Market Summary</h2>
-        <p style="color:white;">13.03.2025</p>
-        <div id="market-summary-content"><br></br>
+        <br></br>
+        <div class="modal-image-container">
+            <div class="modal-image">
+                <img src="https://images.unsplash.com/photo-1618675523453-0c79cfe9c214?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Market Summary" loading="lazy">
+                <div class="image-overlay">
+                    <h3>13.03.2025</h3>
+                    <p>Daily analysis and key insights</p>
+                </div>
+            </div>
+            <style>
+                .modal-image-container {
+                    margin: -20px -20px 20px -20px;
+                    overflow: hidden;
+                }
+                .modal-image {
+                    position: relative;
+                    width: 100%;
+                    height: 220px;
+                    overflow: hidden;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                }
+                .modal-image img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.3s ease;
+                    filter: brightness(0.7);
+                }
+                .modal-image:hover img {
+                    transform: scale(1.05);
+                }
+                .image-overlay {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    padding: 20px;
+                    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+                    color: white;
+                }
+                .image-overlay h3 {
+                    margin: 0 0 5px 0;
+                    font-size: 1.5rem;
+                    font-weight: 500;
+                }
+                .image-overlay p {
+                    margin: 0;
+                    opacity: 0.8;
+                }
+            </style>
+        </div>
+        <div id="market-summary-content">
             <h3 style="color:white;">Key Points</h3>    
             <ul style="color:white;"></ul>
-            <li style="color:white">Markets showed mixed performance on March 13, 2025, with the S&P 500 down 0.2%, Dow Jones up 0.3%, and NASDAQ falling 0.5%.</li>
-            <li style="color:white">Weekly performance remains challenged, with the S&P 500 down 1.0%, Dow Jones down 0.5%, and NASDAQ down 1.4%.</li>
-            <li style="color:white">Year-to-date figures show the S&P 500 down 1.0% and NASDAQ down 4.9%, reflecting ongoing market volatility.</li>
-            <li style="color:white">Healthcare sector showed strength while technology stocks faced selling pressure.</li>               
+            <li style="color:white;">Markets showed mixed performance on March 13, 2025, with the S&P 500 down 0.2%, Dow Jones up 0.3%, and NASDAQ falling 0.5%.</li>
+            <li style="color:white;">Weekly performance remains challenged, with the S&P 500 down 1.0%, Dow Jones down 0.5%, and NASDAQ down 1.4%.</li>
+            <li style="color:white;">Year-to-date figures show the S&P 500 down 1.0% and NASDAQ down 4.9%, reflecting ongoing market volatility.</li>
+            <li style="color:white;">Healthcare sector showed strength while technology stocks faced selling pressure.</li>
+            <li style="color:white;">Bond yields rose slightly, signaling investor concerns over inflation and monetary policy adjustments.</li>
             </ul>
             <br></br>
             <hr></hr>
             <br></br>
             <h3 style="color:white;">Market Overview</h3>
-            <p style="color:white;">On March 13, 2025, U.S. markets showed mixed results, with the S&P 500 closing at 5,851.20, down 0.2%, while the Dow Jones Industrial Average finished at 43,577.85, gaining 0.3%. The NASDAQ Composite declined 0.5% to 18,468.91. Weekly performance continues to show pressure across major indices.</p>
+            <p style="color:white;">On March 13, 2025, U.S. markets showed mixed results, with the S&P 500 closing at 5,851.20, down 0.2%, while the Dow Jones Industrial Average finished at 43,577.85, gaining 0.3%. The NASDAQ Composite declined 0.5% to 18,468.91. Weekly performance continues to show pressure across major indices, with technology and growth stocks underperforming while defensive sectors provided some stability.</p>
             <br></br>
             <h3 style="color:white;">Influential Factors</h3>
-            <p style="color:white;">Mixed economic data and renewed inflation concerns impacted market sentiment. Healthcare sector earnings provided support while tech stocks faced profit-taking. Bond yields increased slightly as investors reassessed monetary policy expectations.</p>
+            <p style="color:white;">Mixed economic data and renewed inflation concerns impacted market sentiment. The healthcare sector provided support with strong earnings reports, while technology stocks faced profit-taking amid concerns over valuation. Bond yields increased slightly as investors reassessed monetary policy expectations, with the 10-year Treasury yield rising to 4.28%.</p>
+            <p style="color:white;">Global geopolitical tensions and fluctuating commodity prices also contributed to market uncertainty, with crude oil prices stabilizing and gold prices reaching new highs.</p>
             <br></br>
             <hr></hr>
             <br></br>
             <h3 style="color:white;">Report</h3>
-            <p style="color:white;">Thursday's trading session on March 13, 2025, reflected market uncertainty with divergent sector performance and increased volatility in response to mixed economic signals.</p>   
+            <p style="color:white;">Thursday's trading session on March 13, 2025, reflected market uncertainty with divergent sector performance and increased volatility in response to mixed economic signals. Investors remained cautious as they weighed the impact of inflationary pressures and potential interest rate hikes on corporate earnings and economic growth.</p>   
             <br></br>
             <h3 style="color:white;">Market Indices Performance</h3>
-            <p style="color:white;">The S&P 500 declined to 5,851.20, down 0.2%. The Dow Jones Industrial Average rose to 43,577.85, up 0.3%, while the NASDAQ Composite fell 0.5% to 18,468.91. Weekly performance continues to show broader market weakness.</p>   
+            <p style="color:white;">The S&P 500 declined to 5,851.20, down 0.2%. The Dow Jones Industrial Average rose to 43,577.85, up 0.3%, while the NASDAQ Composite fell 0.5% to 18,468.91. Weekly performance continues to show broader market weakness, with growth-oriented sectors underperforming and defensive sectors providing relative stability.</p>   
             <br></br>
             <h3 style="color:white;">Key Market Influences</h3>
-            <p style="color:white;">Healthcare sector strength and mixed economic data influenced trading. Technology stocks faced pressure while defensive sectors showed resilience. Global market uncertainty added to cautious trading sentiment.</p>   
+            <p style="color:white;">Healthcare sector strength and mixed economic data influenced trading. Technology stocks faced pressure while defensive sectors showed resilience. Global market uncertainty added to cautious trading sentiment. Additionally, corporate earnings reports and guidance updates played a significant role in shaping investor expectations.</p>   
+            <p style="color:white;">The Federal Reserve's recent comments on monetary policy and inflation targets also weighed on market sentiment, with investors closely monitoring upcoming economic data releases for further clarity.</p>
             <br></br>
             <h3 style="color:white;">Sector and Stock Highlights</h3>
-            <p style="color:white;">Johnson & Johnson (JNJ) gained 2.1% on positive drug trial data. Microsoft (MSFT) declined 1.8% on profit-taking. Tesla (TSLA) fell 2.5% on production concerns. Healthcare stocks outperformed, with Pfizer (PFE) up 1.7%.</p>    
+            <p style="color:white;">Johnson & Johnson (JNJ) gained 2.1% on positive drug trial data, boosting the healthcare sector. Microsoft (MSFT) declined 1.8% on profit-taking, while Tesla (TSLA) fell 2.5% on production concerns. Defensive stocks, including utilities and consumer staples, outperformed as investors sought safe-haven assets amid market volatility.</p>    
+            <p style="color:white;">Energy stocks showed mixed performance, with ExxonMobil (XOM) gaining 0.5% on stable crude oil prices, while renewable energy companies faced selling pressure. Financial stocks remained under pressure due to concerns over rising interest rates and potential regulatory changes.</p>
             <br></br>
             <h3 style="color:white;">Additional Market Indicators</h3>
-            <p style="color:white;">Bitcoin traded at $86,800, slightly below recent highs. Gold reached $2,980 per ounce, while WTI crude oil stabilized at $67.40 per barrel. The 10-year Treasury yield increased to 4.28%.</p>    
+            <p style="color:white;">Bitcoin traded at $86,800, slightly below recent highs, reflecting cautious sentiment in the cryptocurrency market. Gold reached $2,980 per ounce, benefiting from its safe-haven appeal amid market uncertainty. WTI crude oil stabilized at $67.40 per barrel, with supply and demand dynamics remaining in focus.</p>    
+            <p style="color:white;">The 10-year Treasury yield increased to 4.28%, signaling investor concerns over inflation and potential monetary policy adjustments. The U.S. dollar strengthened against major currencies, reflecting its safe-haven status amid global economic uncertainty.</p>
             <br></br><hr></hr> 
             <br></br>
             <h3 style="color:white;">Summary Table</h3> 
             <div class="table-container">
             <table>
-                <tr>
-                <th>Index</th>
-                <th>Daily Change</th>
-                <th>Weekly Change</th>
-                <th>Closing Value</th>
-                </tr>
-                <tr>
-                <td>S&P 500</td>
-                <td>-0.2%</td>
-                <td>-1.0%</td>
-                <td>5,851.20</td>
-                </tr>
-                <tr>
-                <td>Dow Jones</td>
-                <td>+0.3%</td>
-                <td>-0.5%</td>
-                <td>43,577.85</td>
-                </tr>
-                <tr>
-                <td>Nasdaq</td>
-                <td>-0.5%</td>
-                <td>-1.4%</td>
-                <td>18,468.91</td>
-                </tr>
+            <tr>
+            <th>Index</th>
+            <th>Daily Change</th>
+            <th>Weekly Change</th>
+            <th>Closing Value</th>
+            </tr>
+            <tr>
+            <td>S&P 500</td>
+            <td>-0.2%</td>
+            <td>-1.0%</td>
+            <td>5,851.20</td>
+            </tr>
+            <tr>
+            <td>Dow Jones</td>
+            <td>+0.3%</td>
+            <td>-0.5%</td>
+            <td>43,577.85</td>
+            </tr>
+            <tr>
+            <td>Nasdaq</td>
+            <td>-0.5%</td>
+            <td>-1.4%</td>
+            <td>18,468.91</td>
+            </tr>
             </table>   
             </div>
-            <p style="color:white;">In conclusion, March 13, 2025, showed mixed market performance with sector rotation and increased caution among investors amid evolving economic conditions.</p>
+            <p style="color:white;">In conclusion, March 13, 2025, showed mixed market performance with sector rotation and increased caution among investors amid evolving economic conditions. The healthcare sector provided a bright spot, while technology and growth stocks faced headwinds. Investors remain focused on inflation data, monetary policy, and corporate earnings as key drivers of market direction.</p>
         </div>
         </div>
     </div>
