@@ -80,8 +80,8 @@ p, ul { font-weight: 300; color: var(--text); }
 }
 
 #closesummary {
-    position: absolute;
-    top: 15px;
+    position: static;
+    top: 20px;
     right: 15px;
     background: var(--closed);
     color: white;
@@ -92,6 +92,7 @@ p, ul { font-weight: 300; color: var(--text); }
     font-size: 0.9rem;
     font-weight: 600;
     transition: background 0.3s ease;
+    margin-left: auto;
 }
 
 #closesummary:hover {
@@ -220,6 +221,62 @@ th, td {
 /* Calendar */
 #calendar {
     margin-top: 10px;
+}
+
+.calendar-header {
+    position: sticky;
+    top: -35px;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 30px;
+    margin: -40px -40px 30px -40px;
+    border-radius: 35px 35px 0 0;
+    backdrop-filter: blur(15px);
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--input-border);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.calendar-header h2 {
+    margin: 0;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.calendar-content {
+    margin-top: 25px;
+    padding: 0 10px 30px 10px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--input-border) transparent;
+}
+
+.calendar-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.calendar-content::-webkit-scrollbar-thumb {
+    background-color: var(--input-border);
+    border-radius: 3px;
+}
+
+.calendar-month {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.calendar-month:hover {
+    transform: translateY(-2px);
 }
 
 .calendar-month {
@@ -1501,3 +1558,120 @@ th, td {
     opacity: 1;
     visibility: visible;
 }
+
+.modal-header {
+    position: sticky;
+    top: -40px;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 20px 30px; /* Angepasstes Padding */
+    margin: -30px -30px 20px -30px;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-start; /* Geändert zu flex-start */
+    align-items: center;
+    border-bottom: 1px solid var(--input-border);
+    gap: 20px; /* Abstand zwischen den Elementen */
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: white;
+    flex: 1; /* Nimmt verfügbaren Platz ein */
+}
+
+#market-summary-content {
+    margin-top: -10px; /* Adjusted to match header movement */
+    padding-bottom: 0px;
+}
+
+.summary-navigation {
+    position: static;
+    display: flex;
+    gap: 15px; /* Increased gap for better spacing */
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    margin: 0 10px; /* Add horizontal margin */
+    padding: 5px; /* Add padding */
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease; /* Smooth transitions */
+}
+
+
+.nav-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    color: white;
+    backdrop-filter: blur(5px);
+}
+
+.nav-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+                .modal-header h2 {
+                    margin: 0;
+                    color: white;
+                    flex: 1; /* Nimmt verfügbaren Platz ein */
+                }
+
+                .modal-image-container {
+                    margin: -20px -20px 20px -20px;
+                    overflow: hidden;
+                }
+
+                #market-summary-content {
+                    margin-top: -10px; /* Adjusted to match header movement */
+                    padding-bottom: 0px;
+                }
+                .modal-image {
+                    position: relative;
+                    width: 95%;
+                    height: 220px;
+                    overflow: hidden;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                    margin: 0 auto; /* Add this line to center */
+                }
+                .modal-image img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.3s ease;
+                    filter: brightness(0.7);
+                }
+                .modal-image:hover img {
+                    transform: scale(1.05);
+                }
+                .image-overlay {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    padding: 20px;
+                    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+                    color: white;
+                }
+                .image-overlay h3 {
+                    margin: 0 0 5px 0;
+                    font-size: 1.5rem;
+                    font-weight: 500;
+                }
+                .image-overlay p {
+                    margin: 0;
+                    opacity: 0.8;
+                }
