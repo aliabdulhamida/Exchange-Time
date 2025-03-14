@@ -1005,22 +1005,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const period1 = Math.floor(new Date(startDate).getTime() / 1000);
             const period2 = Math.floor(new Date(endDate).getTime() / 1000);
             
-            // Yahoo Finance API endpoint with CORS proxy
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            // Yahoo Finance API endpoint with AllOrigins proxy
+            const proxyUrl = 'https://api.allorigins.win/get?url=';
             const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}?period1=${period1}&period2=${period2}&interval=1d`;
-            const url = proxyUrl + yahooUrl;
+            const url = proxyUrl + encodeURIComponent(yahooUrl);
             
-            const response = await fetch(url, {
-                headers: {
-                    'Origin': window.location.origin
-                }
-            });
+            const response = await fetch(url);
             
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             
-            const data = await response.json();
+            const rawData = await response.json();
+            const data = JSON.parse(rawData.contents);
             
             if (!data.chart || !data.chart.result || !data.chart.result[0]) {
                 throw new Error('Invalid data format received');
@@ -1036,13 +1033,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error(`Error fetching data for ${stockSymbol}:`, error.message);
-            return { error: error.message + '. Please activate the CORS proxy at https://cors-anywhere.herokuapp.com/' };
+            return { error: error.message };
         }
     }
 
     // Make fetchStockData available globally
     window.fetchStockData = fetchStockData;
 });
+
 
 // Calculate investment for a single stock (initial + monthly) and track daily values
 function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerStock, startDate, endDate) {
