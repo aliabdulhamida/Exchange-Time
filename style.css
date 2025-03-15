@@ -166,7 +166,7 @@ p, ul { font-weight: 300; color: var(--text); }
     gap: 20px;
     grid-area: market;
     height: 80vh;
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 
 #right-container { 
@@ -207,17 +207,30 @@ th, td {
     top: 0;
     left: 0;
     width: 100%;
-    background: var(--primary-bg);
-    padding: 10px 50px;
+    background: rgba(8, 9, 11, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 15px 50px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     gap: 15px;
     z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     border-bottom: 1px solid var(--input-border);
-    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+#header:hover {
+    background: rgba(8, 9, 11, 0.98);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 400px) {
+    #header {
+        padding: 10px 20px;
+        justify-content: center;
+    }
 }
 
 /* Calendar */
@@ -316,6 +329,7 @@ th, td {
     gap: 5px;
     padding: 10px;
     background: none;
+    border-radius: 20px;
 }
 
 .calendar-row {
@@ -614,19 +628,38 @@ th, td {
     }
   }
   
-  @media screen and (max-width: 700px) {
+@media screen and (max-width: 700px) {
     #footer {
-      flex-direction: column;
-      padding: 5rem 20vw;
+        flex-direction: column;
+        padding: 3rem 1rem; /* Reduced padding for better space usage */
+        gap: 2rem; /* Add spacing between columns */
+        border-radius: 12px;
     }
+    
     .col {
-    color: #fff;
-      width: 100%;
+        width: 100%;
+        color: #fff;
+        padding: 1.5rem; /* Added padding for better readability */
+        border-radius: 10px; /* Added rounded corners */
     }
+    
+    .col:not(:last-child) {
+        margin-bottom: 1rem; /* Add spacing between columns */
+    }
+
     .scroll-card {
-      display: none;
+        display: none;
     }
-  }
+
+    .social {
+        justify-content: center; /* Center social icons */
+    }
+
+    .copyright {
+        text-align: center; /* Center copyright text */
+        margin-top: 1rem;
+    }
+}
 
 #footerprivacy {
     background: white;
@@ -1093,7 +1126,6 @@ th, td {
         gap: 0;
         padding: 0;
         margin: 0;
-        overflow-y: none !important;
     }
 
     #market-section {
@@ -1101,7 +1133,6 @@ th, td {
         flex-wrap: wrap;
         width: 100%;
         height: calc(100vh - var(--header-height));
-        overflow-y: none !important;
     }
 
     #market-section section {
@@ -1124,7 +1155,7 @@ th, td {
 
     #footer {
         padding: 15px 0;
-        margin-top: auto;
+        margin-top: 15px;
     }
 
     .footer-content {
