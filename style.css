@@ -2060,7 +2060,7 @@ th, td {
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
     display: none;
-    z-index: 1001; /* Höher als Header */
+    z-index: 1002; /* Höher als Header */
 }
 
 #close-about, #close-terms, #close-mission {
