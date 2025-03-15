@@ -2917,3 +2917,64 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing StockAnalysis...');
     window.stockAnalysis = new StockAnalysis();
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const aboutModal = document.getElementById('about-modal');
+    const aboutLink = document.getElementById('about-link');
+    const closeAbout = document.getElementById('close-about');
+
+    aboutLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        aboutModal.style.display = 'block';
+    });
+
+    closeAbout.addEventListener('click', function() {
+        aboutModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(e) {
+        if (e.target === aboutModal) {
+            aboutModal.style.display = 'none';
+        }
+    });
+});
+
+// Mission modal functionality
+const missionLink = document.getElementById('mission-link');
+const missionModal = document.getElementById('mission-modal');
+const closeMissionButton = document.getElementById('close-mission');
+
+missionLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    missionModal.style.display = 'block';
+});
+
+closeMissionButton.addEventListener('click', () => {
+    missionModal.style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target === missionModal) {
+        missionModal.style.display = 'none';
+    }
+});
+
+// Terms of Service Modal
+const termsModal = document.getElementById('terms-modal');
+const termsLink = document.getElementById('terms-link');
+const closeTerms = document.getElementById('close-terms');
+
+termsLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    termsModal.style.display = 'block';
+});
+
+closeTerms.addEventListener('click', () => {
+    termsModal.style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target === termsModal) {
+        termsModal.style.display = 'none';
+    }
+});
