@@ -597,6 +597,7 @@ th, td {
     padding: 5rem 2vw;
     position: relative;
     background: var(--primary-bg);
+
   }
   
   #footer::before {
@@ -1158,7 +1159,6 @@ th, td {
         display: flex;
         flex-wrap: wrap;
         width: 100%;
-        height: calc(100vh - var(--header-height));
     }
 
     #market-section section {
