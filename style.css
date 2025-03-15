@@ -587,7 +587,7 @@ th, td {
 /* Footer */
 #footer {
     margin-top: 15px;
-    z-index: 500;
+    z-index: 1000;
     width: 100%;
     display: flex;
     flex-direction: row;
