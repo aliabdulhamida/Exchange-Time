@@ -589,7 +589,6 @@ th, td {
 /* Footer */
 #footer {
     margin-top: 15px;
-    z-index: 1000;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -2062,4 +2061,19 @@ th, td {
     background: rgba(0, 0, 0, 0.7);
     display: none;
     z-index: 1001; /* Höher als Header */
+}
+
+#close-about, #close-terms, #close-mission {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--closed);
+    padding: 5px 16px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+#close-about:hover, #close-terms:hover, #close-mission:hover {
+    background: #a62828;
 }
