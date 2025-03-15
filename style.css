@@ -2017,6 +2017,11 @@ th, td {
 
 #tradingview-widget-container {
     width: 800px;
-    margin-bottom: 15px;
-    position: relative;
+    height: 300px;
+    margin-bottom: 0px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
+
