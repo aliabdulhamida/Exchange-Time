@@ -19,28 +19,6 @@ const marketHours = {
             "2025-11-27": { reason: "Thanksgiving Day", closeEarly: true, earlyCloseTime: "13:00" },
             "2025-12-25": { reason: "Christmas Day", closeEarly: true, earlyCloseTime: "13:00" },
             "2025-12-31": { reason: "New Year's Day 2026 (observed)", closeEarly: true, earlyCloseTime: "13:00" },
-            // 2026
-            "2026-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2026-01-19": { reason: "Martin Luther King, Jr. Day", closeEarly: false },
-            "2026-02-16": { reason: "Washington’s Birthday", closeEarly: false },
-            "2026-04-03": { reason: "Good Friday", closeEarly: false },
-            "2026-05-25": { reason: "Memorial Day", closeEarly: false },
-            "2026-06-19": { reason: "Juneteenth National Independence Day", closeEarly: false },
-            "2026-07-03": { reason: "Independence Day (observed)", closeEarly: true, earlyCloseTime: "13:00" },
-            "2026-09-07": { reason: "Labor Day", closeEarly: false },
-            "2026-11-26": { reason: "Thanksgiving Day", closeEarly: true, earlyCloseTime: "13:00" },
-            "2026-12-25": { reason: "Christmas Day", closeEarly: true, earlyCloseTime: "13:00" },
-            // 2027
-            "2027-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2027-01-18": { reason: "Martin Luther King, Jr. Day", closeEarly: false },
-            "2027-02-15": { reason: "Washington’s Birthday", closeEarly: false },
-            "2027-04-02": { reason: "Good Friday", closeEarly: false },
-            "2027-05-31": { reason: "Memorial Day", closeEarly: false },
-            "2027-06-18": { reason: "Juneteenth National Independence Day (observed)", closeEarly: false },
-            "2027-07-05": { reason: "Independence Day (observed)", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-09-06": { reason: "Labor Day", closeEarly: false },
-            "2027-11-25": { reason: "Thanksgiving Day", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-12-24": { reason: "Christmas Day (observed)", closeEarly: true, earlyCloseTime: "13:00" }
         }
     },
     NASDAQ: {
@@ -970,8 +948,6 @@ const closeBacktest = document.getElementById('close-backtest');
 const resultsPanel = document.getElementById('backtest-results-panel');
 const closeResults = document.getElementById('close-results');
 
-
-
 toggleMarketSummary.addEventListener('click', () => {
     marketSummaryModal.style.display = 'block';
 });
@@ -1040,7 +1016,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make fetchStockData available globally
     window.fetchStockData = fetchStockData;
 });
-
 
 // Calculate investment for a single stock (initial + monthly) and track daily values
 function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerStock, startDate, endDate) {
@@ -2972,4 +2947,7 @@ window.addEventListener('click', (e) => {
         termsModal.style.display = 'none';
     }
 });
+
+
+
 
