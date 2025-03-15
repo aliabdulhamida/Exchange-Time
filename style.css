@@ -15,7 +15,7 @@
     --positive: #2e7031;
     --negative: #a62828;
     --modal-bg: rgba(50, 50, 50, 0.2);
-    --header-height: 15px;
+    --header-height: 85px;
     --highlight: #01c3a8;
     --m: 4rem;
 }
@@ -36,7 +36,9 @@ body {
     margin-left: 15px;
     margin-right: 15px;
     margin-bottom: 10px;
-    margin-top: 10px;
+    padding-top: var(--header-height);
+    min-height: 100vh;
+    margin: 0;
 }
 
 .modal-body h3 {
@@ -182,6 +184,8 @@ p, ul { font-weight: 300; color: var(--text); }
     gap: 20px;
     width: 100%;
     margin-top: 15px;
+    min-height: calc(100vh - var(--header-height));
+    position: relative;
 }
 
 #market-section {
@@ -238,8 +242,6 @@ th, td {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center;
-    gap: 15px;
     z-index: 1000;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     border-bottom: 1px solid var(--input-border);
@@ -1224,6 +1226,7 @@ th, td {
         height: 50px;
         line-height: 40px;
         min-width: 70px;
+        margin-bottom: 15px;
     }
   
     #floating-filter-btn {
@@ -2060,4 +2063,3 @@ th, td {
     display: none;
     z-index: 1001; /* Höher als Header */
 }
-
