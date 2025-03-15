@@ -2973,23 +2973,3 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// Function to update header position and adjust body padding
-function updateHeaderPosition() {
-    const header = document.querySelector('header');
-    const headerHeight = header ? header.offsetHeight : 0;
-    
-    // Add padding to body equal to header height
-    document.body.style.paddingTop = `${headerHeight}px`;
-    
-    // Make header fixed at top
-    if (header) {
-        header.style.position = 'fixed';
-        header.style.top = '0';
-        header.style.left = '0';
-        header.style.right = '0';
-        header.style.zIndex = '1000';
-    }
-}
-
-
-
