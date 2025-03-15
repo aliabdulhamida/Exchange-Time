@@ -1,3 +1,24 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const splashScreen = document.getElementById('splash-screen');
+    const mainContainer = document.getElementById('main-container');
+    
+    // Verstecke den Hauptcontainer initial
+    mainContainer.style.opacity = '0';
+    
+    // Nach 2.5 Sekunden
+    setTimeout(() => {
+        // Blende Splash Screen aus
+        splashScreen.style.opacity = '0';
+        // Blende Hauptcontainer ein
+        mainContainer.style.opacity = '1';
+        
+        // Entferne Splash Screen nach der Animation
+        setTimeout(() => {
+            splashScreen.remove();
+        }, 500);
+    }, 2500);
+});
+
 // Define marketHours with explicit holidays for each market
 const marketHours = {
     NYSE: {
