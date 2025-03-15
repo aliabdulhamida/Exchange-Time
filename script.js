@@ -2166,3 +2166,760 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+class StockAnalysis {
+    constructor() {
+        if (typeof ApexCharts === 'undefined') {
+            console.error('ApexCharts ist nicht geladen!');
+            return;
+        }
+
+        // DOM-Elemente
+        this.symbolInput = document.getElementById('stock-symbol');
+        this.analyzeBtn = document.getElementById('analyze-btn');
+        this.errorDiv = document.getElementById('error-message');
+        this.loadingOverlay = document.querySelector('.loading-overlay');
+        
+        // Status-Management
+        this.cache = new Map();
+        this.chartInstances = new Map();
+        this.debounceTimer = null;
+
+        // Chart-Konfiguration
+        this.chartConfig = {
+            defaults: {
+                chart: {
+                    type: 'line',
+                    height: 350,
+                    background: '#1a1a1a',
+                    foreColor: '#fff'
+                },
+                theme: {
+                    mode: 'dark'
+                },
+                stroke: { curve: 'smooth', width: 2 },
+                markers: { size: 0 }
+            }
+        };
+
+        // Initialisierung
+        this.setupEventListeners();
+        this.setupTabs();
+        this.setupCharts();
+    }
+
+    setupEventListeners() {
+        console.log('Setting up event listeners...');
+        
+        // Enter-Taste im Input
+        this.symbolInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const symbol = this.symbolInput.value.trim().toUpperCase();
+                console.log('Enter pressed with symbol:', symbol);
+                if (symbol) this.analyzeStock(symbol);
+            }
+        });
+
+        // Debounced Input-Handler
+        this.symbolInput.addEventListener('input', (e) => {
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(() => {
+                const symbol = e.target.value.trim().toUpperCase();
+                console.log('Input debounced with symbol:', symbol);
+                if (symbol.length >= 2) {
+                    this.analyzeStock(symbol);
+                }
+            }, 500);
+        });
+
+        // Analyze-Button Handler
+        this.analyzeBtn.addEventListener('click', () => {
+            const symbol = this.symbolInput.value.trim().toUpperCase();
+            console.log('Analyze button clicked with symbol:', symbol);
+            if (symbol) this.analyzeStock(symbol);
+        });
+    }
+
+    setupTabs() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.dataset.tab;
+                console.log('Tab switched to:', targetTab);
+                
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                tabPanes.forEach(pane => {
+                    pane.classList.remove('active');
+                    if (pane.id === targetTab) {
+                        pane.classList.add('active');
+                        if (targetTab === 'technical') {
+                            this.updateTechnicalCharts();
+                        }
+                    }
+                });
+            });
+        });
+    }
+
+    async analyzeStock(symbol) {
+        try {
+            console.log('Starting analysis for:', symbol);
+            this.showLoading();
+            
+            if (this.cache.has(symbol)) {
+                const cachedData = this.cache.get(symbol);
+                if (Date.now() - cachedData.timestamp < 5 * 60 * 1000) {
+                    console.log('Using cached data for:', symbol);
+                    this.updateUI(cachedData.data);
+                    this.updateCharts(cachedData.data);
+                    this.hideLoading();
+                    return;
+                }
+            }
+
+            const rawData = await this.fetchStockData(symbol);
+            console.log('Raw data received:', rawData);
+            
+            const analyzedData = this.analyzeData(rawData);
+            console.log('Analyzed data:', analyzedData);
+
+            this.cache.set(symbol, {
+                timestamp: Date.now(),
+                data: analyzedData
+            });
+
+            this.updateUI(analyzedData);
+            this.updateCharts(analyzedData);
+
+        } catch (error) {
+            console.error('Analysis error:', error);
+            this.showError(error.message);
+        } finally {
+            this.hideLoading();
+        }
+    }
+
+    async fetchStockData(symbol) {
+        try {
+            console.log('Fetching data for:', symbol);
+            const proxyUrl = 'https://api.allorigins.win/get?url=';
+            const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1y`;
+            const url = proxyUrl + encodeURIComponent(yahooUrl);
+
+            const response = await fetch(url);
+            
+            if (response.status === 429) {
+                console.warn('Rate limit reached, retrying...');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return this.fetchStockData(symbol);
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+
+            const rawData = await response.json();
+            
+            if (!rawData?.contents) {
+                throw new Error('Invalid API response format');
+            }
+
+            const data = JSON.parse(rawData.contents);
+            
+            if (!data?.chart?.result?.[0]) {
+                throw new Error('No data available for this symbol');
+            }
+
+            return data.chart.result[0];
+
+        } catch (error) {
+            console.error('Fetch error:', error);
+            throw error;
+        }
+        
+    }
+    
+        async analyzeStock(symbol) {
+            try {
+                this.showLoading();
+                console.log('Analyzing stock:', symbol);
+                
+                // Prüfe Cache
+                if (this.cache.has(symbol)) {
+                    const cachedData = this.cache.get(symbol);
+                    if (Date.now() - cachedData.timestamp < 5 * 60 * 1000) {
+                        console.log('Using cached data');
+                        this.updateUI(cachedData.data);
+                        this.updateCharts(cachedData.data);
+                        this.hideLoading();
+                        return;
+                    }
+                }
+    
+                const rawData = await this.fetchStockData(symbol);
+                const analyzedData = this.analyzeData(rawData);
+                
+                this.cache.set(symbol, {
+                    timestamp: Date.now(),
+                    data: analyzedData
+                });
+    
+                this.updateUI(analyzedData);
+                this.updateCharts(analyzedData);
+    
+            } catch (error) {
+                console.error('Analysis error:', error);
+                this.showError(error.message);
+            } finally {
+                this.hideLoading();
+            }
+        }
+    
+        async fetchStockData(symbol) {
+            try {
+                const proxyUrl = 'https://api.allorigins.win/get?url=';
+                const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1y`;
+                const url = proxyUrl + encodeURIComponent(yahooUrl);
+    
+                console.log('Fetching from:', url);
+                const response = await fetch(url);
+                
+                if (response.status === 429) {
+                    console.warn('Rate limit reached, retrying...');
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    return this.fetchStockData(symbol);
+                }
+    
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+    
+                const rawData = await response.json();
+                
+                if (!rawData?.contents) {
+                    throw new Error('Invalid API response format');
+                }
+    
+                const data = JSON.parse(rawData.contents);
+                
+                if (!data?.chart?.result?.[0]) {
+                    throw new Error('No data available for this symbol');
+                }
+    
+                return data.chart.result[0];
+    
+            } catch (error) {
+                console.error('Fetch error:', error);
+                throw error;
+            }
+        }
+    
+        analyzeData(rawData) {
+            const { meta, indicators, timestamp: timestamps } = rawData;
+            const quotes = indicators.quote[0];
+            const closePrices = quotes.close;
+            
+            return {
+                symbol: meta.symbol,
+                currency: meta.currency,
+                timestamps: timestamps,
+                priceHistory: timestamps.map((time, i) => ({
+                    time: time * 1000,
+                    value: quotes.close[i],
+                    open: quotes.open[i],
+                    high: quotes.high[i],
+                    low: quotes.low[i],
+                    volume: quotes.volume[i]
+                })).filter(item => item.value !== null),
+                technicalIndicators: {
+                    rsi: this.calculateRSI(closePrices),
+                    macd: this.calculateMACD(closePrices),
+                    ...this.calculateMovingAverages(closePrices),
+                    volatility: this.calculateVolatility(closePrices),
+                    momentum: this.calculateMomentum(closePrices),
+                    atr: this.calculateATR(quotes.high, quotes.low, closePrices),
+                    bollinger: this.calculateBollingerBands(closePrices)
+                },
+                fundamentalData: {
+                    marketCap: meta.marketCap,
+                    high52Week: meta.fiftyTwoWeekHigh,
+                    low52Week: meta.fiftyTwoWeekLow,
+                    avgVolume: meta.regularMarketVolume
+                }
+            };
+        }
+    
+        updateUI(data) {
+            const elements = {
+                'stock-name': data.symbol,
+                'current-price': `$${data.priceHistory[data.priceHistory.length-1].value.toFixed(2)}`,
+                'price-change': this.calculatePriceChange(data.priceHistory),
+                'market-cap': this.formatMarketCap(data.fundamentalData.marketCap),
+                'high-52-week': `$${data.fundamentalData.high52Week.toFixed(2)}`,
+                'low-52-week': `$${data.fundamentalData.low52Week.toFixed(2)}`,
+                'avg-volume': this.formatNumber(data.fundamentalData.avgVolume),
+                'rsi': data.technicalIndicators.rsi.toFixed(2),
+                'macd': data.technicalIndicators.macd.macd.toFixed(2),
+                'ma50': `$${data.technicalIndicators.MA50.toFixed(2)}`,
+                'ma200': `$${data.technicalIndicators.MA200.toFixed(2)}`
+            };
+    
+            for (const [id, value] of Object.entries(elements)) {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            }
+    
+            this.updateSignals(data.technicalIndicators);
+        }
+    
+        // Technische Indikatoren
+calculateRSI(prices, period = 14) {
+    if (!prices || prices.length < period) return 0;
+    
+    const gains = [], losses = [];
+    for(let i = 1; i < prices.length; i++) {
+        const difference = prices[i] - prices[i-1];
+        gains.push(difference > 0 ? difference : 0);
+        losses.push(difference < 0 ? Math.abs(difference) : 0);
+    }
+    
+    const avgGain = gains.slice(0, period).reduce((a, b) => a + b) / period;
+    const avgLoss = losses.slice(0, period).reduce((a, b) => a + b) / period;
+    
+    if (avgLoss === 0) return 100;
+    const rs = avgGain / avgLoss;
+    return 100 - (100 / (1 + rs));
+}
+
+calculateMACD(prices, shortPeriod = 12, longPeriod = 26, signalPeriod = 9) {
+    if (!prices || prices.length < longPeriod) return { macd: 0, signal: 0, histogram: 0 };
+    
+    const shortEMA = this.calculateEMA(prices, shortPeriod);
+    const longEMA = this.calculateEMA(prices, longPeriod);
+    const macdLine = shortEMA - longEMA;
+    const signalLine = this.calculateEMA([macdLine], signalPeriod);
+    
+    return {
+        macd: macdLine,
+        signal: signalLine,
+        histogram: macdLine - signalLine
+    };
+}
+
+calculateMovingAverages(prices) {
+    return {
+        MA50: this.calculateSMA(prices, 50),
+        MA200: this.calculateSMA(prices, 200)
+    };
+}
+
+calculateSMA(prices, period) {
+    if (!prices?.length || prices.length < period) return 0;
+    return prices.slice(-period).reduce((a, b) => a + b) / period;
+}
+
+calculateEMA(prices, period) {
+    if (!prices?.length || prices.length < period) return 0;
+    const multiplier = 2 / (period + 1);
+    let ema = prices.slice(0, period).reduce((a, b) => a + b) / period;
+    
+    for(let i = period; i < prices.length; i++) {
+        ema = (prices[i] - ema) * multiplier + ema;
+    }
+    return ema;
+}
+
+calculateATR(high, low, close, period = 14) {
+    if (!high?.length || !low?.length || !close?.length) return 0;
+    const tr = high.map((h, i) => {
+        if (i === 0) return h - low[i];
+        return Math.max(h - low[i], Math.abs(h - close[i-1]), Math.abs(low[i] - close[i-1]));
+    });
+    return this.calculateSMA(tr, period);
+}
+
+calculateBollingerBands(prices, period = 20, multiplier = 2) {
+    if (!prices?.length || prices.length < period) {
+        return { upper: 0, middle: 0, lower: 0 };
+    }
+    
+    const middle = this.calculateSMA(prices, period);
+    const deviation = Math.sqrt(
+        prices.slice(-period).reduce((sum, price) => 
+            sum + Math.pow(price - middle, 2), 0) / period
+    );
+    
+    return {
+        upper: middle + (multiplier * deviation),
+        middle: middle,
+        lower: middle - (multiplier * deviation)
+    };
+}
+
+calculateVolatility(prices, period = 20) {
+    if (!prices || prices.length < period) return 0;
+    
+    const returns = [];
+    for(let i = 1; i < prices.length; i++) {
+        returns.push((prices[i] - prices[i-1]) / prices[i-1]);
+    }
+    
+    const mean = returns.reduce((a, b) => a + b) / returns.length;
+    const variance = returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / returns.length;
+    
+    return Math.sqrt(variance) * Math.sqrt(252); // Annualisierte Volatilität
+}
+
+calculateMomentum(prices, period = 14) {
+    if (!prices || prices.length < period) return 0;
+    return (prices[prices.length - 1] / prices[prices.length - period - 1]) * 100;
+}
+
+calculatePriceChange(priceHistory) {
+    if (!priceHistory?.length) return '0.00%';
+    
+    const firstPrice = priceHistory[0].value;
+    const lastPrice = priceHistory[priceHistory.length - 1].value;
+    const change = ((lastPrice - firstPrice) / firstPrice) * 100;
+    
+    return `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
+}
+
+// Helper-Methoden
+formatMarketCap(value) {
+    if (!value) return 'N/A';
+    const billion = 1000000000;
+    const million = 1000000;
+    
+    if (value >= billion) {
+        return `$${(value / billion).toFixed(2)}B`;
+    }
+    return `$${(value / million).toFixed(2)}M`;
+}
+
+formatNumber(num) {
+    if (!num) return 'N/A';
+    return new Intl.NumberFormat().format(num);
+}
+
+showLoading() {
+    if (this.loadingOverlay) {
+        this.loadingOverlay.style.display = 'flex';
+    }
+}
+
+hideLoading() {
+    if (this.loadingOverlay) {
+        this.loadingOverlay.style.display = 'none';
+    }
+}
+
+showError(message) {
+    console.error(message);
+    if (this.errorDiv) {
+        this.errorDiv.textContent = message;
+        this.errorDiv.style.display = 'block';
+        setTimeout(() => {
+            this.errorDiv.style.display = 'none';
+        }, 5000);
+    }
+}
+
+// Nach der showError Methode hinzufügen:
+
+setupCharts() {
+    this.chartConfig = {
+        price: {
+            chart: {
+                type: 'candlestick',
+                height: 400,
+                background: '#fff',
+                foreColor: '#fff'
+            },
+            title: {
+                text: 'Price Chart',
+                align: 'left',
+                style: { color: '#fff' }
+            },
+            xaxis: {
+                type: 'datetime',
+                labels: {
+                    style: { colors: '#fff' }
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: { colors: '#fff' },
+                    formatter: (value) => `$${value.toFixed(2)}`
+                }
+            },
+            grid: {
+                borderColor: '#404040'
+            }
+        },
+        technical: {
+            chart: {
+                type: 'line',
+                height: 350,
+                background: '#1a1a1a',
+                foreColor: '#fff',
+                toolbar: {
+                    show: true
+                }
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 2
+            },
+            grid: {
+                borderColor: '#404040'
+            },
+            xaxis: {
+                type: 'datetime',
+                labels: {
+                    style: { colors: '#fff' }
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: { colors: '#fff' }
+                }
+            }
+        }
+    };
+}
+
+setupCharts() {
+    // Stelle sicher, dass die Chart-Container existieren und leer sind
+    ['price-chart', 'technical-chart'].forEach(id => {
+        const container = document.getElementById(id);
+        if (container) {
+            container.innerHTML = '';
+        } else {
+            console.error(`Chart-Container ${id} nicht gefunden`);
+        }
+    });
+
+    // Basis-Chart-Konfiguration
+    this.chartConfig = {
+        shared: {
+            chart: {
+                type: 'line',
+                height: 350,
+                background: '#1a1a1a',
+                foreColor: '#fff',
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    dynamicAnimation: {
+                        speed: 1000
+                    }
+                },
+                toolbar: {
+                    show: true,
+                    tools: {
+                        download: true,
+                        selection: true,
+                        zoom: true,
+                        zoomin: true,
+                        zoomout: true,
+                        pan: true,
+                        reset: true
+                    }
+                }
+            },
+            theme: {
+                mode: 'dark',
+                palette: 'palette1'
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 2,
+                lineCap: 'round'
+            },
+            markers: {
+                size: 0,
+                hover: {
+                    size: 5
+                }
+            },
+            grid: {
+                show: true,
+                borderColor: '#404040',
+                strokeDashArray: 0,
+                position: 'back'
+            },
+            xaxis: {
+                type: 'datetime',
+                labels: {
+                    style: { colors: '#fff' }
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: { colors: '#fff' },
+                    formatter: (value) => `$${value.toFixed(2)}`
+                }
+            },
+            tooltip: {
+                enabled: true,
+                theme: 'dark',
+                x: {
+                    format: 'dd MMM yyyy'
+                }
+            }
+        }
+    };
+}
+
+updateCharts(data) {
+    console.log('Updating charts with data:', data);
+    this.destroyExistingCharts();
+
+    try {
+        // Preis-Chart
+        const priceChartOptions = {
+            ...this.chartConfig.shared,
+            series: [{
+                name: 'Preis',
+                data: data.priceHistory.map(item => ({
+                    x: new Date(item.time).getTime(),
+                    y: item.value
+                }))
+            }],
+            title: {
+                text: `${data.symbol} Price Chart`,
+                align: 'left',
+                style: { color: '#fff' }
+            }
+        };
+
+        // Technischer Chart
+        const technicalChartOptions = {
+            ...this.chartConfig.shared,
+            series: [
+                {
+                    name: 'Price',
+                    data: data.priceHistory.map(item => ({
+                        x: new Date(item.time).getTime(),
+                        y: item.value
+                    }))
+                },
+                {
+                    name: 'MA50',
+                    data: data.priceHistory.map(item => ({
+                        x: new Date(item.time).getTime(),
+                        y: data.technicalIndicators.MA50
+                    }))
+                },
+                {
+                    name: 'MA200',
+                    data: data.priceHistory.map(item => ({
+                        x: new Date(item.time).getTime(),
+                        y: data.technicalIndicators.MA200
+                    }))
+                }
+            ]
+        };
+
+        const priceChart = new ApexCharts(
+            document.getElementById('price-chart'),
+            priceChartOptions
+        );
+
+        const technicalChart = new ApexCharts(
+            document.getElementById('technical-chart'),
+            technicalChartOptions
+        );
+
+        console.log('Rendering charts...');
+        priceChart.render();
+        technicalChart.render();
+
+        this.chartInstances.set('price', priceChart);
+        this.chartInstances.set('technical', technicalChart);
+
+    } catch (error) {
+        console.error('Fehler beim Erstellen der Charts:', error);
+        this.showError('Charts konnten nicht erstellt werden');
+    }
+}
+
+destroyExistingCharts() {
+    console.log('Destroying existing charts...');
+    this.chartInstances.forEach((chart, key) => {
+        try {
+            if (chart && typeof chart.destroy === 'function') {
+                chart.destroy();
+                console.log(`Chart ${key} destroyed`);
+            }
+        } catch (error) {
+            console.error(`Fehler beim Zerstören des Charts ${key}:`, error);
+        }
+    });
+    this.chartInstances.clear();
+}
+
+updateTechnicalCharts() {
+    const symbol = this.symbolInput.value.trim().toUpperCase();
+    if (symbol && this.cache.has(symbol)) {
+        const data = this.cache.get(symbol).data;
+        this.updateCharts(data);
+    }
+}
+
+updateSignals(indicators) {
+    const signalElements = {
+        'ma-signal': this.calculateMASignal(indicators.MA50, indicators.MA200),
+        'momentum-signal': this.calculateMomentumSignal(indicators.rsi, indicators.macd)
+    };
+
+    for (const [id, signal] of Object.entries(signalElements)) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.className = 'signal-indicator';
+            element.classList.add(signal.type);
+            element.title = signal.message;
+        }
+    }
+}
+
+calculateMASignal(ma50, ma200) {
+    if (ma50 > ma200) {
+        return { type: 'bullish', message: 'Bullish: MA50 above MA200' };
+    } else {
+        return { type: 'bearish', message: 'Bearish: MA50 below MA200' };
+    }
+}
+
+calculateMomentumSignal(rsi, macd) {
+    let signal = { type: 'neutral', message: 'Neutral momentum' };
+    
+    if (rsi > 70 || macd.histogram < 0) {
+        signal = { type: 'overbought', message: 'Overbought conditions' };
+    } else if (rsi < 30 || macd.histogram > 0) {
+        signal = { type: 'oversold', message: 'Oversold conditions' };
+    }
+    
+    return signal;
+}
+
+destroyExistingCharts() {
+    this.chartInstances.forEach(chart => {
+        if (chart && typeof chart.destroy === 'function') {
+            chart.destroy();
+        }
+    });
+    this.chartInstances.clear();
+}
+
+}
+
+// Initialisierung
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Initializing StockAnalysis...');
+    window.stockAnalysis = new StockAnalysis();
+});
