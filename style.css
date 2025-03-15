@@ -221,7 +221,6 @@ p, ul { font-weight: 300; color: var(--text); }
 }
 
 th, td {
-    border: 1px solid white;
     padding: 15px;
     color: white;
     text-align: center;
