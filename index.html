@@ -550,7 +550,7 @@
     <footer id="footer">
         <div class="col col1">
           <h3>Exchange Time</h3>
-          <p>Made with <span class="heart">❤</span></p>
+          <p>Made with <span class="heart">❤</span> in Berlin</p>
           <div class="social">
             <a href="https://github.com/aliabdulhamida" target="_blank" class="link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
@@ -570,10 +570,121 @@
           <p class="copyright">2025 © Exchange Time | All Rights Reserved</p>
         </div>
         <div class="col col2">
-          <p>About</p>
-          <p>Our mission</p>
+          <p><a href="#" style="color: #fff; text-decoration: none;" onmouseover="this.style.color='#808080'" onmouseout="this.style.color='#fff'" id="about-link">About</a></p>
+
+          <!-- About Modal -->
+          <div id="about-modal" class="modal">
+              <div class="modal-content" style="max-width: 800px; margin: auto;">
+                  <div class="modal-header">
+                      <h2>About</h2>
+                      <button id="close-about" class="btn">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                      </button>
+                  </div>
+                  <div class="modal-body" style="padding: 20px;">
+                    <img src="et-title2.png" alt="Exchange Time Logo" style="width: 100%; max-width: 600px; height: auto; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; border-radius: 10px;">
+                      <h3>Welcome</h3>
+                      <p>Exchange Time is your comprehensive platform for tracking global market hours and analyzing financial markets in real-time.</p>
+                      <p>Our mission is to provide traders and investors with accurate, timely information about market operations worldwide.</p>
+                      <h4>Key Features:</h4>
+                      <ul>
+                          <li>Real-time market status tracking</li>
+                          <li>Global exchange hours</li>
+                          <li>Market analysis tools</li>
+                          <li>Trading calendars</li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+          <p><a href="#" style="color: #fff; text-decoration: none;" onmouseover="this.style.color='#808080'" onmouseout="this.style.color='#fff'" id="mission-link">Our Mission</a></p>
+
+          <!-- Mission Modal -->
+          <div id="mission-modal" class="modal">
+              <div class="modal-content" style="max-width: 800px; margin: auto;">
+                  <div class="modal-header">
+                      <h2>Our Mission</h2>
+                      <button id="close-mission" class="btn">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                      </button>
+                  </div>
+                  <div class="modal-body" style="padding: 20px;">
+                      <h3>Our Vision</h3>
+                      <p>To become the world's most trusted platform for global market intelligence and timing.</p>
+                      
+                      <h3>Our Mission Statement</h3>
+                      <p>Exchange Time is dedicated to empowering traders and investors worldwide by providing:</p>
+                      <ul>
+                          <li>Accurate and real-time market information</li>
+                          <li>Comprehensive trading tools and analysis</li>
+                          <li>Educational resources for better trading decisions</li>
+                          <li>Innovative solutions for global market timing</li>
+                      </ul>
+
+                      <h3>Our Values</h3>
+                      <ul>
+                          <li>Accuracy and Reliability</li>
+                          <li>Innovation and Technology</li>
+                          <li>User-Centric Design</li>
+                          <li>Global Accessibility</li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
           <p><a href="Privacy-Policy.html" style="color: #fff; text-decoration: none;" onmouseover="this.style.color='#808080'" onmouseout="this.style.color='#fff'">Privacy Policy</a></p>
-          <p>Terms of service</p>
+          <!-- Nach dem "Privacy Policy" Link und vor dem schließenden div.col col2 -->
+<p><a href="#" style="color: #fff; text-decoration: none;" onmouseover="this.style.color='#808080'" onmouseout="this.style.color='#fff'" id="terms-link">Terms of Service</a></p>
+
+<!-- Terms of Service Modal - Fügen Sie dies nach den anderen Modals ein -->
+<div id="terms-modal" class="modal">
+    <div class="modal-content" style="max-width: 800px; max-height: 80vh; margin: auto; overflow-y: auto;">
+        <div class="modal-header">
+            <h2>Terms of Service</h2>
+            <button id="close-terms" class="btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body" style="padding: 10px; max-width: 300px; margin: auto; max-height: 100px; z-index: 1001;"></div>
+            <h3>1. Acceptance of Terms</h3>
+            <p>By accessing and using Exchange Time, you accept and agree to be bound by the terms and provisions of this agreement.</p>
+
+            <h3>2. Use License</h3>
+            <p>Permission is granted to temporarily access Exchange Time for personal, non-commercial use only.</p>
+
+            <h3>3. Disclaimer</h3>
+            <p>The information provided on Exchange Time is for general informational purposes only. All information is provided in good faith, however we make no representation or warranty of any kind.</p>
+
+            <h3>4. Trading Risks</h3>
+            <p>Trading financial instruments involves high risks including the risk of losing some, or all, of your investment amount.</p>
+
+            <h3>5. Data Accuracy</h3>
+            <p>While we strive to provide accurate and timely information, there may be inadvertent technical or factual inaccuracies and typographical errors.</p>
+
+            <h3>6. Service Modifications</h3>
+            <p>Exchange Time reserves the right to modify or discontinue, temporarily or permanently, the service with or without notice.</p>
+
+            <h3>7. User Obligations</h3>
+            <ul>
+                <li>You must not misuse the service</li>
+                <li>You must not use the service for illegal purposes</li>
+                <li>You must not attempt to gain unauthorized access</li>
+            </ul>
+
+            <h3>8. Contact</h3>
+            <p>For questions about these Terms of Service, please contact us at info@exchangetime.de</p>
+
+            <p style="margin-top: 20px; font-style: italic;">Last updated: March 15, 2025</p>
+        </div>
+    </div>
+</div>
         </div>
         <div class="col col3">
             <h3 style="color: #fff;">Contact Us</h3>
