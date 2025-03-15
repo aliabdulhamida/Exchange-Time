@@ -15,7 +15,7 @@
     --positive: #2e7031;
     --negative: #a62828;
     --modal-bg: rgba(50, 50, 50, 0.2);
-    --header-height: 0px;
+    --header-height: 15px;
     --highlight: #01c3a8;
     --m: 4rem;
 }
