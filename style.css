@@ -39,6 +39,31 @@ body {
     margin-top: 10px;
 }
 
+.modal-body h3 {
+    color: var(--text);
+    margin: 1.5em 0 0.5em 0;
+}
+
+.modal-body p, 
+.modal-body ul {
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 1em;
+}
+
+.modal-body ul {
+    padding-left: 20px;
+}
+
+.modal-body ul li {
+    margin-bottom: 0.5em;
+}
+
+#terms-modal .modal-content {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
 h1, h2, h3 {
     font-weight: 600;
     text-transform: uppercase;
@@ -156,7 +181,7 @@ p, ul { font-weight: 300; color: var(--text); }
     grid-template-areas: "left market right";
     gap: 20px;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 #market-section {
@@ -166,7 +191,8 @@ p, ul { font-weight: 300; color: var(--text); }
     gap: 20px;
     grid-area: market;
     height: 80vh;
-    overflow-y: scroll;
+    overflow-y: auto;
+    margin-top: 15px;
 }
 
 #right-container { 
@@ -1299,7 +1325,6 @@ th, td {
             padding: 0;
             margin: 0;
             margin-bottom: 30px;
-            overflow-y: none !important;
         }
     
         #market-section {
@@ -1308,7 +1333,6 @@ th, td {
             min-height: 100vh;
             width: 100%;
             height: calc(100vh - var(--header-height));
-            overflow-y: none !important;
         }
     
         #market-section section {
@@ -2024,4 +2048,3 @@ th, td {
     left: 50%;
     transform: translate(-50%, -50%);
 }
-
