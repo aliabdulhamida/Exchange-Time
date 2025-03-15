@@ -17,6 +17,7 @@
     --modal-bg: rgba(50, 50, 50, 0.2);
     --header-height: 0px;
     --highlight: #01c3a8;
+    --m: 4rem;
 }
 
 /* Reset */
@@ -34,6 +35,7 @@ body {
     background: var(--primary-bg);
     margin-left: 15px;
     margin-right: 15px;
+    margin-bottom: 20px;
 }
 
 h1, h2, h3 {
@@ -544,15 +546,94 @@ th, td {
 
 
 /* Footer */
-#footer, #footerprivacy {
-    margin-top: auto;
-    background: var(--primary-bg);
-    color: var(--text);
-    padding: 10px 0;
+#footer {
+    margin-top: 15px;
+    z-index: 500;
     width: 100%;
-    text-align: center;
-    border-top: 1px solid var(--input-border);
-}
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: flex-end;
+    padding: 5rem 2vw;
+    position: relative;
+    background: var(--primary-bg);
+    border: var(--input-border);
+  }
+  
+  #footer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      rgba(0, 0, 0, 0) 5%,
+      rgba(0, 0, 0, 0.3) 20%,
+      rgba(0, 0, 0, 0.6) 30%,
+      rgba(0, 0, 0, 0.8) 40%,
+      rgba(0, 0, 0, 1) 50%,
+      rgb(0, 0, 0)
+    );
+    z-index: -7;
+  }
+  
+  .col {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: calc(0.3 * var(--m)) calc(0.8 * var(--m));
+    width: 28%;
+    margin-bottom: 10px;
+  }
+  
+  .col2, .col3 {
+    background-color: var(--card-bg);
+    border-radius: calc(0.5 * var(--m));
+  }
+  
+  .social {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .link {
+    width: calc(0.8 * var(--m));
+    height: calc(0.8 * var(--m));
+    border-radius: calc(0.1 * var(--m));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  .heart {
+    color: #BA6573;
+  }
+  
+  .copyright {
+    color: #818181;
+    font-size: smaller;
+  }
+  
+  @media screen and (max-width: 1000px) {
+    :root {
+      --m: 3rem;
+    }
+  }
+  
+  @media screen and (max-width: 700px) {
+    #footer {
+      flex-direction: column;
+      padding: 5rem 20vw;
+    }
+    .col {
+      width: 100%;
+    }
+    .scroll-card {
+      display: none;
+    }
+  }
 
 #footerprivacy {
     background: white;
