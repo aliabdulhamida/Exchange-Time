@@ -1984,12 +1984,6 @@ function updateUI() {
     </svg>`);
 }
 
-// Toggles visibility of the floating filter button
-function toggleFilterButtonVisibility(show) {
-    const filterButton = document.getElementById("floating-filter-btn");
-    if (filterButton) filterButton.style.display = show ? "block" : "none";
-}
-
 // Sets up all event listeners
 function setupEventListeners() {
     document.querySelectorAll("#region-filter, .region-filter").forEach(el => {
@@ -2996,5 +2990,6 @@ function updateHeaderPosition() {
         header.style.zIndex = '1000';
     }
 }
+
 
 
