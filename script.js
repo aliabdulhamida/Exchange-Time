@@ -1,5 +1,5 @@
 // Define marketHours with explicit holidays for each market
-onst marketHours = {
+const marketHours = {
     NYSE: {
         open: "09:30",
         close: "16:00",
@@ -3002,7 +3002,7 @@ class NewsletterManager {
         this.subscribers = new Set(this.loadSubscribers());
         
         // Load API key from environment variables or config file
-        this.API_KEY = API_NEWSLETTER;
+        this.API_KEY = null;
         this.loadApiKey();
         
         // Define headers that will be used for API requests
