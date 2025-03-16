@@ -1,5 +1,5 @@
 // Define marketHours with explicit holidays for each market
-const marketHours = {
+onst marketHours = {
     NYSE: {
         open: "09:30",
         close: "16:00",
@@ -7,7 +7,6 @@ const marketHours = {
         region: "North America",
         city: "New York",
         holidays: {
-            // 2025
             "2025-01-01": { reason: "New Year's Day", closeEarly: false },
             "2025-01-20": { reason: "Martin Luther King, Jr. Day", closeEarly: false },
             "2025-02-17": { reason: "Washington’s Birthday", closeEarly: false },
@@ -39,26 +38,6 @@ const marketHours = {
             "2025-11-27": { reason: "Thanksgiving Day", closeEarly: true, earlyCloseTime: "13:00" },
             "2025-12-25": { reason: "Christmas Day", closeEarly: true, earlyCloseTime: "13:00" },
             "2025-12-31": { reason: "New Year's Day 2026 (observed)", closeEarly: true, earlyCloseTime: "13:00" },
-            "2026-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2026-01-19": { reason: "Martin Luther King, Jr. Day", closeEarly: false },
-            "2026-02-16": { reason: "Washington’s Birthday", closeEarly: false },
-            "2026-04-03": { reason: "Good Friday", closeEarly: false },
-            "2026-05-25": { reason: "Memorial Day", closeEarly: false },
-            "2026-06-19": { reason: "Juneteenth National Independence Day", closeEarly: false },
-            "2026-07-03": { reason: "Independence Day (observed)", closeEarly: true, earlyCloseTime: "13:00" },
-            "2026-09-07": { reason: "Labor Day", closeEarly: false },
-            "2026-11-26": { reason: "Thanksgiving Day", closeEarly: true, earlyCloseTime: "13:00" },
-            "2026-12-25": { reason: "Christmas Day", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2027-01-18": { reason: "Martin Luther King, Jr. Day", closeEarly: false },
-            "2027-02-15": { reason: "Washington’s Birthday", closeEarly: false },
-            "2027-04-02": { reason: "Good Friday", closeEarly: false },
-            "2027-05-31": { reason: "Memorial Day", closeEarly: false },
-            "2027-06-18": { reason: "Juneteenth National Independence Day (observed)", closeEarly: false },
-            "2027-07-05": { reason: "Independence Day (observed)", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-09-06": { reason: "Labor Day", closeEarly: false },
-            "2027-11-25": { reason: "Thanksgiving Day", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-12-24": { reason: "Christmas Day (observed)", closeEarly: true, earlyCloseTime: "13:00" }
         }
     },
     TSX: {
@@ -80,28 +59,6 @@ const marketHours = {
             "2025-12-25": { reason: "Christmas Day", closeEarly: false },
             "2025-12-26": { reason: "Boxing Day", closeEarly: false },
             "2025-12-31": { reason: "New Year's Day 2026 (observed)", closeEarly: true, earlyCloseTime: "13:00" },
-            "2026-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2026-02-16": { reason: "Family Day", closeEarly: false },
-            "2026-04-03": { reason: "Good Friday", closeEarly: false },
-            "2026-05-18": { reason: "Victoria Day", closeEarly: false },
-            "2026-07-01": { reason: "Canada Day", closeEarly: false },
-            "2026-08-03": { reason: "Civic Holiday", closeEarly: false },
-            "2026-09-07": { reason: "Labour Day", closeEarly: false },
-            "2026-10-12": { reason: "Thanksgiving Day", closeEarly: false },
-            "2026-12-24": { reason: "Christmas Eve", closeEarly: true, earlyCloseTime: "13:00" },
-            "2026-12-25": { reason: "Christmas Day", closeEarly: false },
-            "2026-12-26": { reason: "Boxing Day", closeEarly: false },
-            "2026-12-31": { reason: "New Year's Day 2027 (observed)", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2027-02-15": { reason: "Family Day", closeEarly: false },
-            "2027-04-02": { reason: "Good Friday", closeEarly: false },
-            "2027-05-24": { reason: "Victoria Day", closeEarly: false },
-            "2027-07-01": { reason: "Canada Day", closeEarly: false },
-            "2027-08-02": { reason: "Civic Holiday", closeEarly: false },
-            "2027-09-06": { reason: "Labour Day", closeEarly: false },
-            "2027-10-11": { reason: "Thanksgiving Day", closeEarly: false },
-            "2027-12-24": { reason: "Christmas Day (observed)", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-12-27": { reason: "Boxing Day (observed)", closeEarly: false }
         }
     },
     BMV: {
@@ -121,26 +78,6 @@ const marketHours = {
             "2025-11-17": { reason: "Commemoration of November 20", closeEarly: false },
             "2025-12-12": { reason: "Bank Employees' Day", closeEarly: false },
             "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-            "2026-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2026-01-19": { reason: "Martin Luther King, Jr. Day", closeEarly: false },
-            "2026-02-16": { reason: "Washington’s Birthday", closeEarly: false },
-            "2026-04-03": { reason: "Good Friday", closeEarly: false },
-            "2026-05-25": { reason: "Memorial Day", closeEarly: false },
-            "2026-06-19": { reason: "Juneteenth National Independence Day", closeEarly: false },
-            "2026-07-03": { reason: "Independence Day (observed)", closeEarly: true, earlyCloseTime: "13:00" },
-            "2026-09-07": { reason: "Labor Day", closeEarly: false },
-            "2026-11-26": { reason: "Thanksgiving Day", closeEarly: true, earlyCloseTime: "13:00" },
-            "2026-12-25": { reason: "Christmas Day", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-01-01": { reason: "New Year's Day", closeEarly: false },
-            "2027-01-18": { reason: "Martin Luther King, Jr. Day", closeEarly: false },
-            "2027-02-15": { reason: "Washington’s Birthday", closeEarly: false },
-            "2027-04-02": { reason: "Good Friday", closeEarly: false },
-            "2027-05-31": { reason: "Memorial Day", closeEarly: false },
-            "2027-06-18": { reason: "Juneteenth National Independence Day (observed)", closeEarly: false },
-            "2027-07-05": { reason: "Independence Day (observed)", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-09-06": { reason: "Labor Day", closeEarly: false },
-            "2027-11-25": { reason: "Thanksgiving Day", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-12-24": { reason: "Christmas Day (observed)", closeEarly: true, earlyCloseTime: "13:00" }
         }
     },
     CSE: {
@@ -190,46 +127,6 @@ const marketHours = {
             "2025-12-25": { reason: "Christmas Day", closeEarly: false },
             "2025-12-26": { reason: "Boxing Day", closeEarly: false },
             "2025-12-31": { reason: "New Year’s Eve", closeEarly: true, earlyCloseTime: "13:00" },
-            "2026-01-01": { reason: "New Year’s Day", closeEarly: false },
-            "2026-04-03": { reason: "Good Friday", closeEarly: false },
-            "2026-04-06": { reason: "Easter Monday", closeEarly: false },
-            "2026-05-01": { reason: "Labour Day", closeEarly: false },
-            "2026-12-24": { reason: "Christmas Eve", closeEarly: true, earlyCloseTime: "13:00" },
-            "2026-12-25": { reason: "Christmas Day", closeEarly: false },
-            "2026-12-26": { reason: "Boxing Day", closeEarly: false },
-            "2026-12-31": { reason: "New Year’s Eve", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-01-01": { reason: "New Year’s Day", closeEarly: false },
-            "2027-03-26": { reason: "Good Friday", closeEarly: false },
-            "2027-03-29": { reason: "Easter Monday", closeEarly: false },
-            "2027-05-01": { reason: "Labour Day", closeEarly: false },
-            "2027-12-24": { reason: "Christmas Eve", closeEarly: true, earlyCloseTime: "13:00" },
-            "2027-12-25": { reason: "Christmas Day", closeEarly: false },
-            "2027-12-26": { reason: "Boxing Day", closeEarly: false },
-            "2027-12-31": { reason: "New Year’s Eve", closeEarly: true, earlyCloseTime: "13:00" },
-            "2028-01-01": { reason: "New Year’s Day", closeEarly: false },
-            "2028-04-14": { reason: "Good Friday", closeEarly: false },
-            "2028-04-17": { reason: "Easter Monday", closeEarly: false },
-            "2028-05-01": { reason: "Labour Day", closeEarly: false },
-            "2028-12-24": { reason: "Christmas Eve", closeEarly: true, earlyCloseTime: "13:00" },
-            "2028-12-25": { reason: "Christmas Day", closeEarly: false },
-            "2028-12-26": { reason: "Boxing Day", closeEarly: false },
-            "2028-12-31": { reason: "New Year’s Eve", closeEarly: true, earlyCloseTime: "13:00" },
-            "2029-01-01": { reason: "New Year’s Day", closeEarly: false },
-            "2029-03-30": { reason: "Good Friday", closeEarly: false },
-            "2029-04-02": { reason: "Easter Monday", closeEarly: false },
-            "2029-05-01": { reason: "Labour Day", closeEarly: false },
-            "2029-12-24": { reason: "Christmas Eve", closeEarly: true, earlyCloseTime: "13:00" },
-            "2029-12-25": { reason: "Christmas Day", closeEarly: false },
-            "2029-12-26": { reason: "Boxing Day", closeEarly: false },
-            "2029-12-31": { reason: "New Year’s Eve", closeEarly: true, earlyCloseTime: "13:00" },
-            "2030-01-01": { reason: "New Year’s Day", closeEarly: false },
-            "2030-04-19": { reason: "Good Friday", closeEarly: false },
-            "2030-04-22": { reason: "Easter Monday", closeEarly: false },
-            "2030-05-01": { reason: "Labour Day", closeEarly: false },
-            "2030-12-24": { reason: "Christmas Eve", closeEarly: true, earlyCloseTime: "13:00" },
-            "2030-12-25": { reason: "Christmas Day", closeEarly: false },
-            "2030-12-26": { reason: "Boxing Day", closeEarly: false },
-            "2030-12-31": { reason: "New Year’s Eve", closeEarly: true, earlyCloseTime: "13:00" }
         }
     },
     Euronext: {
@@ -333,7 +230,7 @@ const marketHours = {
         region: "Europe",
         city: "Moscow",
         holidays: {
-            "2025-05-01": { reason: "International Labour Day", closeEarly: false },
+        "2025-05-01": { reason: "International Labour Day", closeEarly: false },
         "2025-05-09": { reason: "Victory Day", closeEarly: false },
         "2025-06-12": { reason: "Declaration of Russian Sovereignty", closeEarly: false },
         "2025-11-04": { reason: "National Unity Day", closeEarly: false },
@@ -347,7 +244,7 @@ const marketHours = {
         region: "Europe",
         city: "Milan",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+        "2025-01-01": { reason: "New Year's Day", closeEarly: false },
         "2025-04-18": { reason: "Good Friday", closeEarly: false },
         "2025-04-21": { reason: "Easter", closeEarly: false },
         "2025-05-01": { reason: "Labour Day", closeEarly: false },
@@ -418,7 +315,7 @@ const marketHours = {
         region: "Asia",
         city: "Tokyo",
         holidays: {
-            "2025-02-11": { reason: "National Founding Day", closeEarly: false },
+        "2025-02-11": { reason: "National Founding Day", closeEarly: false },
         "2025-02-24": { reason: "Emperor's Birthday OBS", closeEarly: false },
         "2025-03-20": { reason: "Vernal Equinox", closeEarly: false },
         "2025-04-29": { reason: "Showa Day (formerly Greenery Day)", closeEarly: false },
@@ -518,7 +415,7 @@ const marketHours = {
         region: "Asia",
         city: "Mumbai",
         holidays: {
-            "2025-02-26": { reason: "Mahashivratri*", closeEarly: false },
+        "2025-02-26": { reason: "Mahashivratri*", closeEarly: false },
         "2025-03-14": { reason: "Holi (2nd day)*", closeEarly: false },
         "2025-03-31": { reason: "Ramzan-id (Id-ul-fitar)*", closeEarly: false },
         "2025-04-10": { reason: "Mahavir Jayanti*", closeEarly: false },
@@ -542,7 +439,7 @@ const marketHours = {
         region: "Asia",
         city: "Mumbai",
         holidays: {
-            "2025-02-26": { reason: "Mahashivratri*", closeEarly: false },
+        "2025-02-26": { reason: "Mahashivratri*", closeEarly: false },
         "2025-03-14": { reason: "Holi (2nd day)*", closeEarly: false },
         "2025-03-31": { reason: "Ramzan-id (Id-ul-fitar)*", closeEarly: false },
         "2025-04-10": { reason: "Mahavir Jayanti*", closeEarly: false },
@@ -615,7 +512,14 @@ const marketHours = {
         region: "Asia",
         city: "Singapore",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
+            "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
+            "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
+            "2025-03-31": { reason: "Hari Raya Puasa", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-05-12": { reason: "Vesak Day", closeEarly: false },
+            "2025-10-20": { reason: "Deepavali", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false }
         }
     },
     TASE: {
@@ -625,7 +529,31 @@ const marketHours = {
         region: "Asia",
         city: "Tel Aviv",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2024-03-24": { reason: "Purim", closeEarly: false },
+            "2024-03-25": { reason: "Shushan Purim", closeEarly: false },
+            "2024-04-22": { reason: "Passover Eve", closeEarly: false },
+            "2024-04-23": { reason: "Passover - First Day", closeEarly: false },
+            "2024-04-24": { reason: "Second Passover", closeEarly: false },
+            "2024-04-25": { reason: "Yom HaZikaron", closeEarly: false },
+            "2024-04-28": { reason: "Passover", closeEarly: false },
+            "2024-04-29": { reason: "Passover", closeEarly: false },
+            "2024-05-13": { reason: "Memorial Day", closeEarly: false },
+            "2024-05-14": { reason: "Independence Day", closeEarly: false },
+            "2024-06-11": { reason: "Shavuot (1st day)", closeEarly: false },
+            "2024-06-12": { reason: "Shavuot", closeEarly: false },
+            "2024-08-13": { reason: "Tish'a B'Av", closeEarly: false },
+            "2024-10-02": { reason: "Rosh HaShana Starts", closeEarly: false },
+            "2024-10-03": { reason: "Rosh HaShana", closeEarly: false },
+            "2024-10-16": { reason: "Sukkot Starts", closeEarly: false },
+            "2024-10-17": { reason: "Sukkot-day-1", closeEarly: false },
+            "2024-10-18": { reason: "Sukkot-day-2", closeEarly: false },
+            "2024-10-19": { reason: "Sukkot-day-3", closeEarly: false },
+            "2024-10-20": { reason: "Sukkot-day-4", closeEarly: false },
+            "2024-10-21": { reason: "Sukkot-day-5", closeEarly: false },
+            "2024-10-22": { reason: "Sukkot-day-6", closeEarly: false },
+            "2024-10-23": { reason: "Sukkot Ends", closeEarly: false },
+            "2024-10-24": { reason: "Shmini Atzeret", closeEarly: false }
         }
     },
     IDX: {
@@ -635,7 +563,30 @@ const marketHours = {
         region: "Asia",
         city: "Jakarta",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2025-01-27": { reason: "Ascension of Prophet Muhammad", closeEarly: false },
+            "2025-01-28": { reason: "Chinese New Year Holiday", closeEarly: false },
+            "2025-01-29": { reason: "Chinese New Year", closeEarly: false },
+            "2025-03-28": { reason: "Saka New Year Holiday", closeEarly: false },
+            "2025-03-31": { reason: "Idul Fitri 1", closeEarly: false },
+            "2025-04-01": { reason: "Idul Fitri 2", closeEarly: false },
+            "2025-04-02": { reason: "Idul Fitri Closing", closeEarly: false },
+            "2025-04-03": { reason: "Idul Fitri Closing 2", closeEarly: false },
+            "2025-04-04": { reason: "Idul Fitri Holiday", closeEarly: false },
+            "2025-04-07": { reason: "Idul Fitr Holiday 2", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-05-12": { reason: "Waisak Day", closeEarly: false },
+            "2025-05-13": { reason: "Additional Waisak Day Holiday", closeEarly: false },
+            "2025-05-29": { reason: "Ascension Day", closeEarly: false },
+            "2025-05-30": { reason: "Additional Ascension Day Holiday", closeEarly: false },
+            "2025-06-06": { reason: "Idhul Adha", closeEarly: false },
+            "2025-06-09": { reason: "Idhul Adha Holiday", closeEarly: false },
+            "2025-06-27": { reason: "First Day of Muharram", closeEarly: false },
+            "2025-09-05": { reason: "Prophet Muhammad's Birthday", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-26": { reason: "Additional Christmas Closing", closeEarly: false },
+            "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
         }
     },
     SET: {
@@ -645,24 +596,24 @@ const marketHours = {
         region: "Asia",
         city: "Bangkok",
         holidays: {
-    "2025-02-12": { "reason": "Makha Bucha Day", "closeEarly": false },
-    "2025-04-07": { "reason": "Shakri Day OBS", "closeEarly": false },
-    "2025-04-14": { "reason": "Songkran Festival 2", "closeEarly": false },
-    "2025-04-15": { "reason": "Songkran Festival 3", "closeEarly": false },
-    "2025-05-01": { "reason": "Labour Day", "closeEarly": false },
-    "2025-05-05": { "reason": "Coronation Day OBS", "closeEarly": false },
-    "2025-05-12": { "reason": "Vishaka Bucha Day", "closeEarly": false },
-    "2025-06-02": { "reason": "Special Holiday", "closeEarly": false },
-    "2025-06-03": { "reason": "Queen Suthida's Birthday", "closeEarly": false },
-    "2025-07-10": { "reason": "Asarnha Bucha Day", "closeEarly": false },
-    "2025-07-28": { "reason": "King's Birthday", "closeEarly": false },
-    "2025-08-11": { "reason": "Special Holiday 2", "closeEarly": false },
-    "2025-08-12": { "reason": "Queen's Birthday", "closeEarly": false },
-    "2025-10-13": { "reason": "King Bhumibol Adulyadej Memorial Day", "closeEarly": false },
-    "2025-10-23": { "reason": "King Chulalongkorn Memorial Day", "closeEarly": false },
-    "2025-12-05": { "reason": "King Rama IX's Birthday", "closeEarly": false },
-    "2025-12-10": { "reason": "Constitution Day", "closeEarly": false },
-    "2025-12-31": { "reason": "New Year's Eve", "closeEarly": false }
+    "2025-02-12": { reason: "Makha Bucha Day", closeEarly: false },
+    "2025-04-07": { reason: "Shakri Day OBS", closeEarly: false },
+    "2025-04-14": { reason: "Songkran Festival 2", closeEarly: false },
+    "2025-04-15": { reason: "Songkran Festival 3", closeEarly: false },
+    "2025-05-01": { reason: "Labour Day", closeEarly: false },
+    "2025-05-05": { reason: "Coronation Day OBS", closeEarly: false },
+    "2025-05-12": { reason: "Vishaka Bucha Day", closeEarly: false },
+    "2025-06-02": { reason: "Special Holiday", closeEarly: false },
+    "2025-06-03": { reason: "Queen Suthida's Birthday", closeEarly: false },
+    "2025-07-10": { reason: "Asarnha Bucha Day", closeEarly: false },
+    "2025-07-28": { reason: "King's Birthday", closeEarly: false },
+    "2025-08-11": { reason: "Special Holiday 2", closeEarly: false },
+    "2025-08-12": { reason: "Queen's Birthday", closeEarly: false },
+    "2025-10-13": { reason: "King Bhumibol Adulyadej Memorial Day", closeEarly: false },
+    "2025-10-23": { reason: "King Chulalongkorn Memorial Day", closeEarly: false },
+    "2025-12-05": { reason: "King Rama IX's Birthday", closeEarly: false },
+    "2025-12-10": { reason: "Constitution Day", closeEarly: false },
+    "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
 }
     },
     PSE: {
@@ -672,22 +623,22 @@ const marketHours = {
         region: "Asia",
         city: "Manila",
         holidays: {
-    "2025-01-29": { "reason": "Chinese New Year", "closeEarly": false },
-    "2025-03-31": { "reason": "Eid-ul Fitre", "closeEarly": false },
-    "2025-04-09": { "reason": "Araw Ng Kagitingan", "closeEarly": false },
-    "2025-04-17": { "reason": "Holy Thursday", "closeEarly": false },
-    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
-    "2025-05-01": { "reason": "Labour Day", "closeEarly": false },
-    "2025-06-06": { "reason": "Eid-ul Adha", "closeEarly": false },
-    "2025-06-12": { "reason": "Independence Day", "closeEarly": false },
-    "2025-08-21": { "reason": "Nino Aquino Day", "closeEarly": false },
-    "2025-08-25": { "reason": "National Heroes Day", "closeEarly": false },
-    "2025-10-31": { "reason": "All Saints Additional Obs.", "closeEarly": false },
-    "2025-12-08": { "reason": "Immaculate Conception", "closeEarly": false },
-    "2025-12-24": { "reason": "Christmas Eve", "closeEarly": false },
-    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false },
-    "2025-12-30": { "reason": "Rizal Day", "closeEarly": false },
-    "2025-12-31": { "reason": "Bank Holiday", "closeEarly": false }
+    "2025-01-29": { reason: "Chinese New Year", closeEarly: false },
+    "2025-03-31": { reason: "Eid-ul Fitre", closeEarly: false },
+    "2025-04-09": { reason: "Araw Ng Kagitingan", closeEarly: false },
+    "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
+    "2025-04-18": { reason: "Good Friday", closeEarly: false },
+    "2025-05-01": { reason: "Labour Day", closeEarly: false },
+    "2025-06-06": { reason: "Eid-ul Adha", closeEarly: false },
+    "2025-06-12": { reason: "Independence Day", closeEarly: false },
+    "2025-08-21": { reason: "Nino Aquino Day", closeEarly: false },
+    "2025-08-25": { reason: "National Heroes Day", closeEarly: false },
+    "2025-10-31": { reason: "All Saints Additional Obs.", closeEarly: false },
+    "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
+    "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
+    "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+    "2025-12-30": { reason: "Rizal Day", closeEarly: false },
+    "2025-12-31": { reason: "Bank Holiday", closeEarly: false }
 }
     },
     HOSE: {
@@ -697,7 +648,17 @@ const marketHours = {
         region: "Asia",
         city: "Ho Chi Minh",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2025-02-08": { reason: "Vietnamese Tet Holiday", closeEarly: false },
+            "2025-02-09": { reason: "Vietnamese Tet Holiday", closeEarly: false },
+            "2025-02-12": { reason: "Vietnamese Tet Holiday", closeEarly: false },
+            "2025-02-13": { reason: "Vietnamese Tet Holiday", closeEarly: false },
+            "2025-02-14": { reason: "Vietnamese Tet Holiday", closeEarly: false },
+            "2025-04-18": { reason: "Hung Kings Commemoration Day", closeEarly: false },
+            "2025-04-30": { reason: "Liberation Day/Reunification Day", closeEarly: false },
+            "2025-05-01": { reason: "International Labor Day", closeEarly: false },
+            "2025-09-02": { reason: "Independence Day", closeEarly: false },
+            "2025-09-03": { reason: "Independence Day Observed", closeEarly: false }
         }
     },
     DFM: {
@@ -707,8 +668,15 @@ const marketHours = {
         region: "Asia",
         city: "Dubai",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
-        }
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2025-04-10": { reason: "Eid Al Fitr", closeEarly: false },
+            "2025-04-11": { reason: "Eid al Fitr Holiday 1", closeEarly: false }, 
+            "2025-04-12": { reason: "Eid al Fitr Holiday 2", closeEarly: false },
+            "2025-06-17": { reason: "Eid Al Adha", closeEarly: false },
+            "2025-06-18": { reason: "Eid Al Adha Holiday 1", closeEarly: false },
+            "2025-06-19": { reason: "Eid Al Adha Holiday 2", closeEarly: false },
+            "2025-12-02": { reason: "National Day", closeEarly: false },
+            "2025-12-03": { reason: "National Day", closeEarly: false }
     },
     ADX: {
         open: "10:00",
@@ -717,7 +685,21 @@ const marketHours = {
         region: "Asia",
         city: "Abu Dhabi",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
+            "2024-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2024-04-08": { reason: "Eid al Fitr Holiday 1", closeEarly: false },
+            "2024-04-09": { reason: "Eid al Fitr Holiday 2", closeEarly: false },
+            "2024-04-10": { reason: "Eid al Fitr", closeEarly: false },
+            "2024-04-11": { reason: "Eid al Fitr Holiday 3", closeEarly: false },
+            "2024-04-12": { reason: "Eid al Fitr Holiday 4", closeEarly: false },  
+            "2024-06-15": { reason: "Arafat (Hajj) Day", closeEarly: false },
+            "2024-06-16": { reason: "Eid Al Adha", closeEarly: false },
+            "2024-06-17": { reason: "Eid Al Adha Holiday 1", closeEarly: false },
+            "2024-06-18": { reason: "Eid Al Adha Holiday 2", closeEarly: false },
+            "2024-07-07": { reason: "Al Hijri (Islamic New Year)", closeEarly: false },
+            "2024-09-15": { reason: "Prophet Mohammed's Birthday", closeEarly: false },
+            "2024-12-01": { reason: "Commemoration Day", closeEarly: false },
+            "2024-12-02": { reason: "National Day", closeEarly: false },
+            "2024-12-03": { reason: "National Day", closeEarly: false },
         }
     },
     ASX: {
@@ -727,13 +709,14 @@ const marketHours = {
         region: "Australia",
         city: "Sydney",
         holidays: {
-    "2025-01-27": { "reason": "Australia Day OBS", "closeEarly": false },
-    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
-    "2025-04-21": { "reason": "Easter Monday", "closeEarly": false },
-    "2025-04-25": { "reason": "ANZAC Day", "closeEarly": false },
-    "2025-06-09": { "reason": "King's Birthday", "closeEarly": false },
-    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false },
-    "2025-12-26": { "reason": "Boxing Day", "closeEarly": false }
+    "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+    "2025-01-27": { reason: "Australia Day OBS", closeEarly: false },
+    "2025-04-18": { reason: "Good Friday", closeEarly: false },
+    "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+    "2025-04-25": { reason: "ANZAC Day", closeEarly: false },
+    "2025-06-09": { reason: "King's Birthday", closeEarly: false },
+    "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+    "2025-12-26": { reason: "Boxing Day", closeEarly: false }
 }
     },
     NZX: {
@@ -743,15 +726,16 @@ const marketHours = {
         region: "Australia",
         city: "Wellington",
         holidays: {
-    "2025-02-06": { "reason": "Waitangi Day", "closeEarly": false },
-    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
-    "2025-04-21": { "reason": "Easter Monday", "closeEarly": false },
-    "2025-04-25": { "reason": "ANZAC Day", "closeEarly": false },
-    "2025-06-02": { "reason": "King's Birthday", "closeEarly": false },
-    "2025-06-20": { "reason": "Matariki Day", "closeEarly": false },
-    "2025-10-27": { "reason": "Labour Day", "closeEarly": false },
-    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false },
-    "2025-12-26": { "reason": "Boxing Day", "closeEarly": false }
+    "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+    "2025-02-06": { reason: "Waitangi Day", closeEarly: false },
+    "2025-04-18": { reason: "Good Friday", closeEarly: false },
+    "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+    "2025-04-25": { reason: "ANZAC Day", closeEarly: false },
+    "2025-06-02": { reason: "King's Birthday", closeEarly: false },
+    "2025-06-20": { reason: "Matariki Day", closeEarly: false },
+    "2025-10-27": { reason: "Labour Day", closeEarly: false },
+    "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+    "2025-12-26": { reason: "Boxing Day", closeEarly: false }
 }
     },
     JSE: {
@@ -761,7 +745,19 @@ const marketHours = {
         region: "Africa",
         city: "Johannesburg",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2025-03-21": { reason: "Human Rights Day", closeEarly: false },
+            "2025-03-29": { reason: "Good Friday", closeEarly: false },
+            "2025-04-01": { reason: "Family Day", closeEarly: false },
+            "2025-04-27": { reason: "Freedom Day", closeEarly: false },
+            "2025-05-01": { reason: "Workers' Day", closeEarly: false },
+            "2025-06-16": { reason: "Youth Day", closeEarly: false },
+            "2025-06-17": { reason: "Youth Day Holiday", closeEarly: false },
+            "2025-08-09": { reason: "National Women's Day", closeEarly: false },
+            "2025-09-24": { reason: "Heritage Day", closeEarly: false },
+            "2025-12-16": { reason: "Day of Reconciliation", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-26": { reason: "Day of Goodwill", closeEarly: false }
         }
     },
     EGX: {
@@ -771,7 +767,20 @@ const marketHours = {
         region: "Africa",
         city: "Cairo",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2024-01-07": { reason: "Coptic Christmas", closeEarly: false },
+            "2024-01-25": { reason: "January 25 Revolution Day", closeEarly: false },
+            "2024-04-10": { reason: "Eid Al-Fitr", closeEarly: false },
+            "2024-04-11": { reason: "Eid Al-Fitr Holiday", closeEarly: false },
+            "2024-04-25": { reason: "Sinai Liberation Day", closeEarly: false },
+            "2024-05-01": { reason: "Labor Day", closeEarly: false },
+            "2024-05-06": { reason: "Sham El Nessim", closeEarly: false },
+            "2024-06-16": { reason: "Eid al-Adha", closeEarly: false },  
+            "2024-06-17": { reason: "Eid al-Adha Day 2", closeEarly: false },
+            "2024-07-07": { reason: "Muharram", closeEarly: false },
+            "2024-07-23": { reason: "Revolution Day", closeEarly: false },
+            "2024-09-15": { reason: "Mawlid An-Nabi", closeEarly: false },
+            "2024-10-06": { reason: "Armed Forces Day", closeEarly: false }
         }
     },
     NSE_Nigeria: {
@@ -791,7 +800,20 @@ const marketHours = {
         region: "Africa",
         city: "Harare",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2025-01-06": { reason: "Epiphany", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+            "2025-05-01": { reason: "International Workers' Day", closeEarly: false },
+            "2025-05-30": { reason: "National Day", closeEarly: false },
+            "2025-06-19": { reason: "Corpus Christi", closeEarly: false },
+            "2025-08-05": { reason: "Victory and Homeland Thanksgiving Day", closeEarly: false }, 
+            "2025-08-15": { reason: "Assumption Day", closeEarly: false },
+            "2025-11-18": { reason: "Remembrance Day", closeEarly: false },
+            "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
+            "2025-12-25": { reason: "Christmas", closeEarly: false },
+            "2025-12-26": { reason: "Saint Stephen's Day", closeEarly: false },
+            "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
         }
     },
     GSE: {
@@ -801,7 +823,22 @@ const marketHours = {
         region: "Africa",
         city: "Accra",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2025-01-02": { reason: "New Year's Day Holiday", closeEarly: false },
+            "2025-01-07": { reason: "Christmas", closeEarly: false },
+            "2025-01-19": { reason: "Epiphany", closeEarly: false },
+            "2025-03-03": { reason: "Mother's Day", closeEarly: false },
+            "2025-03-08": { reason: "International Women's Day", closeEarly: false },
+            "2025-04-09": { reason: "Day of National Unity", closeEarly: false },
+            "2025-04-18": { reason: "Easter", closeEarly: false },
+            "2025-04-19": { reason: "Easter", closeEarly: false },
+            "2025-04-20": { reason: "Easter", closeEarly: false },
+            "2025-04-21": { reason: "Easter", closeEarly: false },
+            "2025-05-09": { reason: "Day of Victory over Fascism", closeEarly: false },
+            "2025-05-12": { reason: "Saint Andrew the First-Called Day", closeEarly: false },
+            "2025-05-26": { reason: "Independence Day", closeEarly: false },
+            "2025-08-28": { reason: "Saint Mary's Day", closeEarly: false },
+            "2025-10-14": { reason: "Day of Svetitskhoveli Cathedral", closeEarly: false }
         }
     },
     NSE_Kenya: {
@@ -821,7 +858,15 @@ const marketHours = {
         region: "South America",
         city: "São Paulo",
         holidays: {
-            "2025-01-01": { reason: "New Year's Day", closeEarly: false }
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2024-02-12": { reason: "Carnival", closeEarly: false },
+            "2024-02-13": { reason: "Carnival", closeEarly: false }, 
+            "2024-03-29": { reason: "Good Friday", closeEarly: false },
+            "2024-05-30": { reason: "Corpus Christi Day", closeEarly: false },
+            "2024-11-15": { reason: "Republic Day", closeEarly: false },
+            "2024-10-24": { reason: "Christmas", closeEarly: false },
+            "2024-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2024-12-31": { reason: "New Year's Eve", closeEarly: false }
         }
     },
     Santiago: {
@@ -831,18 +876,18 @@ const marketHours = {
         region: "South America",
         city: "Santiago",
         holidays: {
-    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
-    "2025-05-01": { "reason": "Labour Day", "closeEarly": false },
-    "2025-05-21": { "reason": "Battle of Iquique/Navy Day", "closeEarly": false },
-    "2025-06-20": { "reason": "National Day of Native Peoples", "closeEarly": false },
-    "2025-07-16": { "reason": "Solemnity of Virgin of Carmen", "closeEarly": false },
-    "2025-08-15": { "reason": "Assumption Day", "closeEarly": false },
-    "2025-09-18": { "reason": "Independence Day", "closeEarly": false },
-    "2025-09-19": { "reason": "Army Day", "closeEarly": false },
-    "2025-10-31": { "reason": "Evangelical Church Day", "closeEarly": false },
-    "2025-12-08": { "reason": "Immaculate Conception", "closeEarly": false },
-    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false },
-    "2025-12-31": { "reason": "Bank Holiday", "closeEarly": false }
+    "2025-04-18": { reason: "Good Friday", closeEarly: false },
+    "2025-05-01": { reason: "Labour Day", closeEarly: false },
+    "2025-05-21": { reason: "Battle of Iquique/Navy Day", closeEarly: false },
+    "2025-06-20": { reason: "National Day of Native Peoples", closeEarly: false },
+    "2025-07-16": { reason: "Solemnity of Virgin of Carmen", closeEarly: false },
+    "2025-08-15": { reason: "Assumption Day", closeEarly: false },
+    "2025-09-18": { reason: "Independence Day", closeEarly: false },
+    "2025-09-19": { reason: "Army Day", closeEarly: false },
+    "2025-10-31": { reason: "Evangelical Church Day", closeEarly: false },
+    "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
+    "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+    "2025-12-31": { reason: "Bank Holiday", closeEarly: false }
 }
     },
     BVC: {
@@ -852,22 +897,22 @@ const marketHours = {
         region: "South America",
         city: "Bogotá",
         holidays: {
-    "2025-03-24": { "reason": "St. Joseph's Day OBS", "closeEarly": false },
-    "2025-04-17": { "reason": "Holy Thursday", "closeEarly": false },
-    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
-    "2025-05-01": { "reason": "Labour Day", "closeEarly": false },
-    "2025-06-02": { "reason": "Ascension", "closeEarly": false },
-    "2025-06-23": { "reason": "Corpus Christi", "closeEarly": false },
-    "2025-06-30": { "reason": "Sacred Heart", "closeEarly": false },
-    "2025-06-30": { "reason": "Sts. Peter and Paul OBS", "closeEarly": false },
-    "2025-08-07": { "reason": "Battle of Boyaca", "closeEarly": false },
-    "2025-08-18": { "reason": "Assumption Day OBS", "closeEarly": false },
-    "2025-10-13": { "reason": "Race Day OBS", "closeEarly": false },
-    "2025-11-03": { "reason": "All Saints' Day OBS", "closeEarly": false },
-    "2025-11-17": { "reason": "Independence of Cartagena OBS", "closeEarly": false },
-    "2025-12-08": { "reason": "Immaculate Conception", "closeEarly": false },
-    "2025-12-25": { "reason": "Christmas", "closeEarly": false },
-    "2025-12-31": { "reason": "Last business day of year", "closeEarly": false }
+    "2025-03-24": { reason: "St. Joseph's Day OBS", closeEarly: false },
+    "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
+    "2025-04-18": { reason: "Good Friday", closeEarly: false },
+    "2025-05-01": { reason: "Labour Day", closeEarly: false },
+    "2025-06-02": { reason: "Ascension", closeEarly: false },
+    "2025-06-23": { reason: "Corpus Christi", closeEarly: false },
+    "2025-06-30": { reason: "Sacred Heart", closeEarly: false },
+    "2025-06-30": { reason: "Sts. Peter and Paul OBS", closeEarly: false },
+    "2025-08-07": { reason: "Battle of Boyaca", closeEarly: false },
+    "2025-08-18": { reason: "Assumption Day OBS", closeEarly: false },
+    "2025-10-13": { reason: "Race Day OBS", closeEarly: false },
+    "2025-11-03": { reason: "All Saints' Day OBS", closeEarly: false },
+    "2025-11-17": { reason: "Independence of Cartagena OBS", closeEarly: false },
+    "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
+    "2025-12-25": { reason: "Christmas", closeEarly: false },
+    "2025-12-31": { reason: "Last business day of year", closeEarly: false }
 }
     },
     BVL: {
@@ -877,17 +922,17 @@ const marketHours = {
         region: "South America",
         city: "Lima",
         holidays: {
-    "2025-04-17": { "reason": "Holy Thursday", "closeEarly": false },
-    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
-    "2025-05-01": { "reason": "Labour Day", "closeEarly": false },
-    "2025-07-23": { "reason": "Dia de la Fuerza Aerea", "closeEarly": false },
-    "2025-07-28": { "reason": "Independence Day 1", "closeEarly": false },
-    "2025-07-29": { "reason": "Independence Day 2", "closeEarly": false },
-    "2025-08-06": { "reason": "Battle of Junin", "closeEarly": false },
-    "2025-10-08": { "reason": "Combat of Angamos", "closeEarly": false },
-    "2025-12-08": { "reason": "Immaculate Conception", "closeEarly": false },
-    "2025-12-09": { "reason": "Battle of Ayacucho", "closeEarly": false },
-    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false }
+    "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
+    "2025-04-18": { reason: "Good Friday", closeEarly: false },
+    "2025-05-01": { reason: "Labour Day", closeEarly: false },
+    "2025-07-23": { reason: "Dia de la Fuerza Aerea", closeEarly: false },
+    "2025-07-28": { reason: "Independence Day 1", closeEarly: false },
+    "2025-07-29": { reason: "Independence Day 2", closeEarly: false },
+    "2025-08-06": { reason: "Battle of Junin", closeEarly: false },
+    "2025-10-08": { reason: "Combat of Angamos", closeEarly: false },
+    "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
+    "2025-12-09": { reason: "Battle of Ayacucho", closeEarly: false },
+    "2025-12-25": { reason: "Christmas Day", closeEarly: false }
 }
     },
     BVBA: {
@@ -897,25 +942,25 @@ const marketHours = {
         region: "South America",
         city: "Buenos Aires",
         holidays: {
-    "2025-03-03": { "reason": "Carnival Monday", "closeEarly": false },
-    "2025-03-04": { "reason": "Carnival Tuesday", "closeEarly": false },
-    "2025-03-24": { "reason": "Truth and Justice Day", "closeEarly": false },
-    "2025-04-02": { "reason": "Malvinas Islands Memorial", "closeEarly": false },
-    "2025-04-17": { "reason": "Holy Thursday", "closeEarly": false },
-    "2025-04-18": { "reason": "Good Friday", "closeEarly": false },
-    "2025-05-01": { "reason": "Workers' Day", "closeEarly": false },
-    "2025-05-02": { "reason": "Bridge Holiday 1", "closeEarly": false },
-    "2025-06-16": { "reason": "Martin Miguel de Guemes Day OBS", "closeEarly": false },
-    "2025-06-20": { "reason": "Flag Day", "closeEarly": false },
-    "2025-07-09": { "reason": "Independence Day", "closeEarly": false },
-    "2025-08-15": { "reason": "Bridge Holiday 2", "closeEarly": false },
-    "2025-11-21": { "reason": "Bridge Holiday 3", "closeEarly": false },
-    "2025-11-24": { "reason": "National Sovereignty Day OBS", "closeEarly": false },
-    "2025-12-08": { "reason": "Immaculate Conception", "closeEarly": false },
-    "2025-12-25": { "reason": "Christmas Day", "closeEarly": false }
+    "2025-03-03": { reason: "Carnival Monday", closeEarly: false },
+    "2025-03-04": { reason: "Carnival Tuesday", closeEarly: false },
+    "2025-03-24": { reason: "Truth and Justice Day", closeEarly: false },
+    "2025-04-02": { reason: "Malvinas Islands Memorial", closeEarly: false },
+    "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
+    "2025-04-18": { reason: "Good Friday", closeEarly: false },
+    "2025-05-01": { reason: "Workers' Day", closeEarly: false },
+    "2025-05-02": { reason: "Bridge Holiday 1", closeEarly: false },
+    "2025-06-16": { reason: "Martin Miguel de Guemes Day OBS", closeEarly: false },
+    "2025-06-20": { reason: "Flag Day", closeEarly: false },
+    "2025-07-09": { reason: "Independence Day", closeEarly: false },
+    "2025-08-15": { reason: "Bridge Holiday 2", closeEarly: false },
+    "2025-11-21": { reason: "Bridge Holiday 3", closeEarly: false },
+    "2025-11-24": { reason: "National Sovereignty Day OBS", closeEarly: false },
+    "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
+    "2025-12-25": { reason: "Christmas Day", closeEarly: false }
 }
     }
-};
+}}
 
 // State variables for managing UI and market status
 let currentRegion = "all";           // Default region filter
