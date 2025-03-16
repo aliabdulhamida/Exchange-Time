@@ -588,7 +588,6 @@ th, td {
 
 /* Footer */
 #footer {
-    margin-top: 15px;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -2077,6 +2076,10 @@ th, td {
     background-size: cover;
     background-position: center;
     margin: 20px 0;
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .newsletter-container {
