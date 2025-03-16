@@ -2948,6 +2948,138 @@ window.addEventListener('click', (e) => {
     }
 });
 
+// Newsletter subscription functionality
+class NewsletterManager {
+    constructor() {
+        this.form = document.getElementById('newsletter-form');
+        this.emailInput = document.getElementById('newsletter-email');
+        this.statusMessage = document.getElementById('newsletter-status');
+        this.subscribers = new Set(this.loadSubscribers());
+        
+        // Load API key from environment variables or config file
+        this.API_KEY = null;
+        this.loadApiKey();
+        
+        // Define headers that will be used for API requests
+        this.headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${this.API_KEY}`
+        };
+        
+        this.setupEventListeners();
+    }
 
+    async loadApiKey() {
+        try {
+            // In production, load from secure environment or config service
+            const response = await fetch('/api/config/mailerlite-key');
+            const data = await response.json();
+            this.API_KEY = data.apiKey;
+            this.headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${this.API_KEY}`
+            };
+        } catch (error) {
+            console.error('Failed to load API key:', error);
+            this.showStatus('Newsletter service temporarily unavailable', 'error');
+        }
+    }
 
+    setupEventListeners() {
+        if (this.form) {
+            this.form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!this.API_KEY) {
+                    this.showStatus('Newsletter service not initialized', 'error');
+                    return;
+                }
+                await this.handleSubmit(e);
+            });
+        }
+    }
 
+    async handleSubmit(e) {
+        e.preventDefault();
+        const email = this.emailInput.value.trim();
+
+        if (!this.validateEmail(email)) {
+            this.showStatus('Please enter a valid email address', 'error');
+            return;
+        }
+
+        if (this.subscribers.has(email)) {
+            this.showStatus('This email is already subscribed', 'error');
+            return;
+        }
+
+        try {
+            await this.subscribeToNewsletter(email);
+            this.subscribers.add(email);
+            this.saveSubscribers();
+            this.showStatus('Successfully subscribed!', 'success');
+            this.emailInput.value = '';
+        } catch (error) {
+            this.showStatus(error.message, 'error');
+        }
+    }
+
+    validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    async subscribeToNewsletter(email) {
+        try {
+            const response = await fetch('https://connect.mailerlite.com/api/subscribers', {
+                method: 'POST',
+                headers: this.headers,
+                body: JSON.stringify({
+                    email: email,
+                    groups: ['98765432'],
+                    status: 'active'
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Subscription failed');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Newsletter subscription error:', error);
+            throw new Error('Network error. Please try again later.');
+        }
+    }
+
+    showStatus(message, type) {
+        if (this.statusMessage) {
+            this.statusMessage.textContent = message;
+            this.statusMessage.className = `status-message ${type}`;
+            this.statusMessage.style.display = 'block';
+
+            setTimeout(() => {
+                this.statusMessage.style.display = 'none';
+            }, 3000);
+        }
+    }
+
+    loadSubscribers() {
+        try {
+            return JSON.parse(localStorage.getItem('newsletter_subscribers')) || [];
+        } catch {
+            return [];
+        }
+    }
+
+    saveSubscribers() {
+        localStorage.setItem('newsletter_subscribers', 
+            JSON.stringify([...this.subscribers]));
+    }
+}
+
+// Initialize on DOM load
+document.addEventListener('DOMContentLoaded', () => {
+    new NewsletterManager();
+});
