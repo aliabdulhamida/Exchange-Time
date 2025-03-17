@@ -221,205 +221,195 @@
             </div>
         </div>
         <!-- Neues Modal für Market Summary -->
-<div id="market-summary-modal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <div class="summary-navigation">
-                <button id="prev-summary" class="btn nav-btn"></button>
+        <div id="market-summary-modal" class="modal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <div class="summary-navigation">
+                  <button id="prev-summary" class="btn nav-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6"/>
+                      <path d="M15 18l-6-6 6-6"/>
                     </svg>
-                </button>
-                <button id="next-summary" class="btn nav-btn"></button>
+                  </button>
+                  <button id="next-summary" class="btn nav-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 18l6-6-6-6"/>
+                      <path d="M9 18l6-6-6-6"/>
                     </svg>
-                </button>
-            </div>
-            <button id="closesummary" class="btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  </button>
+                </div>
+                <button id="closesummary" class="btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-        <div class="modal-image-container">
-            <div class="modal-image">
-                <img src="https://images.unsplash.com/photo-1584044283481-9b18070011e1?q=80&w=3000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Market Summary" loading="lazy">
-                <div class="image-overlay">
+                  </svg>
+                </button>
+              </div>
+              <div class="modal-image-container">
+                <div class="modal-image">
+                  <img src="https://images.unsplash.com/photo-1584044283481-9b18070011e1?q=80&w=3000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Market Summary" loading="lazy">
+                  <div class="image-overlay">
                     <h2>Weekly Market Outlook</h2>
                     <h3>March 18-22, 2025</h3>
                     <p>Your expert guide to market movements and opportunities</p>
+                  </div>
                 </div>
-            </div>
-        </div>
-        <div id="market-summary-content" class="summary-content">
-            <div class="summary-section"></div>
-                <h3 class="section-title" style="color: #fff; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px;">Market Focus: Fed Decision Week</h3>    
-                
-                <div class="summary-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              </div>
+              <div id="market-summary-content" class="summary-content">
+                <div class="summary-section">
+                  <h3 class="section-title" style="color: #fff; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px;">Market Focus: Fed Decision Week</h3>
+                  <div class="summary-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div class="summary-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
-                        <h4 style="color: #7FFF8E; margin-top: 0;">Key Economic Events</h4>
-                        <ul style="color: #fff; padding-left: 20px; line-height: 1.6;"></ul>
-                            <li style="color: #fff;"><strong>Wednesday:</strong> Fed Interest Rate Decision & Press Conference (2:00 PM ET)</li>
-                            <li style="color: #fff;"><strong>Thursday:</strong> ECB Economic Bulletin, US Jobless Claims</li>
-                            <li style="color: #fff;"><strong>Friday:</strong> US PMI Data, Quadruple Witching</li>
-                            <li style="color: #fff;"><strong>Ongoing:</strong> Treasury yield curve dynamics</li>
-                        </ul>
+                      <h4 style="color: #7FFF8E; margin-top: 0;">Key Economic Events</h4>
+                      <ul style="color: #fff; padding-left: 20px; line-height: 1.6;">
+                        <li style="color: #fff;"><strong>Wednesday:</strong> Fed Interest Rate Decision & Press Conference (2:00 PM ET)</li>
+                        <li style="color: #fff;"><strong>Thursday:</strong> ECB Economic Bulletin, US Jobless Claims</li>
+                        <li style="color: #fff;"><strong>Friday:</strong> US PMI Data, Quadruple Witching</li>
+                        <li style="color: #fff;"><strong>Ongoing:</strong> Treasury yield curve dynamics</li>
+                      </ul>
                     </div>
-
                     <div class="summary-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
-                        <h4 style="color: #64B5F6; margin-top: 0;">Notable Earnings</h4>
-                        <ul style="color: #fff; padding-left: 20px; line-height: 1.6;">
-                            <li><strong>Monday:</strong> Adobe (ADBE), Lennar (LEN)</li>
-                            <li><strong>Tuesday:</strong> Nike (NKE), FedEx (FDX), GameStop (GME)</li>
-                            <li><strong>Wednesday:</strong> General Mills (GIS), Micron (MU)</li>
-                            <li><strong>Thursday:</strong> Accenture (ACN), Darden (DRI), Dollar General (DG)</li>
-                        </ul>
+                      <h4 style="color: #64B5F6; margin-top: 0;">Notable Earnings</h4>
+                      <ul style="color: #fff; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>Monday:</strong> Adobe (ADBE), Lennar (LEN)</li>
+                        <li><strong>Tuesday:</strong> Nike (NKE), FedEx (FDX), GameStop (GME)</li>
+                        <li><strong>Wednesday:</strong> General Mills (GIS), Micron (MU)</li>
+                        <li><strong>Thursday:</strong> Accenture (ACN), Darden (DRI), Dollar General (DG)</li>
+                      </ul>
                     </div>
-                </div>
-
-                <h4 style="color: #FFB74D; margin-top: 25px; margin-bottom: 15px;">Market Themes & Catalysts</h4>
-                <div style="background: rgba(255,165,0,0.05); padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid rgba(255,165,0,0.3);">
+                  </div>
+                  <h4 style="color: #FFB74D; margin-top: 25px; margin-bottom: 15px;">Market Themes & Catalysts</h4>
+                  <div style="background: rgba(255,165,0,0.05); padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid rgba(255,165,0,0.3);">
                     <ol style="color: #fff; padding-left: 20px; line-height: 1.6; margin-bottom: 0;">
-                        <li style="margin-bottom: 16px;">
-                            <strong style="color: #FFB74D;">Fed's Monetary Policy Outlook:</strong>
-                            <ul style="margin-top: 5px; padding-left: 18px;">
-                                <li>Dot plot suggests 2-3 rate cuts for 2025, trimmed from previous projection of 4</li>
-                                <li>Market odds of a June cut drop to 65% (previously 85%), reflecting tempered optimism</li>
-                                <li>Powell's guidance on inflation persistence remains the key to short-term rate direction</li>
-                                <li>Terminal rate expectations creeping toward 5.0%-5.25% in response to sticky CPI data</li>
-                            </ul>
-                        </li>
-                        <li style="margin-bottom: 16px;">
-                            <strong style="color: #FFB74D;">Technology Sector Rotation:</strong>
-                            <ul style="margin-top: 5px; padding-left: 18px;">
-                                <li>Semiconductor segment lags with SOX index down 6.8% month-to-date</li>
-                                <li>AI chip leaders (NVDA, AMD) losing momentum to defensive tech sub-sectors</li>
-                                <li>SaaS names buoyed by stable enterprise budgets and growing recurring revenue</li>
-                                <li>Sector P/E multiple at 27.5x (15% above 5-year mean), fueling valuation concerns</li>
-                            </ul>
-                        </li>
-                        <li style="margin-bottom: 16px;">
-                            <strong style="color: #FFB74D;">Fixed Income Dynamics:</strong>
-                            <ul style="margin-top: 5px; padding-left: 18px;">
-                                <li>10-year Treasury yield nearing 4.3%, a pivotal resistance marker</li>
-                                <li>2s10s spread narrows to -35bps, hinting at a possible shift in curve sentiment</li>
-                                <li>Real yields climbing faster than nominal, underlining growth worries</li>
-                                <li>High-yield credit spreads edge wider, now at +310bps</li>
-                            </ul>
-                        </li>
-                        <li style="margin-bottom: 16px;">
-                            <strong style="color: #FFB74D;">Energy Market Dynamics:</strong>
-                            <ul style="margin-top: 5px; padding-left: 18px;">
-                                <li>WTI crude hovering near critical $75/barrel support</li>
-                                <li>OPEC+ may delay production hikes as demand forecasts cool</li>
-                                <li>US output at a record 13.2M barrels/day, intensifying pricing pressure</li>
-                                <li>Post-maintenance refining uptick could lift short-term gasoline consumption</li>
-                            </ul>
-                        </li>
-                        <li style="margin-bottom: 0;">
-                            <strong style="color: #FFB74D;">Geopolitical Considerations:</strong>
-                            <ul style="margin-top: 5px; padding-left: 18px; margin-bottom: 0;">
-                                <li>Middle East tension continues to add a $3-$5/barrel risk premium to oil</li>
-                                <li>US-China trade frictions intensify as election cycle approaches</li>
-                                <li>Macroeconomic readings in Europe worsen amid expanding political risks</li>
-                            </ul>
-                        </li>
+                      <li style="margin-bottom: 16px;">
+                        <strong style="color: #FFB74D;">Fed's Monetary Policy Outlook:</strong>
+                        <ul style="margin-top: 5px; padding-left: 18px;">
+                          <li>Dot plot suggests 2-3 rate cuts for 2025, trimmed from previous projection of 4</li>
+                          <li>Market odds of a June cut drop to 65% (previously 85%), reflecting tempered optimism</li>
+                          <li>Powell's guidance on inflation persistence remains the key to short-term rate direction</li>
+                          <li>Expected terminal rate post-cuts around 3.0%-3.25%, though sticky inflation may limit further easing</li>
+                        </ul>
+                      </li>
+                      <li style="margin-bottom: 16px;">
+                        <strong style="color: #FFB74D;">Technology Sector Rotation:</strong>
+                        <ul style="margin-top: 5px; padding-left: 18px;">
+                          <li>Semiconductor segment shows SOX index down 1.88% month-to-date</li>
+                          <li>AI chip leaders (NVDA, AMD) losing momentum to defensive tech sub-sectors</li>
+                          <li>SaaS names buoyed by stable enterprise budgets and growing recurring revenue</li>
+                          <li>Sector P/E multiple at 34.46x, raising valuation concerns</li>
+                        </ul>
+                      </li>
+                      <li style="margin-bottom: 16px;">
+                        <strong style="color: #FFB74D;">Fixed Income Dynamics:</strong>
+                        <ul style="margin-top: 5px; padding-left: 18px;">
+                          <li>10-year Treasury yield nearing 4.3%, a pivotal resistance marker</li>
+                          <li>2s10s spread at -29bps, indicating a persistently inverted yield curve</li>
+                          <li>Real yields climbing faster than nominal, underlining growth worries</li>
+                          <li>High-yield credit spreads edge wider, now at +310bps</li>
+                        </ul>
+                      </li>
+                      <li style="margin-bottom: 16px;">
+                        <strong style="color: #FFB74D;">Energy Market Dynamics:</strong>
+                        <ul style="margin-top: 5px; padding-left: 18px;">
+                          <li>WTI crude hovering near critical $75/barrel support</li>
+                          <li>OPEC+ may delay production hikes as demand forecasts cool</li>
+                          <li>US output at a record 13.55M barrels/day, adding to global supply pressures</li>
+                          <li>Post-maintenance refining uptick could lift short-term gasoline consumption</li>
+                        </ul>
+                      </li>
+                      <li style="margin-bottom: 0;">
+                        <strong style="color: #FFB74D;">Geopolitical Considerations:</strong>
+                        <ul style="margin-top: 5px; padding-left: 18px; margin-bottom: 0;">
+                          <li>Middle East tension continues to add a $3-$5/barrel risk premium to oil</li>
+                          <li>US-China trade frictions intensify as election cycle approaches</li>
+                          <li>Macroeconomic readings in Europe worsen amid expanding political risks</li>
+                        </ul>
+                      </li>
                     </ol>
-                    
                     <div style="background: rgba(255,255,255,0.08); padding: 15px; border-radius: 6px; margin-top: 20px;">
-                        <p style="color: #FFD700; margin: 0 0 10px 0; font-weight: 600; display: flex; align-items: center;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
-                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                                <path d="M2 17l10 5 10-5"></path>
-                                <path d="M2 12l10 5 10-5"></path>
-                            </svg>
-                            <strong>Market Sentiment Indicators</strong>
-                        </p>
-                        <div style="display: flex; flex-wrap: wrap; color: #fff; gap: 14px;">
-                            <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 4px; flex: 1;">
-                                <span style="color: #ccc; font-size: 0.9em;">VIX</span><br>
-                                <span style="font-weight: 600;">15.8 <span style="color: #ff8a80;">(+1.2)</span></span>
-                            </div>
-                            <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 4px; flex: 1;">
-                                <span style="color: #ccc; font-size: 0.9em;">Put/Call Ratio</span><br>
-                                <span style="font-weight: 600;">0.92</span>
-                            </div>
-                            <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 4px; flex: 1;">
-                                <span style="color: #ccc; font-size: 0.9em;">Fear & Greed</span><br>
-                                <span style="font-weight: 600;">62 <span style="color: #FFB74D;">(Greed)</span></span>
-                            </div>
-                            <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 4px; flex: 1;">
-                                <span style="color: #ccc; font-size: 0.9em;">Retail Sentiment</span><br>
-                                <span style="font-weight: 600;">48% Bullish</span>
-                            </div>
+                      <p style="color: #FFD700; margin: 0 0 10px 0; font-weight: 600; display: flex; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                          <path d="M2 17l10 5 10-5"></path>
+                          <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                        <strong>Market Sentiment Indicators</strong>
+                      </p>
+                      <div style="display: flex; flex-wrap: wrap; color: #fff; gap: 14px;">
+                        <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 4px; flex: 1;">
+                          <span style="color: #ccc; font-size: 0.9em;">VIX</span><br>
+                          <span style="font-weight: 600;">21.77 <span style="color: #ff8a80;">(-11.72%)</span></span>
                         </div>
+                        <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 4px; flex: 1;">
+                          <span style="color: #ccc; font-size: 0.9em;">Put/Call Ratio</span><br>
+                          <span style="font-weight: 600;">0.57</span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 4px; flex: 1;">
+                          <span style="color: #ccc; font-size: 0.9em;">Fear & Greed</span><br>
+                          <span style="font-weight: 600;">21 <span style="color: #FFB74D;">(Extreme Fear)</span></span>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 4px; flex: 1;">
+                          <span style="color: #ccc; font-size: 0.9em;">Retail Sentiment</span><br>
+                          <span style="font-weight: 600;">60% Bearish</span>
+                        </div>
+                      </div>
                     </div>
-                </div>
-
-                <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                  </div>
+                  <div style="flex: 1;">
+                    <h4 style="color: #F48FB1; margin-bottom: 10px;">Technical Levels</h4>
+                    <div class="table-container" style="background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden;">
+                      <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background: rgba(255,255,255,0.1);">
+                          <th style="padding: 10px; text-align: left; color: #fff;">Index</th>
+                          <th style="padding: 10px; text-align: center; color: #fff;">Support</th>
+                          <th style="padding: 10px; text-align: center; color: #fff;">Resistance</th>
+                        </tr>
+                        <tr>
+                          <td style="padding: 10px; color: #fff; border-top: 1px solid rgba(255,255,255,0.1);">S&P 500</td>
+                          <td style="padding: 10px; color: #ff8a80; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">5,900</td>
+                          <td style="padding: 10px; color: #7FFF8E; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">6,100</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 10px; color: #fff; border-top: 1px solid rgba(255,255,255,0.1);">Nasdaq</td>
+                          <td style="padding: 10px; color: #ff8a80; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">19,200</td>
+                          <td style="padding: 10px; color: #7FFF8E; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">19,700</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 10px; color: #fff; border-top: 1px solid rgba(255,255,255,0.1);">Dow Jones</td>
+                          <td style="padding: 10px; color: #ff8a80; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">43,000</td>
+                          <td style="padding: 10px; color: #7FFF8E; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">43,800</td>
+                        </tr>
+                      </table>
+                    </div>
                     <div style="flex: 1;">
-                        <h4 style="color: #F48FB1; margin-bottom: 10px;">Technical Levels</h4>
-                        <div class="table-container" style="background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden;">
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <tr style="background: rgba(255,255,255,0.1);">
-                                    <th style="padding: 10px; text-align: left; color: #fff;">Index</th>
-                                    <th style="padding: 10px; text-align: center; color: #fff;">Support</th>
-                                    <th style="padding: 10px; text-align: center; color: #fff;">Resistance</th>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 10px; color: #fff; border-top: 1px solid rgba(255,255,255,0.1);">S&P 500</td>
-                                    <td style="padding: 10px; color: #ff8a80; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">5,150</td>
-                                    <td style="padding: 10px; color: #7FFF8E; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">5,280</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 10px; color: #fff; border-top: 1px solid rgba(255,255,255,0.1);">Nasdaq</td>
-                                    <td style="padding: 10px; color: #ff8a80; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">16,200</td>
-                                    <td style="padding: 10px; color: #7FFF8E; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">16,500</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 10px; color: #fff; border-top: 1px solid rgba(255,255,255,0.1);">Dow Jones</td>
-                                    <td style="padding: 10px; color: #ff8a80; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">38,500</td>
-                                    <td style="padding: 10px; color: #7FFF8E; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">39,000</td>
-                                </tr>
-                            </table>
+                      <h4 style="color: #CE93D8; margin-bottom: 10px;">Sector Spotlight</h4>
+                      <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; height: calc(100% - 35px);">
+                        <div style="margin-bottom: 8px;">
+                          <span style="color: #7FFF8E; display: inline-block; width: 80px;">Bullish:</span>
+                          <span style="color: #fff;">Healthcare, Utilities, Consumer Staples</span>
                         </div>
-                    </div>
-                    
-                    <div style="flex: 1;">
-                        <h4 style="color: #CE93D8; margin-bottom: 10px;">Sector Spotlight</h4>
-                        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; height: calc(100% - 35px);">
-                            <div style="margin-bottom: 8px;">
-                                <span style="color: #7FFF8E; display: inline-block; width: 80px;">Bullish:</span>
-                                <span style="color: #fff;">Healthcare, Utilities, Consumer Staples</span>
-                            </div>
-                            <div style="margin-bottom: 8px;">
-                                <span style="color: #FFB74D; display: inline-block; width: 80px;">Neutral:</span>
-                                <span style="color: #fff;">Financials, Industrials, Materials</span>
-                            </div>
-                            <div style="margin-bottom: 8px;"></div>
-                                <span style="color: #ff8a80; display: inline-block; width: 80px;">Bearish:</span>
-                                <span style="color: #fff;">Technology, Communication Services</span>
-                            </div>
+                        <div style="margin-bottom: 8px;">
+                          <span style="color: #FFB74D; display: inline-block; width: 80px;">Neutral:</span>
+                          <span style="color: #fff;">Financials, Industrials, Materials</span>
                         </div>
+                        <div style="margin-bottom: 8px;">
+                          <span style="color: #ff8a80; display: inline-block; width: 80px;">Bearish:</span>
+                          <span style="color: #fff;">Technology, Communication Services</span>
+                        </div>
+                      </div>
                     </div>
-                </div>
-
-                <div style="background: rgba(76,175,80,0.05); padding: 20px; border-radius: 8px; margin-top: 25px; border-left: 4px solid #7FFF8E;">
+                  </div>
+                  <div style="background: rgba(76,175,80,0.05); padding: 20px; border-radius: 8px; margin-top: 25px; border-left: 4px solid #7FFF8E;">
                     <h4 style="color: #7FFF8E; margin-top: 0; margin-bottom: 10px;">Trading Strategy</h4>
                     <p style="color: #fff; line-height: 1.6; margin-bottom: 0;">
-                        <strong>Approach:</strong> Defensive positioning ahead of Fed announcement with reduced position sizes. Consider trimming high-beta tech exposure and implementing collar strategies for core holdings. Maintain 15-20% cash reserves to deploy on post-Fed volatility.
+                      <strong>Approach:</strong> Defensive positioning ahead of Fed announcement with reduced position sizes. Consider trimming high-beta tech exposure and implementing collar strategies for core holdings. Maintain 15-20% cash reserves to deploy on post-Fed volatility.
                     </p>
                     <p style="color: #fff; line-height: 1.6; margin-bottom: 0; margin-top: 10px;">
-                        <strong>Key Levels to Watch:</strong> VIX above 16 could signal increasing market anxiety. Treasury yields breaking above 4.35% could pressure growth stocks further.
+                      <strong>Key Levels to Watch:</strong> VIX above 20 could signal increasing market anxiety. Treasury yields breaking above 4.5% could pressure growth stocks further.
                     </p>
+                  </div>
                 </div>
+              </div>
             </div>
-        </div>
-    </div>
-</div>
-</div>
+          </div>
         <!-- Neues Modal für Stock Analysis -->
 
     <div id="analysis-modal" class="modal">
