@@ -3128,3 +3128,217 @@ class NewsletterManager {
 document.addEventListener('DOMContentLoaded', () => {
     new NewsletterManager();
 });
+
+class ExchangeRateCalculator {
+    constructor() {
+        if (this.checkRequiredElements()) {
+            this.initializeElements();
+            this.setupEventListeners();
+            this.loadCurrencies();
+        } else {
+            console.error('Required exchange calculator elements not found in DOM');
+        }
+    }
+
+    checkRequiredElements() {
+        const requiredElements = [
+            'exchange-rate-modal',
+            'toggle-exchange',
+            'close-exchange',
+            'exchange-form',
+            'amount',
+            'from-currency',
+            'to-currency',
+            'swap-currencies',
+            'conversion-result',
+            'result-text',
+            'exchange-rate',
+            'last-updated'
+        ];
+        
+        return requiredElements.every(id => document.getElementById(id));
+    }
+
+    initializeElements() {
+        this.modal = document.getElementById('exchange-rate-modal');
+        this.toggleButton = document.getElementById('toggle-exchange'); 
+        this.closeButton = document.getElementById('close-exchange');
+        this.form = document.getElementById('exchange-form');
+        this.amountInput = document.getElementById('amount');
+        this.fromSelect = document.getElementById('from-currency');
+        this.toSelect = document.getElementById('to-currency');
+        this.swapButton = document.getElementById('swap-currencies');
+        this.resultContainer = document.getElementById('conversion-result');
+        this.resultText = document.getElementById('result-text');
+        this.rateText = document.getElementById('exchange-rate').querySelector('span');
+        this.lastUpdatedText = document.getElementById('last-updated').querySelector('span');
+    }
+
+    setupEventListeners() {
+        if (this.toggleButton) {
+            this.toggleButton.addEventListener('click', () => {
+                if (this.modal) {
+                    this.modal.style.display = 'block';
+                }
+            });
+        }
+
+        if (this.closeButton) {
+            this.closeButton.addEventListener('click', () => {
+                if (this.modal) {
+                    this.modal.style.display = 'none';
+                }
+            });
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+                this.modal.style.display = 'none';
+            }
+        });
+
+        if (this.form) {
+            this.form.addEventListener('submit', (e) => this.handleConvert(e));
+        }
+
+        if (this.swapButton) {
+            this.swapButton.addEventListener('click', () => this.swapCurrencies());
+        }
+    }
+
+    loadCurrencies() {
+        // Liste der gängigen Währungen
+        const currencies = [
+            { code: 'USD', name: 'US Dollar' },
+            { code: 'EUR', name: 'Euro' },
+            { code: 'JPY', name: 'Japanese Yen' },
+            { code: 'GBP', name: 'British Pound' },
+            { code: 'AUD', name: 'Australian Dollar' },
+            { code: 'CAD', name: 'Canadian Dollar' },
+            { code: 'CHF', name: 'Swiss Franc' },
+            { code: 'CNY', name: 'Chinese Yuan' },
+            { code: 'NZD', name: 'New Zealand Dollar' },
+            { code: 'INR', name: 'Indian Rupee' }
+        ];
+        
+        this.populateCurrencySelects(currencies);
+    }
+
+    populateCurrencySelects(currencies) {
+        this.fromSelect.innerHTML = '';
+        this.toSelect.innerHTML = '';
+        
+        currencies.forEach(currency => {
+            const option = `<option value="${currency.code}">${currency.code} - ${currency.name}</option>`;
+            this.fromSelect.insertAdjacentHTML('beforeend', option);
+            this.toSelect.insertAdjacentHTML('beforeend', option);
+        });
+        
+        this.fromSelect.value = 'USD';
+        this.toSelect.value = 'EUR';
+
+        const commonPairs = [
+            ['EUR', 'USD'],
+            ['USD', 'JPY'],
+            ['GBP', 'USD'],
+            ['USD', 'CHF'],
+            ['EUR', 'GBP'],
+            ['AUD', 'USD']
+        ];
+
+        const suggestionsDiv = document.createElement('div');
+        suggestionsDiv.className = 'currency-suggestions';
+        suggestionsDiv.innerHTML = `
+            <p>Common pairs:</p>
+            <div class="pairs-grid">
+                ${commonPairs.map(([from, to]) => `
+                    <button type="button" class="pair-button" data-from="${from}" data-to="${to}">
+                        ${from}/${to}
+                    </button>
+                `).join('')}
+            </div>
+        `;
+
+        this.form.insertBefore(suggestionsDiv, this.form.querySelector('button[type="submit"]'));
+
+        suggestionsDiv.querySelectorAll('.pair-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.fromSelect.value = btn.dataset.from;
+                this.toSelect.value = btn.dataset.to;
+            });
+        });
+    }
+
+    async handleConvert(e) {
+        e.preventDefault();
+        
+        try {
+            const amount = parseFloat(this.amountInput.value);
+            const fromCurrency = this.fromSelect.value;
+            const toCurrency = this.toSelect.value;
+
+            if (isNaN(amount) || amount <= 0) {
+                throw new Error('Please enter a valid amount');
+            }
+
+            // Verwende Yahoo Finance Symbol für Währungspaare
+            const symbol = `${fromCurrency}${toCurrency}=X`;
+            const proxyUrl = 'https://api.allorigins.win/get?url=';
+            const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`;
+            const url = proxyUrl + encodeURIComponent(yahooUrl);
+
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.contents) {
+                const parsed = JSON.parse(data.contents);
+                if (parsed.chart.result) {
+                    const rate = parsed.chart.result[0].meta.regularMarketPrice;
+                    const result = amount * rate;
+                    
+                    this.displayResult({
+                        base_code: fromCurrency,
+                        target_code: toCurrency,
+                        conversion_rate: rate,
+                        conversion_result: result
+                    });
+                } else {
+                    throw new Error('Rate not available');
+                }
+            } else {
+                throw new Error('Conversion failed');
+            }
+        } catch (error) {
+            console.error('Conversion error:', error);
+            this.showError(error.message);
+        }
+    }
+
+    displayResult(data) {
+        this.resultText.textContent = `${data.target_code} ${data.conversion_result.toFixed(2)}`;
+        this.rateText.textContent = `1 ${data.base_code} = ${data.conversion_rate.toFixed(4)} ${data.target_code}`;
+        this.lastUpdatedText.textContent = new Date().toLocaleString();
+        this.resultContainer.style.display = 'block';
+    }
+
+    showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.textContent = message;
+        this.form.insertBefore(errorDiv, this.resultContainer);
+        
+        setTimeout(() => {
+            errorDiv.remove();
+        }, 3000);
+    }
+
+    swapCurrencies() {
+        [this.fromSelect.value, this.toSelect.value] = 
+        [this.toSelect.value, this.fromSelect.value];
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    new ExchangeRateCalculator();
+});
