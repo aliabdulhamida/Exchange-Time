@@ -3008,9 +3008,9 @@ class NewsletterManager {
         }
         
         // Sender.net API Konfiguration
-        this.API_KEY = secrets.API_NEWSLETTER; // Use environment variable for API key
+        this.API_KEY = process.env.API_NEWSLETTER; // Use environment variable for API key
         this.API_URL = 'https://api.sender.net/v2/subscribers';
-        this.GROUP_ID = secrets.GROUP_NEWSLETTER; // Use environment variable for group ID
+        this.GROUP_ID = process.env.GROUP_NEWSLETTER; // Use environment variable for group ID
         
         this.headers = {
             'Content-Type': 'application/json',
