@@ -3076,7 +3076,7 @@ class NewsletterManager {
 
     async subscribeToNewsletter(email) {
         try {
-            const response = await fetch('https://connect.mailerlite.com/api/subscribers', {
+            const response = await fetch('https://connect.mailerlite.com/api', {
                 method: 'POST',
                 headers: this.headers,
                 body: JSON.stringify({
