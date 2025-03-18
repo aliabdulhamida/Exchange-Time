@@ -2406,7 +2406,7 @@ th, td {
 }
 
 .hero-section {
-    height: 70vh;
+    min-height: 70vh; /* Changed from 70vh to 100vh */
     width: 100%;
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1534469650761-fce6cc26ac0d?q=80&w=3542&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center;
     background-size: cover;
@@ -2415,6 +2415,7 @@ th, td {
     justify-content: center;
     position: relative;
     overflow: hidden;
+    padding: 20px; /* Added padding for mobile */
 }
 
 .hero-content {
@@ -2422,6 +2423,8 @@ th, td {
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 1s ease forwards;
+    width: 100%; /* Added width */
+    max-width: 90vw; /* Added max-width */
 }
 
 .hero-title {
@@ -2441,7 +2444,7 @@ th, td {
 /* Mac Mouse Scroll Animation */
 .mouse-scroll {
     position: absolute;
-    bottom: -100px;
+    bottom: -100px; /* Changed from -100px to 40px */
     left: 50%;
     transform: translateX(-50%);
 }
@@ -2528,12 +2531,20 @@ th, td {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .hero-section {
+        min-height: 70vh;
+        padding: 20px 10px;
+    }
+    
     .hero-title {
-        font-size: 3rem;
+        font-size: 2.5rem; /* Reduced from 3rem */
+        line-height: 1.2;
     }
     
     .hero-description {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        line-height: 1.4;
+        margin-bottom: 1.5rem;
     }
 }
 
