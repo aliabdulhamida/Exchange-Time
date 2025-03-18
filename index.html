@@ -594,10 +594,11 @@
                 <input type="number" id="amount" class="amount-input" required min="0" step="0.01" placeholder="Enter amount">
             </div>
             
-            <div class="currency-selectors">
-                <div class="currency-group">
-                    <label for="from-currency">From</label>
-                    <select id="from-currency" class="currency-select" required></select>
+            <div class="currency-selectors" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                <div class="currency-group" style="flex: 1;">
+                    <label for="from-currency" style="display: block; margin-bottom: 5px; color: #fff; font-weight: 500;">From</label>
+                    <select id="from-currency" class="currency-select" required style="width: 100%; padding: 10px; border: 1px solid #404040; border-radius: 5px; background: #2a2a2a; color: #fff; outline: none;">
+                    </select>
                 </div>
                 
                 <button type="button" id="swap-currencies" class="swap-btn">
@@ -606,9 +607,10 @@
                     </svg>
                 </button>
                 
-                <div class="currency-group">
-                    <label for="to-currency">To</label>
-                    <select id="to-currency" class="currency-select" required></select>
+                <div class="currency-group" style="flex: 1;">
+                    <label for="to-currency" style="display: block; margin-bottom: 5px; color: #fff; font-weight: 500;">To</label>
+                    <select id="to-currency" class="currency-select" required style="width: 100%; padding: 10px; border: 1px solid #404040; border-radius: 5px; background: #2a2a2a; color: #fff; outline: none;">
+                    </select>
                 </div>
             </div>
 
