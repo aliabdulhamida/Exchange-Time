@@ -1,3 +1,4 @@
+
 // Define marketHours with explicit holidays for each market
 const marketHours = {
     NYSE: {
@@ -3007,7 +3008,6 @@ class NewsletterManager {
             this.form.appendChild(this.statusMessage);
         }
         
-        // Sender.net API Konfiguration
         // Use environment variables if available, otherwise use fallback values
         this.API_KEY = process.env.API_NEWSLETTER;
         this.API_URL = 'https://api.sender.net/v2/subscribers';
@@ -3332,4 +3332,38 @@ class ExchangeRateCalculator {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     new ExchangeRateCalculator();
+});
+
+function updateHeaderDateTime() {
+    const timeElement = document.getElementById('header-time');
+    const dateElement = document.getElementById('header-date');
+    
+    const now = new Date();
+    
+    // Format time
+    const timeOptions = { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        hour12: true // Show in 12-hour format with AM/PM
+    };
+    
+    // Format date
+    const dateOptions = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    
+    if (timeElement && dateElement) {
+        timeElement.textContent = now.toLocaleTimeString('en-US', timeOptions);
+        dateElement.textContent = now.toLocaleDateString('en-US', dateOptions);
+    }
+}
+
+// Initialize and update every second
+document.addEventListener('DOMContentLoaded', () => {
+    updateHeaderDateTime();
+    setInterval(updateHeaderDateTime, 1000);
 });
