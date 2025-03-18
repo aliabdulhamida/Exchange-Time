@@ -3081,7 +3081,7 @@ class NewsletterManager {
                 headers: this.headers,
                 body: JSON.stringify({
                     email: email,
-                    groups: ['98765432'],
+                    groups: ['149238933591426959'],
                     status: 'active'
                 })
             });
