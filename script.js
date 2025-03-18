@@ -2996,39 +2996,52 @@ window.addEventListener('click', (e) => {
 // Newsletter subscription functionality
 class NewsletterManager {
     constructor() {
+        // Basis-Setup
         this.form = document.getElementById('newsletter-form');
         this.emailInput = document.getElementById('newsletter-email');
-        this.statusMessage = document.getElementById('newsletter-status');
-        this.subscribers = new Set(this.loadSubscribers());
+        this.statusMessage = document.createElement('div');
+        this.statusMessage.className = 'newsletter-status';
+        this.statusMessage.style.color = '#fff'; // Set text color to white
         
-        // Load API key from environment variables or config file
-        this.API_KEY = process.env.API_NEWSLETTER;
-        this.loadApiKey();
+        if (this.form) {
+            this.form.appendChild(this.statusMessage);
+        }
         
-        // Define headers that will be used for API requests
+        // Sender.net API Konfiguration
+        this.API_KEY = process.env.API_NEWSLETTER; // Use environment variable for API key
+        this.API_URL = 'https://api.sender.net/v2/subscribers';
+        this.GROUP_ID = process.env.GROUP_NEWSLETTER; // Use environment variable for group ID
+        
         this.headers = {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
             'Authorization': `Bearer ${this.API_KEY}`
         };
-        
+
         this.setupEventListeners();
     }
 
-    async loadApiKey() {
+    async subscribeToNewsletter(email) {
         try {
-            // In production, load from secure environment or config service
-            const response = await fetch('/api/config/mailerlite-key');
+            const response = await fetch(this.API_URL, {
+                method: 'POST',
+                headers: this.headers,
+                body: JSON.stringify({
+                    email: email,
+                    groups: [this.GROUP_ID],
+                    sendAutoresponder: true
+                })
+            });
+
             const data = await response.json();
-            this.API_KEY = data.apiKey;
-            this.headers = {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${this.API_KEY}`
-            };
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Newsletter-Anmeldung fehlgeschlagen');
+            }
+
+            return data;
         } catch (error) {
-            console.error('Failed to load API key:', error);
-            this.showStatus('Newsletter service temporarily unavailable', 'error');
+            console.error('Newsletter subscription error:', error);
+            throw new Error('Anmeldung fehlgeschlagen. Bitte versuchen Sie es später erneut.');
         }
     }
 
@@ -3036,10 +3049,6 @@ class NewsletterManager {
         if (this.form) {
             this.form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                if (!this.API_KEY) {
-                    this.showStatus('Newsletter service not initialized', 'error');
-                    return;
-                }
                 await this.handleSubmit(e);
             });
         }
@@ -3050,20 +3059,13 @@ class NewsletterManager {
         const email = this.emailInput.value.trim();
 
         if (!this.validateEmail(email)) {
-            this.showStatus('Please enter a valid email address', 'error');
-            return;
-        }
-
-        if (this.subscribers.has(email)) {
-            this.showStatus('This email is already subscribed', 'error');
+            this.showStatus('Bitte geben Sie eine gültige E-Mail-Adresse ein', 'error');
             return;
         }
 
         try {
             await this.subscribeToNewsletter(email);
-            this.subscribers.add(email);
-            this.saveSubscribers();
-            this.showStatus('Successfully subscribed!', 'success');
+            this.showStatus('Erfolgreich angemeldet!', 'success');
             this.emailInput.value = '';
         } catch (error) {
             this.showStatus(error.message, 'error');
@@ -3074,60 +3076,22 @@ class NewsletterManager {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    async subscribeToNewsletter(email) {
-        try {
-            const response = await fetch('https://connect.mailerlite.com/api', {
-                method: 'POST',
-                headers: this.headers,
-                body: JSON.stringify({
-                    email: email,
-                    groups: ['149238933591426959'],
-                    status: 'active'
-                })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Subscription failed');
-            }
-
-            return await response.json();
-        } catch (error) {
-            console.error('Newsletter subscription error:', error);
-            throw new Error('Network error. Please try again later.');
-        }
-    }
-
     showStatus(message, type) {
-        if (this.statusMessage) {
-            this.statusMessage.textContent = message;
-            this.statusMessage.className = `status-message ${type}`;
-            this.statusMessage.style.display = 'block';
+        this.statusMessage.textContent = message;
+        this.statusMessage.className = `newsletter-status ${type}`;
+        this.statusMessage.style.color = '#fff'; // Set text color to white
+        this.statusMessage.style.display = 'block';
 
-            setTimeout(() => {
-                this.statusMessage.style.display = 'none';
-            }, 3000);
-        }
-    }
-
-    loadSubscribers() {
-        try {
-            return JSON.parse(localStorage.getItem('newsletter_subscribers')) || [];
-        } catch {
-            return [];
-        }
-    }
-
-    saveSubscribers() {
-        localStorage.setItem('newsletter_subscribers', 
-            JSON.stringify([...this.subscribers]));
+        setTimeout(() => {
+            this.statusMessage.style.display = 'none';
+        }, 3000);
     }
 }
 
-// Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {
     new NewsletterManager();
 });
+
 
 class ExchangeRateCalculator {
     constructor() {
