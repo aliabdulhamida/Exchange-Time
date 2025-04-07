@@ -3010,9 +3010,9 @@ class NewsletterManager {
         }
         
         // Use environment variables if available, otherwise use fallback values
-        this.API_KEY = process.env.API_NEWSLETTER;
-        this.API_URL = 'https://api.sender.net/v2/';
-        this.GROUP_ID = process.env.GROUP_NEWSLETTER;
+        this.API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNmVhZjAxZTJjMzhlZjY3ZTllNTNjMzA1NDM0MmE3MDI2YmQyMDliNDkzMzQ3M2M2MjFlMDljMzdlNjg5NWE4MDFkZjIzOTBlMDdkYzg4MzYiLCJpYXQiOiIxNzQyMzI5OTE1LjExODEyMCIsIm5iZiI6IjE3NDIzMjk5MTUuMTE4MTI0IiwiZXhwIjoiNDg5NTkyOTkxNS4xMTY3NDQiLCJzdWIiOiI5NjI3NjAiLCJzY29wZXMiOltdfQ.KHwUWoVXE_EoonOTfqGR0X4LDtQ8QACk_w5mk-Dcb6jYyQpkyhxYknG-nMoXUmPYQ0L_zjapIyFrwMU1QdKIQw';
+        this.API_URL = 'https://api.sender.net/v2/subscribers';
+        this.GROUP_ID = 'bYrJOn';
         
         this.headers = {
             'Content-Type': 'application/json',
@@ -3486,11 +3486,11 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
   async function fetchFearGreedIndex() {
     const url = 'https://fear-and-greed-index.p.rapidapi.com/v1/fgi';
     const options = {
-      method: 'GET',
-      headers: {
-        'x-rapidapi-key': process.env.FEAR_AND_GREED || 'API_KEY_NOT_FOUND',
-        'x-rapidapi-host': 'fear-and-greed-index.p.rapidapi.com'
-      }
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': 'a8d81eea34msh9318a170ad799bdp1a9d7fjsna333e1b65e8a',
+            'x-rapidapi-host': 'fear-and-greed-index.p.rapidapi.com'
+        }
     };
     
     try {
