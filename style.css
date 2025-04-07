@@ -2611,7 +2611,7 @@ th, td {
 }
 
 .clock-label {
-    color: var(--highlight);
+    color: #fff;
     margin-top: 0.8rem;
     font-size: 0.9rem;
     font-weight: 500;
@@ -2855,7 +2855,7 @@ th, td {
 .current-value .value {
     font-size: 3.5rem;
     font-weight: 700;
-    color: #01c3a8;
+    color: #fff;
     text-shadow: 0 0 10px rgba(1, 195, 168, 0.3);
 }
 
