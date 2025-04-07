@@ -2699,7 +2699,7 @@ th, td {
 .fear-header {
     position: sticky;
     top: 0;
-    padding: 20px 30px;
+    padding: 15px 20px;
     border-bottom: 1px solid var(--input-border);
     display: flex;
     justify-content: space-between;
@@ -3351,15 +3351,67 @@ th, td {
     background: #4caf50;
 }
 
-/* Add responsive styles for improved fear & greed components */
+/* Improved responsive styles for mobile devices */
 @media (max-width: 768px) {
+    .fear-greed-modal {
+        width: 95% !important;
+        height: 95% !important;
+        max-height: none !important;
+    }
+    
+    .fear-header {
+        padding: 12px 15px;
+    }
+    
+    .fear-greed-main {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 0 15px;
+    }
+    
+    .gauge {
+        width: 220px;
+        height: 110px;
+    }
+    
+    .needle {
+        height: 100px;
+    }
+    
+    .gauge-labels .label {
+        font-size: 0.65rem;
+    }
+    
+    .current-value .value {
+        font-size: 2.5rem;
+    }
+    
+    .value-description {
+        font-size: 1.1rem;
+    }
+    
+    .fear-greed-historical,
+    .fear-greed-components {
+        padding: 0 15px;
+    }
+    
+    .history-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .components-grid {
+        grid-template-columns: 1fr;
+    }
+    
     .fear-greed-footer {
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
+        padding: 15px;
     }
     
     .previous-readings {
-        flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
         gap: 10px;
@@ -3367,21 +3419,11 @@ th, td {
     
     .prev-reading {
         min-width: 100px;
-    }
-}
-
-@media (max-width: 480px) {
-    .component-header h4 {
-        font-size: 0.9rem;
+        padding: 8px 12px;
     }
     
-    .component-value {
-        font-size: 1rem;
-        padding: 2px 8px;
-    }
-    
-    .meter-labels {
-        font-size: 0.65rem;
+    .prev-label {
+        font-size: 0.8rem;
     }
     
     .prev-value {
@@ -3391,5 +3433,94 @@ th, td {
     .prev-change {
         font-size: 0.8rem;
         padding: 2px 6px;
+    }
+    
+    .last-updated {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    .history-chart {
+        height: 200px;
+        padding: 10px;
+    }
+    
+    .chart-legend {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gauge {
+        width: 180px;
+        height: 90px;
+    }
+    
+    .needle {
+        height: 80px;
+    }
+    
+    .gauge-center {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .current-value .value {
+        font-size: 2rem;
+    }
+    
+    .value-description {
+        font-size: 0.9rem;
+    }
+    
+    .index-description h3 {
+        font-size: 1.2rem;
+    }
+    
+    .index-description p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    
+    .component {
+        padding: 15px;
+    }
+    
+    .component-header h4 {
+        font-size: 0.9rem;
+    }
+    
+    .component-value {
+        font-size: 0.9rem;
+        padding: 2px 6px;
+    }
+    
+    .history-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .gauge-reading {
+        margin-top: 65px;
+    }
+    
+    .gauge-labels {
+        bottom: -40px;
+    }
+    
+    .gauge-labels .label {
+        font-size: 0.6rem;
+    }
+    
+    .history-toggles {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .component-tooltip {
+        width: 180px;
+        font-size: 0.75rem;
     }
 }
