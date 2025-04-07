@@ -1440,8 +1440,8 @@ th, td {
 
 @media (max-width: 768px) {
     #analysis-modal .modal-content {
-        width: 98%;
-        max-height: 95vh;
+        width: 88%;
+        max-height: 80vh;
     }
 }
 
@@ -2571,5 +2571,88 @@ th, td {
 @media (max-width: 768px) {
     #header-datetime {
         display: none;
+    }
+}
+
+.world-clocks {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.clock-container {
+    text-align: center;
+}
+
+.clock {
+    width: 80px;
+    height: 80px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    position: relative;
+    margin: 0 auto;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.clock-label {
+    color: #fff;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom;
+    background: #fff;
+    border-radius: 4px;
+}
+
+.hour {
+    width: 4px;
+    height: 30%;
+}
+
+.minute {
+    width: 3px;
+    height: 40%;
+}
+
+.second {
+    width: 2px;
+    height: 45%;
+    background: #ff0000;
+}
+
+.center-point {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 768px) {
+    .world-clocks {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .clock {
+        width: 60px;
+        height: 60px;
+    }
+    .clock-label {
+        font-size: 10px;
     }
 }
