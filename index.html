@@ -70,6 +70,16 @@
                     <line x1="4" y1="12" x2="20" y2="12"/>
                 </svg>
             </button>
+            <button id="fearGreedBtn" class="btn tooltip" data-tooltip="Fear & Greed Index">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20z"></path>
+                    <path d="M12 12 9 6"></path>
+                    <path d="M12 12 16 10"></path>
+                    <path d="M3.5 12h2"></path>
+                    <path d="M18.5 12h2"></path>
+                    <path d="M12 2v2"></path>
+                </svg>
+            </button>
         </div>
         <div id="search-box">
             <input type="text" id="search" placeholder="Search" aria-label="Search markets">
@@ -115,7 +125,158 @@
         <!-- TradingView Widget END -->
     </header>
 
-<!-- Füge dies nach dem Header-Tag ein -->
+<!-- Fear & Greed Index Modal -->
+<div id="fearGreedModal" class="modal">
+    <div class="modal-content fear-greed-modal">
+        <div class="fear-header">
+            <h2 style="color: #fff;">Fear & Greed Index</h2>
+            <button id="close" class="btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="fear-greed-container">
+            <div class="fear-greed-main">
+                <div class="gauge-container">
+                    <div class="gauge">
+                        <div class="gauge-bg">
+                            <div class="gauge-segment extreme-fear"></div>
+                            <div class="gauge-segment fear"></div>
+                            <div class="gauge-segment neutral"></div>
+                            <div class="gauge-segment greed"></div>
+                            <div class="gauge-segment extreme-greed"></div>
+                        </div>
+                        <div id="needle" class="needle"></div>
+                        <div class="gauge-center"></div>
+                        <div class="gauge-labels">
+                            <span class="label label-fear">Extreme<br>Fear</span>
+                            <span class="label label-fear">Fear</span>
+                            <span class="label label-neutral">Neutral</span>
+                            <span class="label label-greed">Greed</span>
+                            <span class="label label-greed">Extreme<br>Greed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="gauge-reading">
+                        <div class="current-value">
+                            <span id="indexValue" class="value">--</span>
+                            <div id="description" class="description"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="index-description">
+                    <h3>What is the Fear & Greed Index?</h3>
+                    <p>The Fear & Greed Index measures investor sentiment based on various market indicators. Extreme fear can signal buying opportunities when investors are too worried, while extreme greed can signal market tops when investors are getting too complacent.</p>
+                    <div class="disclaimer-box">
+                        <h5 style="color: #fff;">Disclaimer</h5>
+                        <p>For informational purposes only. Not investment advice. Past performance doesn't predict future results. Data may be delayed. Use as part of a broader research strategy and consult financial advisors before investing.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="fear-greed-historical">
+                <div class="history-header">
+                    <h3>Historical Data</h3>
+                    <div class="history-toggles">
+                        <button class="history-btn active" data-period="1w">1W</button>
+                        <button class="history-btn" data-period="1m">1M</button>
+                        <button class="history-btn" data-period="3m">3M</button>
+                        <button class="history-btn" data-period="1y">1Y</button>
+                    </div>
+                </div>
+                <div id="historical-chart" class="history-chart"></div>
+            </div>
+            
+            <div class="fear-greed-components">
+                <h3>Index Components</h3>
+                <div class="components-grid">
+                    <div class="component">
+                        <div class="component-header">
+                            <h4>Market Volatility</h4>
+                            <span id="volatility-value" class="component-value">--</span>
+                        </div>
+                        <div class="component-meter">
+                            <div id="volatility-meter" class="meter-fill"></div>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-header">
+                            <h4>Market Momentum</h4>
+                            <span id="momentum-value" class="component-value">--</span>
+                        </div>
+                        <div class="component-meter">
+                            <div id="momentum-meter" class="meter-fill"></div>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-header">
+                            <h4>Market Breadth</h4>
+                            <span id="breadth-value" class="component-value">--</span>
+                        </div>
+                        <div class="component-meter">
+                            <div id="breadth-meter" class="meter-fill"></div>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-header">
+                            <h4>Put/Call Ratio</h4>
+                            <span id="put-call-value" class="component-value">--</span>
+                        </div>
+                        <div class="component-meter">
+                            <div id="put-call-meter" class="meter-fill"></div>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-header">
+                            <h4>Safe Haven Demand</h4>
+                            <span id="safe-haven-value" class="component-value">--</span>
+                        </div>
+                        <div class="component-meter">
+                            <div id="safe-haven-meter" class="meter-fill"></div>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-header">
+                            <h4>Junk Bond Demand</h4>
+                            <span id="junk-bond-value" class="component-value">--</span>
+                        </div>
+                        <div class="component-meter">
+                            <div id="junk-bond-meter" class="meter-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="fear-greed-footer">
+                <div class="previous-readings">
+                    <div class="prev-reading">
+                        <span class="prev-label">Previous Close</span>
+                        <span id="prev-day-value" class="prev-value">--</span>
+                        <span id="prev-day-change" class="prev-change">--</span>
+                    </div>
+                    <div class="prev-reading">
+                        <span class="prev-label">1 Week Ago</span>
+                        <span id="prev-week-value" class="prev-value">--</span>
+                        <span id="prev-week-change" class="prev-change">--</span>
+                    </div>
+                    <div class="prev-reading">
+                        <span class="prev-label">1 Month Ago</span>
+                        <span id="prev-month-value" class="prev-value">--</span>
+                        <span id="prev-month-change" class="prev-change">--</span>
+                    </div>
+                </div>
+                <div class="last-updated">
+                    Last updated: <span id="last-update-time">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <section class="hero-section">
     <div class="hero-content">
         <h1 class="hero-title">Exchange Time</h1>
@@ -219,7 +380,7 @@
             <div class="modal-content">
                 <div class="calendar-header">
                     <h2>Market Calendar</h2>
-                    <button id="close" class="btn">
+                    <button id="close" class="btn" onclick="document.getElementById('calendar-modal').style.display='none'">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -296,9 +457,9 @@
         <!-- Neues Modal für Market Summary -->
         <div id="market-summary-modal" class="modal">
             <div class="modal-content">
-              <div class="modal-header">
-                <div class="summary-navigation">
-                  <button id="prev-summary" class="btn nav-btn">
+                <div class="modal-header">
+                    <div class="summary-navigation">
+                        <button id="prev-summary" class="btn nav-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M15 18l-6-6 6-6"/>
                     </svg>
@@ -475,7 +636,7 @@
                     <p style="color: #fff; line-height: 1.6; margin-bottom: 0;">
                       <strong>Approach:</strong> Defensive positioning ahead of Fed announcement with reduced position sizes. Consider trimming high-beta tech exposure and implementing collar strategies for core holdings. Maintain 15-20% cash reserves to deploy on post-Fed volatility.
                     </p>
-                    <p style="color: #fff; line-height: 1.6; margin-bottom: 0; margin-top: 10px;">
+                    <p style="color: #fff; line-height: 1.6; margin-bottom: 0; margin-top: 10px;"></p>
                       <strong>Key Levels to Watch:</strong> VIX above 20 could signal increasing market anxiety. Treasury yields breaking above 4.5% could pressure growth stocks further.
                     </p>
                   </div>
@@ -566,7 +727,7 @@
                     </div>
 
                     <div id="fundamental" class="tab-pane">
-                        <div class="fundamental-metrics">
+                        <div class="fundamental-metrics"></div>
                             <div class="metric-group">
                                 <h4>Valuation</h4>
                                 <p>P/E Ratio: <span id="pe-ratio">-</span></p>
