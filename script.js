@@ -1798,7 +1798,7 @@ function showExchangeInfo(exchange) {
             <p><strong>Listed Companies:</strong> ${info.listedCompanies}</p>
             <p><strong>Trading Volume:</strong> ${info.tradingVolume}</p>
             <p><strong>Regulatory Body:</strong> ${info.regulatoryBody}</p>
-            <p><strong>Website:</strong> <a href="${info.website}" target="_blank">${info.website}</a></p>
+            <p><strong>Website:</strong> <a href="${info.website}" target="_blank" style="color: #2196F3;">${info.website}</a></p>
             <h3>Description</h3>
             <p>${info.description}</p>
         </div>
