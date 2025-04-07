@@ -2631,17 +2631,6 @@ th, td {
     background: #ff0000;
 }
 
-.center-point {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #fff;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
 @media (max-width: 768px) {
     .world-clocks {
         flex-wrap: wrap;
