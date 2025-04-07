@@ -2850,12 +2850,13 @@ th, td {
     flex-direction: column;
     align-items: center;
     gap: 5px;
+    color: #ffffff;
 }
 
 .current-value .value {
     font-size: 3.5rem;
     font-weight: 700;
-    color: #fff;
+    color: #ffffff;
     text-shadow: 0 0 10px rgba(1, 195, 168, 0.3);
 }
 
