@@ -3488,7 +3488,7 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
     const options = {
       method: 'GET',
       headers: {
-        'x-rapidapi-key': 'a8d81eea34msh9318a170ad799bdp1a9d7fjsna333e1b65e8a',
+        'x-rapidapi-key': process.env.FEAR_AND_GREED || 'API_KEY_NOT_FOUND',
         'x-rapidapi-host': 'fear-and-greed-index.p.rapidapi.com'
       }
     };
