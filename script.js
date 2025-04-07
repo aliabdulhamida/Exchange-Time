@@ -678,7 +678,8 @@ const marketHours = {
             "2025-06-19": { reason: "Eid Al Adha Holiday 2", closeEarly: false },
             "2025-12-02": { reason: "National Day", closeEarly: false },
             "2025-12-03": { reason: "National Day", closeEarly: false }
-    },
+        }
+        },
     ADX: {
         open: "10:00",
         close: "14:00",
@@ -961,7 +962,7 @@ const marketHours = {
     "2025-12-25": { reason: "Christmas Day", closeEarly: false }
 }
     }
-}}
+}
 
 // State variables for managing UI and market status
 let currentRegion = "all";           // Default region filter
