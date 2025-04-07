@@ -978,7 +978,7 @@ const closeButton = document.querySelector("#closeButton");
 
 // Modal and panel toggle logic
 const calendarModal = document.getElementById('calendar-modal');
-const closeCalendar = document.getElementById('close');
+const closeCalendar = document.getElementById('closecalendar');
 
 const calendarPanel = document.getElementById('calendar-panel');
 const toggleCalendar = document.getElementById('toggle-calendar');
@@ -3369,11 +3369,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateHeaderDateTime, 1000);
 });
 
-// World Clocks
+// World Clocks with improved timezone handling
 function updateClocks() {
-    const now = new Date();
-    
-    // Zeitzonen definieren
+    // Define timezones with their corresponding IDs
     const timeZones = {
         'london': 'Europe/London',
         'new-york': 'America/New_York',
@@ -3382,27 +3380,126 @@ function updateClocks() {
     };
 
     Object.entries(timeZones).forEach(([city, timezone]) => {
-        const cityTime = new Date(now.toLocaleString('en-US', { timeZone: timezone }));
         const clock = document.querySelector(`.clock.${city}`);
+        if (!clock) return;
         
-        const seconds = cityTime.getSeconds();
-        const minutes = cityTime.getMinutes();
-        const hours = cityTime.getHours();
-
-        const secondDegrees = ((seconds / 60) * 360) + 180;
-        const minuteDegrees = ((minutes / 60) * 360) + ((seconds/60)*6) + 180;
-        const hourDegrees = ((hours / 12) * 360) + ((minutes/60)*30) + 180;
-
-        const secondHand = clock.querySelector('.second');
-        const minuteHand = clock.querySelector('.minute');
-        const hourHand = clock.querySelector('.hour');
-
-        secondHand.style.transform = `rotate(${secondDegrees}deg)`;
-        minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
-        hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+        try {
+            // Get the current time in the timezone using Intl.DateTimeFormat
+            const now = new Date();
+            
+            // Get individual time components using Intl.DateTimeFormat
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: timezone,
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                hour12: false
+            });
+            
+            // Parse the formatted time string
+            const formattedTime = formatter.format(now);
+            const timeParts = formattedTime.split(':');
+            
+            // Extract hours, minutes, seconds
+            let hours = parseInt(timeParts[0]);
+            const minutes = parseInt(timeParts[1]);
+            const seconds = parseInt(timeParts[2] || 0); // Handle if seconds aren't returned
+            
+            // Convert to 12-hour format for the clock
+            const hours12 = hours % 12 || 12;
+            
+            // Calculate rotation angles
+            // Hours: Each hour = 30° (360/12), plus a little extra for the minutes
+            // Minutes: Each minute = 6° (360/60)
+            // Seconds: Each second = 6° (360/60)
+            const hourDegrees = (hours12 * 30) + (minutes / 2);
+            const minuteDegrees = minutes * 6;
+            const secondDegrees = seconds * 6;
+            
+            // Apply rotations to the hands
+            const hourHand = clock.querySelector('.hour');
+            const minuteHand = clock.querySelector('.minute');
+            const secondHand = clock.querySelector('.second');
+            
+            if (hourHand) hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+            if (minuteHand) minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+            if (secondHand) secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+            
+            // Update digital time display if it exists
+            const digitalDisplay = clock.querySelector('.digital-time');
+            if (digitalDisplay) {
+                const period = hours >= 12 ? 'PM' : 'AM';
+                digitalDisplay.textContent = `${hours12}:${minutes.toString().padStart(2, '0')} ${period}`;
+            }
+        } catch (e) {
+            console.error(`Error updating clock for ${city}:`, e);
+        }
     });
 }
 
-// Uhren initialisieren und jede Sekunde aktualisieren
+// Initialize clocks and update every second
 updateClocks();
 setInterval(updateClocks, 1000);
+
+// Fear & Greed Index Modal Functionality
+document.getElementById('fearGreedBtn').addEventListener('click', function() {
+    document.getElementById('fearGreedModal').style.display = 'block';
+    fetchFearGreedIndex(); // Fetch data when modal is opened
+  });
+  
+  // Close modal when clicking on X
+  document.querySelectorAll('.close-modal').forEach(closeBtn => {
+    closeBtn.addEventListener('click', function() {
+      const modalId = this.getAttribute('data-modal');
+      document.getElementById(modalId).style.display = 'none';
+    });
+  });
+  
+  // Close modal when clicking outside of it
+  window.addEventListener('click', function(event) {
+    if (event.target.classList.contains('modal')) {
+      event.target.style.display = 'none';
+    }
+  });
+  
+  // Fear & Greed Index API functionality
+  function getDescription(score) {
+    if (score <= 25) return "Extreme Fear";
+    if (score <= 45) return "Fear";
+    if (score <= 55) return "Neutral";
+    if (score <= 75) return "Greed";
+    return "Extreme Greed";
+  }
+  
+  function updateGauge(score) {
+    const needle = document.getElementById("needle");
+    const indexValue = document.getElementById("indexValue");
+    const description = document.getElementById("description");
+  
+    const angle = (score / 100) * 180 - 90;
+    needle.style.transform = `rotate(${angle}deg)`;
+  
+    indexValue.textContent = score;
+    description.textContent = getDescription(score);
+  }
+  
+  async function fetchFearGreedIndex() {
+    const url = 'https://fear-and-greed-index.p.rapidapi.com/v1/fgi';
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-rapidapi-key': 'a8d81eea34msh9318a170ad799bdp1a9d7fjsna333e1b65e8a',
+        'x-rapidapi-host': 'fear-and-greed-index.p.rapidapi.com'
+      }
+    };
+    
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
+      const score = data.fgi.now.value;
+      updateGauge(score);
+    } catch (error) {
+      console.error("API fetch error:", error);
+      document.getElementById("description").textContent = "Error fetching data";
+    }
+  }
