@@ -3367,3 +3367,41 @@ document.addEventListener('DOMContentLoaded', () => {
     updateHeaderDateTime();
     setInterval(updateHeaderDateTime, 1000);
 });
+
+// World Clocks
+function updateClocks() {
+    const now = new Date();
+    
+    // Zeitzonen definieren
+    const timeZones = {
+        'london': 'Europe/London',
+        'new-york': 'America/New_York',
+        'tokyo': 'Asia/Tokyo',
+        'sydney': 'Australia/Sydney'
+    };
+
+    Object.entries(timeZones).forEach(([city, timezone]) => {
+        const cityTime = new Date(now.toLocaleString('en-US', { timeZone: timezone }));
+        const clock = document.querySelector(`.clock.${city}`);
+        
+        const seconds = cityTime.getSeconds();
+        const minutes = cityTime.getMinutes();
+        const hours = cityTime.getHours();
+
+        const secondDegrees = ((seconds / 60) * 360) + 180;
+        const minuteDegrees = ((minutes / 60) * 360) + ((seconds/60)*6) + 180;
+        const hourDegrees = ((hours / 12) * 360) + ((minutes/60)*30) + 180;
+
+        const secondHand = clock.querySelector('.second');
+        const minuteHand = clock.querySelector('.minute');
+        const hourHand = clock.querySelector('.hour');
+
+        secondHand.style.transform = `rotate(${secondDegrees}deg)`;
+        minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
+        hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+    });
+}
+
+// Uhren initialisieren und jede Sekunde aktualisieren
+updateClocks();
+setInterval(updateClocks, 1000);
