@@ -3011,7 +3011,7 @@ class NewsletterManager {
         
         // Use environment variables if available, otherwise use fallback values
         this.API_KEY = process.env.API_NEWSLETTER;
-        this.API_URL = 'https://api.sender.net/v2/subscribers';
+        this.API_URL = 'https://api.sender.net/v2/';
         this.GROUP_ID = process.env.GROUP_NEWSLETTER;
         
         this.headers = {
