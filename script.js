@@ -1732,7 +1732,7 @@ function showExchangeInfo(exchange) {
         modal.id = 'exchange-info-modal';
         modal.className = 'modal';
         modal.innerHTML = `
-            <div class="modal-content" style="max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-content" style="max-height: 90vh; display: flex; flex-direction: column; animation: modalFadeIn 0.3s ease-out;">
             <div class="modal-header" style="flex-shrink: 0;">
             <h2 id="exchange-info-title"></h2>
             <button id="close-exchange-info" style="
