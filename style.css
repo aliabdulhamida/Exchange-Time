@@ -2082,12 +2082,6 @@ th, td {
                 url('https://images.unsplash.com/photo-1613743575064-a645fae50d2e?q=80&w=2824&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
     background-size: cover;
     background-position: center;
-    margin: 60px 0 20px 0; /* Increased top margin for better separation */
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    clear: both; /* Ensure the newsletter starts on a new line */
-    position: relative; /* Enable proper positioning */
-    z-index: 1; /* Ensure newsletter appears above cards if needed */
 }
 
 .newsletter-container {
