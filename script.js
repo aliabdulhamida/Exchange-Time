@@ -1786,23 +1786,192 @@ function showExchangeInfo(exchange) {
         });
     }
     
-    // Update modal content
+    // Update modal content with enhanced design
     document.getElementById('exchange-info-title').textContent = info.name;
     document.getElementById('exchange-info-body').innerHTML = `
-        <div class="exchange-info">
-            <p><strong>Founded:</strong> ${info.founded}</p>
-            <p><strong>Location:</strong> ${info.location}</p>
-            <p><strong>Trading Hours:</strong> ${info.tradingHours}</p>
-            <p><strong>Major Indices:</strong> ${info.majorIndices}</p>
-            <p><strong>Market Cap:</strong> ${info.marketCap}</p>
-            <p><strong>Listed Companies:</strong> ${info.listedCompanies}</p>
-            <p><strong>Trading Volume:</strong> ${info.tradingVolume}</p>
-            <p><strong>Regulatory Body:</strong> ${info.regulatoryBody}</p>
-            <p><strong>Website:</strong> <a href="${info.website}" target="_blank" style="color: #2196F3;">${info.website}</a></p>
-            <h3>Description</h3>
-            <p>${info.description}</p>
+        <div class="exchange-info" style="color: #e0e0e0; line-height: 1.6;">
+            <div class="exchange-summary" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 25px; background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 10px;">
+                <div style="flex: 1; min-width: 250px;">
+                    <div class="info-item" style="margin-bottom: 12px;">
+                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Founded</div>
+                        <div style="font-weight: 500;">${info.founded}</div>
+                    </div>
+                    <div class="info-item" style="margin-bottom: 12px;">
+                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Location</div>
+                        <div style="font-weight: 500;">${info.location}</div>
+                    </div>
+                    <div class="info-item" style="margin-bottom: 12px;">
+                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Trading Hours</div>
+                        <div style="font-weight: 500;">${info.tradingHours}</div>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 250px;">
+                    <div class="info-item" style="margin-bottom: 12px;">
+                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Market Cap</div>
+                        <div style="font-weight: 500; color: #4CAF50;">${info.marketCap}</div>
+                    </div>
+                    <div class="info-item" style="margin-bottom: 12px;">
+                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Listed Companies</div>
+                        <div style="font-weight: 500;">${info.listedCompanies}</div>
+                    </div>
+                    <div class="info-item" style="margin-bottom: 12px;">
+                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Trading Volume</div>
+                        <div style="font-weight: 500;">${info.tradingVolume}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exchange-details" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 25px;">
+                <div style="flex: 1; min-width: 250px;">
+                    <h4 style="color: #2196F3; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Major Indices</h4>
+                    <p style="background: rgba(33, 150, 243, 0.1); padding: 12px; border-radius: 8px; border-left: 3px solid #2196F3;">${info.majorIndices}</p>
+                </div>
+                <div style="flex: 1; min-width: 250px;">
+                    <h4 style="color: #FF9800; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Regulatory Body</h4>
+                    <p style="background: rgba(255, 152, 0, 0.1); padding: 12px; border-radius: 8px; border-left: 3px solid #FF9800;">${info.regulatoryBody}</p>
+                </div>
+            </div>
+            
+            <div class="website" style="margin-bottom: 25px; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 10px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <a href="${info.website}" target="_blank" style="color: #2196F3; text-decoration: none; font-weight: 500; transition: all 0.2s ease;">${info.website}</a>
+            </div>
+            
+            <div id="exchange-map" style="height: 300px; width: 100%; margin-bottom: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></div>
+            
+            <div class="description" style="margin-bottom: 15px;">
+                <h4 style="color: #e0e0e0; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">About ${info.name}</h4>
+                <p style="line-height: 1.8; text-align: justify; background: rgba(255, 255, 255, 0.03); padding: 20px; border-radius: 10px;">${info.description}</p>
+            </div>
         </div>
     `;
+
+    // Add Leaflet CSS if not already present
+    if (!document.getElementById('leaflet-css')) {
+        const leafletCSS = document.createElement('link');
+        leafletCSS.id = 'leaflet-css';
+        leafletCSS.rel = 'stylesheet';
+        leafletCSS.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        leafletCSS.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+        leafletCSS.crossOrigin = '';
+        document.head.appendChild(leafletCSS);
+    }
+
+    // Add Leaflet JS if not already present
+    if (!document.getElementById('leaflet-js')) {
+        const leafletJS = document.createElement('script');
+        leafletJS.id = 'leaflet-js';
+        leafletJS.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        leafletJS.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+        leafletJS.crossOrigin = '';
+        document.head.appendChild(leafletJS);
+    }
+
+    // Initialize map after ensuring Leaflet is loaded
+    const initMap = () => {
+        // Define geocoding data for exchanges
+        const geocode = {
+            'NYSE': [40.7069, -74.0113],
+            'NASDAQ': [40.7562, -73.9856],
+            'TSX': [43.6489, -79.3806],
+            'BMV': [19.4326, -99.1332],
+            'CSE': [6.9271, 79.8612],
+            'XETRA': [50.1109, 8.6821],
+            'Euronext': [48.8566, 2.3522],
+            'SIX': [47.3769, 8.5417],
+            'BME': [40.4168, -3.7038],
+            'LSE': [51.5074, -0.1278],
+            'OMX': [59.3293, 18.0686],
+            'MOEX': [55.7558, 37.6173],
+            'BorsaItaliana': [45.4642, 9.1900],
+            'WSE': [52.2297, 21.0122],
+            'OSE': [59.9139, 10.7522],
+            'ISE': [53.3498, -6.2603],
+            'JPX': [35.6762, 139.6503],
+            'HKEX': [22.2793, 114.1628],
+            'SSE': [31.2304, 121.4737],
+            'SZSE': [22.5431, 114.0579],
+            'BSE': [18.9290, 72.8341],
+            'NSE': [19.0176, 72.8561],
+            'KRX': [35.1796, 129.0756],
+            'TWSE': [25.0330, 121.5654],
+            'SGX': [1.2839, 103.8509],
+            'TASE': [32.0853, 34.7818],
+            'IDX': [-6.2088, 106.8456],
+            'SET': [13.7563, 100.5018],
+            'PSE': [14.5995, 120.9842],
+            'HOSE': [10.7765, 106.7010],
+            'DFM': [25.2048, 55.2708],
+            'ADX': [24.4539, 54.3773],
+            'ASX': [-33.8688, 151.2093],
+            'NZX': [-41.2865, 174.7762],
+            'JSE': [-26.2041, 28.0473],
+            'EGX': [30.0444, 31.2357],
+            'NSE_Nigeria': [6.4550, 3.3841],
+            'ZSE': [-17.8252, 31.0335],
+            'GSE': [5.5560, -0.1969],
+            'NSE_Kenya': [-1.2921, 36.8219],
+            'B3': [-23.5505, -46.6333],
+            'Santiago': [-33.4489, -70.6693],
+            'BVC': [4.6097, -74.0817],
+            'BVL': [-12.0464, -77.0428],
+            'BVBA': [-34.6037, -58.3816]
+        };
+
+        // Initialize map only when Leaflet is fully loaded
+        const checkLeaflet = () => {
+            if (window.L) {
+                // Get coordinates for the specific exchange (Leaflet uses [lat, lng] order)
+                const coordinates = geocode[exchange] || [0, 0];
+                
+                // Initialize map
+                const map = L.map('exchange-map').setView(coordinates, 13);
+                
+                // Add OpenStreetMap tiles with dark theme
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                    subdomains: 'abcd',
+                    maxZoom: 19
+                }).addTo(map);
+                
+                // Custom marker icon
+                const exchangeIcon = L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div style="background-color: #2196F3; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white;"></div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                // Add marker for exchange location
+                L.marker(coordinates, {icon: exchangeIcon})
+                    .addTo(map)
+                    .bindPopup(`
+                        <div style="text-align: center; font-weight: bold;">
+                            ${info.name}
+                            <div style="font-weight: normal; font-size: 0.9em; margin-top: 5px;">${info.location}</div>
+                        </div>
+                    `)
+                    .openPopup();
+                    
+                // Force map to resize after modal animation
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 300);
+            } else {
+                // If Leaflet isn't loaded yet, try again in 100ms
+                setTimeout(checkLeaflet, 100);
+            }
+        };
+        
+        checkLeaflet();
+    };
+
+    // Start map initialization process
+    initMap();
     
     // Show the modal
     modal.style.display = 'block';
@@ -1965,7 +2134,7 @@ function generatePortfolioChart(dates, portfolioValues) {
     
     // Ensure the container has a height
     chartDiv.style.minHeight = '400px';
-    chart.Div.style.width = '100%';
+    chartDiv.style.width = '100%';
 
     // Validate data
     if (!dates || !portfolioValues || dates.length === 0) {
