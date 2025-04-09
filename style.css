@@ -1165,33 +1165,20 @@ th, td {
         height: 100%;
         justify-content: center;
         max-width: 100%;
-        padding: 0;
-        margin: 0 auto;
+        padding: 10px;
+        margin: 85px auto 0; /* Added top margin to account for header */
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         padding-bottom: 100px;
         scroll-behavior: smooth;
-        scrollbar-width: thin;
-        scrollbar-color: var(--input-border) transparent;
-    }
-
-    #market-section::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    #market-section::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    #market-section::-webkit-scrollbar-thumb {
-        background-color: var(--input-border);
-        border-radius: 3px;
     }
 
     .card {
-        width: calc(50% - 20px);
-        width: 300px;
-        margin: 10px;
+        width: 95%; /* Changed from calc(50% - 20px) */
+        max-width: none; /* Remove max-width restriction */
+        margin: 8px auto; /* Center cards */
+        height: auto; /* Allow height to adjust based on content */
+        min-height: 220px; /* Ensure minimum height */
     }
 
     #right-container,
@@ -1288,25 +1275,19 @@ th, td {
         height: 100%;
         justify-content: center;
         max-width: 100%;
-        margin: 0 auto;
+        margin: 85px auto 0; /* Added top margin to account for header */
+        padding: 10px 5px 120px 5px;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        padding: 10px 5px 120px 5px; /* Increased bottom padding */
-        scroll-padding-bottom: 100px;
-        gap: 15px; /* Consistent spacing between cards */
+        gap: 10px;
     }
     
-    /* Card Refinements */
     .card {
-        width: calc(100% - 10px);
-        max-width: 300px;
-        margin: 8px;
-        transition: transform 0.2s ease, box-shadow 0.3s ease;
-        will-change: transform;
-    }
-    
-    .card:active {
-        transform: scale(0.98);
+        width: 95%;
+        max-width: none;
+        margin: 5px auto;
+        height: auto;
+        min-height: 220px;
     }
     
     /* Hide Side Containers */
@@ -3413,7 +3394,6 @@ position: relative;
     display: flex;
     justify-content: center;
     gap: 20px;
-    margin-top: 15px;
 }
 
 .legend-item {
@@ -3623,5 +3603,4 @@ position: relative;
         font-size: 0.75rem;
     }
 }
-
 
