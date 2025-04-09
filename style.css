@@ -184,6 +184,7 @@ p, ul { font-weight: 300; color: var(--text); }
     gap: 20px;
     width: 100%;
     margin-top: 15px;
+    margin-bottom: 40px; /* Abstand zum Footer hinzugefügt */
     min-height: calc(100vh - var(--header-height));
     position: relative;
 }
@@ -596,7 +597,7 @@ th, td {
     padding: 5rem 2vw;
     position: relative;
     background: var(--primary-bg);
-
+    margin-top: 30px; /* Zusätzlicher Abstand zum Inhalt darüber */
   }
   
   #footer::before {
@@ -1073,6 +1074,11 @@ th, td {
     height: 100%
   }
 
+  /* Newsletter ausblenden auf mobilen Geräten */
+  .newsletter-section {
+    display: none;
+  }
+
 #backtest-form {
     display: flex;
     flex-direction: column;
@@ -1152,12 +1158,14 @@ th, td {
         gap: 0;
         padding: 0;
         margin: 0;
+        margin-bottom: 40px; /* Abstand zum Footer auch auf mobilen Geräten */
     }
 
     #market-section {
         display: flex;
         flex-wrap: wrap;
         width: 100%;
+        margin-bottom: 30px; /* Zusätzlicher Abstand am Ende des Markt-Bereichs */
     }
 
     #market-section section {
@@ -1180,7 +1188,7 @@ th, td {
 
     #footer {
         padding: 15px 0;
-        margin-top: 15px;
+        margin-top: 30px; /* Abstand oberhalb des Footers auf mobilen Geräten */
     }
 
     .footer-content {
@@ -1243,7 +1251,12 @@ th, td {
 @media only screen and (max-width: 390px) {
     body, html {
         height: 100%
-      }
+    }
+    
+    /* Newsletter ausblenden auf mobilen Geräten */
+    .newsletter-section {
+        display: none;
+    }
     
     #backtest-form {
         display: flex;
@@ -1324,7 +1337,7 @@ th, td {
             gap: 0;
             padding: 0;
             margin: 0;
-            margin-bottom: 30px;
+            margin-bottom: 70px; /* Abstand zum Footer auch auf kleinen mobilen Geräten */
         }
     
         #market-section {
@@ -1333,6 +1346,7 @@ th, td {
             min-height: 100vh;
             width: 100%;
             height: calc(100vh - var(--header-height));
+            margin-bottom: 30px; /* Zusätzlicher Abstand am Ende des Markt-Bereichs */
         }
     
         #market-section section {
@@ -1355,7 +1369,7 @@ th, td {
     
         #footer {
             padding: 15px 0;
-            margin-top: auto;
+            margin-top: 30px; /* Abstand oberhalb des Footers auf kleinen mobilen Geräten */
         }
     
         .footer-content {
@@ -1412,6 +1426,13 @@ th, td {
         padding: 1px;
         text-align: center; 
       }
+}
+
+/* Stellen Sie sicher, dass der Newsletter auf allen mobilen Geräten ausgeblendet wird */
+@media only screen and (max-width: 768px) {
+    .newsletter-section {
+        display: none;
+    }
 }
 
 /* Analysis Modal Styles */
