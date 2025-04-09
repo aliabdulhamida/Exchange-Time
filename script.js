@@ -1802,11 +1802,80 @@ function showExchangeInfo(exchange) {
         });
     }
     
-    // Update modal content with enhanced mobile-friendly design
-    document.getElementById('exchange-info-title').textContent = info.name;
+    // Format holidays for display
+    let holidaysHTML = '';
+    if (marketHours[exchange] && marketHours[exchange].holidays) {
+        // Get all holidays and sort them by date
+        const holidays = Object.keys(marketHours[exchange].holidays)
+            .map(date => ({
+                date,
+                ...marketHours[exchange].holidays[date]
+            }))
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+        // Group holidays by month
+        const holidaysByMonth = {};
+        holidays.forEach(holiday => {
+            const date = new Date(holiday.date);
+            const monthYear = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+            
+            if (!holidaysByMonth[monthYear]) {
+                holidaysByMonth[monthYear] = [];
+            }
+            holidaysByMonth[monthYear].push(holiday);
+        });
+        
+        // Format holidays by month
+        const monthsHTML = Object.keys(holidaysByMonth).map(monthYear => {
+            const monthHolidays = holidaysByMonth[monthYear]
+                .map(holiday => {
+                    const date = new Date(holiday.date);
+                    const dayName = date.toLocaleString('en-US', { weekday: 'short' });
+                    const dayNum = date.getDate();
+                    
+                    const badge = holiday.closeEarly 
+                        ? `<span style="background: #FF9800; color: #000; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle;">EARLY CLOSE ${holiday.earlyCloseTime || ''}</span>` 
+                        : `<span style="background: #F44336; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle;">CLOSED</span>`;
+                        
+                    return `
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <div>
+                            <strong>${dayNum} ${dayName}</strong> - ${holiday.reason}
+                        </div>
+                        <div>${badge}</div>
+                    </div>`;
+                })
+                .join('');
+                
+            return `
+            <div style="margin-bottom: 16px;">
+                <h5 style="color: #bbb; margin-bottom: 8px; font-size: 0.9rem;">${monthYear}</h5>
+                ${monthHolidays}
+            </div>`;
+        }).join('');
+        
+        holidaysHTML = `
+        <div class="holiday-calendar" style="margin-top: 25px;">
+            <h4 style="color: #e0e0e0; margin-bottom: 16px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 8px;">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                Market Holidays (${holidays.length})
+            </h4>
+            <div style="background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 10px; max-height: 300px; overflow-y: auto;">
+                ${monthsHTML}
+            </div>
+        </div>`;
+    }
     
     // Determine if we're on a mobile device
     const isMobile = window.innerWidth < 768;
+    
+    // Update modal content with enhanced mobile-friendly design
+    document.getElementById('exchange-info-title').textContent = info.name;
     
     document.getElementById('exchange-info-body').innerHTML = `
         <div class="exchange-info" style="color: #e0e0e0; line-height: 1.6;">
@@ -1875,6 +1944,9 @@ function showExchangeInfo(exchange) {
                 <h4 style="color: #e0e0e0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">About ${info.name}</h4>
                 <p style="line-height: 1.7; text-align: justify; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 10px; font-size: ${isMobile ? '0.95rem' : '1rem'};">${info.description}</p>
             </div>
+            
+            <!-- Market Holidays Section -->
+            ${holidaysHTML}
         </div>
     `;
 
