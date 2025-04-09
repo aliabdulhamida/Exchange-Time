@@ -1732,29 +1732,30 @@ function showExchangeInfo(exchange) {
         modal.id = 'exchange-info-modal';
         modal.className = 'modal';
         modal.innerHTML = `
-            <div class="modal-content" style="max-height: 90vh; display: flex; flex-direction: column; animation: modalFadeIn 0.3s ease-out;">
-            <div class="modal-header" style="flex-shrink: 0;">
-            <h3 id="exchange-info-title" style="color: #fff;"></h3>
+            <div class="modal-content" style="max-height: 90vh; width: 95vw; max-width: 900px; display: flex; flex-direction: column; animation: modalFadeIn 0.3s ease-out; border-radius: 12px; overflow: hidden;">
+            <div class="modal-header" style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: rgba(30, 30, 30, 0.95);">
+            <h3 id="exchange-info-title" style="color: #fff; margin: 0; font-size: clamp(1.1rem, 4vw, 1.5rem); overflow: hidden; text-overflow: ellipsis;"></h3>
             <button id="close-exchange-info" style="
-                position: static;
-                top: 20px;
-                right: 15px;
                 background: var(--closed);
                 color: white;
-                padding: 5px 16px;
+                width: 36px;
+                height: 36px;
                 border: none;
-                border-radius: 8px;
+                border-radius: 50%;
                 cursor: pointer;
-                font-size: 0.9rem;
-                font-weight: 600;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+                margin-left: 10px;
+                min-width: 36px;
                 transition: background 0.3s ease;
-                margin-left: auto;
-            "> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            "> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg></button>
             </div>
-            <div class="modal-body" id="exchange-info-body" style="overflow-y: auto; flex-grow: 1; padding-right: 5px;"></div>
+            <div class="modal-body" id="exchange-info-body" style="overflow-y: auto; flex-grow: 1; padding: 20px; padding-bottom: 25px;"></div>
             </div>
         `;
 
@@ -1790,64 +1791,105 @@ function showExchangeInfo(exchange) {
     document.getElementById('exchange-info-title').textContent = info.name;
     document.getElementById('exchange-info-body').innerHTML = `
         <div class="exchange-info" style="color: #e0e0e0; line-height: 1.6;">
-            <div class="exchange-summary" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 25px; background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 10px;">
-                <div style="flex: 1; min-width: 250px;">
-                    <div class="info-item" style="margin-bottom: 12px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Founded</div>
+            <div class="exchange-summary" style="display: flex; flex-direction: ${window.innerWidth < 768 ? 'column' : 'row'}; flex-wrap: wrap; gap: ${window.innerWidth < 768 ? '10px' : '20px'}; margin-bottom: 20px; background: rgba(255, 255, 255, 0.05); padding: ${window.innerWidth < 768 ? '15px' : '20px'}; border-radius: 10px;">
+                <div style="flex: 1; min-width: ${window.innerWidth < 768 ? '100%' : '250px'};">
+                    <div class="info-item" style="margin-bottom: ${window.innerWidth < 768 ? '8px' : '12px'};">
+                        <div style="font-size: ${window.innerWidth < 768 ? '0.75rem' : '0.85rem'}; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Founded</div>
                         <div style="font-weight: 500;">${info.founded}</div>
                     </div>
-                    <div class="info-item" style="margin-bottom: 12px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Location</div>
+                    <div class="info-item" style="margin-bottom: ${window.innerWidth < 768 ? '8px' : '12px'};">
+                        <div style="font-size: ${window.innerWidth < 768 ? '0.75rem' : '0.85rem'}; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Location</div>
                         <div style="font-weight: 500;">${info.location}</div>
                     </div>
-                    <div class="info-item" style="margin-bottom: 12px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Trading Hours</div>
-                        <div style="font-weight: 500;">${info.tradingHours}</div>
+                    <div class="info-item" style="margin-bottom: ${window.innerWidth < 768 ? '8px' : '12px'};">
+                        <div style="font-size: ${window.innerWidth < 768 ? '0.75rem' : '0.85rem'}; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Trading Hours</div>
+                        <div style="font-weight: 500; font-size: ${window.innerWidth < 768 ? '0.9rem' : '1rem'};">${info.tradingHours}</div>
                     </div>
                 </div>
-                <div style="flex: 1; min-width: 250px;">
-                    <div class="info-item" style="margin-bottom: 12px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Market Cap</div>
+                <div style="flex: 1; min-width: ${window.innerWidth < 768 ? '100%' : '250px'};">
+                    <div class="info-item" style="margin-bottom: ${window.innerWidth < 768 ? '8px' : '12px'};">
+                        <div style="font-size: ${window.innerWidth < 768 ? '0.75rem' : '0.85rem'}; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Market Cap</div>
                         <div style="font-weight: 500; color: #4CAF50;">${info.marketCap}</div>
                     </div>
-                    <div class="info-item" style="margin-bottom: 12px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Listed Companies</div>
+                    <div class="info-item" style="margin-bottom: ${window.innerWidth < 768 ? '8px' : '12px'};">
+                        <div style="font-size: ${window.innerWidth < 768 ? '0.75rem' : '0.85rem'}; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Listed Companies</div>
                         <div style="font-weight: 500;">${info.listedCompanies}</div>
                     </div>
-                    <div class="info-item" style="margin-bottom: 12px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Trading Volume</div>
+                    <div class="info-item" style="margin-bottom: ${window.innerWidth < 768 ? '8px' : '12px'};">
+                        <div style="font-size: ${window.innerWidth < 768 ? '0.75rem' : '0.85rem'}; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Trading Volume</div>
                         <div style="font-weight: 500;">${info.tradingVolume}</div>
                     </div>
                 </div>
             </div>
 
-            <div class="exchange-details" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 25px;">
-                <div style="flex: 1; min-width: 250px;">
-                    <h4 style="color: #2196F3; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Major Indices</h4>
-                    <p style="background: rgba(33, 150, 243, 0.1); padding: 12px; border-radius: 8px; border-left: 3px solid #2196F3;">${info.majorIndices}</p>
+            <div class="exchange-details" style="display: flex; flex-direction: ${window.innerWidth < 768 ? 'column' : 'row'}; flex-wrap: wrap; gap: ${window.innerWidth < 768 ? '10px' : '20px'}; margin-bottom: 20px;">
+                <div style="flex: 1; min-width: ${window.innerWidth < 768 ? '100%' : '250px'};">
+                    <h4 style="color: #2196F3; margin-bottom: ${window.innerWidth < 768 ? '10px' : '15px'}; font-size: ${window.innerWidth < 768 ? '1rem' : '1.1rem'}; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Major Indices</h4>
+                    <p style="background: rgba(33, 150, 243, 0.1); padding: ${window.innerWidth < 768 ? '10px' : '12px'}; border-radius: 8px; border-left: 3px solid #2196F3; font-size: ${window.innerWidth < 768 ? '0.9rem' : '1rem'};">${info.majorIndices}</p>
                 </div>
-                <div style="flex: 1; min-width: 250px;">
-                    <h4 style="color: #FF9800; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Regulatory Body</h4>
-                    <p style="background: rgba(255, 152, 0, 0.1); padding: 12px; border-radius: 8px; border-left: 3px solid #FF9800;">${info.regulatoryBody}</p>
+                <div style="flex: 1; min-width: ${window.innerWidth < 768 ? '100%' : '250px'};">
+                    <h4 style="color: #FF9800; margin-bottom: ${window.innerWidth < 768 ? '10px' : '15px'}; font-size: ${window.innerWidth < 768 ? '1rem' : '1.1rem'}; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Regulatory Body</h4>
+                    <p style="background: rgba(255, 152, 0, 0.1); padding: ${window.innerWidth < 768 ? '10px' : '12px'}; border-radius: 8px; border-left: 3px solid #FF9800; font-size: ${window.innerWidth < 768 ? '0.9rem' : '1rem'};">${info.regulatoryBody}</p>
                 </div>
             </div>
             
-            <div class="website" style="margin-bottom: 25px; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 10px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="website" style="margin-bottom: 20px; background: rgba(255, 255, 255, 0.05); padding: ${window.innerWidth < 768 ? '10px' : '15px'}; border-radius: 10px; display: flex; align-items: center; gap: 10px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="${window.innerWidth < 768 ? '18' : '20'}" height="${window.innerWidth < 768 ? '18' : '20'}" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="2" y1="12" x2="22" y2="12"></line>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                 </svg>
-                <a href="${info.website}" target="_blank" style="color: #2196F3; text-decoration: none; font-weight: 500; transition: all 0.2s ease;">${info.website}</a>
+                <a href="${info.website}" target="_blank" style="color: #2196F3; text-decoration: none; font-weight: 500; transition: all 0.2s ease; font-size: ${window.innerWidth < 768 ? '0.9rem' : '1rem'}; word-break: break-all;">${info.website}</a>
             </div>
             
-            <div id="exchange-map" style="height: 300px; width: 100%; margin-bottom: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></div>
+            <div id="exchange-map" style="height: ${window.innerWidth < 768 ? '200px' : '300px'}; width: 100%; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></div>
             
             <div class="description" style="margin-bottom: 15px;">
-                <h4 style="color: #e0e0e0; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">About ${info.name}</h4>
-                <p style="line-height: 1.8; text-align: justify; background: rgba(255, 255, 255, 0.03); padding: 20px; border-radius: 10px;">${info.description}</p>
+                <h4 style="color: #e0e0e0; margin-bottom: ${window.innerWidth < 768 ? '10px' : '15px'}; font-size: ${window.innerWidth < 768 ? '1rem' : '1.1rem'}; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">About ${info.name}</h4>
+                <p style="line-height: 1.7; text-align: justify; background: rgba(255, 255, 255, 0.03); padding: ${window.innerWidth < 768 ? '15px' : '20px'}; border-radius: 10px; font-size: ${window.innerWidth < 768 ? '0.9rem' : '1rem'};">${info.description}</p>
             </div>
         </div>
+
+        <script>
+            // Handle resize for responsiveness
+            function handleExchangeInfoResize() {
+                const isMobile = window.innerWidth < 768;
+                const summaryDiv = document.querySelector('.exchange-info .exchange-summary');
+                const detailsDiv = document.querySelector('.exchange-info .exchange-details');
+                const mapDiv = document.getElementById('exchange-map');
+                
+                if (summaryDiv) {
+                    summaryDiv.style.flexDirection = isMobile ? 'column' : 'row';
+                    summaryDiv.style.gap = isMobile ? '10px' : '20px';
+                    summaryDiv.style.padding = isMobile ? '15px' : '20px';
+                }
+                
+                if (detailsDiv) {
+                    detailsDiv.style.flexDirection = isMobile ? 'column' : 'row';
+                    detailsDiv.style.gap = isMobile ? '10px' : '20px';
+                }
+                
+                if (mapDiv) {
+                    mapDiv.style.height = isMobile ? '200px' : '300px';
+                }
+                
+                // Adjust font sizes for mobile
+                const fontElements = document.querySelectorAll('.exchange-info .info-item > div:first-child');
+                fontElements.forEach(el => {
+                    el.style.fontSize = isMobile ? '0.75rem' : '0.85rem';
+                });
+            }
+            
+            window.addEventListener('resize', handleExchangeInfoResize);
+            
+            // Force map to resize when modal is fully visible
+            setTimeout(() => {
+                if (window.L && window.L.map) {
+                    const mapInstance = window.L.map('exchange-map');
+                    if (mapInstance) mapInstance.invalidateSize();
+                }
+            }, 500);
+        </script>
     `;
 
     // Add Leaflet CSS if not already present
