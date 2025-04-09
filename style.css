@@ -254,7 +254,7 @@ th, td {
     box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
 }
 
-@media (max-width: 400px) {
+@media (max-width: 700px) {
     #header {
         padding: 10px 20px;
         justify-content: center;
@@ -649,7 +649,7 @@ th, td {
     font-size: smaller;
   }
   
-  @media screen and (max-width: 1000px) {
+  @media screen and (max-width: 700px) {
     :root {
       --m: 3rem;
     }
@@ -1069,7 +1069,7 @@ th, td {
 }
 
 /* Responsive */
-@media only screen and (max-width: 428px) {
+@media only screen and (max-width: 700px) {
   body, html {
     height: 100%
   }
@@ -1158,14 +1158,19 @@ th, td {
         gap: 0;
         padding: 0;
         margin: 0;
-        margin-bottom: 40px; /* Abstand zum Footer auch auf mobilen Geräten */
+        margin-bottom: 40px; /* Abstand zum Footer */
+        min-height: auto; /* Keine Mindesthöhe für besseres mobiles Layout */
+        height: auto; /* Höhe anpassbar machen */
     }
 
     #market-section {
         display: flex;
         flex-wrap: wrap;
         width: 100%;
-        margin-bottom: 30px; /* Zusätzlicher Abstand am Ende des Markt-Bereichs */
+        margin-bottom: 30px;
+        overflow-y: visible;
+        height: auto;
+        min-height: auto; /* Entfernt Mindesthöhe für besseres Layout */
     }
 
     #market-section section {
@@ -1188,7 +1193,10 @@ th, td {
 
     #footer {
         padding: 15px 0;
-        margin-top: 30px; /* Abstand oberhalb des Footers auf mobilen Geräten */
+        margin-top: 50px; /* Erhöhter Abstand zum Inhalt */
+        position: relative; /* Klare Positionierung */
+        bottom: 0;
+        width: 100%;
     }
 
     .footer-content {
@@ -1248,7 +1256,7 @@ th, td {
 }
 
 /* Custom Media Query */
-@media only screen and (max-width: 390px) {
+@media only screen and (max-width: 700px) {
     body, html {
         height: 100%
     }
@@ -1337,16 +1345,18 @@ th, td {
             gap: 0;
             padding: 0;
             margin: 0;
-            margin-bottom: 70px; /* Abstand zum Footer auch auf kleinen mobilen Geräten */
+            margin-bottom: 50px; /* Erhöhter Abstand zum Footer */
+            min-height: auto; /* Entfernt feste Höhe */
         }
     
         #market-section {
             display: flex;
             flex-wrap: wrap;
-            min-height: 100vh;
+            min-height: auto; /* Entfernt Mindesthöhe */
             width: 100%;
-            height: calc(100vh - var(--header-height));
-            margin-bottom: 30px; /* Zusätzlicher Abstand am Ende des Markt-Bereichs */
+            height: auto; /* Feste Höhe entfernt */
+            margin-bottom: 30px;
+            overflow-y: visible; /* Overflow auf 'visible' gesetzt */
         }
     
         #market-section section {
@@ -1369,7 +1379,10 @@ th, td {
     
         #footer {
             padding: 15px 0;
-            margin-top: 30px; /* Abstand oberhalb des Footers auf kleinen mobilen Geräten */
+            margin-top: 50px; /* Erhöhter Abstand */
+            position: relative;
+            bottom: 0;
+            width: 100%;
         }
     
         .footer-content {
@@ -1429,7 +1442,7 @@ th, td {
 }
 
 /* Stellen Sie sicher, dass der Newsletter auf allen mobilen Geräten ausgeblendet wird */
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 700px) {
     .newsletter-section {
         display: none;
     }
@@ -1461,7 +1474,7 @@ th, td {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 700px) {
     #analysis-modal .modal-content {
         width: 88%;
         max-height: 80vh;
@@ -1731,7 +1744,7 @@ th, td {
     to { opacity: 1; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 700px) {
     #analysis-modal .modal-content {
         padding: 0;
         animation: modalFadeIn 0.3s ease-out;
@@ -2166,7 +2179,7 @@ th, td {
     opacity: 0.7;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 700px) {
     #newsletter-form {
         flex-direction: column;
     }
@@ -2383,7 +2396,7 @@ th, td {
 }
 
 /* Responsive Design */
-@media (max-width: 480px) {
+@media (max-width: 700px) {
     .pairs-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -2554,7 +2567,7 @@ th, td {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 700px) {
     .hero-section {
         min-height: 70vh;
         padding: 20px 10px;
@@ -2592,7 +2605,7 @@ th, td {
     color: rgba(255, 255, 255, 0.7);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 700px) {
     #header-datetime {
         display: none;
     }
@@ -2681,7 +2694,7 @@ th, td {
     margin-top: 0.3rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 700px) {
     .world-clocks {
         gap: 1.5rem;
     }
@@ -2696,7 +2709,7 @@ th, td {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 700px) {
     .world-clocks {
         gap: 1rem;
     }
@@ -3374,7 +3387,7 @@ th, td {
 }
 
 /* Improved responsive styles for mobile devices */
-@media (max-width: 768px) {
+@media (max-width: 700px) {
     .fear-greed-modal {
         width: 95% !important;
         height: 95% !important;
@@ -3474,7 +3487,7 @@ th, td {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 700px) {
     .gauge {
         width: 180px;
         height: 90px;
