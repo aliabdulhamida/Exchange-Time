@@ -3566,3 +3566,20 @@ th, td {
     }
 }
 
+
+
+#close-insider {
+    position: static;
+    top: 20px;
+    right: 15px;
+    background: var(--closed);
+    color: white;
+    padding: 5px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    margin-left: auto;
+}

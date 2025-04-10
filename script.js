@@ -4618,36 +4618,41 @@ document.addEventListener('DOMContentLoaded', function() {
         resetInsiderModal();
         insiderLoading.style.display = 'block';
 
-        // Prepare API options
-        const options = {
-            method: 'GET',
-            headers: {
-                accept: 'application/json',
-                Authorization: 'Bearer 0145be4d363056518d8c30c7348392a095e8a507'
-            }
-        };
-
         try {
-            const response = await fetch(`https://api.myinsidertrading.com/api/v1/insider_trades?ticker=${ticker}`, options);
+            const options = {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: 'Bearer '
+                }
+            };
+
+            const apiUrl = `https://api.synthfinance.com/insider-trades?ticker=${ticker}`;
+            
+            const response = await fetch(apiUrl, options);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
             const result = await response.json();
             
-            // Hide loading indicator
             insiderLoading.style.display = 'none';
             
-            // Process and display data
-            if (result && result.data && result.data.length > 0) {
-                displayInsiderTrades(result, ticker);
-            } else {
+            if (!result.data || result.data.length === 0) {
                 insiderNoData.style.display = 'block';
+                return;
             }
+            
+            displayInsiderTrades(result, ticker);
+            
         } catch (error) {
-            console.error('Error fetching insider trades data:', error);
             insiderLoading.style.display = 'none';
             insiderError.style.display = 'block';
-            insiderErrorMessage.textContent = `Error fetching data for ${ticker}: ${error.message || 'Unknown error'}`;
+            insiderErrorMessage.textContent = `Error: ${error.message}`;
+            console.error('API Error:', error);
         }
     }
-
     // Display insider trades data
     function displayInsiderTrades(result, ticker) {
         insiderResults.style.display = 'block';
