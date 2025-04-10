@@ -4539,10 +4539,12 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
   
   async function fetchFearGreedIndex() {
     const url = 'https://fear-and-greed-index.p.rapidapi.com/v1/fgi';
+    // Store your API key in a variable at the top of your file or in a separate config file
+    const FEAR_GREED_API_KEY = 'YOUR_RAPID_API_KEY'; // Replace with your actual API key
     const options = {
         method: 'GET',
         headers: {
-            'x-rapidapi-key': window.Config ? window.Config.getApiKey('fear-and-greed') : '',
+            'x-rapidapi-key': FEAR_GREED_API_KEY,
             'x-rapidapi-host': 'fear-and-greed-index.p.rapidapi.com'
         }
     };
