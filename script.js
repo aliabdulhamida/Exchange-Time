@@ -4558,225 +4558,205 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
     }
   }
 
+// Insider Trades Modal Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Insider Trades Modal
+    const insiderTradesBtn = document.getElementById('insiderTradesBtn');
+    const insiderTradesModal = document.getElementById('insiderTradesModal');
+    const closeInsiderBtn = document.getElementById('close-insider');
+    const searchInsiderBtn = document.getElementById('search-insider');
+    const insiderTickerInput = document.getElementById('insider-ticker');
+    const insiderLoading = document.getElementById('insider-loading');
+    const insiderResults = document.getElementById('insider-results');
+    const insiderNoData = document.getElementById('insider-no-data');
+    const insiderError = document.getElementById('insider-error');
+    const insiderErrorMessage = document.getElementById('insider-error-message');
+    const insiderCompanyName = document.getElementById('insider-company-name');
+    const insiderSummary = document.getElementById('insider-summary');
+    const insiderTable = document.getElementById('insider-table').querySelector('tbody');
 
-class InsiderTradesManager {
-    constructor() {
-        // State management
-        this.pageNumber = 1;
-        this.pageSize = 10;
-        this.totalResults = 0;
-        this.currentData = [];
-        this.searchQuery = '';
-    }
-    
-    init() {
-        // Modal elements
-        this.modal = document.getElementById('insiderTradesModal');
-        this.closeBtn = document.getElementById('closeInsiderTrades');
-        this.openBtn = document.getElementById('insiderTradesBtn');
-        
-        // Form elements
-        this.searchInput = document.getElementById('company-search');
-        this.searchButton = document.getElementById('search-button');
-        this.transactionTypeSelect = document.getElementById('transaction-type');
-        this.timePeriodSelect = document.getElementById('time-period');
-        this.minValueInput = document.getElementById('min-value');
-        
-        // Result elements
-        this.tableBody = document.getElementById('insider-trades-data');
-        this.noResultsDiv = document.getElementById('no-results');
-        this.currentPage = document.getElementById('current-page');
-        this.totalPages = document.getElementById('total-pages');
-        this.prevBtn = document.getElementById('prev-page');
-        this.nextBtn = document.getElementById('next-page');
+    // Show modal when button is clicked
+    insiderTradesBtn.addEventListener('click', function() {
+        insiderTradesModal.style.display = 'block';
+        resetInsiderModal();
+    });
 
-        // Setup event listeners if elements exist
-        if (this.modal && this.openBtn) {
-            this.setupEventListeners();
-            console.log('Insider trades modal initialized');
-        } else {
-            console.error('Required insider trades elements not found');
+    // Close modal with close button
+    closeInsiderBtn.addEventListener('click', function() {
+        insiderTradesModal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === insiderTradesModal) {
+            insiderTradesModal.style.display = 'none';
         }
-    }
-    
-    setupEventListeners() {
-        // Open modal
-        this.openBtn?.addEventListener('click', () => {
-            this.modal.style.display = 'block';
-            this.fetchInsiderTrades();
-        });
-        
-        // Close modal
-        this.closeBtn?.addEventListener('click', () => {
-            this.modal.style.display = 'none';
-        });
-        
-        // Close when clicking outside
-        window.addEventListener('click', (event) => {
-            if (event.target === this.modal) {
-                this.modal.style.display = 'none';
-            }
-        });
-        
-        // Search functionality
-        this.searchButton?.addEventListener('click', () => {
-            this.pageNumber = 1;
-            this.searchQuery = this.searchInput.value.trim();
-            this.fetchInsiderTrades();
-        });
-        
-        this.searchInput?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                this.pageNumber = 1;
-                this.searchQuery = this.searchInput.value.trim();
-                this.fetchInsiderTrades();
-            }
-        });
-        
-        // Filter changes
-        const filterElements = [
-            this.transactionTypeSelect,
-            this.timePeriodSelect,
-            this.minValueInput
-        ];
-        
-        filterElements.forEach(element => {
-            element?.addEventListener('change', () => {
-                this.pageNumber = 1;
-                this.fetchInsiderTrades();
-            });
-        });
-        
-        // Pagination
-        this.prevBtn?.addEventListener('click', () => {
-            if (this.pageNumber > 1) {
-                this.pageNumber--;
-                this.fetchInsiderTrades();
-            }
-        });
-        
-        this.nextBtn?.addEventListener('click', () => {
-            const maxPages = Math.ceil(this.totalResults / this.pageSize);
-            if (this.pageNumber < maxPages) {
-                this.pageNumber++;
-                this.fetchInsiderTrades();
-            }
-        });
-    }
+    });
 
-    // Fetch insider transactions from the API
-    async fetchInsiderTrades() {
-        const insiderTableBody = this.tableBody;
-        const insiderLoader = document.getElementById('insider-loader');
-        const insiderError = this.noResultsDiv;
-        
-        if (!insiderTableBody || !insiderLoader || !insiderError) return;
-        
+    // Handle search button click
+    searchInsiderBtn.addEventListener('click', function() {
+        const ticker = insiderTickerInput.value.trim().toUpperCase();
+        if (ticker) {
+            fetchInsiderTrades(ticker);
+        }
+    });
+
+    // Handle enter key press in input
+    insiderTickerInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            const ticker = insiderTickerInput.value.trim().toUpperCase();
+            if (ticker) {
+                fetchInsiderTrades(ticker);
+            }
+        }
+    });
+
+    // Fetch insider trades data
+    async function fetchInsiderTrades(ticker) {
+        // Reset and show loading state
+        resetInsiderModal();
+        insiderLoading.style.display = 'block';
+
+        // Prepare API options
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: 'Bearer 0145be4d363056518d8c30c7348392a095e8a507'
+            }
+        };
+
         try {
-            insiderError.style.display = 'none';
-            insiderLoader.style.display = 'block';
-            insiderTableBody.innerHTML = '';
+            const response = await fetch(`https://api.myinsidertrading.com/api/v1/insider_trades?ticker=${ticker}`, options);
+            const result = await response.json();
             
-            // Using the exact options provided
-            const options = {
-                method: 'GET',
-                headers: {
-                    accept: 'application/json',
-                    Authorization: 'Bearer 0'
-                }
-            };
+            // Hide loading indicator
+            insiderLoading.style.display = 'none';
             
-            // Base URL - we'll add parameters if needed
-            let url = 'https://api.synthfinance.com/insider-trades';
-            if (this.searchQuery) {
-                url += `?ticker=${this.searchQuery}`;
+            // Process and display data
+            if (result && result.data && result.data.length > 0) {
+                displayInsiderTrades(result, ticker);
+            } else {
+                insiderNoData.style.display = 'block';
             }
-            
-            const response = await fetch(url, options);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            this.displayInsiderTrades(data);
-        } catch (err) {
-            console.error(err);
-            insiderError.textContent = `Error loading data: ${err.message}`;
+        } catch (error) {
+            console.error('Error fetching insider trades data:', error);
+            insiderLoading.style.display = 'none';
             insiderError.style.display = 'block';
-        } finally {
-            insiderLoader.style.display = 'none';
+            insiderErrorMessage.textContent = `Error fetching data for ${ticker}: ${error.message || 'Unknown error'}`;
         }
     }
 
-    // Display insider transactions in the table
-    displayInsiderTrades(data) {
-        const insiderTableBody = this.tableBody;
-        if (!insiderTableBody) return;
+    // Display insider trades data
+    function displayInsiderTrades(result, ticker) {
+        insiderResults.style.display = 'block';
         
-        insiderTableBody.innerHTML = '';
+        // Extract trades from data array
+        const trades = result.data;
         
-        if (!data || data.length === 0) {
-            const emptyRow = document.createElement('tr');
-            emptyRow.innerHTML = '<td colspan="6" class="text-center">No insider transactions found</td>';
-            insiderTableBody.appendChild(emptyRow);
-            return;
-        }
+        // Set company name - find it from the first entry
+        const companyName = trades[0]?.company?.name || ticker;
+        insiderCompanyName.textContent = companyName;
         
-        // Show the last 30 or fewer transactions
-        const transactions = data.slice(0, 30);
+        // Create summary metrics
+        const buys = trades.filter(trade => trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion').length;
+        const sells = trades.filter(trade => trade.transaction_type === 'Sale').length;
         
-        transactions.forEach(transaction => {
-            const row = document.createElement('tr');
-            
-            // Transaction type with appropriate color coding
-            const transactionType = transaction.transaction_type || 'N/A';
-            const isBuy = transactionType.toLowerCase().includes('purchase') || transactionType.toLowerCase().includes('buy');
-            const typeClass = isBuy ? 'text-success' : 'text-danger';
-            
-            // Format the date
-            const date = transaction.transaction_date ? new Date(transaction.transaction_date) : null;
-            const formattedDate = date ? date.toLocaleDateString() : 'N/A';
-            
-            // Format the price with currency symbol
-            const price = transaction.price 
-                ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(transaction.price) 
-                : 'N/A';
-            
-            // Format the number of shares with thousands separators
-            const shares = transaction.shares 
-                ? new Intl.NumberFormat('en-US').format(transaction.shares) 
-                : 'N/A';
-            
-            // Calculate the total value if price and shares are available
-            let value = 'N/A';
-            if (transaction.price && transaction.shares) {
-                value = new Intl.NumberFormat('en-US', { 
-                    style: 'currency', 
-                    currency: 'USD' 
-                }).format(transaction.price * transaction.shares);
+        let totalBuyValue = 0;
+        let totalSellValue = 0;
+        
+        trades.forEach(trade => {
+            if (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') {
+                totalBuyValue += parseFloat(trade.value || 0);
+            } else if (trade.transaction_type === 'Sale') {
+                totalSellValue += parseFloat(trade.value || 0);
             }
+        });
+        
+        // Format currency
+        const formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        });
+        
+        // Display summary
+        insiderSummary.innerHTML = `
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px;">
+                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Total Trades</div>
+                    <div style="font-size: 1.4rem; font-weight: 600; color: #fff;">${trades.length}</div>
+                </div>
+                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Buy Transactions</div>
+                    <div style="font-size: 1.4rem; font-weight: 600; color: #7FFF8E;">${buys}</div>
+                </div>
+                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Sell Transactions</div>
+                    <div style="font-size: 1.4rem; font-weight: 600; color: #ff8a80;">${sells}</div>
+                </div>
+                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Buy Volume</div>
+                    <div style="font-size: 1.4rem; font-weight: 600; color: #7FFF8E;">${formatter.format(totalBuyValue)}</div>
+                </div>
+                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Sell Volume</div>
+                    <div style="font-size: 1.4rem; font-weight: 600; color: #ff8a80;">${formatter.format(totalSellValue)}</div>
+                </div>
+            </div>
+        `;
+        
+        // Clear and populate table
+        insiderTable.innerHTML = '';
+        
+        trades.forEach(trade => {
+        // Clear and populate table
+        insiderTable.innerHTML = '';
+        
+            const date = new Date(trade.transaction_date);
+            const formattedDate = date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            // Determine transaction color
+            const transactionColor = (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') 
+                ? '#7FFF8E' 
+                : '#ff8a80';
             
             row.innerHTML = `
-                <td>${transaction.ticker || 'N/A'}</td>
-                <td>${transaction.insider_name || 'N/A'}</td>
-                <td>${transaction.relation || 'N/A'}</td>
-                <td class="${typeClass}">${transactionType}</td>
-                <td>${formattedDate}</td>
-                <td>${price}</td>
-                <td>${shares}</td>
-                <td>${value}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0;">${formattedDate}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0;">${trade.full_name || '-'}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0;">${trade.position || '-'}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: ${transactionColor}; font-weight: 600;">${trade.transaction_type || '-'}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${numberWithCommas(trade.shares) || '-'}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">$${parseFloat(trade.price || 0).toFixed(2) || '-'}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${formatter.format(trade.value || 0)}</td>
+            
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${numberWithCommas(trade.shares) || '-'}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">$${parseFloat(trade.price || 0).toFixed(2) || '-'}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${formatter.format(trade.value || 0)}</td>
             `;
             
-            insiderTableBody.appendChild(row);
+            insiderTable.appendChild(row);
         });
     }
-}
 
-// Initialize the InsiderTradesManager
-document.addEventListener('DOMContentLoaded', () => {
-    const insiderTradesManager = new InsiderTradesManager();
-    insiderTradesManager.init();
+    // Helper function to reset the modal
+    function resetInsiderModal() {
+        insiderLoading.style.display = 'none';
+        insiderResults.style.display = 'none';
+        insiderNoData.style.display = 'none';
+        insiderError.style.display = 'none';
+        insiderTable.innerHTML = '';
+    }
+
+    // Helper function to format numbers with commas
+    function numberWithCommas(x) {
+        if (!x) return '-';
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 });
+
 
