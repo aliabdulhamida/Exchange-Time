@@ -3051,7 +3051,7 @@ function updateUI() {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M12.62 20.81c-.34.12-.9.12-1.24 0C8.48 19.82 2 15.69 2 8.69 2 5.6 4.49 3.1 7.56 3.1c1.82 0 3.43.88 4.44 2.24a5.53 5.53 0 0 1 4.44-2.24C19.51 3.1 22 5.6 22 8.69c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+        d="M12.62 20.81c-.34.12-.9.12-1.24 0C8.48 19.82 2 15.69 2 8.69 2 5.6 4.49 3.1 7.56 3.1c1.82 0 3.43.88 4.44 2.24a5.53 5.53 0 0 1 4.44-2.24C19.51 3.1 22 5.6 22 8.69c0 7-6.48 11.13-9.38 12.12Z"
         stroke="#fff"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -4502,10 +4502,10 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
   });
   
   // Close modal when clicking on X
-  document.querySelectorAll('#close, #closeInsiderTrades, #close-backtest, #closesummary, #close-analysis, #close-exchange, #close-about, #close-mission, #close-terms').forEach(closeBtn => {
+  document.querySelectorAll('.close-modal').forEach(closeBtn => {
     closeBtn.addEventListener('click', function() {
-      const modal = this.closest('.modal');
-      if (modal) modal.style.display = 'none';
+      const modalId = this.getAttribute('data-modal');
+      document.getElementById(modalId).style.display = 'none';
     });
   });
   
@@ -4515,62 +4515,6 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
       event.target.style.display = 'none';
     }
   });
-
-  // Hamburger Menu Functionality
-  document.addEventListener('DOMContentLoaded', function() {
-    const hamburgerMenu = document.getElementById('hamburger-menu');
-    const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
-    
-    // Toggle mobile menu when clicking on hamburger icon
-    if (hamburgerMenu) {
-      hamburgerMenu.addEventListener('click', function() {
-        mobileMenuDropdown.classList.toggle('show');
-      });
-    }
-    
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(event) {
-      if (!event.target.closest('#hamburger-menu') && 
-          !event.target.closest('#mobile-menu-dropdown') && 
-          mobileMenuDropdown.classList.contains('show')) {
-        mobileMenuDropdown.classList.remove('show');
-      }
-    });
-    
-    // Set up mobile menu buttons to have the same functionality as desktop buttons
-    setupMobileButtons();
-  });
-
-  // Function to setup mobile menu buttons
-  function setupMobileButtons() {
-    // Map between mobile buttons and their desktop counterparts
-    const buttonPairs = [
-      { mobile: 'mobile-toggle-analysis', desktop: 'toggle-analysis' },
-      { mobile: 'mobile-toggle-view', desktop: 'toggle-view' },
-      { mobile: 'mobile-toggle-favorites', desktop: 'toggle-favorites' },
-      { mobile: 'mobile-toggle-exchange', desktop: 'toggle-exchange' },
-      { mobile: 'mobile-toggle-calendar', desktop: 'toggle-calendar' },
-      { mobile: 'mobile-toggle-backtest', desktop: 'toggle-backtest' },
-      { mobile: 'mobile-toggle-market-summary', desktop: 'toggle-market-summary' },
-      { mobile: 'mobile-fearGreedBtn', desktop: 'fearGreedBtn' },
-      { mobile: 'mobile-insiderTradesBtn', desktop: 'insiderTradesBtn' }
-    ];
-    
-    // For each pair, add click event to mobile button that triggers desktop button click
-    buttonPairs.forEach(pair => {
-      const mobileButton = document.getElementById(pair.mobile);
-      const desktopButton = document.getElementById(pair.desktop);
-      
-      if (mobileButton && desktopButton) {
-        mobileButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          desktopButton.click();
-          // Also hide the mobile menu after clicking
-          document.getElementById('mobile-menu-dropdown').classList.remove('show');
-        });
-      }
-    });
-  }
   
   // Fear & Greed Index API functionality
    function getDescription(score) {
@@ -4614,7 +4558,7 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
     }
   }
 
-  // Insider Trades functionality
+
 class InsiderTradesManager {
     constructor() {
         // State management
@@ -4623,9 +4567,6 @@ class InsiderTradesManager {
         this.totalResults = 0;
         this.currentData = [];
         this.searchQuery = '';
-        
-        // Mock data instead of API calls
-        this.mockInsiderTrades = this.generateMockData();
     }
     
     init() {
@@ -4654,101 +4595,21 @@ class InsiderTradesManager {
             this.setupEventListeners();
             console.log('Insider trades modal initialized');
         } else {
-            console.error('Required insider trades elements not found:', {
-                modal: !!this.modal,
-                openBtn: !!this.openBtn
-            });
+            console.error('Required insider trades elements not found');
         }
-    }
-    
-    generateMockData() {
-        // Companies to include in mock data
-        const companies = [
-            { symbol: 'AAPL', name: 'Apple Inc.' },
-            { symbol: 'MSFT', name: 'Microsoft Corporation' },
-            { symbol: 'AMZN', name: 'Amazon.com Inc.' },
-            { symbol: 'GOOGL', name: 'Alphabet Inc.' },
-            { symbol: 'META', name: 'Meta Platforms Inc.' },
-            { symbol: 'TSLA', name: 'Tesla Inc.' },
-            { symbol: 'NVDA', name: 'NVIDIA Corporation' },
-            { symbol: 'JPM', name: 'JPMorgan Chase & Co.' },
-            { symbol: 'V', name: 'Visa Inc.' },
-            { symbol: 'WMT', name: 'Walmart Inc.' }
-        ];
-        
-        // Possible insider titles
-        const insiderPositions = [
-            'CEO', 'CFO', 'COO', 'CTO', 'Director', 
-            'Board Member', 'EVP', 'SVP', 'VP of Sales',
-            'President', 'Chairman'
-        ];
-        
-        // Insider names (fictional)
-        const insiderNames = [
-            'John Smith', 'Sarah Johnson', 'Michael Brown', 'Emily Davis',
-            'William Wilson', 'Jessica Taylor', 'David Miller', 'Jennifer Anderson',
-            'Robert Thomas', 'Lisa Martinez', 'James Lee', 'Patricia White',
-            'Charles Harris', 'Margaret Lewis', 'Joseph Clark', 'Susan Walker'
-        ];
-        
-        // Transaction codes (P = Purchase, S = Sale)
-        const transactionCodes = ['P', 'S', 'S', 'P', 'P', 'S'];
-        
-        // Generate random date within the last 90 days
-        const getRandomDate = () => {
-            const today = new Date();
-            const daysAgo = Math.floor(Math.random() * 90);
-            const date = new Date(today);
-            date.setDate(today.getDate() - daysAgo);
-            return date.toISOString().split('T')[0];
-        };
-        
-        // Generate random data
-        const mockData = [];
-        
-        // Create 100 random insider trade records
-        for (let i = 0; i < 100; i++) {
-            const company = companies[Math.floor(Math.random() * companies.length)];
-            const insiderName = insiderNames[Math.floor(Math.random() * insiderNames.length)];
-            const position = insiderPositions[Math.floor(Math.random() * insiderPositions.length)];
-            const transactionCode = transactionCodes[Math.floor(Math.random() * transactionCodes.length)];
-            const sharePrice = parseFloat((50 + Math.random() * 950).toFixed(2));
-            const shareCount = Math.floor(1000 + Math.random() * 49000);
-            const filingDate = getRandomDate();
-            
-            mockData.push({
-                symbol: company.symbol,
-                name: company.name,
-                filingDate: filingDate,
-                transactionDate: filingDate,
-                insiderName: insiderName,
-                officerTitle: position,
-                transactionCode: transactionCode,
-                transactionPrice: sharePrice,
-                change: transactionCode === 'P' ? shareCount : -shareCount,
-                shareCount: shareCount,
-                value: sharePrice * shareCount
-            });
-        }
-        
-        return mockData;
     }
     
     setupEventListeners() {
         // Open modal
-        if (this.openBtn) {
-            this.openBtn.addEventListener('click', () => {
-                this.modal.style.display = 'block';
-                this.fetchInsiderTrades(); // Initial data fetch on open
-            });
-        }
+        this.openBtn?.addEventListener('click', () => {
+            this.modal.style.display = 'block';
+            this.fetchInsiderTrades();
+        });
         
         // Close modal
-        if (this.closeBtn) {
-            this.closeBtn.addEventListener('click', () => {
-                this.modal.style.display = 'none';
-            });
-        }
+        this.closeBtn?.addEventListener('click', () => {
+            this.modal.style.display = 'none';
+        });
         
         // Close when clicking outside
         window.addEventListener('click', (event) => {
@@ -4757,250 +4618,165 @@ class InsiderTradesManager {
             }
         });
         
-        // Search button click
-        if (this.searchButton) {
-            this.searchButton.addEventListener('click', () => {
-                this.pageNumber = 1; // Reset page number on new search
+        // Search functionality
+        this.searchButton?.addEventListener('click', () => {
+            this.pageNumber = 1;
+            this.searchQuery = this.searchInput.value.trim();
+            this.fetchInsiderTrades();
+        });
+        
+        this.searchInput?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.pageNumber = 1;
                 this.searchQuery = this.searchInput.value.trim();
                 this.fetchInsiderTrades();
-            });
-        }
-        
-        // Search on Enter key
-        if (this.searchInput) {
-            this.searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    this.pageNumber = 1;
-                    this.searchQuery = this.searchInput.value.trim();
-                    this.fetchInsiderTrades();
-                }
-            });
-        }
+            }
+        });
         
         // Filter changes
-        if (this.transactionTypeSelect) {
-            this.transactionTypeSelect.addEventListener('change', () => {
-                this.pageNumber = 1;
-                this.fetchInsiderTrades();
-            });
-        }
+        const filterElements = [
+            this.transactionTypeSelect,
+            this.timePeriodSelect,
+            this.minValueInput
+        ];
         
-        if (this.timePeriodSelect) {
-            this.timePeriodSelect.addEventListener('change', () => {
+        filterElements.forEach(element => {
+            element?.addEventListener('change', () => {
                 this.pageNumber = 1;
                 this.fetchInsiderTrades();
             });
-        }
-        
-        if (this.minValueInput) {
-            this.minValueInput.addEventListener('change', () => {
-                this.pageNumber = 1;
-                this.fetchInsiderTrades();
-            });
-        }
+        });
         
         // Pagination
-        if (this.prevBtn) {
-            this.prevBtn.addEventListener('click', () => {
-                if (this.pageNumber > 1) {
-                    this.pageNumber--;
-                    this.fetchInsiderTrades();
-                }
-            });
-        }
+        this.prevBtn?.addEventListener('click', () => {
+            if (this.pageNumber > 1) {
+                this.pageNumber--;
+                this.fetchInsiderTrades();
+            }
+        });
         
-        if (this.nextBtn) {
-            this.nextBtn.addEventListener('click', () => {
-                const maxPages = Math.ceil(this.totalResults / this.pageSize);
-                if (this.pageNumber < maxPages) {
-                    this.pageNumber++;
-                    this.fetchInsiderTrades();
-                }
-            });
-        }
+        this.nextBtn?.addEventListener('click', () => {
+            const maxPages = Math.ceil(this.totalResults / this.pageSize);
+            if (this.pageNumber < maxPages) {
+                this.pageNumber++;
+                this.fetchInsiderTrades();
+            }
+        });
     }
-    
-    fetchInsiderTrades() {
-        this.showLoading();
+
+    // Fetch insider transactions from the API
+    async fetchInsiderTrades() {
+        const insiderTableBody = this.tableBody;
+        const insiderLoader = document.getElementById('insider-loader');
+        const insiderError = this.noResultsDiv;
+        
+        if (!insiderTableBody || !insiderLoader || !insiderError) return;
         
         try {
-            // Get filter values
-            const symbol = this.searchQuery.toUpperCase();
-            const transactionType = this.transactionTypeSelect.value;
-            const minValue = parseFloat(this.minValueInput.value) || 0;
+            insiderError.style.display = 'none';
+            insiderLoader.style.display = 'block';
+            insiderTableBody.innerHTML = '';
             
-            // Get date range for filtering
-            const timePeriod = parseInt(this.timePeriodSelect.value, 10);
-            let fromDate = new Date();
-            if (!isNaN(timePeriod)) {
-                fromDate.setDate(fromDate.getDate() - timePeriod);
-            } else {
-                // Default to last 30 days if not specified
-                fromDate.setDate(fromDate.getDate() - 30);
+            // Using the exact options provided
+            const options = {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: 'Bearer 0'
+                }
+            };
+            
+            // Base URL - we'll add parameters if needed
+            let url = 'https://api.synthfinance.com/insider-trades';
+            if (this.searchQuery) {
+                url += `?ticker=${this.searchQuery}`;
             }
             
-            // Filter the mock data
-            let filteredData = this.mockInsiderTrades;
+            const response = await fetch(url, options);
             
-            // Filter by symbol if provided
-            if (symbol) {
-                filteredData = filteredData.filter(item => 
-                    item.symbol.includes(symbol) || 
-                    item.name.toUpperCase().includes(symbol)
-                );
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
             }
             
-            // Filter by date range
-            filteredData = filteredData.filter(item => 
-                new Date(item.filingDate) >= fromDate
-            );
-            
-            // Filter by transaction type
-            if (transactionType !== 'all') {
-                const typeFilter = transactionType === 'buy' ? 'P' : 'S';
-                filteredData = filteredData.filter(item => item.transactionCode === typeFilter);
-            }
-            
-            // Filter by minimum value
-            if (minValue > 0) {
-                filteredData = filteredData.filter(item => Math.abs(item.value) >= minValue);
-            }
-            
-            // Handle pagination manually
-            this.totalResults = filteredData.length;
-            const startIdx = (this.pageNumber - 1) * this.pageSize;
-            const paginatedData = filteredData.slice(startIdx, startIdx + this.pageSize);
-            
-            // Small delay to simulate API call
-            setTimeout(() => {
-                this.processTradeData(paginatedData);
-                this.hideLoading();
-            }, 300);
-            
-        } catch (error) {
-            console.error('Error processing insider trades:', error);
-            this.showError('Error processing insider trades data.');
-            this.showNoResults();
-            this.hideLoading();
+            const data = await response.json();
+            this.displayInsiderTrades(data);
+        } catch (err) {
+            console.error(err);
+            insiderError.textContent = `Error loading data: ${err.message}`;
+            insiderError.style.display = 'block';
+        } finally {
+            insiderLoader.style.display = 'none';
         }
     }
 
-    processTradeData(data) {
-        try {
-            // Handle empty data case
-            if (!data || data.length === 0) {
-                this.showNoResults();
-                return;
+    // Display insider transactions in the table
+    displayInsiderTrades(data) {
+        const insiderTableBody = this.tableBody;
+        if (!insiderTableBody) return;
+        
+        insiderTableBody.innerHTML = '';
+        
+        if (!data || data.length === 0) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = '<td colspan="6" class="text-center">No insider transactions found</td>';
+            insiderTableBody.appendChild(emptyRow);
+            return;
+        }
+        
+        // Show the last 30 or fewer transactions
+        const transactions = data.slice(0, 30);
+        
+        transactions.forEach(transaction => {
+            const row = document.createElement('tr');
+            
+            // Transaction type with appropriate color coding
+            const transactionType = transaction.transaction_type || 'N/A';
+            const isBuy = transactionType.toLowerCase().includes('purchase') || transactionType.toLowerCase().includes('buy');
+            const typeClass = isBuy ? 'text-success' : 'text-danger';
+            
+            // Format the date
+            const date = transaction.transaction_date ? new Date(transaction.transaction_date) : null;
+            const formattedDate = date ? date.toLocaleDateString() : 'N/A';
+            
+            // Format the price with currency symbol
+            const price = transaction.price 
+                ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(transaction.price) 
+                : 'N/A';
+            
+            // Format the number of shares with thousands separators
+            const shares = transaction.shares 
+                ? new Intl.NumberFormat('en-US').format(transaction.shares) 
+                : 'N/A';
+            
+            // Calculate the total value if price and shares are available
+            let value = 'N/A';
+            if (transaction.price && transaction.shares) {
+                value = new Intl.NumberFormat('en-US', { 
+                    style: 'currency', 
+                    currency: 'USD' 
+                }).format(transaction.price * transaction.shares);
             }
             
-            // Format data for display
-            this.currentData = data.map(item => {
-                const transactionType = item.transactionCode === 'P' ? 'Buy' : 'Sell';
-                const value = Math.abs(item.value).toFixed(2);
-                
-                return {
-                    company: `${item.name} (${item.symbol})`,
-                    insider: item.insiderName,
-                    position: item.officerTitle || 'Insider',
-                    type: transactionType,
-                    shares: Math.abs(item.change),
-                    value: `$${Number(value).toLocaleString()}`,
-                    date: new Date(item.filingDate).toLocaleDateString()
-                };
-            });
-            
-            this.hideNoResults();
-            this.renderPage();
-            this.updatePaginationUI();
-            
-        } catch (error) {
-            console.error('Error processing data:', error);
-            this.showError('Error processing insider trades data.');
-            this.showNoResults();
-        }
-    }
-        
-    renderPage() {
-        // Clear existing data
-        this.tableBody.innerHTML = '';
-        
-        // Add rows for current page data
-        this.currentData.forEach(item => {
-            const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${item.company}</td>
-                <td>${item.insider}</td>
-                <td>${item.position}</td>
-                <td><span class="${item.type === 'Buy' ? 'buy-tag' : 'sell-tag'}">${item.type}</span></td>
-                <td>${item.shares.toLocaleString()}</td>
-                <td>${item.value}</td>
-                <td>${item.date}</td>
+                <td>${transaction.ticker || 'N/A'}</td>
+                <td>${transaction.insider_name || 'N/A'}</td>
+                <td>${transaction.relation || 'N/A'}</td>
+                <td class="${typeClass}">${transactionType}</td>
+                <td>${formattedDate}</td>
+                <td>${price}</td>
+                <td>${shares}</td>
+                <td>${value}</td>
             `;
-            this.tableBody.appendChild(row);
-        });
-    }
-        
-    updatePaginationUI() {
-        const maxPages = Math.ceil(this.totalResults / this.pageSize) || 1;
-        this.currentPage.textContent = this.pageNumber;
-        this.totalPages.textContent = maxPages;
-        
-        // Update prev/next button states
-        this.prevBtn.disabled = this.pageNumber <= 1;
-        this.nextBtn.disabled = this.pageNumber >= maxPages;
-    }
-        
-    showNoResults() {
-        if (this.noResultsDiv) {
-            this.noResultsDiv.style.display = 'block';
-        }
-        if (this.tableBody) {
-            this.tableBody.innerHTML = '';
-        }
-    }
-        
-    hideNoResults() {
-        if (this.noResultsDiv) {
-            this.noResultsDiv.style.display = 'none';
-        }
-    }
-        
-    showLoading() {
-        const loadingDiv = document.getElementById('insider-trades-loading');
-        if (loadingDiv) {
-            loadingDiv.style.display = 'flex';
-        }
-    }
-        
-    hideLoading() {
-        const loadingDiv = document.getElementById('insider-trades-loading');
-        if (loadingDiv) {
-            loadingDiv.style.display = 'none';
-        }
-    }
-        
-    showError(message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.textContent = message;
-        
-        const container = document.querySelector('.insider-trades-container');
-        if (container) {
-            container.insertBefore(errorDiv, container.firstChild);
             
-            setTimeout(() => {
-                errorDiv.remove();
-            }, 5000);
-        }
+            insiderTableBody.appendChild(row);
+        });
     }
 }
 
-// Initialize the InsiderTradesManager when the script loads
+// Initialize the InsiderTradesManager
 document.addEventListener('DOMContentLoaded', () => {
     const insiderTradesManager = new InsiderTradesManager();
     insiderTradesManager.init();
 });
-document.addEventListener('DOMContentLoaded', () => {
-    new InsiderTradesManager();
-});
+
