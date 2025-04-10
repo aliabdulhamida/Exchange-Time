@@ -301,10 +301,16 @@
 
 <!-- Insider Trades Modal -->
 <div id="insiderTradesModal" class="modal">
-    <div class="modal-content fear-greed-modal" style="max-width: 900px;">
-        <div class="fear-header">
-            <h3 style="color: #fff;">Insider Trades</h3>
-            <button id="close-insider" class="btn">
+    <div class="modal-content fear-greed-modal" style="max-width: 900px; background: linear-gradient(180deg, rgba(22,28,36,1) 0%, rgba(27,33,42,1) 100%);">
+        <div class="fear-header" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <h3 style="color: #fff; margin: 0; font-size: 1.5rem; display: flex; align-items: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#01c3a8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                    <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"></path>
+                    <path d="M6 21V19C6 16.7909 7.79086 15 10 15H14C16.2091 15 18 16.7909 18 19V21"></path>
+                </svg>
+                Insider Trades
+            </h3>
+            <button id="close-insider" class="btn" style="background: transparent; border: none; cursor: pointer; transition: all 0.2s;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -312,35 +318,61 @@
             </button>
         </div>
         
-        <div class="insider-trades-container" style="padding: 20px;">
-            <div class="insider-search" style="margin-bottom: 20px;">
-                <h4 style="color: #e0e0e0; margin-bottom: 15px;">Search Insider Trades by Ticker</h4>
+        <div class="insider-trades-container" style="padding: 24px;">
+            <div class="insider-search" style="margin-bottom: 24px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                <h4 style="color: #e0e0e0; margin-top: 0; margin-bottom: 15px; font-weight: 500; font-size: 1.1rem;">Search Insider Trades by Ticker</h4>
                 <div style="display: flex; gap: 10px;">
-                    <input type="text" id="insider-ticker" placeholder="Enter ticker symbol (e.g., AAPL)" style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white;">
-                    <button id="search-insider" class="btn" style="background: #01c3a8; color: #fff; font-weight: 600;">Search</button>
+                    <input type="text" id="insider-ticker" placeholder="Enter ticker symbol (e.g., AAPL)" style="flex: 1; padding: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.3); color: white; font-size: 1rem; transition: all 0.3s;">
+                    <button id="search-insider" class="btn" style="background: #01c3a8; color: #fff; font-weight: 600; border-radius: 6px; padding: 0 20px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Search
+                    </button>
                 </div>
                 <div id="insider-loading" style="display: none; text-align: center; margin-top: 20px;">
-                    <div class="loading-spinner" style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: #01c3a8; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-                    <p style="color: #e0e0e0; margin-top: 10px;">Loading insider trades data...</p>
+                    <div class="loading-spinner" style="width: 40px; height: 40px; border: 3px solid rgba(1,195,168,0.2); border-radius: 50%; border-top-color: #01c3a8; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                    <p style="color: #e0e0e0; margin-top: 10px; font-size: 0.9rem;">Loading insider trades data...</p>
                 </div>
             </div>
             
-            <div id="insider-results" style="margin-top: 20px; display: none;">
-                <h4 id="insider-company-name" style="color: #01c3a8; margin-bottom: 10px; font-size: 1.5rem;">Company Name</h4>
-                <div id="insider-summary" style="margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+            <div id="insider-results" style="margin-top: 24px; display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h4 id="insider-company-name" style="color: #01c3a8; margin: 0; font-size: 1.5rem; display: flex; align-items: center;">
+                        <span style="background: rgba(1,195,168,0.15); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#01c3a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                            </svg>
+                        </span>
+                        Company Name
+                    </h4>
+                    <span style="background: rgba(1,195,168,0.1); color: #01c3a8; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: 500;">TICKER</span>
+                </div>
+                
+                <div id="insider-summary" style="margin-bottom: 24px; background: rgba(255,255,255,0.03); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
                     <!-- Summary will be populated here -->
                 </div>
-                <div class="table-container" style="max-height: 400px; overflow-y: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h5 style="color: #fff; margin: 0; font-size: 1.1rem;">Recent Transactions</h5>
+                    <div style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 5px;">
+                        <span style="color: #ccc; font-size: 0.8rem;">Last Updated: <span style="color: #fff; font-weight: 500;" id="insider-last-updated">Apr 11, 2025</span></span>
+                    </div>
+                </div>
+                
+                <div class="table-container" style="max-height: 400px; overflow-y: auto; background: rgba(255,255,255,0.02); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
                     <table id="insider-table" style="width: 100%; border-collapse: collapse;">
                         <thead>
-                            <tr style="background: rgba(1, 195, 168, 0.2);">
-                                <th style="padding: 12px; text-align: left; color: #e0e0e0; position: sticky; top: 0; background: rgba(0,0,0,0.8);">Date</th>
-                                <th style="padding: 12px; text-align: left; color: #e0e0e0; position: sticky; top: 0; background: rgba(0,0,0,0.8);">Insider Name</th>
-                                <th style="padding: 12px; text-align: left; color: #e0e0e0; position: sticky; top: 0; background: rgba(0,0,0,0.8);">Title</th>
-                                <th style="padding: 12px; text-align: left; color: #e0e0e0; position: sticky; top: 0; background: rgba(0,0,0,0.8);">Transaction</th>
-                                <th style="padding: 12px; text-align: right; color: #e0e0e0; position: sticky; top: 0; background: rgba(0,0,0,0.8);">Shares</th>
-                                <th style="padding: 12px; text-align: right; color: #e0e0e0; position: sticky; top: 0; background: rgba(0,0,0,0.8);">Price</th>
-                                <th style="padding: 12px; text-align: right; color: #e0e0e0; position: sticky; top: 0; background: rgba(0,0,0,0.8);">Value</th>
+                            <tr>
+                                <th style="padding: 14px; text-align: left; color: #ccc; position: sticky; top: 0; background: rgba(0,0,0,0.8); font-weight: 500; font-size: 0.9rem;">Date</th>
+                                <th style="padding: 14px; text-align: left; color: #ccc; position: sticky; top: 0; background: rgba(0,0,0,0.8); font-weight: 500; font-size: 0.9rem;">Name</th>
+                                <th style="padding: 14px; text-align: left; color: #ccc; position: sticky; top: 0; background: rgba(0,0,0,0.8); font-weight: 500; font-size: 0.9rem;">Title</th>
+                                <th style="padding: 14px; text-align: left; color: #ccc; position: sticky; top: 0; background: rgba(0,0,0,0.8); font-weight: 500; font-size: 0.9rem;">Transaction</th>
+                                <th style="padding: 14px; text-align: right; color: #ccc; position: sticky; top: 0; background: rgba(0,0,0,0.8); font-weight: 500; font-size: 0.9rem;">Shares</th>
+                                <th style="padding: 14px; text-align: right; color: #ccc; position: sticky; top: 0; background: rgba(0,0,0,0.8); font-weight: 500; font-size: 0.9rem;">Price</th>
+                                <th style="padding: 14px; text-align: right; color: #ccc; position: sticky; top: 0; background: rgba(0,0,0,0.8); font-weight: 500; font-size: 0.9rem;">Value</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -350,31 +382,44 @@
                 </div>
             </div>
             
-            <div id="insider-no-data" style="display: none; text-align: center; padding: 30px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-top: 20px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 15px; display: block; color: #999;">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                    <line x1="12" y1="9" x2="12" y2="13"></line>
-                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                </svg>
+            <div id="insider-no-data" style="display: none; text-align: center; padding: 40px; background: rgba(255,255,255,0.02); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); margin-top: 24px;">
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #999;">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
                 <h4 style="color: #e0e0e0; margin-bottom: 10px;">No Insider Trades Found</h4>
-                <p style="color: #999;">Try another ticker symbol or check your input.</p>
+                <p style="color: #999; max-width: 300px; margin: 0 auto;">Try another ticker symbol or check your input. Some companies may not have recent insider trading activity.</p>
             </div>
             
-            <div id="insider-error" style="display: none; text-align: center; padding: 30px; background: rgba(255,69,58,0.1); border-radius: 8px; border-left: 4px solid rgba(255,69,58,0.6); margin-top: 20px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 15px; display: block; color: #ff453a;">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                </svg>
+            <div id="insider-error" style="display: none; text-align: center; padding: 30px; background: rgba(255,69,58,0.05); border-radius: 10px; border: 1px solid rgba(255,69,58,0.3); margin-top: 24px;">
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,69,58,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #ff453a;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
                 <h4 style="color: #ff453a; margin-bottom: 10px;">Error</h4>
-                <p id="insider-error-message" style="color: #e0e0e0;">Unable to fetch insider trading data. Please try again later.</p>
+                <p id="insider-error-message" style="color: #e0e0e0; max-width: 450px; margin: 0 auto;">Unable to fetch insider trading data. Please try again later.</p>
             </div>
             
-            <div class="disclaimer-box" style="background: rgba(255,69,58,0.1); padding: 15px; border-radius: 8px; margin-top: 25px; border-left: 3px solid rgba(255,69,58,0.6);">
-                <h5 style="color: #ff453a; margin-top: 0; margin-bottom: 8px;">Disclaimer</h5>
-                <p style="color: #e0e0e0; font-size: 0.9rem; line-height: 1.5; margin: 0;">
-                    Insider trading data is provided for informational purposes only and should not be considered as financial advice or a recommendation to buy or sell securities. Data may be delayed and not all transactions may be reported. Always consult a qualified financial advisor before making investment decisions.
-                </p>
+            <div class="disclaimer-box" style="background: rgba(255,255,255,0.02); padding: 18px; border-radius: 10px; margin-top: 30px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f57c00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <div>
+                        <h5 style="color: #f57c00; margin-top: 0; margin-bottom: 8px; font-weight: 500;">Disclaimer</h5>
+                        <p style="color: #ccc; font-size: 0.85rem; line-height: 1.5; margin: 0;">
+                            Insider trading data is provided for informational purposes only and should not be considered as financial advice or a recommendation to buy or sell securities. Data may be delayed and not all transactions may be reported. Always consult a qualified financial advisor before making investment decisions.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

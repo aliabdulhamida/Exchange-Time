@@ -4619,149 +4619,289 @@ document.addEventListener('DOMContentLoaded', function() {
         insiderLoading.style.display = 'block';
 
         try {
-            const options = {
-                method: 'GET',
-                headers: {
-                    accept: 'application/json',
-                    Authorization: 'Bearer '
-                }
-            };
-
-            const apiUrl = `https://api.synthfinance.com/insider-trades?ticker=${ticker}`;
+            // Fetch from Finviz which doesn't require an API key
+            const finvizUrl = `https://finviz.com/quote.ashx?t=${ticker}`;
+            const proxyUrl = 'https://api.allorigins.win/get?url=';
             
-            const response = await fetch(apiUrl, options);
-
+            const response = await fetch(`${proxyUrl}${encodeURIComponent(finvizUrl)}`);
+            
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`Error fetching data: ${response.status}`);
             }
-
-            const result = await response.json();
             
-            insiderLoading.style.display = 'none';
+            const data = await response.json();
             
-            if (!result.data || result.data.length === 0) {
+            if (data && data.contents) {
+            // Parse HTML content to extract insider trades
+            const insiderTrades = parseFinvizInsiderTrades(data.contents, ticker);
+            
+            if (insiderTrades.length > 0) {
+                displayParsedInsiderTrades(insiderTrades, ticker);
+            } else {
                 insiderNoData.style.display = 'block';
-                return;
             }
-            
-            displayInsiderTrades(result, ticker);
+            } else {
+            throw new Error('Invalid response from server');
+            }
             
         } catch (error) {
-            insiderLoading.style.display = 'none';
             insiderError.style.display = 'block';
             insiderErrorMessage.textContent = `Error: ${error.message}`;
-            console.error('API Error:', error);
+            console.error('API error:', error);
+        } finally {
+            insiderLoading.style.display = 'none';
         }
-    }
-    // Display insider trades data
-    function displayInsiderTrades(result, ticker) {
-        insiderResults.style.display = 'block';
+        }
         
-        // Extract trades from data array
-        const trades = result.data;
+        // Parse Finviz HTML to extract insider trades
+        function parseFinvizInsiderTrades(html, ticker) {
+        const trades = [];
         
-        // Set company name - find it from the first entry
-        const companyName = trades[0]?.company?.name || ticker;
-        insiderCompanyName.textContent = companyName;
-        
-        // Create summary metrics
-        const buys = trades.filter(trade => trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion').length;
-        const sells = trades.filter(trade => trade.transaction_type === 'Sale').length;
-        
-        let totalBuyValue = 0;
-        let totalSellValue = 0;
-        
-        trades.forEach(trade => {
-            if (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') {
-                totalBuyValue += parseFloat(trade.value || 0);
-            } else if (trade.transaction_type === 'Sale') {
-                totalSellValue += parseFloat(trade.value || 0);
-            }
-        });
-        
-        // Format currency
-        const formatter = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        });
-        
-        // Display summary
-        insiderSummary.innerHTML = `
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px;">
-                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Total Trades</div>
-                    <div style="font-size: 1.4rem; font-weight: 600; color: #fff;">${trades.length}</div>
-                </div>
-                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Buy Transactions</div>
-                    <div style="font-size: 1.4rem; font-weight: 600; color: #7FFF8E;">${buys}</div>
-                </div>
-                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Sell Transactions</div>
-                    <div style="font-size: 1.4rem; font-weight: 600; color: #ff8a80;">${sells}</div>
-                </div>
-                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Buy Volume</div>
-                    <div style="font-size: 1.4rem; font-weight: 600; color: #7FFF8E;">${formatter.format(totalBuyValue)}</div>
-                </div>
-                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Sell Volume</div>
-                    <div style="font-size: 1.4rem; font-weight: 600; color: #ff8a80;">${formatter.format(totalSellValue)}</div>
-                </div>
-            </div>
-        `;
-        
-        // Clear and populate table
-        insiderTable.innerHTML = '';
-        
-        trades.forEach(trade => {
-        // Clear and populate table
-        insiderTable.innerHTML = '';
-        
-            const date = new Date(trade.transaction_date);
-            const formattedDate = date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // Find the insider table
+            const insiderTable = [...doc.querySelectorAll('table.body-table')].find(table => {
+            const headers = table.querySelectorAll('th');
+            return [...headers].some(th => th.textContent.includes('Insider Trading'));
             });
             
-            // Determine transaction color
+            if (insiderTable) {
+            const rows = insiderTable.querySelectorAll('tr');
+            
+            [...rows].forEach((row, index) => {
+                if (index === 0) return; // Skip header row
+                
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 5) {
+                const transaction_date = cells[0]?.textContent?.trim();
+                const full_name = cells[1]?.textContent?.trim();
+                const position = cells[2]?.textContent?.trim();
+                const transaction_type = getTransactionType(cells[3]?.textContent?.trim());
+                const shares = parseFloat(cells[4]?.textContent?.replace(/[^\d.-]/g, ''));
+                const price = parseFloat(cells[5]?.textContent?.replace(/[^\d.-]/g, ''));
+                const value = shares * price;
+                
+                trades.push({
+                    transaction_date,
+                    full_name,
+                    position,
+                    transaction_type,
+                    shares,
+                    price,
+                    value,
+                    formatted_price: `$${price.toFixed(2)}`,
+                    formatted_value: new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD'
+                    }).format(value)
+                });
+                }
+            });
+            }
+        } catch (e) {
+            console.error('Error parsing Finviz HTML:', e);
+        }
+        
+        return trades;
+        }
+        
+        // Helper function to determine transaction type
+        function getTransactionType(text) {
+        text = text.toLowerCase();
+        if (text.includes('buy') || text.includes('purchase')) return 'Buy';
+        if (text.includes('sale') || text.includes('sell')) return 'Sale';
+        if (text.includes('exercise') || text.includes('conversion')) return 'Exercise/Conversion';
+        return text;
+        }
+        
+        // Display parsed insider trades (for Finviz data)
+        function displayParsedInsiderTrades(trades, ticker) {
+        // Get company name from the ticker or use a default
+        const companyName = getCompanyNameForTicker(ticker) || `${ticker}`;
+        
+        // Create a data object similar to the SynthFinance API response
+        const result = {
+            data: trades.map(trade => ({
+            ...trade,
+            company: { name: companyName }
+            }))
+        };
+        
+        displayInsiderTrades(result, ticker);
+        }
+        
+        // Helper function to get company name for ticker
+        function getCompanyNameForTicker(ticker) {
+        const companyMap = {
+            'AAPL': 'Apple Inc.',
+            'MSFT': 'Microsoft Corporation',
+            'GOOGL': 'Alphabet Inc.',
+            'AMZN': 'Amazon.com, Inc.',
+            'META': 'Meta Platforms, Inc.',
+            'TSLA': 'Tesla, Inc.',
+            'NVDA': 'NVIDIA Corporation'
+            // Add more mappings as needed
+        };
+        
+        return companyMap[ticker] || null;
+        }
+        
+ // Display insider trades data
+function displayInsiderTrades(result, ticker) {
+    // Debug-Ausgabe zur Überprüfung der Daten
+    console.log("Displaying data for", ticker, "with", result.data.length, "trades");
+    
+    insiderResults.style.display = 'block';
+    
+    // Extract trades from data array
+    const trades = result.data;
+    
+    // Set company name - find it from the first entry
+    const companyName = trades[0]?.company?.name || ticker;
+    insiderCompanyName.textContent = companyName;
+    
+    // Create summary metrics
+    const buys = trades.filter(trade => 
+        trade.transaction_type === 'Buy' || 
+        trade.transaction_type === 'Exercise/Conversion'
+    ).length;
+    
+    const sells = trades.filter(trade => 
+        trade.transaction_type === 'Sale'
+    ).length;
+    
+    let totalBuyValue = 0;
+    let totalSellValue = 0;
+    
+    trades.forEach(trade => {
+        const value = parseFloat(trade.value || 0);
+        
+        if (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') {
+            totalBuyValue += value;
+        } else if (trade.transaction_type === 'Sale') {
+            totalSellValue += value;
+        }
+    });
+    
+    // Format currency
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    });
+    
+    // Display summary
+    insiderSummary.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px;">
+            <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Total Trades</div>
+                <div style="font-size: 1.4rem; font-weight: 600; color: #fff;">${trades.length}</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Buy Transactions</div>
+                <div style="font-size: 1.4rem; font-weight: 600; color: #7FFF8E;">${buys}</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Sell Transactions</div>
+                <div style="font-size: 1.4rem; font-weight: 600; color: #ff8a80;">${sells}</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Buy Volume</div>
+                <div style="font-size: 1.4rem; font-weight: 600; color: #7FFF8E;">${formatter.format(totalBuyValue)}</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Sell Volume</div>
+                <div style="font-size: 1.4rem; font-weight: 600; color: #ff8a80;">${formatter.format(totalSellValue)}</div>
+            </div>
+        </div>
+    `;
+    
+    // Clear and populate table
+    insiderTable.innerHTML = '';
+    
+    // Debugging: Log Einzelwerte des ersten Trades
+    if (trades.length > 0) {
+        console.log("Sample trade data:", {
+            date: trades[0].transaction_date,
+            name: trades[0].full_name,
+            position: trades[0].position,
+            roles: trades[0].formatted_roles,
+            type: trades[0].transaction_type,
+            shares: trades[0].shares,
+            price: trades[0].price,
+            formatted_price: trades[0].formatted_price,
+            value: trades[0].value,
+            formatted_value: trades[0].formatted_value
+        });
+    }
+    
+    trades.forEach(trade => {
+        try {
+            // Datum richtig formatieren
+            let formattedDate = '-';
+            if (trade.transaction_date) {
+                const date = new Date(trade.transaction_date);
+                if (!isNaN(date.getTime())) {
+                    formattedDate = date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                }
+            }
+            
+            // Position oder Rolle bestimmen
+            const position = trade.position || trade.formatted_roles || '-';
+            
+            // Transaktionstyp-Farbe
             const transactionColor = (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') 
                 ? '#7FFF8E' 
                 : '#ff8a80';
             
+            // Shares formatieren
+            const shares = numberWithCommas(trade.shares);
+            
+            // Preis formatieren
+            const price = trade.formatted_price || (trade.price ? `$${parseFloat(trade.price).toFixed(2)}` : '-');
+            
+            // Wert formatieren
+            const value = trade.formatted_value || (trade.value ? formatter.format(trade.value) : '-');
+            
+            // Erstelle eine neue Tabellenzeile
+            const row = document.createElement('tr');
+            
             row.innerHTML = `
                 <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0;">${formattedDate}</td>
                 <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0;">${trade.full_name || '-'}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0;">${trade.position || '-'}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0;">${position}</td>
                 <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: ${transactionColor}; font-weight: 600;">${trade.transaction_type || '-'}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${numberWithCommas(trade.shares) || '-'}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">$${parseFloat(trade.price || 0).toFixed(2) || '-'}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${formatter.format(trade.value || 0)}</td>
-            
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${numberWithCommas(trade.shares) || '-'}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">$${parseFloat(trade.price || 0).toFixed(2) || '-'}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${formatter.format(trade.value || 0)}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${shares}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${price}</td>
+                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${value}</td>
             `;
             
             insiderTable.appendChild(row);
-        });
-    }
+        } catch (error) {
+            console.error("Fehler beim Hinzufügen einer Trade-Zeile:", error, trade);
+        }
+    });
+}
 
-    // Helper function to reset the modal
-    function resetInsiderModal() {
-        insiderLoading.style.display = 'none';
-        insiderResults.style.display = 'none';
-        insiderNoData.style.display = 'none';
-        insiderError.style.display = 'none';
-        insiderTable.innerHTML = '';
-    }
+// Helper function to format numbers with commas
+function numberWithCommas(x) {
+    if (!x) return '-';
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
-    // Helper function to format numbers with commas
-    function numberWithCommas(x) {
-        if (!x) return '-';
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
+// Reset insider modal to initial state
+function resetInsiderModal() {
+    insiderResults.style.display = 'none';
+    insiderNoData.style.display = 'none';
+    insiderError.style.display = 'none';
+    insiderErrorMessage.textContent = '';
+    insiderTable.innerHTML = '';
+}
 });
 
 
