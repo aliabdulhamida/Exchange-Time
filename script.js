@@ -961,1208 +961,6 @@ const marketHours = {
     "2025-12-25": { reason: "Christmas Day", closeEarly: false }
 }
     }
-};
-
-// Exchange information data
-const exchangeInfo = {
-    NYSE: {
-        name: "New York Stock Exchange",
-        founded: "1792",
-        location: "New York City, USA",
-        description: "The New York Stock Exchange (NYSE) is the world's largest stock exchange by market capitalization of its listed companies. Located at 11 Wall Street in Lower Manhattan, New York City, it is operated by NYSE Group, a subsidiary of Intercontinental Exchange. With a market cap of over $30 trillion, it hosts trading for more than 2,300 companies and averages over 1.5 billion shares traded daily. The NYSE uses a hybrid market model combining electronic trading with a physical trading floor that features designated market makers.",
-        tradingHours: "9:30 AM to 4:00 PM Eastern Time (Monday through Friday)",
-        majorIndices: "Dow Jones Industrial Average, S&P 500, NYSE Composite",
-        website: "https://www.nyse.com/",
-        marketCap: "$30.1 trillion (2023)",
-        listedCompanies: "Over 2,300",
-        tradingVolume: "Approximately 1.5 billion shares per day",
-        regulatoryBody: "U.S. Securities and Exchange Commission (SEC)"
-    },
-    NASDAQ: {
-        name: "National Association of Securities Dealers Automated Quotations",
-        founded: "1971",
-        location: "New York City, USA",
-        description: "The Nasdaq Stock Market is an American stock exchange based in New York City. It is the second-largest stock exchange in the world by market capitalization, behind the New York Stock Exchange. Known for listing technology companies, it was the first electronic exchange. Nasdaq operates a purely electronic trading system without a physical trading floor, offering cutting-edge trading technology. It is home to many of the world's leading technology companies including Apple, Microsoft, Amazon, and Google's parent company Alphabet.",
-        tradingHours: "9:30 AM to 4:00 PM Eastern Time (Monday through Friday)",
-        majorIndices: "NASDAQ Composite, NASDAQ-100",
-        website: "https://www.nasdaq.com/",
-        marketCap: "$24.6 trillion (2023)",
-        listedCompanies: "Approximately 3,800",
-        tradingVolume: "About 2 billion shares per day",
-        regulatoryBody: "U.S. Securities and Exchange Commission (SEC)"
-    },
-    TSX: {
-        name: "Toronto Stock Exchange",
-        founded: "1861",
-        location: "Toronto, Canada",
-        description: "The Toronto Stock Exchange is the largest stock exchange in Canada and one of the largest in North America. It is owned and operated by TMX Group. The TSX is particularly strong in natural resources, energy, and financial sectors, reflecting Canada's economic strengths. It uses a fully electronic trading system and has eliminated floor trading entirely. The exchange is the primary venue for Canadian companies seeking to raise public capital.",
-        tradingHours: "9:30 AM to 4:00 PM Eastern Time (Monday through Friday)",
-        majorIndices: "S&P/TSX Composite Index, S&P/TSX 60, S&P/TSX Venture Composite",
-        website: "https://www.tsx.com/",
-        marketCap: "Over $3.2 trillion (2023)",
-        listedCompanies: "More than 1,500 on TSX and TSX Venture Exchange combined",
-        tradingVolume: "Approximately 250 million shares per day",
-        regulatoryBody: "Ontario Securities Commission (OSC)"
-    },
-    BMV: {
-        name: "Bolsa Mexicana de Valores",
-        founded: "1894",
-        location: "Mexico City, Mexico",
-        description: "The Mexican Stock Exchange (BMV) is the second largest stock exchange in Latin America. It lists domestic and foreign securities and is regulated by the National Banking and Securities Commission. The BMV operates a fully electronic trading platform called BMV-SENTRA Equities. In 2017, BMV completed its demutualization process and became a public company. The exchange is particularly important for Mexico's largest corporations and plays a critical role in the country's financial infrastructure.",
-        tradingHours: "8:30 AM to 3:00 PM Mexico City Time (Monday through Friday)",
-        majorIndices: "S&P/BMV IPC (Índice de Precios y Cotizaciones), S&P/BMV IPC CompMX",
-        website: "https://www.bmv.com.mx/",
-        marketCap: "Approximately $385 billion (2023)",
-        listedCompanies: "Around 140 domestic companies",
-        tradingVolume: "About 220 million shares per day",
-        regulatoryBody: "Comisión Nacional Bancaria y de Valores (CNBV)"
-    },
-    CSE: {
-        name: "Colombo Stock Exchange",
-        founded: "1985",
-        location: "Colombo, Sri Lanka",
-        description: "The Colombo Stock Exchange is the main stock exchange in Sri Lanka. It offers a fully automated trading platform and is regulated by the Securities and Exchange Commission of Sri Lanka. The CSE uses the Automated Trading System (ATS) for all trades and has been focusing on market development and technological innovation. Despite being a relatively small exchange in global terms, it has been working to increase its international visibility and attract foreign investors. It plays a crucial role in Sri Lanka's capital markets development.",
-        tradingHours: "9:30 AM to 4:00 PM Colombo Time (Monday through Friday)",
-        majorIndices: "All Share Price Index (ASPI), S&P SL20",
-        website: "https://www.cse.lk/",
-        marketCap: "Approximately $12 billion (2023)",
-        listedCompanies: "Around 290 companies",
-        tradingVolume: "Average daily turnover of $2-3 million",
-        regulatoryBody: "Securities and Exchange Commission of Sri Lanka (SEC)"
-    },
-    XETRA: {
-        name: "XETRA",
-        founded: "1997",
-        location: "Frankfurt, Germany",
-        description: "XETRA is an electronic trading system operated by the Frankfurt Stock Exchange. It is the reference market for German equities and ETFs, offering high liquidity and international connectivity. XETRA accounts for over 90% of all trading in German shares and ETFs. The system allows market participants to trade securities electronically from various locations worldwide. Its advanced technology ensures low latency and high throughput for trading activities. XETRA is particularly important for international investors accessing German markets.",
-        tradingHours: "9:00 AM to 5:30 PM Central European Time (Monday through Friday)",
-        majorIndices: "DAX, MDAX, TecDAX, SDAX",
-        website: "https://www.deutsche-boerse.com/",
-        marketCap: "Approximately €2.3 trillion (2023)",
-        listedCompanies: "Over 1,000 securities tradable on XETRA",
-        tradingVolume: "Average of €5-7 billion daily",
-        regulatoryBody: "Federal Financial Supervisory Authority (BaFin)"
-    },
-    Euronext: {
-        name: "Euronext",
-        founded: "2000",
-        location: "Paris, France (headquarters)",
-        description: "Euronext is a pan-European stock exchange operating markets in Amsterdam, Brussels, Dublin, Lisbon, Milan, Oslo and Paris. It is the largest stock exchange in Europe. Created from the merger of the Amsterdam, Brussels, and Paris exchanges, Euronext has expanded through acquisitions to become Europe's primary exchange group. It offers trading in equities, fixed income, ETFs, warrants, and derivatives. Euronext operates a single trading platform called Optiq, providing harmonized access across all its markets. The exchange is particularly strong in the SME segment with dedicated initiatives for smaller companies.",
-        tradingHours: "9:00 AM to 5:30 PM Central European Time (Monday through Friday)",
-        majorIndices: "CAC 40, AEX, BEL 20, PSI 20, ISEQ 20, OBX",
-        website: "https://www.euronext.com/",
-        marketCap: "Over €6.9 trillion (2023)",
-        listedCompanies: "More than 1,900 issuers",
-        tradingVolume: "Average daily trading volume of €12 billion",
-        regulatoryBody: "Multiple national regulators including AMF (France), AFM (Netherlands)"
-    },
-    SIX: {
-        name: "SIX Swiss Exchange",
-        founded: "1850",
-        location: "Zurich, Switzerland",
-        description: "The SIX Swiss Exchange is Switzerland's principal stock exchange. It offers trading in Swiss and foreign securities and is known for its stability and efficiency. SIX operates a fully electronic trading platform and is particularly renowned for listing major Swiss multinational corporations and luxury goods companies. The exchange is owned by its member banks and operates under the self-regulatory model typical of Swiss financial markets. SIX is also a major center for bond trading and hosts numerous ETFs and structured products.",
-        tradingHours: "9:00 AM to 5:30 PM Central European Time (Monday through Friday)",
-        majorIndices: "SMI (Swiss Market Index), SLI (Swiss Leader Index), SPI (Swiss Performance Index)",
-        website: "https://www.six-group.com/",
-        marketCap: "Approximately $2.3 trillion (2023)",
-        listedCompanies: "Around 260 companies",
-        tradingVolume: "Average daily trading volume of CHF 5.5 billion",
-        regulatoryBody: "Swiss Financial Market Supervisory Authority (FINMA)"
-    },
-    BME: {
-        name: "Bolsas y Mercados Españoles",
-        founded: "2002",
-        location: "Madrid, Spain",
-        description: "BME is the operator of all stock exchanges and financial markets in Spain. It manages the Madrid, Barcelona, Bilbao, and Valencia stock exchanges. Since 2020, BME has been part of the SIX Group. The Spanish exchange offers trading in equities, fixed income, derivatives, and clearing services. BME's SIBE electronic platform connects all four Spanish exchanges into a unified market. The exchange has a strong presence in Latin American markets through strategic alliances and technology provision services.",
-        tradingHours: "9:00 AM to 5:30 PM Central European Time (Monday through Friday)",
-        majorIndices: "IBEX 35, IBEX Medium Cap, IBEX Small Cap",
-        website: "https://www.bolsasymercados.es/",
-        marketCap: "Approximately €800 billion (2023)",
-        listedCompanies: "Around 130 companies on the main market",
-        tradingVolume: "Average daily trading volume of €2 billion",
-        regulatoryBody: "Comisión Nacional del Mercado de Valores (CNMV)"
-    },
-    LSE: {
-        name: "London Stock Exchange",
-        founded: "1801",
-        location: "London, United Kingdom",
-        description: "The London Stock Exchange is one of the world's oldest stock exchanges and the largest exchange in Europe. It is part of the London Stock Exchange Group. With a history dating back more than 300 years, the LSE remains one of the world's premier listing venues. It operates several markets including the Main Market for larger established companies and AIM for growing companies. The LSE is particularly strong in international listings, with companies from over 60 countries. Its SETS trading system provides high-speed electronic order matching.",
-        tradingHours: "8:00 AM to 4:30 PM Greenwich Mean Time (Monday through Friday)",
-        majorIndices: "FTSE 100, FTSE 250, FTSE All-Share",
-        website: "https://www.londonstockexchange.com/",
-        marketCap: "Approximately £3.9 trillion (2023)",
-        listedCompanies: "More than 1,900 companies from over 60 countries",
-        tradingVolume: "Average daily trading value of £5 billion",
-        regulatoryBody: "Financial Conduct Authority (FCA)"
-    },
-    OMX: {
-        name: "NASDAQ OMX Nordic",
-        founded: "1998",
-        location: "Stockholm, Sweden",
-        description: "NASDAQ OMX Nordic operates stock exchanges in Nordic and Baltic countries including Stockholm, Helsinki, Copenhagen, and Reykjavik. It is owned by NASDAQ Inc. The exchange group offers a unified Nordic marketplace with harmonized rules and requirements. NASDAQ Nordic is particularly strong in technology and industrial sectors, reflecting the region's economic strengths. The trading platform uses NASDAQ's proprietary technology, also employed by exchanges worldwide. The exchange has been at the forefront of sustainability initiatives, with a well-developed ESG reporting framework.",
-        tradingHours: "9:00 AM to 5:30 PM Central European Time (Monday through Friday)",
-        majorIndices: "OMXS30 (Stockholm), OMXH25 (Helsinki), OMXC20 (Copenhagen), OMXI10 (Iceland)",
-        website: "https://www.nasdaqomxnordic.com/",
-        marketCap: "Combined approximately €1.7 trillion (2023)",
-        listedCompanies: "Over 1,000 across all Nordic and Baltic markets",
-        tradingVolume: "Daily trading volume of approximately €2.5 billion",
-        regulatoryBody: "Multiple regulators including Finansinspektionen (Sweden), Finanstilsynet (Denmark)"
-    },
-    MOEX: {
-        name: "Moscow Exchange",
-        founded: "2011",
-        location: "Moscow, Russia",
-        description: "The Moscow Exchange is the largest exchange group in Russia. It was formed through the merger of the Moscow Interbank Currency Exchange and the Russian Trading System. MOEX provides a comprehensive range of trading markets including equities, bonds, derivatives, FX, money market instruments, and commodities. It operates its own central securities depository (National Settlement Depository) and clearing house (National Clearing Centre). MOEX has implemented several technological upgrades to its trading infrastructure and has been working to increase international investor participation despite geopolitical challenges.",
-        tradingHours: "10:00 AM to 6:45 PM Moscow Time (Monday through Friday)",
-        majorIndices: "MOEX Russia Index, RTS Index, MOEX Blue Chip Index",
-        website: "https://www.moex.com/",
-        marketCap: "Approximately $800 billion (2023)",
-        listedCompanies: "Around 260 equity issuers",
-        tradingVolume: "Average daily trading volume across all markets exceeds $25 billion",
-        regulatoryBody: "Bank of Russia"
-    },
-    BorsaItaliana: {
-        name: "Borsa Italiana",
-        founded: "1808",
-        location: "Milan, Italy",
-        description: "Borsa Italiana is Italy's main stock exchange. It was acquired by Euronext in 2021 and offers trading in equities, bonds, derivatives, and ETFs. With over 200 years of history, it remains central to Italian capital markets. The exchange operates multiple segments including MTA (main market), AIM Italia (for SMEs), MOT (bond market), and IDEM (derivatives market). Borsa Italiana is particularly strong in luxury goods, banking, and industrial companies. Its merger with Euronext has created expanded opportunities for cross-border trading and investment throughout Europe.",
-        tradingHours: "9:00 AM to 5:30 PM Central European Time (Monday through Friday)",
-        majorIndices: "FTSE MIB, FTSE Italia All-Share, FTSE Italia Mid Cap",
-        website: "https://www.borsaitaliana.it/",
-        marketCap: "Approximately €750 billion (2023)",
-        listedCompanies: "Around 370 companies",
-        tradingVolume: "Average daily equity trading volume of €2.5 billion",
-        regulatoryBody: "Commissione Nazionale per le Società e la Borsa (CONSOB)"
-    },
-    WSE: {
-        name: "Warsaw Stock Exchange",
-        founded: "1817",
-        location: "Warsaw, Poland",
-        description: "The Warsaw Stock Exchange is the largest stock exchange in Central and Eastern Europe. It lists Polish and foreign companies and offers trading in equities, bonds, and derivatives. Founded in 1817, the modern WSE was re-established in 1991 after Poland's transition to a market economy. It has grown significantly and now hosts companies from across the CEE region. The WSE operates a main market and NewConnect (for smaller companies). It uses the UTP trading system, also employed by NYSE Euronext. The exchange has been particularly successful in attracting domestic retail investors to the market.",
-        tradingHours: "9:00 AM to 5:30 PM Central European Time (Monday through Friday)",
-        majorIndices: "WIG20, mWIG40, sWIG80, WIG",
-        website: "https://www.gpw.pl/",
-        marketCap: "Approximately €150 billion (2023)",
-        listedCompanies: "Over 400 on both markets combined",
-        tradingVolume: "Average daily trading value of €200 million",
-        regulatoryBody: "Polish Financial Supervision Authority (KNF)"
-    },
-    OSE: {
-        name: "Oslo Stock Exchange",
-        founded: "1819",
-        location: "Oslo, Norway",
-        description: "The Oslo Stock Exchange is the main stock exchange in Norway. It is now part of Euronext and offers trading in equities, bonds, and derivatives. The OSE is particularly strong in energy, shipping, and seafood sectors, reflecting Norway's economic strengths. In 2019, it was acquired by Euronext, becoming Euronext Oslo. The exchange operates the Oslo Axess market for smaller companies alongside its main market. The OSE is one of the world's leading exchanges for shipping and offshore service companies and has a growing green bond segment reflecting Norway's focus on sustainability.",
-        tradingHours: "9:00 AM to 4:20 PM Central European Time (Monday through Friday)",
-        majorIndices: "Oslo Børs All-Share Index, OBX Index, Oslo Energy Index",
-        website: "https://www.euronext.com/en/markets/oslo",
-        marketCap: "Approximately NOK 3.5 trillion (2023)",
-        listedCompanies: "Around 340 listings",
-        tradingVolume: "Average daily trading volume of NOK 5 billion",
-        regulatoryBody: "Financial Supervisory Authority of Norway (Finanstilsynet)"
-    },
-    ISE: {
-        name: "Irish Stock Exchange",
-        founded: "1793",
-        location: "Dublin, Ireland",
-        description: "The Irish Stock Exchange, now Euronext Dublin, is Ireland's main stock exchange. It was acquired by Euronext in 2018 and offers trading in equities, funds, and debt securities. The exchange has a particularly strong position in debt and fund listings, being a leading venue globally for listing investment funds and debt securities. Euronext Dublin operates the Main Securities Market for established companies and the Enterprise Securities Market for growing companies. Its strategic location makes it an attractive venue for international companies seeking EU market access, particularly post-Brexit.",
-        tradingHours: "9:00 AM to 5:30 PM Central European Time (Monday through Friday)",
-        majorIndices: "ISEQ Overall Index, ISEQ 20",
-        website: "https://www.euronext.com/en/markets/dublin",
-        marketCap: "Approximately €130 billion (2023)",
-        listedCompanies: "Around 40 equity listings, but over 37,000 securities in total including bonds and funds",
-        tradingVolume: "Daily equity trading volume of €50-100 million",
-        regulatoryBody: "Central Bank of Ireland"
-    },
-    JPX: {
-        name: "Japan Exchange Group",
-        founded: "2013",
-        location: "Tokyo, Japan",
-        description: "JPX operates the Tokyo Stock Exchange and the Osaka Exchange. It is Asia's largest exchange group and the third largest in the world by market capitalization. Formed through the merger of the Tokyo Stock Exchange and the Osaka Securities Exchange, JPX offers comprehensive market services across equities, derivatives, ETFs, and bonds. The TSE was restructured in 2022 into three new market segments: Prime, Standard, and Growth. JPX uses the arrowhead trading system, which provides high-speed, low-latency trading capabilities. Japan's unique trading hours include a midday break, a tradition maintained despite global trends toward continuous trading.",
-        tradingHours: "9:00 AM to 3:00 PM Japan Standard Time (Monday through Friday), with a lunch break from 11:30 AM to 12:30 PM",
-        majorIndices: "Nikkei 225, TOPIX, JPX-Nikkei 400, TOPIX 500",
-        website: "https://www.jpx.co.jp/english/",
-        marketCap: "Approximately $6.2 trillion (2023)",
-        listedCompanies: "About 3,800 companies across all segments",
-        tradingVolume: "Average daily trading value of ¥3.5 trillion",
-        regulatoryBody: "Financial Services Agency (FSA) of Japan"
-    },
-    HKEX: {
-        name: "Hong Kong Stock Exchange",
-        founded: "1891",
-        location: "Hong Kong",
-        description: "The Hong Kong Stock Exchange is Asia's third largest stock exchange and one of the world's most significant financial markets. It is operated by Hong Kong Exchanges and Clearing. HKEX serves as a crucial gateway between mainland China and international markets, with schemes like Stock Connect providing foreign investors access to Chinese equities. The exchange maintains a unique position due to Hong Kong's status as a special administrative region with separate financial regulations from mainland China. HKEX has a strong IPO market and has consistently ranked among the top global exchanges for funds raised through new listings.",
-        tradingHours: "9:30 AM to 4:00 PM Hong Kong Time (Monday through Friday), with a lunch break from 12:00 PM to 1:00 PM",
-        majorIndices: "Hang Seng Index, Hang Seng China Enterprises Index, Hang Seng TECH Index",
-        website: "https://www.hkex.com.hk/",
-        marketCap: "Approximately $4.5 trillion (2023)",
-        listedCompanies: "Over 2,500 listed companies",
-        tradingVolume: "Average daily trading value of HK$125 billion",
-        regulatoryBody: "Securities and Futures Commission (SFC)"
-    },
-    SSE: {
-        name: "Shanghai Stock Exchange",
-        founded: "1990",
-        location: "Shanghai, China",
-        description: "The Shanghai Stock Exchange is one of China's two main stock exchanges. It is the world's fourth largest stock market by market capitalization and primarily lists mainland Chinese companies. The SSE operates A-shares (denominated in renminbi for domestic investors) and B-shares (denominated in US dollars for foreign investors). The landmark Shanghai-Hong Kong Stock Connect program launched in 2014 allows international investors to trade SSE-listed stocks. The exchange is directly governed by the China Securities Regulatory Commission. The SSE has particular strength in large state-owned enterprises and financial institutions.",
-        tradingHours: "9:30 AM to 3:00 PM China Standard Time (Monday through Friday), with a lunch break from 11:30 AM to 1:00 PM",
-        majorIndices: "SSE Composite Index, SSE 50, SSE 180, SSE 380",
-        website: "http://www.sse.com.cn/eng/",
-        marketCap: "Approximately $7.9 trillion (2023)",
-        listedCompanies: "Around 2,000 companies",
-        tradingVolume: "Average daily trading volume of RMB 450-500 billion",
-        regulatoryBody: "China Securities Regulatory Commission (CSRC)"
-    },
-    SZSE: {
-        name: "Shenzhen Stock Exchange",
-        founded: "1990",
-        location: "Shenzhen, China",
-        description: "The Shenzhen Stock Exchange is one of China's two major stock exchanges. It tends to list smaller, more entrepreneurial firms, especially high-tech companies. The SZSE operates multiple boards including the Main Board, SME Board, and ChiNext (similar to NASDAQ, focusing on high-tech companies). The Shenzhen-Hong Kong Stock Connect program launched in 2016 allows international investors to access Shenzhen-listed stocks. The exchange has a particular focus on innovative industries and private enterprises, contrasting with Shanghai's emphasis on large state-owned enterprises. SZSE has been instrumental in supporting China's transition towards a more innovation-driven economy.",
-        tradingHours: "9:30 AM to 3:00 PM China Standard Time (Monday through Friday), with a lunch break from 11:30 AM to 1:00 PM",
-        majorIndices: "SZSE Component Index, ChiNext, SZSE 100, SZSE 1000",
-        website: "http://www.szse.cn/English/",
-        marketCap: "Approximately $6.2 trillion (2023)",
-        listedCompanies: "Over 2,600 companies across all boards",
-        tradingVolume: "Average daily trading volume of RMB 500 billion",
-        regulatoryBody: "China Securities Regulatory Commission (CSRC)"
-    },
-    BSE: {
-        name: "Bombay Stock Exchange",
-        founded: "1875",
-        location: "Mumbai, India",
-        description: "The Bombay Stock Exchange is Asia's oldest stock exchange and India's second largest by market capitalization. It lists over 5,000 companies and is known for the BSE SENSEX index. Established in 1875, the BSE is the world's fastest stock exchange with a trading speed of 6 microseconds. The exchange operates multiple platforms including the main equity market, SME platform, derivatives market, and mutual fund platform. BSE has been at the forefront of modernizing India's capital markets and was the first exchange in India to obtain ISO certification. It has undergone significant technological transformation from open outcry to a fully electronic trading system.",
-        tradingHours: "9:15 AM to 3:30 PM India Standard Time (Monday through Friday)",
-        majorIndices: "BSE SENSEX, BSE 100, BSE 200, BSE 500",
-        website: "https://www.bseindia.com/",
-        marketCap: "Approximately $3.4 trillion (2023)",
-        listedCompanies: "Over 5,000 listed companies",
-        tradingVolume: "Average daily trading value of $400 million",
-        regulatoryBody: "Securities and Exchange Board of India (SEBI)"
-    },
-    NSE: {
-        name: "National Stock Exchange of India",
-        founded: "1992",
-        location: "Mumbai, India",
-        description: "The National Stock Exchange of India is India's leading stock exchange and the largest in India by trading volume. It has played a key role in reforming the Indian securities market. Founded in 1992 as the first demutualized electronic exchange in India, NSE introduced electronic trading, anonymous order matching, and a nationwide network. The exchange offers trading in equity, debt instruments, exchange-traded funds, and derivatives. NSE's flagship index, the NIFTY 50, represents about 66% of the free float market capitalization of all stocks listed on the exchange. NSE has been instrumental in developing India's derivatives market, which is now one of the largest in the world.",
-        tradingHours: "9:15 AM to 3:30 PM India Standard Time (Monday through Friday)",
-        majorIndices: "NIFTY 50, NIFTY 100, NIFTY 500, NIFTY Bank",
-        website: "https://www.nseindia.com/",
-        marketCap: "Approximately $3.5 trillion (2023)",
-        listedCompanies: "Around 2,000 companies",
-        tradingVolume: "Average daily trading value of $7-8 billion (including derivatives)",
-        regulatoryBody: "Securities and Exchange Board of India (SEBI)"
-    },
-    KRX: {
-        name: "Korea Exchange",
-        founded: "2005",
-        location: "Busan, South Korea",
-        description: "The Korea Exchange is the sole securities exchange operator in South Korea. It was formed by the merger of the Korea Stock Exchange, KOSDAQ, and the Korea Futures Exchange. KRX operates multiple markets including the KOSPI market (large companies), KOSDAQ market (growth companies), and derivatives market. South Korea's capital markets are known for high retail investor participation compared to other developed markets. KRX has been actively promoting ESG investments and developing sustainability indices. The exchange has a particularly strong derivatives market, with the KOSPI 200 Options once being the most actively traded derivatives contract in the world.",
-        tradingHours: "9:00 AM to 3:30 PM Korea Standard Time (Monday through Friday)",
-        majorIndices: "KOSPI, KOSDAQ, KOSPI 200, KRX 100",
-        website: "http://global.krx.co.kr/",
-        marketCap: "Approximately $1.8 trillion (2023)",
-        listedCompanies: "Over 2,400 companies across KOSPI and KOSDAQ",
-        tradingVolume: "Average daily trading value of ₩15 trillion",
-        regulatoryBody: "Financial Services Commission (FSC) and Financial Supervisory Service (FSS)"
-    },
-    TWSE: {
-        name: "Taiwan Stock Exchange",
-        founded: "1961",
-        location: "Taipei, Taiwan",
-        description: "The Taiwan Stock Exchange is the securities trading center in Taiwan. It is known for its strong representation of technology companies, particularly semiconductor firms. The TWSE is heavily weighted toward technology and electronics manufacturing, with Taiwan Semiconductor Manufacturing Company (TSMC) alone accounting for a significant portion of market capitalization. The exchange uses a fully electronic trading system and has eliminated floor trading. Despite being a relatively small market globally, Taiwan's stock market has high liquidity and international visibility due to the strategic importance of its technology sector. The TWSE has been working to attract foreign investment through regulatory reforms.",
-        tradingHours: "9:00 AM to 1:30 PM Taiwan Standard Time (Monday through Friday)",
-        majorIndices: "TAIEX, FTSE TWSE Taiwan 50 Index, TWSE Technology Index",
-        website: "https://www.twse.com.tw/en/",
-        marketCap: "Approximately $1.7 trillion (2023)",
-        listedCompanies: "Around 950 companies",
-        tradingVolume: "Average daily trading value of NT$250 billion",
-        regulatoryBody: "Financial Supervisory Commission (FSC)"
-    },
-    SGX: {
-        name: "Singapore Exchange",
-        founded: "1999",
-        location: "Singapore",
-        description: "The Singapore Exchange is a multi-asset exchange operating equity, fixed income, and derivatives markets. It is known for its strong regulatory standards and international outlook. SGX serves as a gateway to Southeast Asian markets and has positioned itself as an international financial hub. The exchange offers trading in equities, REITs, ETFs, fixed income, and derivatives. SGX has particularly strong derivatives offerings, including products based on Asian equity indices, commodities, and foreign exchange. The exchange has been focusing on expanding its international presence and developing innovative products, including sustainability-linked derivatives and digital assets.",
-        tradingHours: "9:00 AM to 5:00 PM Singapore Time (Monday through Friday)",
-        majorIndices: "Straits Times Index (STI), FTSE ST All-Share Index, SGX MSCI Singapore Free Index",
-        website: "https://www.sgx.com/",
-        marketCap: "Approximately $650 billion (2023)",
-        listedCompanies: "Around 700 listed companies",
-        tradingVolume: "Average daily equity trading value of S$1.2 billion",
-        regulatoryBody: "Monetary Authority of Singapore (MAS)"
-    },
-    TASE: {
-        name: "Tel Aviv Stock Exchange",
-        founded: "1953",
-        location: "Tel Aviv, Israel",
-        description: "The Tel Aviv Stock Exchange is Israel's only public stock exchange. It plays a crucial role in Israel's economy and is known for listing technology and biotech companies. The TASE has a unique trading week, operating Sunday through Thursday to accommodate the Israeli work week. The exchange became a public company in 2019 with its shares listed on its own exchange. TASE has implemented a series of reforms to attract international investors, including extending trading hours and adopting international standards. The Israeli market is particularly strong in high-tech, biotech, and cybersecurity sectors, reflecting Israel's status as a 'start-up nation'.",
-        tradingHours: "9:30 AM to 5:30 PM Israel Standard Time (Sunday through Thursday)",
-        majorIndices: "TA-35, TA-125, TA-90, TA-Technology",
-        website: "https://www.tase.co.il/en",
-        marketCap: "Approximately $250 billion (2023)",
-        listedCompanies: "Around 500 companies",
-        tradingVolume: "Average daily trading value of ILS 1.7 billion",
-        regulatoryBody: "Israel Securities Authority (ISA)"
-    },
-    IDX: {
-        name: "Indonesia Stock Exchange",
-        founded: "2007",
-        location: "Jakarta, Indonesia",
-        description: "The Indonesia Stock Exchange was formed through the merger of the Jakarta and Surabaya stock exchanges. It is one of the fastest-growing exchanges in Southeast Asia. The IDX has been implementing significant market reforms and technological upgrades to attract both domestic and international investors. The exchange operates multiple board segments including the Main Board, Development Board, and Acceleration Board for startups and SMEs. Indonesia's large population and growing middle class have helped drive increased domestic participation in the stock market. The IDX has been focusing on financial literacy initiatives to encourage more retail investor participation.",
-        tradingHours: "9:00 AM to 3:00 PM Western Indonesia Time (Monday through Friday)",
-        majorIndices: "Jakarta Composite Index (JCI), IDX30, LQ45, IDX80",
-        website: "https://www.idx.co.id/en-us/",
-        marketCap: "Approximately $600 billion (2023)",
-        listedCompanies: "Around 800 companies",
-        tradingVolume: "Average daily trading value of IDR 9-10 trillion",
-        regulatoryBody: "Financial Services Authority (OJK)"
-    },
-    SET: {
-        name: "Stock Exchange of Thailand",
-        founded: "1975",
-        location: "Bangkok, Thailand",
-        description: "The Stock Exchange of Thailand is Thailand's national stock exchange. It provides a platform for trading listed securities and plays an important role in Thailand's capital market development. The SET operates multiple markets including the main board and the Market for Alternative Investment (MAI) for smaller companies. The Thai market has attracted significant foreign investment due to the country's role as a manufacturing hub and tourism destination. SET has been implementing various technological improvements including a new trading system and has been working to strengthen corporate governance standards among listed companies.",
-        tradingHours: "10:00 AM to 4:30 PM Thailand Time (Monday through Friday)",
-        majorIndices: "SET Index, SET50, SET100, SET High Dividend",
-        website: "https://www.set.or.th/en",
-        marketCap: "Approximately $550 billion (2023)",
-        listedCompanies: "Over 800 companies across all markets",
-        tradingVolume: "Average daily trading value of THB 60-70 billion",
-        regulatoryBody: "Securities and Exchange Commission of Thailand (SEC)"
-    },
-    PSE: {
-        name: "Philippine Stock Exchange",
-        founded: "1992",
-        location: "Manila, Philippines",
-        description: "The Philippine Stock Exchange was formed by the merger of the Manila and Makati stock exchanges. It is the only stock exchange in the Philippines and is one of the oldest in Asia. In 2018, the PSE moved to a unified trading floor in Bonifacio Global City, consolidating its previously split operations. The exchange operates the PSE Electronic Trading System (PSETrade) for all market transactions. The PSE has been working to increase market depth and liquidity through various initiatives including the promotion of short selling and securities borrowing and lending. The exchange has particular strength in consumer, property, and banking sectors.",
-        tradingHours: "9:30 AM to 3:30 PM Philippine Time (Monday through Friday)",
-        majorIndices: "PSE Composite Index (PSEi), PSE All Shares Index, PSE Sector Indices",
-        website: "https://www.pse.com.ph/",
-        marketCap: "Approximately $250 billion (2023)",
-        listedCompanies: "Around 270 listed companies",
-        tradingVolume: "Average daily trading value of PHP 5-6 billion",
-        regulatoryBody: "Securities and Exchange Commission of the Philippines (SEC)"
-    },
-    HOSE: {
-        name: "Ho Chi Minh City Stock Exchange",
-        founded: "2000",
-        location: "Ho Chi Minh City, Vietnam",
-        description: "The Ho Chi Minh City Stock Exchange is the largest stock exchange in Vietnam. It lists major Vietnamese companies and plays a key role in Vietnam's economic development. HOSE is one of two stock exchanges in Vietnam, along with the Hanoi Stock Exchange (HNX). The exchange has seen significant growth as Vietnam's economy has developed, attracting increased foreign investment. HOSE primarily lists larger companies, while HNX focuses on smaller enterprises. The exchange has been implementing technological upgrades to its trading system to improve capacity and efficiency. Vietnam's stock market has been gradually opening to foreign investors through increases in foreign ownership limits.",
-        tradingHours: "9:00 AM to 3:00 PM Vietnam Time (Monday through Friday)",
-        majorIndices: "VN-Index, VN30, VNMidcap, VNSmallcap",
-        website: "https://www.hsx.vn/",
-        marketCap: "Approximately $200 billion (2023)",
-        listedCompanies: "Around 400 companies",
-        tradingVolume: "Average daily trading value of VND 15-20 trillion",
-        regulatoryBody: "State Securities Commission of Vietnam (SSC)"
-    },
-    DFM: {
-        name: "Dubai Financial Market",
-        founded: "2000",
-        location: "Dubai, United Arab Emirates",
-        description: "The Dubai Financial Market is a stock exchange located in Dubai, UAE. It operates as a secondary market for trading securities issued by public shareholding companies and bonds. The DFM became a public company in 2006 when it offered 20% of its shares through an IPO. The exchange is dominated by banking, real estate, and construction sectors, reflecting Dubai's economic focus. DFM has implemented various measures to attract international investors, including extended settlement cycles and custody models compatible with international practices. The exchange provides a platform for both conventional and Islamic (Sharia-compliant) securities.",
-        tradingHours: "10:00 AM to 2:00 PM Gulf Standard Time (Sunday through Thursday)",
-        majorIndices: "DFM General Index, DFM Sector Indices",
-        website: "https://www.dfm.ae/",
-        marketCap: "Approximately $150 billion (2023)",
-        listedCompanies: "Around 70 companies",
-        tradingVolume: "Average daily trading value of AED 300-400 million",
-        regulatoryBody: "Securities and Commodities Authority (SCA)"
-    },
-    ADX: {
-        name: "Abu Dhabi Securities Exchange",
-        founded: "2000",
-        location: "Abu Dhabi, United Arab Emirates",
-        description: "The Abu Dhabi Securities Exchange is a stock exchange in Abu Dhabi, UAE. It was established to promote efficiency, transparency, and liquidity in the UAE capital markets. The ADX has been rapidly developing, with several major IPOs in recent years including ADNOC subsidiaries. The exchange is heavily weighted toward energy, banking, and telecommunications sectors. ADX has been implementing market developments as part of Abu Dhabi's economic diversification strategy, including the introduction of short selling and securities lending and borrowing. The exchange operates according to the Sunday-Thursday work week common in the Middle East.",
-        tradingHours: "10:00 AM to 2:00 PM Gulf Standard Time (Sunday through Thursday)",
-        majorIndices: "ADX General Index, ADX Sector Indices",
-        website: "https://www.adx.ae/",
-        marketCap: "Approximately $710 billion (2023)",
-        listedCompanies: "Around 90 companies",
-        tradingVolume: "Average daily trading value of AED 1.2-1.5 billion",
-        regulatoryBody: "Securities and Commodities Authority (SCA)"
-    },
-    ASX: {
-        name: "Australian Securities Exchange",
-        founded: "1987",
-        location: "Sydney, Australia",
-        description: "The Australian Securities Exchange is Australia's primary securities exchange. Formed through the merger of the Australian Stock Exchange and the Sydney Futures Exchange, it operates a diverse range of financial markets. The ASX is particularly strong in mining, financial, and healthcare sectors, reflecting Australia's economic strengths. It operates a fully electronic trading system called ASX Trade. The exchange has been a pioneer in implementing blockchain technology for clearing and settlement processes. ASX offers comprehensive market services including listings, trading, clearing, settlement, technical services, and information services.",
-        tradingHours: "10:00 AM to 4:00 PM Australian Eastern Time (Monday through Friday)",
-        majorIndices: "S&P/ASX 200, All Ordinaries, S&P/ASX 50, S&P/ASX 300",
-        website: "https://www.asx.com.au/",
-        marketCap: "Approximately $1.9 trillion (2023)",
-        listedCompanies: "Around 2,200 companies",
-        tradingVolume: "Average daily trading value of AUD 5-6 billion",
-        regulatoryBody: "Australian Securities and Investments Commission (ASIC)"
-    },
-    NZX: {
-        name: "New Zealand Stock Exchange",
-        founded: "1915",
-        location: "Wellington, New Zealand",
-        description: "The New Zealand Stock Exchange is New Zealand's national stock exchange. It offers trading in equities, funds, bonds, and derivatives and plays a crucial role in New Zealand's capital markets. The NZX operates three equity markets: the NZX Main Board, NZX Debt Market, and Fonterra Shareholders Market. The exchange is known for its strong agricultural and utility sectors, reflecting New Zealand's economic focus. NZX has been implementing various initiatives to increase market liquidity and international visibility, including revised listing rules and market structure changes. The exchange has also been promoting ESG reporting among listed companies.",
-        tradingHours: "10:00 AM to 4:45 PM New Zealand Time (Monday through Friday)",
-        majorIndices: "NZX 50 Index, NZX All Index, NZX 20 Index",
-        website: "https://www.nzx.com/",
-        marketCap: "Approximately NZ$195 billion (2023)",
-        listedCompanies: "Around 130 equity issuers",
-        tradingVolume: "Average daily trading value of NZ$150-200 million",
-        regulatoryBody: "Financial Markets Authority (FMA)"
-    },
-    JSE: {
-        name: "Johannesburg Stock Exchange",
-        founded: "1887",
-        location: "Johannesburg, South Africa",
-        description: "The Johannesburg Stock Exchange is the largest stock exchange in Africa. It offers a full range of products including equities, bonds, and derivatives and is a crucial part of South Africa's economy. The JSE is particularly strong in mining, financial, and retail sectors. It operates multiple markets including the Main Board, AltX (for fast-growing small and mid-sized companies), and BEE Board (supporting black economic empowerment). The exchange uses the FTSE/JSE Africa Index Series as its primary indices. The JSE has been a leader in sustainability reporting, requiring integrated reporting from listed companies since 2010.",
-        tradingHours: "9:00 AM to 5:00 PM South African Standard Time (Monday through Friday)",
-        majorIndices: "JSE Top 40 Index, FTSE/JSE All Share, FTSE/JSE Resources, FTSE/JSE Financials",
-        website: "https://www.jse.co.za/",
-        marketCap: "Approximately $1.1 trillion (2023)",
-        listedCompanies: "Around 300 domestic and international companies",
-        tradingVolume: "Average daily trading value of ZAR 20-25 billion",
-        regulatoryBody: "Financial Sector Conduct Authority (FSCA)"
-    },
-    EGX: {
-        name: "Egyptian Exchange",
-        founded: "1883",
-        location: "Cairo, Egypt",
-        description: "The Egyptian Exchange is the principal stock exchange of Egypt. It comprises the Alexandria and Cairo stock exchanges, which were merged in 2009, and is one of the oldest stock markets in the Middle East. The EGX has undergone significant modernization in recent years, including implementing an electronic trading system and upgrading its market infrastructure. The exchange is dominated by banking, telecommunications, and construction sectors. EGX has been working to increase market depth and liquidity through various initiatives including the introduction of market makers and short selling. The Egyptian market follows the Sunday-Thursday trading week common in Muslim-majority countries.",
-        tradingHours: "10:00 AM to 2:30 PM Eastern European Time (Sunday through Thursday)",
-        majorIndices: "EGX 30, EGX 70, EGX 100, EGX 30 Capped",
-        website: "https://www.egx.com.eg/en/",
-        marketCap: "Approximately $40 billion (2023)",
-        listedCompanies: "Around 220 companies",
-        tradingVolume: "Average daily trading value of EGP 1-1.5 billion",
-        regulatoryBody: "Financial Regulatory Authority (FRA)"
-    },
-    NSE_Nigeria: {
-        name: "Nigerian Stock Exchange",
-        founded: "1960",
-        location: "Lagos, Nigeria",
-        description: "The Nigerian Stock Exchange, now Nigerian Exchange Limited (NGX), is the main stock exchange in Nigeria. It plays a key role in Nigeria's economy and provides a platform for trading equities, bonds, and ETFs. In 2021, the exchange completed its demutualization process, transforming from a mutual entity into a public company limited by shares. The NGX operates multiple boards including the Premium Board for companies meeting the highest standards of capitalization and governance. The exchange is dominated by banking, consumer goods, and industrial sectors. NGX has been working to attract more listings and increase market liquidity through various market development initiatives.",
-        tradingHours: "10:00 AM to 2:30 PM West Africa Time (Monday through Friday)",
-        majorIndices: "NSE All-Share Index, NSE 30, NSE Banking, NSE Consumer Goods",
-        website: "https://ngxgroup.com/",
-        marketCap: "Approximately $60 billion (2023)",
-        listedCompanies: "Around 160 companies",
-        tradingVolume: "Average daily trading value of NGN 3-5 billion",
-        regulatoryBody: "Securities and Exchange Commission Nigeria (SEC)"
-    },
-    ZSE: {
-        name: "Zimbabwe Stock Exchange",
-        founded: "1896",
-        location: "Harare, Zimbabwe",
-        description: "The Zimbabwe Stock Exchange is the official stock exchange of Zimbabwe. Despite economic challenges, it has remained an important capital market in the region. The ZSE has shown remarkable resilience despite Zimbabwe's economic volatility and hyperinflation episodes. In 2020, the exchange launched an alternative trading platform called the Victoria Falls Stock Exchange (VFEX) that trades exclusively in foreign currency. The ZSE has implemented an automated trading system to replace the previous call-over trading system. The exchange is dominated by consumer, telecommunications, and mining sectors. The ZSE has been working to develop new products and services to attract more listings and investors.",
-        tradingHours: "9:00 AM to 4:00 PM Central Africa Time (Monday through Friday)",
-        majorIndices: "ZSE Industrial Index, ZSE Top 10, ZSE All Share",
-        website: "https://www.zse.co.zw/",
-        marketCap: "Approximately $4 billion (2023)",
-        listedCompanies: "Around 50 companies on the main exchange",
-        tradingVolume: "Average daily trading value varies significantly due to economic volatility",
-        regulatoryBody: "Securities and Exchange Commission of Zimbabwe (SECZ)"
-    },
-    GSE: {
-        name: "Ghana Stock Exchange",
-        founded: "1990",
-        location: "Accra, Ghana",
-        description: "The Ghana Stock Exchange is the principal stock exchange of Ghana. It has played an important role in the economic development of Ghana by providing a platform for capital raising and investment. The GSE operates a main market and an alternative market for SMEs. The exchange has migrated from a manual trading system to a fully automated trading platform. GSE is dominated by banking, telecommunications, and beverage sectors. The exchange has been implementing various initiatives to increase market participation, including public education programs and regulatory reforms. GSE has been working to integrate with other West African exchanges to increase regional market access.",
-        tradingHours: "9:30 AM to 3:00 PM Ghana Mean Time (Monday through Friday)",
-        majorIndices: "GSE Composite Index, GSE Financial Stocks Index",
-        website: "https://gse.com.gh/",
-        marketCap: "Approximately $8 billion (2023)",
-        listedCompanies: "Around 40 companies",
-        tradingVolume: "Average daily trading value of GHS 5-10 million",
-        regulatoryBody: "Securities and Exchange Commission Ghana"
-    },
-    NSE_Kenya: {
-        name: "Nairobi Securities Exchange",
-        founded: "1954",
-        location: "Nairobi, Kenya",
-        description: "The Nairobi Securities Exchange is the principal stock exchange of Kenya. It offers a platform for trading equities and bonds and has been instrumental in Kenya's economic growth. Originally established as the Nairobi Stock Exchange, it rebranded to the Nairobi Securities Exchange in 2011. The NSE became a public company through self-listing in 2014. The exchange operates multiple segments including the Main Investment Market and the Growth Enterprise Market Segment for smaller companies. NSE has been at the forefront of financial innovation in East Africa, launching products such as derivatives and REITs. The exchange is dominated by banking, telecommunications, and energy sectors.",
-        tradingHours: "9:00 AM to 3:00 PM East Africa Time (Monday through Friday)",
-        majorIndices: "NSE 20 Share Index, NSE All-Share Index, NSE 25 Share Index",
-        website: "https://www.nse.co.ke/",
-        marketCap: "Approximately $20 billion (2023)",
-        listedCompanies: "Around 65 companies",
-        tradingVolume: "Average daily trading value of KES 700-900 million",
-        regulatoryBody: "Capital Markets Authority (CMA) Kenya"
-    },
-    B3: {
-        name: "B3 - Brasil Bolsa Balcão",
-        founded: "2017",
-        location: "São Paulo, Brazil",
-        description: "B3 is the main stock exchange in Brazil and the largest stock exchange in Latin America. It was formed through the merger of BM&FBOVESPA and CETIP and offers trading in equities, derivatives, and commodities. B3 operates multiple markets including equities, private fixed income, government securities, derivatives, and commodities. The exchange has a particularly strong derivatives market, which is among the largest in the world. B3 completed a major technological overhaul in 2021 with the implementation of its new multi-asset trading platform. The Brazilian market has a high level of retail investor participation, which has grown significantly in recent years.",
-        tradingHours: "10:00 AM to 5:00 PM Brasília Time (Monday through Friday)",
-        majorIndices: "Bovespa Index (Ibovespa), Brazil 50 (IBrX-50), Brazil 100 (IBrX-100)",
-        website: "http://www.b3.com.br/en_us/",
-        marketCap: "Approximately $800 billion (2023)",
-        listedCompanies: "Around 440 companies",
-        tradingVolume: "Average daily equity trading value of BRL 25-30 billion",
-        regulatoryBody: "Securities and Exchange Commission of Brazil (CVM)"
-    },
-    Santiago: {
-        name: "Santiago Stock Exchange",
-        founded: "1893",
-        location: "Santiago, Chile",
-        description: "The Santiago Stock Exchange is Chile's principal stock exchange. It plays an important role in Chile's economy and offers trading in equities, bonds, and derivatives. The exchange operates multiple markets including the main equity market, venture capital market, and fixed income market. The Santiago Stock Exchange is particularly strong in mining, utilities, and retail sectors, reflecting Chile's economic strengths. The exchange has been implementing various technological improvements and market reforms to increase international visibility and attract foreign investment. Chile's capital market is one of the most developed in Latin America, with strong institutional investor participation.",
-        tradingHours: "9:30 AM to 4:00 PM Chile Time (Monday through Friday)",
-        majorIndices: "S&P/CLX IPSA, S&P/CLX IGPA",
-        website: "https://www.bolsadesantiago.com/",
-        marketCap: "Approximately $200 billion (2023)",
-        listedCompanies: "Around 300 companies",
-        tradingVolume: "Average daily equity trading value of CLP 100-150 billion",
-        regulatoryBody: "Financial Market Commission (CMF)"
-    },
-    BVC: {
-        name: "Colombian Securities Exchange",
-        founded: "2001",
-        location: "Bogotá, Colombia",
-        description: "The Colombian Securities Exchange (Bolsa de Valores de Colombia) is Colombia's main stock exchange. It was formed through the merger of the Bogotá, Medellín, and Occidente stock exchanges. The BVC operates multiple markets including equities, fixed income, derivatives, and foreign exchange. In 2021, the exchange completed a merger with the Peruvian and Chilean exchanges to form the Latin American Integrated Market (MILA), increasing regional market access. The Colombian market is dominated by financial, energy, and utility sectors. The BVC has been implementing various initiatives to increase market depth and liquidity, including regulatory reforms and technological improvements.",
-        tradingHours: "9:00 AM to 1:00 PM Colombia Time (Monday through Friday)",
-        majorIndices: "COLCAP Index, COLSC (small cap), COLEQTY (liquid stocks)",
-        website: "https://www.bvc.com.co/",
-        marketCap: "Approximately $90 billion (2023)",
-        listedCompanies: "Around 70 companies",
-        tradingVolume: "Average daily equity trading value of COP 100-150 billion",
-        regulatoryBody: "Financial Superintendence of Colombia"
-    },
-    BVL: {
-        name: "Lima Stock Exchange",
-        founded: "1860",
-        location: "Lima, Peru",
-        description: "The Lima Stock Exchange (Bolsa de Valores de Lima) is Peru's principal stock exchange. It offers trading in equities, bonds, and other securities and plays a key role in Peru's capital markets. The BVL operates multiple market segments including the main market and the alternative market for smaller companies. The Peruvian market is heavily weighted toward mining and financial sectors, reflecting the country's economic structure. The exchange is part of the Latin American Integrated Market (MILA) along with the exchanges of Chile, Colombia, and Mexico. The BVL has been implementing various initiatives to increase market participation, including tax incentives for listed companies and simplified listing procedures.",
-        tradingHours: "9:00 AM to 1:30 PM Peru Time (Monday through Friday)",
-        majorIndices: "S&P/BVL Peru General Index, S&P/BVL Lima 25, S&P/BVL Peru Select",
-        website: "https://www.bvl.com.pe/",
-        marketCap: "Approximately $70 billion (2023)",
-        listedCompanies: "Around 220 companies",
-        tradingVolume: "Average daily trading value of PEN 25-30 million",
-        regulatoryBody: "Superintendence of Securities Market (SMV)"
-    },
-    BVBA: {
-        name: "Buenos Aires Stock Exchange",
-        founded: "1854",
-        location: "Buenos Aires, Argentina",
-        description: "The Buenos Aires Stock Exchange (Bolsa de Comercio de Buenos Aires) is Argentina's main stock exchange. It is one of the most important financial centers in Latin America and has a long history in the region. The BCBA operates in conjunction with ByMA (Bolsas y Mercados Argentinos), which provides the trading platform. The Argentine market has faced various challenges including economic volatility and currency fluctuations but remains an important investment venue in Latin America. The exchange is dominated by energy, financial, and agricultural sectors. BCBA has been implementing various initiatives to develop the local capital market, including the promotion of SME financing instruments and corporate governance improvements.",
-        tradingHours: "11:00 AM to 5:00 PM Argentina Time (Monday through Friday)",
-        majorIndices: "S&P MERVAL Index, BURCAP, M.AR Index",
-        website: "https://www.bcba.sba.com.ar/",
-        marketCap: "Approximately $45 billion (2023)",
-        listedCompanies: "Around 100 companies",
-        tradingVolume: "Average daily trading value of ARS 3-5 billion",
-        regulatoryBody: "National Securities Commission (CNV)"
-    }
-};
-
-// Updates the market cards based on filters and current time
-function updateCards() {
-    const regionFilter = document.getElementById("region-filter")?.value || "all";
-    const searchQuery = document.getElementById("search")?.value.toLowerCase() || "";
-    const marketSection = document.getElementById("market-section");
-
-    if (!marketSection) return;
-
-    marketSection.innerHTML = "";
-
-    let marketsToShow = Object.keys(marketHours).filter(market => {
-        const marketData = marketHours[market];
-        const regionMatch = regionFilter === "all" || marketData.region === regionFilter;
-        const searchMatch = market.toLowerCase().includes(searchQuery) || marketData.city.toLowerCase().includes(searchQuery);
-        const favoriteMatch = !showFavoritesOnly || favorites.has(market);
-        return regionMatch && searchMatch && favoriteMatch;
-    });
-
-    marketsToShow.forEach(market => {
-        const marketData = marketHours[market];
-        const timezone = marketData.timezone;
-        const city = marketData.city;
-
-        const now = new Date();
-        const timeDetails = getTimeDetails(now, timezone);
-        const currentTime = timeDetails.hour * 60 + timeDetails.minute;
-        const fullTime = `${timeDetails.hour.toString().padStart(2, '0')}:${timeDetails.minute.toString().padStart(2, '0')}:${timeDetails.second.toString().padStart(2, '0')}`;
-
-        const dateOptions = { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' };
-        const currentDate = new Intl.DateTimeFormat('en-CA', dateOptions).format(now);
-        const weekday = now.toLocaleString('en-US', { timeZone: timezone, weekday: 'long' });
-
-        let isOpen = false;
-        let openTime = null, closeTime = null;
-
-        if (market === "JPX") {
-            openTime = convertToMinutes(marketData.open1);
-            closeTime = convertToMinutes(marketData.close2);
-        } else {
-            openTime = convertToMinutes(marketData.open);
-            closeTime = convertToMinutes(marketData.close);
-        }
-
-        let nextOpenDate = new Date(now);
-        let nextOpenTime = openTime;
-        let daysToAdd = 0;
-
-        do {
-            nextOpenDate.setDate(nextOpenDate.getDate() + (daysToAdd === 0 ? 1 : 1));
-            const nextDateStr = nextOpenDate.toLocaleString('en-CA', { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' });
-            const nextWeekday = nextOpenDate.toLocaleString('en-US', { timeZone: timezone, weekday: 'long' });
-            const isHoliday = isMarketClosedOnHoliday(market, nextDateStr);
-
-            if (nextWeekday === 'Saturday' || nextWeekday === 'Sunday' || (isHoliday && !isHoliday.closeEarly)) {
-                daysToAdd++;
-            } else {
-                break;
-            }
-        } while (daysToAdd < 7);
-
-        let timeUntilNextOpen = nextOpenTime - currentTime + (daysToAdd * 24 * 60);
-        if (timeUntilNextOpen < 0) timeUntilNextOpen += 24 * 60;
-
-        if (weekday !== 'Saturday' && weekday !== 'Sunday') {
-            const holiday = isMarketClosedOnHoliday(market, currentDate);
-            if (!holiday || (holiday && holiday.closeEarly && currentTime >= openTime && currentTime < convertToMinutes(holiday.earlyCloseTime))) {
-                if (market === "JPX") {
-                    const openTime1 = convertToMinutes(marketData.open1);
-                    const closeTime1 = convertToMinutes(marketData.close1);
-                    const openTime2 = convertToMinutes(marketData.open2);
-                    const closeTime2 = convertToMinutes(marketData.close2);
-                    isOpen = (currentTime >= openTime1 && currentTime < closeTime1) || (currentTime >= openTime2 && currentTime < closeTime2);
-                } else {
-                    isOpen = currentTime >= openTime && currentTime < closeTime;
-                }
-            }
-        }
-
-        const previousStatus = marketStatusHistory[market];
-        if (previousStatus === false && isOpen === true) {
-            playMarketOpenSound();
-        }
-        marketStatusHistory[market] = isOpen;
-
-        const timeLeft = isOpen ? formatTimeLeft(closeTime - currentTime) : formatTimeLeft(timeUntilNextOpen);
-        const openDisplay = formatHoursMinutes(openTime);
-        const closeDisplay = formatHoursMinutes(closeTime);
-
-        let hoursDisplay = market === "JPX" 
-            ? `Session 1: ${marketData.open1} - ${marketData.close1}, Session 2: ${marketData.open2} - ${marketData.close2}`
-            : `Open: ${openDisplay} - Close: ${closeDisplay}`;
-
-        const remainingTimePercent = isOpen ? ((closeTime - currentTime) / (closeTime - openTime)) * 100 : 0;
-
-        const card = document.createElement("div");
-        card.classList.add("card");
-        if (favorites.has(market)) card.classList.add("favorite");
-        if (isMinimized) card.classList.add("minimized");
-        card.dataset.market = market;
-
-        // Add info icon next to all exchanges
-        let marketNameHTML = `${market} <span class="info-icon" data-exchange="${market}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="16" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-        </span>`;
-
-        card.innerHTML = !isMinimized ? `
-    <div class="card-header">
-        <div class="date">${city}</div>
-        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-            ${isOpen ? "OPEN" : "CLOSED"}
-        </div>
-    </div>
-    <div class="card-body">
-        <h3>${marketNameHTML}</h3>
-        <p>${hoursDisplay}</p>
-        <div class="digital-clock">
-            <span class="time-display">${fullTime}</span>
-        </div>
-        <div class="progress">
-            <span>Time Left: <span class="time-left">${timeLeft}</span></span>
-            <div class="progress-bar">
-                <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
-            </div>
-        </div>
-    </div>
-` : `
-    <div class="card-header">
-        <div class="date">${city}</div>
-        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
-            ${isOpen ? "OPEN" : "CLOSED"}
-        </div>
-    </div>
-    <div class="card-body">
-        <div class="digital-clock">
-            <span class="time-display">${fullTime}</span>
-        </div>
-    </div>
-`;
-
-        marketSection.appendChild(card);
-
-        card.addEventListener("click", (e) => {
-            if (e.target.closest(".market-status")) return;
-            if (e.target.closest(".info-icon")) return; // Don't toggle favorite on info icon click
-            const item = card.dataset.market;
-            if (item) {
-                favorites.has(item) ? favorites.delete(item) : favorites.add(item);
-                updateCards();
-            }
-        });
-    });
-
-    // Add event listeners to info icons
-    document.querySelectorAll('.info-icon').forEach(icon => {
-        icon.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent card click handler from triggering
-            const exchange = e.currentTarget.dataset.exchange;
-            showExchangeInfo(exchange);
-        });
-    });
-}
-
-// Show exchange information modal
-function showExchangeInfo(exchange) {
-    if (!exchangeInfo[exchange]) return;
-    
-    const info = exchangeInfo[exchange];
-    
-    // Create or update modal
-    let modal = document.getElementById('exchange-info-modal');
-    
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'exchange-info-modal';
-        modal.className = 'modal';
-        modal.innerHTML = `
-            <div class="modal-content" style="max-height: 90vh; width: 95vw; max-width: 900px; display: flex; flex-direction: column; animation: modalFadeIn 0.3s ease-out; border-radius: 12px; overflow: hidden; margin: 20px auto;">
-                <div class="modal-header" style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px;">
-                    <h3 id="exchange-info-title" style="color: #fff; margin: 0; font-size: clamp(1.1rem, 4vw, 1.5rem); overflow: hidden; text-overflow: ellipsis; width: calc(100% - 50px);"></h3>
-                    <button id="close-exchange-info" style="
-                        background: var(--closed);
-                        color: white;
-                        width: 36px;
-                        height: 36px;
-                        border: none;
-                        border-radius: 8px;
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        padding: 0;
-                        margin-left: 10px;
-                        min-width: 36px;
-                        flex-shrink: 0;
-                        transition: background 0.3s ease;
-                    "> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg></button>
-                </div>
-                <div class="modal-body" id="exchange-info-body" style="overflow-y: auto; flex-grow: 1; padding: 20px; padding-bottom: 25px; -webkit-overflow-scrolling: touch;"></div>
-            </div>
-        `;
-
-        // Add touch-friendly hover effect
-        const addTouchFeedback = () => {
-            const closeBtn = modal.querySelector('#close-exchange-info');
-            if (closeBtn) {
-                closeBtn.addEventListener('touchstart', () => {
-                    closeBtn.style.background = '#a62828';
-                });
-                closeBtn.addEventListener('touchend', () => {
-                    closeBtn.style.background = 'var(--closed)';
-                });
-                closeBtn.addEventListener('mouseover', () => {
-                    closeBtn.style.background = '#a62828';
-                });
-                closeBtn.addEventListener('mouseout', () => {
-                    closeBtn.style.background = 'var(--closed)';
-                });
-            }
-        };
-        
-        document.body.appendChild(modal);
-        addTouchFeedback();
-        
-        // Add close event listeners
-        modal.querySelector('#close-exchange-info').addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-        
-        // Close when clicking outside
-        window.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-        
-        // Add touch event for mobile
-        modal.addEventListener('touchstart', (event) => {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-    }
-    
-    // Format holidays for display
-    let holidaysHTML = '';
-    if (marketHours[exchange] && marketHours[exchange].holidays) {
-        // Get all holidays and sort them by date
-        const holidays = Object.keys(marketHours[exchange].holidays)
-            .map(date => ({
-                date,
-                ...marketHours[exchange].holidays[date]
-            }))
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
-            
-        // Group holidays by month
-        const holidaysByMonth = {};
-        holidays.forEach(holiday => {
-            const date = new Date(holiday.date);
-            const monthYear = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-            
-            if (!holidaysByMonth[monthYear]) {
-                holidaysByMonth[monthYear] = [];
-            }
-            holidaysByMonth[monthYear].push(holiday);
-        });
-        
-        // Format holidays by month
-        const monthsHTML = Object.keys(holidaysByMonth).map(monthYear => {
-            const monthHolidays = holidaysByMonth[monthYear]
-                .map(holiday => {
-                    const date = new Date(holiday.date);
-                    const dayName = date.toLocaleString('en-US', { weekday: 'short' });
-                    const dayNum = date.getDate();
-                    
-                    const badge = holiday.closeEarly 
-                        ? `<span style="background: #FF9800; color: #000; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle;">EARLY CLOSE ${holiday.earlyCloseTime || ''}</span>` 
-                        : `<span style="background: #F44336; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle;">CLOSED</span>`;
-                        
-                    return `
-                    <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                        <div style="font-size: 0.9rem;">
-                            <span style="font-weight: 500;">${dayNum} ${dayName}</span> - ${holiday.reason}
-                        </div>
-                        <div>${badge}</div>
-                    </div>`;
-                })
-                .join('');
-                
-            return `
-            <div style="margin-bottom: 20px;">
-                <h5 style="color: #999; margin-bottom: 8px; font-size: 0.85rem; font-weight: 500;">${monthYear}</h5>
-                ${monthHolidays}
-            </div>`;
-        }).join('');
-        
-        holidaysHTML = `
-        <div class="holiday-calendar" style="margin-top: 25px;">
-            <h4 style="color: #e0e0e0; margin-bottom: 16px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                
-                Market Holidays (${holidays.length})
-            </h4>
-            <div style="background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 10px; max-height: 300px; overflow-y: auto;">
-                ${monthsHTML}
-            </div>
-        </div>`;
-    }
-    
-    // Determine if we're on a mobile device
-    const isMobile = window.innerWidth < 768;
-    
-    // Update modal content with minimalistic design
-    document.getElementById('exchange-info-title').textContent = info.name;
-    
-    document.getElementById('exchange-info-body').innerHTML = `
-        <div class="exchange-info" style="color: #e0e0e0; line-height: 1.6; font-size: ${isMobile ? '0.95rem' : '1rem'};">
-        <!-- Map with improved styling -->
-            <div style="width: 100%; height: ${isMobile ? '220px' : '220px'}; margin-bottom: 30px; border-radius: 10px; overflow: hidden; box-shadow: 0 3px 15px rgba(0,0,0,0.2);">
-                <div id="exchange-map" style="width: 100%; height: 100%;"></div>
-            </div>
-        
-        <!-- Description with gradient border -->
-            <div style="margin-bottom: 30px; background: rgba(255,255,255,0.03); border-radius: 10px; padding: 20px;  box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-                <h4 style="color: #e0e0e0; margin-top: 0; margin-bottom: 12px; font-size: 1rem; font-weight: 600; display: flex; align-items: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    OVERVIEW
-                </h4>
-                <p style="line-height: 1.7; margin: 0; color: #bbb;">${info.description}</p>
-            </div>
-            <!-- Key Information Cards -->
-            <div class="exchange-summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px;">
-                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; transition: all 0.2s ease;">
-                    <div style="font-size: 0.75rem; color: #999; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 5px;">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        Founded
-                    </div>
-                    <div style="font-weight: 500;">${info.founded}</div>
-                </div>
-                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; transition: all 0.2s ease;">
-                    <div style="font-size: 0.75rem; color: #999; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 5px;">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                            <circle cx="12" cy="10" r="3"></circle>
-                        </svg>
-                        Location
-                    </div>
-                    <div style="font-weight: 500;">${info.location}</div>
-                </div>
-                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; transition: all 0.2s ease;">
-                    <div style="font-size: 0.75rem; color: #999; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 5px;">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
-                        Trading Hours
-                    </div>
-                    <div style="font-weight: 500;">${info.tradingHours}</div>
-                </div>
-                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; transition: all 0.2s ease;">
-                    <div style="font-size: 0.75rem; color: #999; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 5px;">
-                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                        </svg>
-                        Market Cap
-                    </div>
-                    <div style="font-weight: 500;">${info.marketCap}</div>
-                </div>
-            </div>
-
-            
-
-            <!-- Information grid with icons -->
-            <div class="info-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 18px; transition: all 0.2s ease; height: 100%;">
-                    <h4 style="color: #e0e0e0; margin-top: 0; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
-                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                        </svg>
-                        KEY INDICES
-                    </h4>
-                    <p style="margin: 0; color: #bbb;">${info.majorIndices}</p>
-                </div>
-                <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 18px; transition: all 0.2s ease; height: 100%;">
-                    <h4 style="color: #e0e0e0; margin-top: 0; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                        </svg>
-                        REGULATORY BODY
-                    </h4>
-                    <p style="margin: 0; color: #bbb;">${info.regulatoryBody}</p>
-                </div>
-            </div>
-            
-            <div class="info-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 18px; transition: all 0.2s ease; height: 100%;">
-                    <h4 style="color: #e0e0e0; margin-top: 0; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        LISTED COMPANIES
-                    </h4>
-                    <p style="margin: 0; color: #bbb;">${info.listedCompanies}</p>
-                </div>
-                <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 18px; transition: all 0.2s ease; height: 100%;">
-                    <h4 style="color: #e0e0e0; margin-top: 0; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
-                            <path d="M12 20v-6M6 20V10M18 20V4"></path>
-                        </svg>
-                        TRADING VOLUME
-                    </h4>
-                    <p style="margin: 0; color: #bbb;">${info.tradingVolume}</p>
-                </div>
-            </div>
-            
-            <!-- Website link with hover effect -->
-            <div style="margin-bottom: 30px;">
-                <h4 style="color: #e0e0e0; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                    WEBSITE
-                </h4>
-                <a href="${info.website}" target="_blank" style="
-                    color: #4d84e2; 
-                    text-decoration: none; 
-                    word-break: break-all; 
-                    background: rgba(77,132,226,0.1);
-                    padding: 8px 12px;
-                    border-radius: 4px;
-                    display: inline-block;
-                    transition: all 0.2s ease;
-                    border: 1px solid rgba(77,132,226,0.2);
-                ">${info.website}</a>
-            </div>
-            
-            
-            
-            <!-- Market Holidays Section with improved styling -->
-            ${holidaysHTML}
-        </div>
-    `;
-
-    // Add Leaflet CSS if not already present
-    if (!document.getElementById('leaflet-css')) {
-        const leafletCSS = document.createElement('link');
-        leafletCSS.id = 'leaflet-css';
-        leafletCSS.rel = 'stylesheet';
-        leafletCSS.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-        leafletCSS.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
-        leafletCSS.crossOrigin = '';
-        document.head.appendChild(leafletCSS);
-    }
-
-    // Add Leaflet JS if not already present
-    if (!document.getElementById('leaflet-js')) {
-        const leafletJS = document.createElement('script');
-        leafletJS.id = 'leaflet-js';
-        leafletJS.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-        leafletJS.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
-        leafletJS.crossOrigin = '';
-        document.head.appendChild(leafletJS);
-    }
-
-    // Initialize map after ensuring Leaflet is loaded
-    const initMap = () => {
-        // Define geocoding data for exchanges
-        const geocode = {
-            'NYSE': [40.7069, -74.0113],
-            'NASDAQ': [40.7562, -73.9856],
-            'TSX': [43.6489, -79.3806],
-            'BMV': [19.4326, -99.1332],
-            'CSE': [6.9271, 79.8612],
-            'XETRA': [50.1109, 8.6821],
-            'Euronext': [48.8566, 2.3522],
-            'SIX': [47.3769, 8.5417],
-            'BME': [40.4168, -3.7038],
-            'LSE': [51.5074, -0.1278],
-            'OMX': [59.3293, 18.0686],
-            'MOEX': [55.7558, 37.6173],
-            'BorsaItaliana': [45.4642, 9.1900],
-            'WSE': [52.2297, 21.0122],
-            'OSE': [59.9139, 10.7522],
-            'ISE': [53.3498, -6.2603],
-            'JPX': [35.6762, 139.6503],
-            'HKEX': [22.2793, 114.1628],
-            'SSE': [31.2304, 121.4737],
-            'SZSE': [22.5431, 114.0579],
-            'BSE': [18.9290, 72.8341],
-            'NSE': [19.0176, 72.8561],
-            'KRX': [35.1796, 129.0756],
-            'TWSE': [25.0330, 121.5654],
-            'SGX': [1.2839, 103.8509],
-            'TASE': [32.0853, 34.7818],
-            'IDX': [-6.2088, 106.8456],
-            'SET': [13.7563, 100.5018],
-            'PSE': [14.5995, 120.9842],
-            'HOSE': [10.7765, 106.7010],
-            'DFM': [25.2048, 55.2708],
-            'ADX': [24.4539, 54.3773],
-            'ASX': [-33.8688, 151.2093],
-            'NZX': [-41.2865, 174.7762],
-            'JSE': [-26.2041, 28.0473],
-            'EGX': [30.0444, 31.2357],
-            'NSE_Nigeria': [6.4550, 3.3841],
-            'ZSE': [-17.8252, 31.0335],
-            'GSE': [5.5560, -0.1969],
-            'NSE_Kenya': [-1.2921, 36.8219],
-            'B3': [-23.5505, -46.6333],
-            'Santiago': [-33.4489, -70.6693],
-            'BVC': [4.6097, -74.0817],
-            'BVL': [-12.0464, -77.0428],
-            'BVBA': [-34.6037, -58.3816]
-        };
-
-        // Initialize map with a retry mechanism
-        let attempts = 0;
-        const maxAttempts = 5;
-        const tryInitMap = () => {
-            attempts++;
-            
-            if (window.L) {
-                try {
-                    const mapElement = document.getElementById('exchange-map');
-                    if (!mapElement) {
-                        if (attempts < maxAttempts) setTimeout(tryInitMap, 200);
-                        return;
-                    }
-                    
-                    // Get coordinates for the specific exchange
-                    const coordinates = geocode[exchange] || [0, 0];
-                    
-                    // Initialize map with fewer controls for mobile
-                    const map = L.map('exchange-map', {
-                        zoomControl: !isMobile,
-                        attributionControl: !isMobile
-                    }).setView(coordinates, 13);
-                    
-                    // Add dark theme tiles
-                    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-                        subdomains: 'abcd',
-                        maxZoom: 19
-                    }).addTo(map);
-                    
-                    // Simple marker for better mobile performance
-                    const marker = L.marker(coordinates).addTo(map);
-                    marker.bindPopup(info.name);
-                    
-                    // Force map refresh after modal appears
-                    setTimeout(() => {
-                        map.invalidateSize();
-                        if (isMobile) map.setZoom(12); // Zoom out slightly on mobile
-                    }, 300);
-                } catch (err) {
-                    console.warn('Map initialization error:', err);
-                }
-            } else if (attempts < maxAttempts) {
-                // Try again if Leaflet isn't loaded yet
-                setTimeout(tryInitMap, 200);
-            }
-        };
-        
-        // Start the map initialization process
-        tryInitMap();
-    };
-
-    // Start map initialization
-    initMap();
-    
-    // Show the modal
-    modal.style.display = 'block';
-    
-    // Prevent body scrolling when modal is open (to fix mobile scrolling issues)
-    document.body.style.overflow = 'hidden';
-    
-    // Restore scrolling when modal is closed
-    const restoreScroll = () => {
-        document.body.style.overflow = '';
-    };
-    
-    // Attach one-time event listeners to restore scroll when modal is closed
-    const closeBtn = modal.querySelector('#close-exchange-info');
-    const onceOptions = { once: true };
-    
-    closeBtn.addEventListener('click', restoreScroll, onceOptions);
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) restoreScroll();
-    }, onceOptions);
 }
 
 // State variables for managing UI and market status
@@ -2322,7 +1120,7 @@ function generatePortfolioChart(dates, portfolioValues) {
     
     // Ensure the container has a height
     chartDiv.style.minHeight = '400px';
-    chartDiv.style.width = '100%';
+    chart.Div.style.width = '100%';
 
     // Validate data
     if (!dates || !portfolioValues || dates.length === 0) {
@@ -3026,6 +1824,153 @@ function showHolidayPanel(dateStr, holidays) {
 
     holidayPanel.querySelector('.close-panel').addEventListener('click', () => {
         holidayPanel.remove();
+    });
+}
+
+// Updates the market cards based on filters and current time
+function updateCards() {
+    const regionFilter = document.getElementById("region-filter")?.value || "all";
+    const searchQuery = document.getElementById("search")?.value.toLowerCase() || "";
+    const marketSection = document.getElementById("market-section");
+
+    if (!marketSection) return;
+
+    marketSection.innerHTML = "";
+
+    let marketsToShow = Object.keys(marketHours).filter(market => {
+        const marketData = marketHours[market];
+        const regionMatch = regionFilter === "all" || marketData.region === regionFilter;
+        const searchMatch = market.toLowerCase().includes(searchQuery) || marketData.city.toLowerCase().includes(searchQuery);
+        const favoriteMatch = !showFavoritesOnly || favorites.has(market);
+        return regionMatch && searchMatch && favoriteMatch;
+    });
+
+    marketsToShow.forEach(market => {
+        const marketData = marketHours[market];
+        const timezone = marketData.timezone;
+        const city = marketData.city;
+
+        const now = new Date();
+        const timeDetails = getTimeDetails(now, timezone);
+        const currentTime = timeDetails.hour * 60 + timeDetails.minute;
+        const fullTime = `${timeDetails.hour.toString().padStart(2, '0')}:${timeDetails.minute.toString().padStart(2, '0')}:${timeDetails.second.toString().padStart(2, '0')}`;
+
+        const dateOptions = { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' };
+        const currentDate = new Intl.DateTimeFormat('en-CA', dateOptions).format(now);
+        const weekday = now.toLocaleString('en-US', { timeZone: timezone, weekday: 'long' });
+
+        let isOpen = false;
+        let openTime = null, closeTime = null;
+
+        if (market === "JPX") {
+            openTime = convertToMinutes(marketData.open1);
+            closeTime = convertToMinutes(marketData.close2);
+        } else {
+            openTime = convertToMinutes(marketData.open);
+            closeTime = convertToMinutes(marketData.close);
+        }
+
+        let nextOpenDate = new Date(now);
+        let nextOpenTime = openTime;
+        let daysToAdd = 0;
+
+        do {
+            nextOpenDate.setDate(nextOpenDate.getDate() + (daysToAdd === 0 ? 1 : 1));
+            const nextDateStr = nextOpenDate.toLocaleString('en-CA', { timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit' });
+            const nextWeekday = nextOpenDate.toLocaleString('en-US', { timeZone: timezone, weekday: 'long' });
+            const isHoliday = isMarketClosedOnHoliday(market, nextDateStr);
+
+            if (nextWeekday === 'Saturday' || nextWeekday === 'Sunday' || (isHoliday && !isHoliday.closeEarly)) {
+                daysToAdd++;
+            } else {
+                break;
+            }
+        } while (daysToAdd < 7);
+
+        let timeUntilNextOpen = nextOpenTime - currentTime + (daysToAdd * 24 * 60);
+        if (timeUntilNextOpen < 0) timeUntilNextOpen += 24 * 60;
+
+        if (weekday !== 'Saturday' && weekday !== 'Sunday') {
+            const holiday = isMarketClosedOnHoliday(market, currentDate);
+            if (!holiday || (holiday && holiday.closeEarly && currentTime >= openTime && currentTime < convertToMinutes(holiday.earlyCloseTime))) {
+                if (market === "JPX") {
+                    const openTime1 = convertToMinutes(marketData.open1);
+                    const closeTime1 = convertToMinutes(marketData.close1);
+                    const openTime2 = convertToMinutes(marketData.open2);
+                    const closeTime2 = convertToMinutes(marketData.close2);
+                    isOpen = (currentTime >= openTime1 && currentTime < closeTime1) || (currentTime >= openTime2 && currentTime < closeTime2);
+                } else {
+                    isOpen = currentTime >= openTime && currentTime < closeTime;
+                }
+            }
+        }
+
+        const previousStatus = marketStatusHistory[market];
+        if (previousStatus === false && isOpen === true) {
+            playMarketOpenSound();
+        }
+        marketStatusHistory[market] = isOpen;
+
+        const timeLeft = isOpen ? formatTimeLeft(closeTime - currentTime) : formatTimeLeft(timeUntilNextOpen);
+        const openDisplay = formatHoursMinutes(openTime);
+        const closeDisplay = formatHoursMinutes(closeTime);
+
+        let hoursDisplay = market === "JPX" 
+            ? `Session 1: ${marketData.open1} - ${marketData.close1}, Session 2: ${marketData.open2} - ${marketData.close2}`
+            : `Open: ${openDisplay} - Close: ${closeDisplay}`;
+
+        const remainingTimePercent = isOpen ? ((closeTime - currentTime) / (closeTime - openTime)) * 100 : 0;
+
+        const card = document.createElement("div");
+        card.classList.add("card");
+        if (favorites.has(market)) card.classList.add("favorite");
+        if (isMinimized) card.classList.add("minimized");
+        card.dataset.market = market;
+
+        card.innerHTML = !isMinimized ? `
+    <div class="card-header">
+        <div class="date">${city}</div>
+        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+            ${isOpen ? "OPEN" : "CLOSED"}
+        </div>
+    </div>
+    <div class="card-body">
+        <h3>${market}</h3>
+        <p>${hoursDisplay}</p>
+        <div class="digital-clock">
+            <span class="time-display">${fullTime}</span>
+        </div>
+        <div class="progress">
+            <span>Time Left: <span class="time-left">${timeLeft}</span></span>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" style="width: ${remainingTimePercent}%;"></div>
+            </div>
+        </div>
+    </div>
+` : `
+    <div class="card-header">
+        <div class="date">${city}</div>
+        <div class="market-status ${isOpen ? "status-open" : "status-closed"}">
+            ${isOpen ? "OPEN" : "CLOSED"}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="digital-clock">
+            <span class="time-display">${fullTime}</span>
+        </div>
+    </div>
+`;
+
+        marketSection.appendChild(card);
+
+        card.addEventListener("click", (e) => {
+            if (e.target.closest(".market-status")) return;
+            const item = card.dataset.market;
+            if (item) {
+                favorites.has(item) ? favorites.delete(item) : favorites.add(item);
+                updateCards();
+            }
+        });
     });
 }
 
@@ -4537,25 +3482,65 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
     description.textContent = getDescription(score);
   }
   
-  async function fetchFearGreedIndex() {
+  function updateHistoricalValues(data) {
+    // Update Previous Close
+    const prevCloseValue = document.getElementById("prevCloseValue");
+    const prevCloseText = document.getElementById("prevCloseText");
+    if (prevCloseValue && prevCloseText && data.fgi.previousClose) {
+      prevCloseValue.textContent = data.fgi.previousClose.value || "N/A";
+      prevCloseText.textContent = data.fgi.previousClose.valueText || getDescription(data.fgi.previousClose.value);
+    }
+    
+    // Update 1 Week Ago
+    const weekAgoValue = document.getElementById("weekAgoValue");
+    const weekAgoText = document.getElementById("weekAgoText");
+    if (weekAgoValue && weekAgoText && data.fgi.oneWeekAgo) {
+      weekAgoValue.textContent = data.fgi.oneWeekAgo.value || "N/A";
+      weekAgoText.textContent = data.fgi.oneWeekAgo.valueText || getDescription(data.fgi.oneWeekAgo.value);
+    }
+    
+    // Update 1 Month Ago
+    const monthAgoValue = document.getElementById("monthAgoValue");
+    const monthAgoText = document.getElementById("monthAgoText");
+    if (monthAgoValue && monthAgoText && data.fgi.oneMonthAgo) {
+      monthAgoValue.textContent = data.fgi.oneMonthAgo.value || "N/A";
+      monthAgoText.textContent = data.fgi.oneMonthAgo.valueText || getDescription(data.fgi.oneMonthAgo.value);
+    }
+    
+    // Update Last Updated
+    const lastUpdated = document.getElementById("lastUpdated");
+    if (lastUpdated && data.fgi.lastUpdated) {
+      const date = data.fgi.lastUpdated.humanDate || 
+                  (data.fgi.lastUpdated.epochUnixSeconds ? 
+                   new Date(data.fgi.lastUpdated.epochUnixSeconds * 1000).toLocaleString() : 
+                   "N/A");
+      lastUpdated.textContent = `Last updated: ${date}`;
+    }
+  }
+
+async function fetchFearGreedIndex() {
     const url = 'https://fear-and-greed-index.p.rapidapi.com/v1/fgi';
-    // Store your API key in a variable at the top of your file or in a separate config file
-    const FEAR_GREED_API_KEY = 'YOUR_RAPID_API_KEY'; // Replace with your actual API key
     const options = {
         method: 'GET',
         headers: {
-            'x-rapidapi-key': FEAR_GREED_API_KEY,
+            'x-rapidapi-key': 'a8d81eea34msh9318a170ad799bdp1a9d7fjsna333e1b65e8a',
             'x-rapidapi-host': 'fear-and-greed-index.p.rapidapi.com'
         }
     };
     
     try {
-      const response = await fetch(url, options);
-      const data = await response.json();
-      const score = data.fgi.now.value;
-      updateGauge(score);
+        const response = await fetch(url, options);
+        const data = await response.json();
+        console.log(data);
+        
+        // Update gauge with current value
+        const score = data.fgi.now.value;
+        updateGauge(score);
+        
+        // Update historical values
+        updateHistoricalValues(data);
     } catch (error) {
-      console.error("API fetch error:", error);
-      document.getElementById("description").textContent = "Error fetching data";
+        console.error("API fetch error:", error);
+        document.getElementById("description").textContent = "Error fetching data";
     }
-  }
+}
