@@ -1838,9 +1838,9 @@ function showExchangeInfo(exchange) {
                         : `<span style="background: #F44336; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle;">CLOSED</span>`;
                         
                     return `
-                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <div>
-                            <strong>${dayNum} ${dayName}</strong> - ${holiday.reason}
+                    <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-size: 0.9rem;">
+                            <span style="font-weight: 500;">${dayNum} ${dayName}</span> - ${holiday.reason}
                         </div>
                         <div>${badge}</div>
                     </div>`;
@@ -1848,8 +1848,8 @@ function showExchangeInfo(exchange) {
                 .join('');
                 
             return `
-            <div style="margin-bottom: 16px;">
-                <h5 style="color: #bbb; margin-bottom: 8px; font-size: 0.9rem;">${monthYear}</h5>
+            <div style="margin-bottom: 20px;">
+                <h5 style="color: #999; margin-bottom: 8px; font-size: 0.85rem; font-weight: 500;">${monthYear}</h5>
                 ${monthHolidays}
             </div>`;
         }).join('');
@@ -1857,12 +1857,7 @@ function showExchangeInfo(exchange) {
         holidaysHTML = `
         <div class="holiday-calendar" style="margin-top: 25px;">
             <h4 style="color: #e0e0e0; margin-bottom: 16px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 8px;">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
+                
                 Market Holidays (${holidays.length})
             </h4>
             <div style="background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 10px; max-height: 300px; overflow-y: auto;">
@@ -1874,78 +1869,150 @@ function showExchangeInfo(exchange) {
     // Determine if we're on a mobile device
     const isMobile = window.innerWidth < 768;
     
-    // Update modal content with enhanced mobile-friendly design
+    // Update modal content with minimalistic design
     document.getElementById('exchange-info-title').textContent = info.name;
     
     document.getElementById('exchange-info-body').innerHTML = `
-        <div class="exchange-info" style="color: #e0e0e0; line-height: 1.6;">
-            <!-- Mobile-optimized layout -->
-            <div class="exchange-summary" style="display: flex; flex-direction: ${isMobile ? 'column' : 'row'}; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px;">
-                <div style="flex: 1; min-width: ${isMobile ? '100%' : '250px'};">
-                    <div class="info-item" style="margin-bottom: 10px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Founded</div>
-                        <div style="font-weight: 500;">${info.founded}</div>
+        <div class="exchange-info" style="color: #e0e0e0; line-height: 1.6; font-size: ${isMobile ? '0.95rem' : '1rem'};">
+        <!-- Map with improved styling -->
+            <div style="width: 100%; height: ${isMobile ? '220px' : '220px'}; margin-bottom: 30px; border-radius: 10px; overflow: hidden; box-shadow: 0 3px 15px rgba(0,0,0,0.2);">
+                <div id="exchange-map" style="width: 100%; height: 100%;"></div>
+            </div>
+        
+        <!-- Description with gradient border -->
+            <div style="margin-bottom: 30px; background: rgba(255,255,255,0.03); border-radius: 10px; padding: 20px;  box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
+                <h4 style="color: #e0e0e0; margin-top: 0; margin-bottom: 12px; font-size: 1rem; font-weight: 600; display: flex; align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    OVERVIEW
+                </h4>
+                <p style="line-height: 1.7; margin: 0; color: #bbb;">${info.description}</p>
+            </div>
+            <!-- Key Information Cards -->
+            <div class="exchange-summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px;">
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; transition: all 0.2s ease;">
+                    <div style="font-size: 0.75rem; color: #999; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 5px;">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Founded
                     </div>
-                    <div class="info-item" style="margin-bottom: 10px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Location</div>
-                        <div style="font-weight: 500;">${info.location}</div>
-                    </div>
-                    <div class="info-item" style="margin-bottom: 10px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Trading Hours</div>
-                        <div style="font-weight: 500;">${info.tradingHours}</div>
-                    </div>
+                    <div style="font-weight: 500;">${info.founded}</div>
                 </div>
-                <div style="flex: 1; min-width: ${isMobile ? '100%' : '250px'};">
-                    <div class="info-item" style="margin-bottom: 10px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Market Cap</div>
-                        <div style="font-weight: 500; color: #4CAF50;">${info.marketCap}</div>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; transition: all 0.2s ease;">
+                    <div style="font-size: 0.75rem; color: #999; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 5px;">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        Location
                     </div>
-                    <div class="info-item" style="margin-bottom: 10px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Listed Companies</div>
-                        <div style="font-weight: 500;">${info.listedCompanies}</div>
+                    <div style="font-weight: 500;">${info.location}</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; transition: all 0.2s ease;">
+                    <div style="font-size: 0.75rem; color: #999; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 5px;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Trading Hours
                     </div>
-                    <div class="info-item" style="margin-bottom: 10px;">
-                        <div style="font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Trading Volume</div>
-                        <div style="font-weight: 500;">${info.tradingVolume}</div>
+                    <div style="font-weight: 500;">${info.tradingHours}</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; transition: all 0.2s ease;">
+                    <div style="font-size: 0.75rem; color: #999; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 5px;">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        Market Cap
                     </div>
+                    <div style="font-weight: 500;">${info.marketCap}</div>
                 </div>
             </div>
 
-            <div class="exchange-details" style="display: flex; flex-direction: ${isMobile ? 'column' : 'row'}; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
-                <div style="flex: 1; min-width: ${isMobile ? '100%' : '250px'};">
-                    <h4 style="color: #2196F3; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Major Indices</h4>
-                    <p style="background: rgba(33, 150, 243, 0.1); padding: 12px; border-radius: 8px; border-left: 3px solid #2196F3;">${info.majorIndices}</p>
+            
+
+            <!-- Information grid with icons -->
+            <div class="info-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 18px; transition: all 0.2s ease; height: 100%;">
+                    <h4 style="color: #e0e0e0; margin-top: 0; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        KEY INDICES
+                    </h4>
+                    <p style="margin: 0; color: #bbb;">${info.majorIndices}</p>
                 </div>
-                <div style="flex: 1; min-width: ${isMobile ? '100%' : '250px'};">
-                    <h4 style="color: #FF9800; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">Regulatory Body</h4>
-                    <p style="background: rgba(255, 152, 0, 0.1); padding: 12px; border-radius: 8px; border-left: 3px solid #FF9800;">${info.regulatoryBody}</p>
+                <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 18px; transition: all 0.2s ease; height: 100%;">
+                    <h4 style="color: #e0e0e0; margin-top: 0; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        REGULATORY BODY
+                    </h4>
+                    <p style="margin: 0; color: #bbb;">${info.regulatoryBody}</p>
                 </div>
             </div>
             
-            <!-- Website link with icon -->
-            <div class="website" style="margin-bottom: 20px; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 10px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                </svg>
-                <a href="${info.website}" target="_blank" style="color: #2196F3; text-decoration: none; font-weight: 500; transition: all 0.2s ease; word-break: break-all;">
-                    ${isMobile ? info.website.replace(/^https?:\/\//, '') : info.website}
-                </a>
+            <div class="info-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 18px; transition: all 0.2s ease; height: 100%;">
+                    <h4 style="color: #e0e0e0; margin-top: 0; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        LISTED COMPANIES
+                    </h4>
+                    <p style="margin: 0; color: #bbb;">${info.listedCompanies}</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 18px; transition: all 0.2s ease; height: 100%;">
+                    <h4 style="color: #e0e0e0; margin-top: 0; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
+                            <path d="M12 20v-6M6 20V10M18 20V4"></path>
+                        </svg>
+                        TRADING VOLUME
+                    </h4>
+                    <p style="margin: 0; color: #bbb;">${info.tradingVolume}</p>
+                </div>
             </div>
             
-            <!-- Map in fixed height container -->
-            <div style="width: 100%; height: ${isMobile ? '200px' : '300px'}; margin-bottom: 20px; border-radius: 12px; overflow: hidden; position: relative;">
-                <div id="exchange-map" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #1e1e1e;"></div>
+            <!-- Website link with hover effect -->
+            <div style="margin-bottom: 30px;">
+                <h4 style="color: #e0e0e0; margin-bottom: 12px; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="margin-right: 6px;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    WEBSITE
+                </h4>
+                <a href="${info.website}" target="_blank" style="
+                    color: #4d84e2; 
+                    text-decoration: none; 
+                    word-break: break-all; 
+                    background: rgba(77,132,226,0.1);
+                    padding: 8px 12px;
+                    border-radius: 4px;
+                    display: inline-block;
+                    transition: all 0.2s ease;
+                    border: 1px solid rgba(77,132,226,0.2);
+                ">${info.website}</a>
             </div>
             
-            <!-- Description -->
-            <div class="description" style="margin-bottom: 15px;">
-                <h4 style="color: #e0e0e0; margin-bottom: 10px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">About ${info.name}</h4>
-                <p style="line-height: 1.7; text-align: justify; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 10px; font-size: ${isMobile ? '0.95rem' : '1rem'};">${info.description}</p>
-            </div>
             
-            <!-- Market Holidays Section -->
+            
+            <!-- Market Holidays Section with improved styling -->
             ${holidaysHTML}
         </div>
     `;
