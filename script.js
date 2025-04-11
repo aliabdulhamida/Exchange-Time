@@ -4556,7 +4556,7 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
       console.error("API fetch error:", error);
       document.getElementById("description").textContent = "Error fetching data";
     }
-  }
+}
 
 // Insider Trades Modal Functionality
 document.addEventListener('DOMContentLoaded', function() {
@@ -4633,10 +4633,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (data && data.contents) {
             // Parse HTML content to extract insider trades
-            const insiderTrades = parseFinvizInsiderTrades(data.contents, ticker);
+            const { trades, companyName } = parseFinvizInsiderTrades(data.contents, ticker);
             
-            if (insiderTrades.length > 0) {
-                displayParsedInsiderTrades(insiderTrades, ticker);
+            if (trades.length > 0) {
+                displayParsedInsiderTrades(trades, ticker, companyName);
             } else {
                 insiderNoData.style.display = 'block';
             }
@@ -4656,10 +4656,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Parse Finviz HTML to extract insider trades
         function parseFinvizInsiderTrades(html, ticker) {
         const trades = [];
+        let companyName = ticker; // Default to ticker
         
         try {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+            
+            // Try to extract company name from title
+            const title = doc.querySelector('title');
+            if (title) {
+                const titleMatch = title.textContent.match(/(.+)\s*\(.*?\)\s*-/);
+                if (titleMatch && titleMatch[1]) {
+                    companyName = titleMatch[1].trim();
+                }
+            }
             
             // Find the insider table
             const insiderTable = [...doc.querySelectorAll('table.body-table')].find(table => {
@@ -4676,22 +4686,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 const cells = row.querySelectorAll('td');
                 if (cells.length >= 5) {
                 const transaction_date = cells[0]?.textContent?.trim();
-                const full_name = cells[1]?.textContent?.trim();
+                const insider_name = cells[1]?.textContent?.trim(); // Changed from full_name to insider_name
                 const position = cells[2]?.textContent?.trim();
                 const transaction_type = getTransactionType(cells[3]?.textContent?.trim());
-                const shares = parseFloat(cells[4]?.textContent?.replace(/[^\d.-]/g, ''));
-                const price = parseFloat(cells[5]?.textContent?.replace(/[^\d.-]/g, ''));
+                const price = parseFloat(cells[4]?.textContent?.replace(/[^\d.-]/g, ''));
+                const shares = parseFloat(cells[5]?.textContent?.replace(/[^\d.-]/g, ''));
                 const value = shares * price;
                 
                 trades.push({
                     transaction_date,
-                    full_name,
+                    insider_name, // Store under insider_name
                     position,
                     transaction_type,
                     shares,
                     price,
                     value,
-                    formatted_price: `$${price.toFixed(2)}`,
+                    formatted_shares: `$${shares.toFixed(2)}`,
                     formatted_value: new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'USD'
@@ -4704,7 +4714,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error parsing Finviz HTML:', e);
         }
         
-        return trades;
+        return { trades, companyName };
         }
         
         // Helper function to determine transaction type
@@ -4717,15 +4727,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Display parsed insider trades (for Finviz data)
-        function displayParsedInsiderTrades(trades, ticker) {
-        // Get company name from the ticker or use a default
-        const companyName = getCompanyNameForTicker(ticker) || `${ticker}`;
+        function displayParsedInsiderTrades(trades, ticker, companyName) {
+        // Use the extracted company name or use a fallback
+        const displayName = companyName || getCompanyNameForTicker(ticker) || `${ticker}`;
         
         // Create a data object similar to the SynthFinance API response
         const result = {
             data: trades.map(trade => ({
             ...trade,
-            company: { name: companyName }
+            company: { name: displayName }
             }))
         };
         
@@ -4750,7 +4760,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
  // Display insider trades data
 function displayInsiderTrades(result, ticker) {
-    // Debug-Ausgabe zur Überprüfung der Daten
     console.log("Displaying data for", ticker, "with", result.data.length, "trades");
     
     insiderResults.style.display = 'block';
@@ -4794,10 +4803,7 @@ function displayInsiderTrades(result, ticker) {
     // Display summary
     insiderSummary.innerHTML = `
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px;">
-            <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-                <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Total Trades</div>
-                <div style="font-size: 1.4rem; font-weight: 600; color: #fff;">${trades.length}</div>
-            </div>
+            
             <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
                 <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Buy Transactions</div>
                 <div style="font-size: 1.4rem; font-weight: 600; color: #7FFF8E;">${buys}</div>
@@ -4817,28 +4823,48 @@ function displayInsiderTrades(result, ticker) {
         </div>
     `;
     
-    // Clear and populate table
-    insiderTable.innerHTML = '';
+    // Create a grid container for cards (replacing the table)
+    const insiderTableElement = document.getElementById('insider-table');
     
-    // Debugging: Log Einzelwerte des ersten Trades
+    // Prüfen, ob das Element existiert, bevor auf parentNode zugegriffen wird
+    if (!insiderTableElement) {
+        console.error('Element with ID "insider-table" not found');
+        return;
+    }
+    
+    const tableContainer = insiderTableElement.parentNode;
+    tableContainer.innerHTML = ''; // Clear the container
+    
+    // Create a new grid container for cards
+    const gridContainer = document.createElement('div');
+    gridContainer.id = 'insider-trades-grid';
+    gridContainer.style.display = 'grid';
+    gridContainer.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
+    gridContainer.style.gap = '12px';
+    gridContainer.style.width = '100%';
+    gridContainer.style.marginTop = '15px';
+    
+    // Add the grid container to the DOM
+    tableContainer.appendChild(gridContainer);
+    
+    // Debug: Log first trade if available
     if (trades.length > 0) {
         console.log("Sample trade data:", {
             date: trades[0].transaction_date,
-            name: trades[0].full_name,
+            name: trades[0].insider_name,
             position: trades[0].position,
             roles: trades[0].formatted_roles,
             type: trades[0].transaction_type,
             shares: trades[0].shares,
             price: trades[0].price,
-            formatted_price: trades[0].formatted_price,
-            value: trades[0].value,
-            formatted_value: trades[0].formatted_value
+            value: trades[0].value
         });
     }
     
+    // Create cards for each trade
     trades.forEach(trade => {
         try {
-            // Datum richtig formatieren
+            // Format the date
             let formattedDate = '-';
             if (trade.transaction_date) {
                 const date = new Date(trade.transaction_date);
@@ -4851,37 +4877,56 @@ function displayInsiderTrades(result, ticker) {
                 }
             }
             
-            // Position oder Rolle bestimmen
+            // Position or role
             const position = trade.position || trade.formatted_roles || '-';
             
-            // Transaktionstyp-Farbe
+            // Transaction color
             const transactionColor = (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') 
                 ? '#7FFF8E' 
                 : '#ff8a80';
             
-            // Shares formatieren
+            // Format shares
             const shares = numberWithCommas(trade.shares);
             
-            // Preis formatieren
+            // Format price
             const price = trade.formatted_price || (trade.price ? `$${parseFloat(trade.price).toFixed(2)}` : '-');
             
-            // Wert formatieren
+            // Format value
             const value = trade.formatted_value || (trade.value ? formatter.format(trade.value) : '-');
             
-            // Erstelle eine neue Tabellenzeile
-            const row = document.createElement('tr');
-            
-            row.innerHTML = `
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0;">${formattedDate}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0;">${trade.full_name || '-'}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0;">${position}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: ${transactionColor}; font-weight: 600;">${trade.transaction_type || '-'}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${shares}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${price}</td>
-                <td style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.05); color: #e0e0e0; text-align: right;">${value}</td>
+            // Create a card for this trade
+            const card = document.createElement('div');
+            card.className = 'insider-trade-card';
+            card.style.height = '100%';
+            card.innerHTML = `
+                <div style="background: rgba(255,255,255,0.05); border-radius: 8px; height: 100%; padding: 15px; display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-weight: 600; color: #e0e0e0;">${formattedDate}</span>
+                        <span style="color: ${transactionColor}; font-weight: 600; padding: 4px 8px; border-radius: 4px; background: rgba(0,0,0,0.2);">${trade.transaction_type || '-'}</span>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <div style="color: #e0e0e0; font-weight: 500;">${trade.insider_name || '-'}</div>
+                        <div style="color: #999; font-size: 0.9em;">${position}</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; padding-top: 10px;">
+                        <div>
+                            <div style="color: #999; font-size: 0.8em;">PRICE</div>
+                            <div style="color: #e0e0e0;">${price}</div>
+                        </div>
+                        <div>
+                            <div style="color: #999; font-size: 0.8em;">SHARES</div>
+                            <div style="color: #e0e0e0;">${shares}</div>
+                        </div>
+                        <div>
+                            <div style="color: #999; font-size: 0.8em;">VALUE</div>
+                            <div style="color: #e0e0e0;">${value}</div>
+                        </div>
+                    </div>
+                </div>
             `;
             
-            insiderTable.appendChild(row);
+            // Add the card to the grid
+            gridContainer.appendChild(card);
         } catch (error) {
             console.error("Fehler beim Hinzufügen einer Trade-Zeile:", error, trade);
         }
@@ -4903,5 +4948,3 @@ function resetInsiderModal() {
     insiderTable.innerHTML = '';
 }
 });
-
-
