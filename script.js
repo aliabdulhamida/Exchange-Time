@@ -3139,6 +3139,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const panel = document.getElementById("filter-panel");
     const closeBtn = document.getElementById("close-filter-panel");
     
+    // Initialize justOpened variable correctly
+    let justOpened = false;
+    
     // Initial visibility check
     toggleFilterButtonVisibility(true);
     
@@ -3152,11 +3155,11 @@ document.addEventListener("DOMContentLoaded", () => {
             event.stopPropagation();
             panel.style.display = "block"; 
             panel.classList.add("filter-panel-open");
-            filterBtn.style.display = "none"; 
+            filterBtn.style.display = "none"; // Hide button when clicked
             
-            const justOpened = true;
+            justOpened = true;
             setTimeout(() => {
-                panel.dataset.justOpened = "false";
+                justOpened = false;
             }, 100);
         });
 
@@ -3169,13 +3172,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         document.addEventListener("click", (event) => {
-            if (!panel.dataset.justOpened && 
+            if (!justOpened && 
                 !panel.contains(event.target) && 
                 !filterBtn.contains(event.target) && 
                 panel.classList.contains("filter-panel-open")) {
-                panel.style.display = "none";
-                panel.classList.remove("filter-panel-open");
-                toggleFilterButtonVisibility(true); // Use toggle function instead of direct display
             }
         });
     }
@@ -4947,4 +4947,77 @@ function resetInsiderModal() {
     insiderErrorMessage.textContent = '';
     insiderTable.innerHTML = '';
 }
+});
+
+// Mobile menu functionality
+document.addEventListener('DOMContentLoaded', function() {
+
+    
+    // Hamburger-Menü Funktionalität
+    const hamburgerIcon = document.querySelector('.hamburger-icon');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
+    
+    if (hamburgerIcon && mobileMenu && mobileMenuOverlay) {
+        hamburgerIcon.addEventListener('click', function() {
+            hamburgerIcon.classList.toggle('open');
+            mobileMenu.classList.toggle('open');
+            mobileMenuOverlay.classList.toggle('open');
+            document.body.classList.toggle('menu-open');
+        });
+        
+        mobileMenuOverlay.addEventListener('click', function() {
+            hamburgerIcon.classList.remove('open');
+            mobileMenu.classList.remove('open');
+            mobileMenuOverlay.classList.remove('open');
+            document.body.classList.remove('menu-open');
+        });
+        
+        // Mobile-Menü-Buttons mit den entsprechenden Desktop-Buttons verknüpfen
+        
+        
+        document.getElementById('mobile-toggle-analysis').addEventListener('click', function() {
+            document.getElementById('toggle-analysis').click();
+            closeMenu();
+        });
+        
+        document.getElementById('mobile-toggle-exchange').addEventListener('click', function() {
+            document.getElementById('toggle-exchange').click();
+            closeMenu();
+        });
+        
+        document.getElementById('mobile-toggle-calendar').addEventListener('click', function() {
+            document.getElementById('toggle-calendar').click();
+            closeMenu();
+        });
+        
+        document.getElementById('mobile-toggle-backtest').addEventListener('click', function() {
+            document.getElementById('toggle-backtest').click();
+            closeMenu();
+        });
+        
+        document.getElementById('mobile-toggle-market-summary').addEventListener('click', function() {
+            document.getElementById('toggle-market-summary').click();
+            closeMenu();
+        });
+        
+        document.getElementById('mobile-fear-greed-btn').addEventListener('click', function() {
+            document.getElementById('fearGreedBtn').click();
+            closeMenu();
+        });
+        
+        document.getElementById('mobile-insider-trades-btn').addEventListener('click', function() {
+            document.getElementById('insiderTradesBtn').click();
+            closeMenu();
+        });
+        
+        function closeMenu() {
+            hamburgerIcon.classList.remove('open');
+            mobileMenu.classList.remove('open');
+            mobileMenuOverlay.classList.remove('open');
+            document.body.classList.remove('menu-open');
+        }
+    }
+    
+
 });
