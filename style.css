@@ -2981,12 +2981,6 @@ th, td {
     animation: modalFadeIn 0.3s ease-out;
 }
 
-/* Animation für den Insider Trades Ladeindikator */
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
 .fear-header {
     position: sticky;
     top: 0;
@@ -3817,3 +3811,45 @@ th, td {
     }
 }
 
+.insider-modal {
+    max-width: 900px !important;
+    width: 95% !important;
+    padding: 0 !important;
+    background: black !important;
+    border: 1px solid var(--input-border);
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+/* Animation für den Insider Trades Ladeindikator */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.insider-header {
+    position: sticky;
+    top: 0;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--input-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1001;
+}
+
+.insider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 0 0 30px;
+}
+
+.insider-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 0 30px;
+}
