@@ -4558,90 +4558,128 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
     }
 }
 
+
+
+
 // Insider Trades Modal Functionality
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Insider Trades Modal
     const insiderTradesBtn = document.getElementById('insiderTradesBtn');
+    const mobileInsiderTradesBtn = document.getElementById('mobile-insider-trades-btn');
     const insiderTradesModal = document.getElementById('insiderTradesModal');
-    const closeInsiderBtn = document.getElementById('close-insider');
-    const searchInsiderBtn = document.getElementById('search-insider');
-    const insiderTickerInput = document.getElementById('insider-ticker');
+    const closeInsiderModal = document.getElementById('close-insider');
+    const searchButton = document.getElementById('search-insider');
+    const tickerInput = document.getElementById('insider-ticker');
     const insiderLoading = document.getElementById('insider-loading');
     const insiderResults = document.getElementById('insider-results');
     const insiderNoData = document.getElementById('insider-no-data');
     const insiderError = document.getElementById('insider-error');
     const insiderErrorMessage = document.getElementById('insider-error-message');
     const insiderCompanyName = document.getElementById('insider-company-name');
-    const insiderSummary = document.getElementById('insider-summary');
-    const insiderTable = document.getElementById('insider-table').querySelector('tbody');
-
-    // Show modal when button is clicked
+    let stockChart = null;
+    
+    // Open modal when button is clicked
     insiderTradesBtn.addEventListener('click', function() {
         insiderTradesModal.style.display = 'block';
         resetInsiderModal();
+        initializeStockChart();
     });
-
-    // Close modal with close button
-    closeInsiderBtn.addEventListener('click', function() {
+    
+    // For mobile
+    if (mobileInsiderTradesBtn) {
+        mobileInsiderTradesBtn.addEventListener('click', function() {
+            insiderTradesModal.style.display = 'block';
+            document.querySelector('.mobile-menu-overlay').style.display = 'none';
+            document.querySelector('.mobile-menu').classList.remove('open');
+            resetInsiderModal();
+            initializeStockChart();
+        });
+    }
+    
+    // Close modal when clicked on X
+    closeInsiderModal.addEventListener('click', function() {
         insiderTradesModal.style.display = 'none';
     });
-
+    
     // Close modal when clicking outside
     window.addEventListener('click', function(event) {
         if (event.target === insiderTradesModal) {
             insiderTradesModal.style.display = 'none';
         }
     });
-
-    // Handle search button click
-    searchInsiderBtn.addEventListener('click', function() {
-        const ticker = insiderTickerInput.value.trim().toUpperCase();
+    
+    // Search on button click
+    searchButton.addEventListener('click', function() {
+        const ticker = tickerInput.value.trim().toUpperCase();
         if (ticker) {
             fetchInsiderTrades(ticker);
         }
     });
-
-    // Handle enter key press in input
-    insiderTickerInput.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            const ticker = insiderTickerInput.value.trim().toUpperCase();
+    
+    // Search on Enter key
+    tickerInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const ticker = tickerInput.value.trim().toUpperCase();
             if (ticker) {
                 fetchInsiderTrades(ticker);
             }
         }
     });
-
-    // Fetch insider trades data
+    
+    // Chart Period Buttons Event Handlers
+    document.querySelectorAll('.chart-period-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            document.querySelectorAll('.chart-period-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.background = 'rgba(255,255,255,0.05)';
+                btn.style.color = '#ccc';
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            this.style.background = 'rgba(1,195,168,0.15)';
+            this.style.color = '#01c3a8';
+            
+            // Update chart with selected period
+            const period = this.getAttribute('data-period');
+            const ticker = tickerInput.value.trim().toUpperCase();
+            if (ticker) {
+                fetchStockData(ticker, period);
+            }
+        });
+    });
+    
     async function fetchInsiderTrades(ticker) {
         // Reset and show loading state
         resetInsiderModal();
         insiderLoading.style.display = 'block';
 
         try {
-            // Fetch from Finviz which doesn't require an API key
+            // Fetch data from Finviz through a proxy
             const finvizUrl = `https://finviz.com/quote.ashx?t=${ticker}`;
             const proxyUrl = 'https://api.allorigins.win/get?url=';
             
             const response = await fetch(`${proxyUrl}${encodeURIComponent(finvizUrl)}`);
             
             if (!response.ok) {
-            throw new Error(`Error fetching data: ${response.status}`);
+                throw new Error(`Error fetching data: ${response.status}`);
             }
             
             const data = await response.json();
             
             if (data && data.contents) {
-            // Parse HTML content to extract insider trades
-            const { trades, companyName } = parseFinvizInsiderTrades(data.contents, ticker);
-            
-            if (trades.length > 0) {
-                displayParsedInsiderTrades(trades, ticker, companyName);
+                // Parse HTML content to extract insider trades
+                const { trades, companyName } = parseFinvizInsiderTrades(data.contents, ticker);
+                
+                if (trades.length > 0) {
+                    displayParsedInsiderTrades(trades, ticker, companyName);
+                    fetchStockData(ticker, '1m'); // Default to 1 month for chart
+                } else {
+                    insiderNoData.style.display = 'block';
+                }
             } else {
-                insiderNoData.style.display = 'block';
-            }
-            } else {
-            throw new Error('Invalid response from server');
+                throw new Error('Invalid response from server');
             }
             
         } catch (error) {
@@ -4651,10 +4689,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } finally {
             insiderLoading.style.display = 'none';
         }
-        }
-        
-        // Parse Finviz HTML to extract insider trades
-        function parseFinvizInsiderTrades(html, ticker) {
+    }
+    
+    // Parse Finviz HTML to extract insider trades
+    function parseFinvizInsiderTrades(html, ticker) {
         const trades = [];
         let companyName = ticker; // Default to ticker
         
@@ -4673,77 +4711,74 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Find the insider table
             const insiderTable = [...doc.querySelectorAll('table.body-table')].find(table => {
-            const headers = table.querySelectorAll('th');
-            return [...headers].some(th => th.textContent.includes('Insider Trading'));
+                const headers = table.querySelectorAll('th');
+                return [...headers].some(th => th.textContent.includes('Insider Trading'));
             });
             
             if (insiderTable) {
-            const rows = insiderTable.querySelectorAll('tr');
-            
-            [...rows].forEach((row, index) => {
-                if (index === 0) return; // Skip header row
+                const rows = insiderTable.querySelectorAll('tr');
                 
-                const cells = row.querySelectorAll('td');
-                if (cells.length >= 5) {
-                const transaction_date = cells[0]?.textContent?.trim();
-                const insider_name = cells[1]?.textContent?.trim(); // Changed from full_name to insider_name
-                const position = cells[2]?.textContent?.trim();
-                const transaction_type = getTransactionType(cells[3]?.textContent?.trim());
-                const price = parseFloat(cells[4]?.textContent?.replace(/[^\d.-]/g, ''));
-                const shares = parseFloat(cells[5]?.textContent?.replace(/[^\d.-]/g, ''));
-                const value = shares * price;
-                
-                trades.push({
-                    transaction_date,
-                    insider_name, // Store under insider_name
-                    position,
-                    transaction_type,
-                    shares,
-                    price,
-                    value,
-                    formatted_shares: `$${shares.toFixed(2)}`,
-                    formatted_value: new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD'
-                    }).format(value)
+                [...rows].forEach((row, index) => {
+                    if (index === 0) return; // Skip header row
+                    
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length >= 5) {
+                        const transaction_date = cells[0]?.textContent?.trim();
+                        const insider_name = cells[1]?.textContent?.trim();
+                        const position = cells[2]?.textContent?.trim();
+                        const transaction_type = getTransactionType(cells[3]?.textContent?.trim());
+                        const price = parseFloat(cells[4]?.textContent?.replace(/[^\d.-]/g, ''));
+                        const shares = parseFloat(cells[5]?.textContent?.replace(/[^\d.-]/g, ''));
+                        const value = shares * price;
+                        
+                        trades.push({
+                            transaction_date,
+                            insider_name,
+                            position,
+                            transaction_type,
+                            shares,
+                            price,
+                            value,
+                            formatted_shares: `$${shares.toLocaleString()}`,
+                            formatted_value: new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'USD'
+                            }).format(value)
+                        });
+                    }
                 });
-                }
-            });
             }
         } catch (e) {
             console.error('Error parsing Finviz HTML:', e);
         }
         
         return { trades, companyName };
-        }
-        
-        // Helper function to determine transaction type
-        function getTransactionType(text) {
+    }
+    
+    // Helper function to determine transaction type
+    function getTransactionType(text) {
         text = text.toLowerCase();
         if (text.includes('buy') || text.includes('purchase')) return 'Buy';
         if (text.includes('sale') || text.includes('sell')) return 'Sale';
         if (text.includes('exercise') || text.includes('conversion')) return 'Exercise/Conversion';
         return text;
-        }
-        
-        // Display parsed insider trades (for Finviz data)
-        function displayParsedInsiderTrades(trades, ticker, companyName) {
-        // Use the extracted company name or use a fallback
-        const displayName = companyName || getCompanyNameForTicker(ticker) || `${ticker}`;
-        
-        // Create a data object similar to the SynthFinance API response
+    }
+    
+    // Display parsed insider trades
+    function displayParsedInsiderTrades(trades, ticker, companyName) {
+        // Create a data object for display
         const result = {
             data: trades.map(trade => ({
-            ...trade,
-            company: { name: displayName }
+                ...trade,
+                company: { name: companyName }
             }))
         };
         
         displayInsiderTrades(result, ticker);
-        }
-        
-        // Helper function to get company name for ticker
-        function getCompanyNameForTicker(ticker) {
+    }
+    
+    // Helper function to get company name for ticker (fallback)
+    function getCompanyNameForTicker(ticker) {
         const companyMap = {
             'AAPL': 'Apple Inc.',
             'MSFT': 'Microsoft Corporation',
@@ -4752,208 +4787,440 @@ document.addEventListener('DOMContentLoaded', function() {
             'META': 'Meta Platforms, Inc.',
             'TSLA': 'Tesla, Inc.',
             'NVDA': 'NVIDIA Corporation'
-            // Add more mappings as needed
         };
         
         return companyMap[ticker] || null;
-        }
-        
- // Display insider trades data
-function displayInsiderTrades(result, ticker) {
-    console.log("Displaying data for", ticker, "with", result.data.length, "trades");
-    
-    insiderResults.style.display = 'block';
-    
-    // Extract trades from data array
-    const trades = result.data;
-    
-    // Set company name - find it from the first entry
-    const companyName = trades[0]?.company?.name || ticker;
-    insiderCompanyName.textContent = companyName;
-    
-    // Create summary metrics
-    const buys = trades.filter(trade => 
-        trade.transaction_type === 'Buy' || 
-        trade.transaction_type === 'Exercise/Conversion'
-    ).length;
-    
-    const sells = trades.filter(trade => 
-        trade.transaction_type === 'Sale'
-    ).length;
-    
-    let totalBuyValue = 0;
-    let totalSellValue = 0;
-    
-    trades.forEach(trade => {
-        const value = parseFloat(trade.value || 0);
-        
-        if (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') {
-            totalBuyValue += value;
-        } else if (trade.transaction_type === 'Sale') {
-            totalSellValue += value;
-        }
-    });
-    
-    // Format currency
-    const formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-    });
-    
-    // Display summary
-    insiderSummary.innerHTML = `
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px;">
-            
-            <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-                <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Buy Transactions</div>
-                <div style="font-size: 1.4rem; font-weight: 600; color: #7FFF8E;">${buys}</div>
-            </div>
-            <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-                <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Sell Transactions</div>
-                <div style="font-size: 1.4rem; font-weight: 600; color: #ff8a80;">${sells}</div>
-            </div>
-            <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-                <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Buy Volume</div>
-                <div style="font-size: 1.4rem; font-weight: 600; color: #7FFF8E;">${formatter.format(totalBuyValue)}</div>
-            </div>
-            <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
-                <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Sell Volume</div>
-                <div style="font-size: 1.4rem; font-weight: 600; color: #ff8a80;">${formatter.format(totalSellValue)}</div>
-            </div>
-        </div>
-    `;
-    
-    // Create a grid container for cards (replacing the table)
-    const insiderTableElement = document.getElementById('insider-table');
-    
-    // Prüfen, ob das Element existiert, bevor auf parentNode zugegriffen wird
-    if (!insiderTableElement) {
-        console.error('Element with ID "insider-table" not found');
-        return;
     }
     
-    const tableContainer = insiderTableElement.parentNode;
-    tableContainer.innerHTML = ''; // Clear the container
-    
-    // Create a new grid container for cards
-    const gridContainer = document.createElement('div');
-    gridContainer.id = 'insider-trades-grid';
-    gridContainer.style.display = 'grid';
-    gridContainer.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
-    gridContainer.style.gap = '12px';
-    gridContainer.style.width = '100%';
-    gridContainer.style.marginTop = '15px';
-    
-    // Add the grid container to the DOM
-    tableContainer.appendChild(gridContainer);
-    
-    // Debug: Log first trade if available
-    if (trades.length > 0) {
-        console.log("Sample trade data:", {
-            date: trades[0].transaction_date,
-            name: trades[0].insider_name,
-            position: trades[0].position,
-            roles: trades[0].formatted_roles,
-            type: trades[0].transaction_type,
-            shares: trades[0].shares,
-            price: trades[0].price,
-            value: trades[0].value
+    // Display insider trades data
+    function displayInsiderTrades(result, ticker) {
+        console.log("Displaying data for", ticker, "with", result.data.length, "trades");
+        
+        insiderResults.style.display = 'block';
+        
+        // Extract trades from data array
+        const trades = result.data;
+        
+        // Set company name - find it from the first entry
+        const companyName = trades[0]?.company?.name || ticker;
+        insiderCompanyName.textContent = companyName;
+        insiderCompanyName.nextElementSibling.textContent = ticker;
+        
+        // Create summary metrics
+        const buys = trades.filter(trade => 
+            trade.transaction_type === 'Buy' || 
+            trade.transaction_type === 'Exercise/Conversion'
+        ).length;
+        
+        const sells = trades.filter(trade => 
+            trade.transaction_type === 'Sale'
+        ).length;
+        
+        let totalBuyValue = 0;
+        let totalSellValue = 0;
+        
+        trades.forEach(trade => {
+            const value = parseFloat(trade.value || 0);
+            
+            if (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') {
+                totalBuyValue += value;
+            } else if (trade.transaction_type === 'Sale') {
+                totalSellValue += value;
+            }
+        });
+        
+        // Format currency
+        const formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        });
+        
+        // Display summary
+        const insiderSummary = document.getElementById('insider-summary');
+        insiderSummary.innerHTML = `
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px;">
+                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Buy Transactions</div>
+                    <div style="font-size: 1.4rem; font-weight: 600; color: #7FFF8E;">${buys}</div>
+                </div>
+                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Sell Transactions</div>
+                    <div style="font-size: 1.4rem; font-weight: 600; color: #ff8a80;">${sells}</div>
+                </div>
+                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Buy Volume</div>
+                    <div style="font-size: 1.4rem; font-weight: 600; color: #7FFF8E;">${formatter.format(totalBuyValue)}</div>
+                </div>
+                <div style="text-align: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px;">
+                    <div style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Sell Volume</div>
+                    <div style="font-size: 1.4rem; font-weight: 600; color: #ff8a80;">${formatter.format(totalSellValue)}</div>
+                </div>
+            </div>
+        `;
+        
+        // Update the last updated date
+        const today = new Date();
+        document.getElementById('insider-last-updated').textContent = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        // Create a grid container for cards
+        const insiderTableElement = document.getElementById('insider-table');
+        
+        if (!insiderTableElement) {
+            console.error('Element with ID "insider-table" not found');
+            return;
+        }
+        
+        const tableContainer = insiderTableElement.parentNode;
+        tableContainer.innerHTML = ''; // Clear the container
+        
+        // Create a new grid container for cards
+        const gridContainer = document.createElement('div');
+        gridContainer.id = 'insider-trades-grid';
+        gridContainer.style.display = 'grid';
+        gridContainer.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
+        gridContainer.style.gap = '12px';
+        gridContainer.style.width = '100%';
+        gridContainer.style.marginTop = '15px';
+        
+        // Add the grid container to the DOM
+        tableContainer.appendChild(gridContainer);
+        
+        // Create cards for each trade
+        trades.forEach(trade => {
+            try {
+                // Format the date
+                let formattedDate = '-';
+                if (trade.transaction_date) {
+                    const date = new Date(trade.transaction_date);
+                    if (!isNaN(date.getTime())) {
+                        formattedDate = date.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        });
+                    } else {
+                        formattedDate = trade.transaction_date;
+                    }
+                }
+                
+                // Position or role
+                const position = trade.position || trade.formatted_roles || '-';
+                
+                // Transaction color
+                const transactionColor = (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') 
+                    ? '#7FFF8E' 
+                    : '#ff8a80';
+                
+                // Format shares
+                const shares = numberWithCommas(trade.shares);
+                
+                // Format price
+                const price = trade.formatted_price || (trade.price ? `$${parseFloat(trade.price).toFixed(2)}` : '-');
+                
+                // Format value
+                const value = trade.formatted_value || (trade.value ? formatter.format(trade.value) : '-');
+                
+                // Create a card for this trade
+                const card = document.createElement('div');
+                card.className = 'insider-trade-card';
+                card.style.height = '100%';
+                card.innerHTML = `
+                    <div style="background: rgba(255,255,255,0.05); border-radius: 8px; height: 100%; padding: 15px; display: flex; flex-direction: column;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span style="font-weight: 600; color: #e0e0e0;">${formattedDate}</span>
+                            <span style="color: ${transactionColor}; font-weight: 600; padding: 4px 8px; border-radius: 4px; background: rgba(0,0,0,0.2);">${trade.transaction_type || '-'}</span>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <div style="color: #e0e0e0; font-weight: 500;">${trade.insider_name || '-'}</div>
+                            <div style="color: #999; font-size: 0.9em;">${position}</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; padding-top: 10px;">
+                            <div>
+                                <div style="color: #999; font-size: 0.8em;">PRICE</div>
+                                <div style="color: #e0e0e0;">${price}</div>
+                            </div>
+                            <div>
+                                <div style="color: #999; font-size: 0.8em;">SHARES</div>
+                                <div style="color: #e0e0e0;">${shares}</div>
+                            </div>
+                            <div>
+                                <div style="color: #999; font-size: 0.8em;">VALUE</div>
+                                <div style="color: #e0e0e0;">${value}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add the card to the grid
+                gridContainer.appendChild(card);
+            } catch (error) {
+                console.error("Error adding trade card:", error, trade);
+            }
         });
     }
     
-    // Create cards for each trade
-    trades.forEach(trade => {
-        try {
-            // Format the date
-            let formattedDate = '-';
-            if (trade.transaction_date) {
-                const date = new Date(trade.transaction_date);
-                if (!isNaN(date.getTime())) {
-                    formattedDate = date.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                    });
+    // Helper function to format numbers with commas
+    function numberWithCommas(x) {
+        if (!x) return '-';
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    
+    // Reset insider modal to initial state
+    function resetInsiderModal() {
+        insiderResults.style.display = 'none';
+        insiderNoData.style.display = 'none';
+        insiderError.style.display = 'none';
+        insiderErrorMessage.textContent = '';
+        
+        const insiderTable = document.getElementById('insider-table');
+        if (insiderTable && insiderTable.parentNode) {
+            insiderTable.parentNode.innerHTML = '<table id="insider-table"><tbody></tbody></table>';
+        }
+    }
+    
+    // Function to initialize the stock chart
+    function initializeStockChart() {
+        const ctx = document.getElementById('insider-stock-chart');
+        if (!ctx) return;
+        
+        // If a chart exists, destroy it
+        if (stockChart) {
+            stockChart.destroy();
+        }
+        
+        // Create empty chart
+        stockChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Stock Price',
+                    data: [],
+                    borderColor: '#01c3a8',
+                    backgroundColor: createGradient(ctx),
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 8,
+                            color: '#888'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            padding: 10,
+                            color: '#888'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return `$${context.parsed.y.toFixed(2)}`;
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        hoverRadius: 6,
+                        hoverBorderWidth: 2,
+                        hoverBackgroundColor: '#fff',
+                        hoverBorderColor: '#01c3a8'
+                    }
                 }
             }
+        });
+    }
+    
+    function createGradient(ctx) {
+        if (!ctx) return 'rgba(1, 195, 168, 0.2)';
+        
+        const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 250);
+        gradient.addColorStop(0, 'rgba(1, 195, 168, 0.4)');
+        gradient.addColorStop(1, 'rgba(1, 195, 168, 0)');
+        return gradient;
+    }
+    
+    // Function to fetch stock price data from Yahoo Finance
+    async function fetchStockData(ticker, period = '1m') {
+        try {
+            // Determine time range based on period
+            const range = getYahooFinanceRange(period);
             
-            // Position or role
-            const position = trade.position || trade.formatted_roles || '-';
+            // Yahoo Finance API endpoint with AllOrigins proxy
+            const proxyUrl = 'https://api.allorigins.win/get?url=';
+            const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=${range}`;
+            const url = proxyUrl + encodeURIComponent(yahooUrl);
             
-            // Transaction color
-            const transactionColor = (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') 
-                ? '#7FFF8E' 
-                : '#ff8a80';
+            const response = await fetch(url);
             
-            // Format shares
-            const shares = numberWithCommas(trade.shares);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
             
-            // Format price
-            const price = trade.formatted_price || (trade.price ? `$${parseFloat(trade.price).toFixed(2)}` : '-');
+            const rawData = await response.json();
+            if (!rawData?.contents) {
+                throw new Error('Invalid data format received');
+            }
             
-            // Format value
-            const value = trade.formatted_value || (trade.value ? formatter.format(trade.value) : '-');
+            const data = JSON.parse(rawData.contents);
             
-            // Create a card for this trade
-            const card = document.createElement('div');
-            card.className = 'insider-trade-card';
-            card.style.height = '100%';
-            card.innerHTML = `
-                <div style="background: rgba(255,255,255,0.05); border-radius: 8px; height: 100%; padding: 15px; display: flex; flex-direction: column;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <span style="font-weight: 600; color: #e0e0e0;">${formattedDate}</span>
-                        <span style="color: ${transactionColor}; font-weight: 600; padding: 4px 8px; border-radius: 4px; background: rgba(0,0,0,0.2);">${trade.transaction_type || '-'}</span>
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <div style="color: #e0e0e0; font-weight: 500;">${trade.insider_name || '-'}</div>
-                        <div style="color: #999; font-size: 0.9em;">${position}</div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; padding-top: 10px;">
-                        <div>
-                            <div style="color: #999; font-size: 0.8em;">PRICE</div>
-                            <div style="color: #e0e0e0;">${price}</div>
-                        </div>
-                        <div>
-                            <div style="color: #999; font-size: 0.8em;">SHARES</div>
-                            <div style="color: #e0e0e0;">${shares}</div>
-                        </div>
-                        <div>
-                            <div style="color: #999; font-size: 0.8em;">VALUE</div>
-                            <div style="color: #e0e0e0;">${value}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            if (!data.chart || !data.chart.result || !data.chart.result[0]) {
+                throw new Error('Invalid data format received from Yahoo Finance');
+            }
             
-            // Add the card to the grid
-            gridContainer.appendChild(card);
+            const result = data.chart.result[0];
+            const timestamps = result.timestamp;
+            const closePrices = result.indicators.quote[0].close;
+            
+            // Format dates for chart display
+            const formattedDates = timestamps.map(timestamp => {
+                const date = new Date(timestamp * 1000);
+                return date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: period === '1m' ? undefined : '2-digit'
+                });
+            });
+            
+            // Update the chart
+            updateStockChart(formattedDates, closePrices);
+            
+            // Update performance metrics
+            updatePerformanceMetrics(timestamps, closePrices);
+            
         } catch (error) {
-            console.error("Fehler beim Hinzufügen einer Trade-Zeile:", error, trade);
+            console.error(`Error fetching stock data for ${ticker}:`, error.message);
+            // Reset chart to empty state
+            if (stockChart) {
+                stockChart.data.labels = [];
+                stockChart.data.datasets[0].data = [];
+                stockChart.update();
+            }
         }
-    });
-}
-
-// Helper function to format numbers with commas
-function numberWithCommas(x) {
-    if (!x) return '-';
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-// Reset insider modal to initial state
-function resetInsiderModal() {
-    insiderResults.style.display = 'none';
-    insiderNoData.style.display = 'none';
-    insiderError.style.display = 'none';
-    insiderErrorMessage.textContent = '';
-    insiderTable.innerHTML = '';
-}
+    }
+    
+    // Helper to get Yahoo Finance range parameter
+    function getYahooFinanceRange(period) {
+        switch (period) {
+            case '1m': return '1mo';
+            case '3m': return '3mo';
+            case '6m': return '6mo';
+            case '1y': return '1y';
+            default: return '1mo';
+        }
+    }
+    
+    // Update the chart with new data
+    function updateStockChart(dates, prices) {
+        if (!stockChart) return;
+        
+        stockChart.data.labels = dates;
+        stockChart.data.datasets[0].data = prices;
+        stockChart.update();
+    }
+    
+    // Update performance metrics based on stock data
+    function updatePerformanceMetrics(timestamps, prices) {
+        // Skip if data is insufficient
+        if (!timestamps || !prices || timestamps.length < 2) return;
+        
+        // Calculate YTD Performance
+        const currentYear = new Date().getFullYear();
+        const startOfYear = new Date(currentYear, 0, 1);
+        const startOfYearTimestamp = Math.floor(startOfYear.getTime() / 1000);
+        
+        // Find the closest data point after the start of the year
+        let ytdStartPrice = prices[0];
+        for (let i = 0; i < timestamps.length; i++) {
+            if (timestamps[i] >= startOfYearTimestamp) {
+                ytdStartPrice = prices[i];
+                break;
+            }
+        }
+        
+        // Calculate 52-week performance
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        const oneYearAgoTimestamp = Math.floor(oneYearAgo.getTime() / 1000);
+        
+        // Find the closest data point after one year ago
+        let w52StartPrice = prices[0];
+        for (let i = 0; i < timestamps.length; i++) {
+            if (timestamps[i] >= oneYearAgoTimestamp) {
+                w52StartPrice = prices[i];
+                break;
+            }
+        }
+        
+        const currentPrice = prices[prices.length - 1];
+        const ytdChangePercent = ((currentPrice - ytdStartPrice) / ytdStartPrice) * 100;
+        const w52ChangePercent = ((currentPrice - w52StartPrice) / w52StartPrice) * 100;
+        
+        // Update the UI
+        const ytdChangeElement = document.getElementById('ytd-change');
+        const w52ChangeElement = document.getElementById('52w-change');
+        
+        if (ytdChangeElement) {
+            ytdChangeElement.textContent = formatPercentChange(ytdChangePercent);
+            ytdChangeElement.style.color = ytdChangePercent >= 0 ? '#7FFF8E' : '#ff8a80';
+        }
+        
+        if (w52ChangeElement) {
+            w52ChangeElement.textContent = formatPercentChange(w52ChangePercent);
+            w52ChangeElement.style.color = w52ChangePercent >= 0 ? '#7FFF8E' : '#ff8a80';
+        }
+    }
+    
+    function formatPercentChange(change) {
+        const sign = change >= 0 ? '+' : '';
+        return `${sign}${change.toFixed(2)}%`;
+    }
 });
 
 // Mobile menu functionality
 document.addEventListener('DOMContentLoaded', function() {
-
-    
-    // Hamburger-Menü Funktionalität
+    // Hamburger menu functionality
     const hamburgerIcon = document.querySelector('.hamburger-icon');
     const mobileMenu = document.querySelector('.mobile-menu');
     const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
@@ -4973,40 +5240,38 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.classList.remove('menu-open');
         });
         
-        // Mobile-Menü-Buttons mit den entsprechenden Desktop-Buttons verknüpfen
-        
-        
-        document.getElementById('mobile-toggle-analysis').addEventListener('click', function() {
+        // Link mobile menu buttons to desktop buttons
+        document.getElementById('mobile-toggle-analysis')?.addEventListener('click', function() {
             document.getElementById('toggle-analysis').click();
             closeMenu();
         });
         
-        document.getElementById('mobile-toggle-exchange').addEventListener('click', function() {
+        document.getElementById('mobile-toggle-exchange')?.addEventListener('click', function() {
             document.getElementById('toggle-exchange').click();
             closeMenu();
         });
         
-        document.getElementById('mobile-toggle-calendar').addEventListener('click', function() {
+        document.getElementById('mobile-toggle-calendar')?.addEventListener('click', function() {
             document.getElementById('toggle-calendar').click();
             closeMenu();
         });
         
-        document.getElementById('mobile-toggle-backtest').addEventListener('click', function() {
+        document.getElementById('mobile-toggle-backtest')?.addEventListener('click', function() {
             document.getElementById('toggle-backtest').click();
             closeMenu();
         });
         
-        document.getElementById('mobile-toggle-market-summary').addEventListener('click', function() {
+        document.getElementById('mobile-toggle-market-summary')?.addEventListener('click', function() {
             document.getElementById('toggle-market-summary').click();
             closeMenu();
         });
         
-        document.getElementById('mobile-fear-greed-btn').addEventListener('click', function() {
+        document.getElementById('mobile-fear-greed-btn')?.addEventListener('click', function() {
             document.getElementById('fearGreedBtn').click();
             closeMenu();
         });
         
-        document.getElementById('mobile-insider-trades-btn').addEventListener('click', function() {
+        document.getElementById('mobile-insider-trades-btn')?.addEventListener('click', function() {
             document.getElementById('insiderTradesBtn').click();
             closeMenu();
         });
@@ -5018,8 +5283,4 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.classList.remove('menu-open');
         }
     }
-    
-
 });
-
-
