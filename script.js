@@ -2580,6 +2580,9 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
             margin-bottom: 40px; 
             padding: 10px;
             overflow: hidden;
+            max-height: 800px;
+            display: flex;
+            flex-direction: column;
             ">
 
             <div class="portfolio-metrics" style="width: 100%;">
@@ -2590,6 +2593,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
             minmax(240px, 1fr)); 
             gap: 15px; 
             width: 100%;
+            margin-bottom: 20px;
             ">
 
             <div class="metric-card" style="
@@ -2679,95 +2683,136 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
             </div>
             </div>
             </div>
-            <div class="chart-container" style="width: 100%; margin-top: 30px;">
-            <div id="portfolio-chart" style="
-                margin-top: 20px;
-                background-color: rgb(255, 255, 255);
-                border-radius: 8px;
-                padding: 15px;
-                height: min(400px, 70vh);
-                width: 100%;
-            "></div>
-            </div>
+            <!-- Chart wird im bestehenden Canvas gerendert -->
             </div>
         `;
         resultDiv.innerHTML = resultHTML;
 
-        // Create ApexCharts configuration
+        // Erstellen der Chart.js-Konfiguration
         const dates = Object.keys(portfolioValuesOverTime).sort();
         const portfolioValues = dates.map(date => portfolioValuesOverTime[date]);
 
-        const chartOptions = {
-            series: [{
-                name: 'Portfolio Value',
-                data: dates.map((date, index) => ({
-                    x: new Date(date).getTime(),
-                    y: portfolioValues[index]
-                }))
-            }],
-            chart: {
-                type: 'area',
-                height: 350,
-                zoom: {
-                    type: 'x',
-                    enabled: true,
-                    autoScaleYaxis: true
-                },
-                toolbar: {
-                    autoSelected: 'zoom'
-                }
+        // Füge Canvas für das Chart hinzu
+        resultDiv.innerHTML += `
+            <div style="width: 100%; height: 400px; margin-top: 20px; position: relative;">
+                <canvas id="portfolio-chart" style="width: 100%; height: 100%;"></canvas>
+            </div>
+        `;
+
+        const ctx = document.getElementById('portfolio-chart').getContext('2d');
+        
+        // Gradient für den Hintergrund erstellen
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(1, 195, 168, 0.3)');
+        gradient.addColorStop(1, 'rgba(1, 195, 168, 0)');
+
+        // Zerstöre existierendes Chart wenn vorhanden
+        if (window.portfolioChart) {
+            window.portfolioChart.destroy();
+        }
+
+        // Chart.js Plugin für Zoom registrieren
+        Chart.register('chartjs-plugin-zoom');
+
+        // Erstelle neues Chart
+        window.portfolioChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Portfolio-Wert',
+                    data: dates.map((date, index) => ({
+                        x: new Date(date),
+                        y: portfolioValues[index]
+                    })),
+                    borderColor: '#01c3a8',
+                    backgroundColor: gradient,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0,
+                    borderWidth: 2
+                }]
             },
-            dataLabels: {
-                enabled: false
-            },
-            markers: {
-                size: 0
-            },
-            title: {
-                text: '',
-                align: 'left'
-            },
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    shadeIntensity: 1,
-                    inverseColors: false,
-                    opacityFrom: 0.7,
-                    opacityTo: 0.1,
-                    stops: [0, 90, 100]
-                }
-            },
-            yaxis: {
-                title: {
-                    text: 'Portfolio Value ($)'
-                },
-                labels: {
-                    formatter: function(val) {
-                        return '$' + val.toFixed(2);
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'month',
+                            displayFormats: {
+                                month: 'MMM yyyy'
+                            }
+                        },
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 8,
+                            color: '#888'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            padding: 10,
+                            color: '#888',
+                            callback: function(value) {
+                                return '$' + value.toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                        }
                     }
-                }
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    datetimeUTC: false
-                }
-            },
-            tooltip: {
-                x: {
-                    format: 'dd MMM yyyy'
                 },
-                y: {
-                    formatter: function(val) {
-                        return '$' + val.toFixed(2);
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                return new Date(tooltipItems[0].parsed.x).toLocaleDateString('de-DE', {
+                                    day: 'numeric',
+                                    month: 'short',
+                                    year: 'numeric'
+                                });
+                            },
+                            label: function(context) {
+                                return 'Portfolio-Wert: $' + context.parsed.y.toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                        }
                     }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false
                 }
             }
-        };
-
-        // Create and render the chart
-        const chart = new ApexCharts(document.querySelector("#portfolio-chart"), chartOptions);
-        chart.render();
+        });
 
     } else {
         resultHTML = `<p style='color: red;'>${errorMessages.join('<br>')}. <a href="https://cors-anywhere.herokuapp.com/" target="_blank">Ensure proxy is active</a>.</p>`;
@@ -4332,30 +4377,25 @@ class ExchangeRateCalculator {
 
             // Verwende Yahoo Finance Symbol für Währungspaare
             const symbol = `${fromCurrency}${toCurrency}=X`;
-            const proxyUrl = 'https://api.allorigins.win/get?url=';
+            const proxyUrl = 'https://corsproxy.io/?';
             const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`;
             const url = proxyUrl + encodeURIComponent(yahooUrl);
 
             const response = await fetch(url);
             const data = await response.json();
             
-            if (data.contents) {
-                const parsed = JSON.parse(data.contents);
-                if (parsed.chart.result) {
-                    const rate = parsed.chart.result[0].meta.regularMarketPrice;
-                    const result = amount * rate;
-                    
-                    this.displayResult({
-                        base_code: fromCurrency,
-                        target_code: toCurrency,
-                        conversion_rate: rate,
-                        conversion_result: result
-                    });
-                } else {
-                    throw new Error('Rate not available');
-                }
+            if (data.chart && data.chart.result && data.chart.result[0]) {
+                const rate = data.chart.result[0].meta.regularMarketPrice;
+                const result = amount * rate;
+                
+                this.displayResult({
+                    base_code: fromCurrency,
+                    target_code: toCurrency,
+                    conversion_rate: rate,
+                    conversion_result: result
+                });
             } else {
-                throw new Error('Conversion failed');
+                throw new Error('Wechselkurs nicht verfügbar');
             }
         } catch (error) {
             console.error('Conversion error:', error);
