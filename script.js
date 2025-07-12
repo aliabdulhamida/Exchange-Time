@@ -2229,27 +2229,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const period1 = Math.floor(new Date(startDate).getTime() / 1000);
             const period2 = Math.floor(new Date(endDate).getTime() / 1000);
             
-            // Yahoo Finance API endpoint with AllOrigins proxy
-            const proxyUrl = 'https://api.allorigins.win/get?url=';
+            // Yahoo Finance API endpoint mit CORS-Proxy
+            const proxyUrl = 'https://corsproxy.io/?';
             const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}?period1=${period1}&period2=${period2}&interval=1d`;
             const url = proxyUrl + encodeURIComponent(yahooUrl);
-            
+
             const response = await fetch(url);
-            
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            
-            const rawData = await response.json();
-            const data = JSON.parse(rawData.contents);
-            
+
+            // corsproxy.io liefert das JSON direkt, nicht als { contents: ... }
+            const data = await response.json();
+
             if (!data.chart || !data.chart.result || !data.chart.result[0]) {
                 throw new Error('Invalid data format received');
             }
-            
+
             const timestamps = data.chart.result[0].timestamp;
             const closePrices = data.chart.result[0].indicators.quote[0].close;
-            
+
             return timestamps.map((timestamp, index) => ({
                 date: new Date(timestamp * 1000).toISOString().split('T')[0],
                 close: closePrices[index]
@@ -2311,95 +2311,98 @@ function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerS
 
 // Generate portfolio chart
 function generatePortfolioChart(dates, portfolioValues) {
-    const chartDiv = document.getElementById('portfolio-chart');
-    if (!chartDiv) {
+    const ctx = document.getElementById('portfolio-chart');
+    if (!ctx) {
         console.error('Chart container not found');
         return;
     }
-    
-    // Clear existing chart
-    chartDiv.innerHTML = '';
-    
-    // Ensure the container has a height
-    chartDiv.style.minHeight = '400px';
-    chartDiv.style.width = '100%';
 
-    // Validate data
-    if (!dates || !portfolioValues || dates.length === 0) {
-        console.error('Invalid chart data');
-        return;
+    // Destroy existing Chart.js chart if present
+    if (window.portfolioChart) {
+        window.portfolioChart.destroy();
     }
 
-    // Format data for ApexCharts
-    const data = dates.map((date, index) => ({
-        x: new Date(date).getTime(),
-        y: Number(portfolioValues[index])
-    })).filter(point => !isNaN(point.y));
-
-    const options = {
-        series: [{
-            name: 'Portfolio Value',
-            data: data
-        }],
-        chart: {
-            type: 'area',
-            stacked: false,
-            height: 350,
-            zoom: {
-                type: 'x',
-                enabled: true,
-                autoScaleYaxis: true
-            },
-            toolbar: {
-                autoSelected: 'zoom'
-            }
+    window.portfolioChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Portfolio Value',
+                data: portfolioValues,
+                borderColor: '#01c3a8',
+                backgroundColor: createGradient(ctx),
+                tension: 0.4,
+                fill: true,
+                pointRadius: 0,
+                borderWidth: 2
+            }]
         },
-        dataLabels: {
-            enabled: false
-        },
-        markers: {
-            size: 0,
-        },
-        title: {
-            text: 'Stock Price Movement',
-            align: 'left'
-        },
-        fill: {
-            type: 'gradient',
-            gradient: {
-                shadeIntensity: 1,
-                inverseColors: false,
-                opacityFrom: 0.5,
-                opacityTo: 0,
-                stops: [0, 90, 100]
-            },
-        },
-        yaxis: {
-            labels: {
-                formatter: function (val) {
-                    return (val / 1000000).toFixed(0);
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 8,
+                        color: '#888'
+                    }
                 },
+                y: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.05)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        padding: 10,
+                        color: '#888'
+                    }
+                }
             },
-            title: {
-                text: 'Price'
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    padding: 12,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(context) {
+                            return `$${context.parsed.y.toFixed(2)}`;
+                        }
+                    }
+                }
             },
-        },
-        xaxis: {
-            type: 'datetime',
-        },
-        tooltip: {
-            shared: false,
-            y: {
-                formatter: function (val) {
-                    return (val / 1000000).toFixed(0)
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            elements: {
+                point: {
+                    radius: 0,
+                    hoverRadius: 6,
+                    hoverBorderWidth: 2,
+                    hoverBackgroundColor: '#fff',
+                    hoverBorderColor: '#01c3a8'
                 }
             }
         }
-    };
-
-    // Create new ApexCharts instance and render
-    const chart = new ApexCharts(chartDiv, options);
-    chart.render();
+    });
 }
 
 // Backtest form submission handler (portfolio sum with chart)
@@ -4658,30 +4661,26 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Fetch data from Finviz through a proxy
             const finvizUrl = `https://finviz.com/quote.ashx?t=${ticker}`;
-            const proxyUrl = 'https://api.allorigins.win/get?url=';
-            
+            const proxyUrl = 'https://corsproxy.io/?';
+
             const response = await fetch(`${proxyUrl}${encodeURIComponent(finvizUrl)}`);
-            
+
             if (!response.ok) {
                 throw new Error(`Error fetching data: ${response.status}`);
             }
-            
-            const data = await response.json();
-            
-            if (data && data.contents) {
-                // Parse HTML content to extract insider trades
-                const { trades, companyName } = parseFinvizInsiderTrades(data.contents, ticker);
-                
-                if (trades.length > 0) {
-                    displayParsedInsiderTrades(trades, ticker, companyName);
-                    fetchStockData(ticker, '1m'); // Default to 1 month for chart
-                } else {
-                    insiderNoData.style.display = 'block';
-                }
+
+            // corsproxy.io liefert die HTML-Antwort direkt als Text
+            const html = await response.text();
+
+            // Parse HTML content to extract insider trades
+            const { trades, companyName } = parseFinvizInsiderTrades(html, ticker);
+
+            if (trades.length > 0) {
+                displayParsedInsiderTrades(trades, ticker, companyName);
+                fetchStockData(ticker, '1m'); // Default to 1 month for chart
             } else {
-                throw new Error('Invalid response from server');
+                insiderNoData.style.display = 'block';
             }
-            
         } catch (error) {
             insiderError.style.display = 'block';
             insiderErrorMessage.textContent = `Error: ${error.message}`;
@@ -4864,15 +4863,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Create a grid container for cards
         const insiderTableElement = document.getElementById('insider-table');
-        
+
         if (!insiderTableElement) {
             console.error('Element with ID "insider-table" not found');
             return;
         }
-        
+
         const tableContainer = insiderTableElement.parentNode;
-        tableContainer.innerHTML = ''; // Clear the container
-        
+
+        // Remove existing grid container if present
+        const oldGrid = document.getElementById('insider-trades-grid');
+        if (oldGrid && oldGrid.parentNode) {
+            oldGrid.parentNode.removeChild(oldGrid);
+        }
+
         // Create a new grid container for cards
         const gridContainer = document.createElement('div');
         gridContainer.id = 'insider-trades-grid';
@@ -4881,7 +4885,7 @@ document.addEventListener('DOMContentLoaded', function() {
         gridContainer.style.gap = '12px';
         gridContainer.style.width = '100%';
         gridContainer.style.marginTop = '15px';
-        
+
         // Add the grid container to the DOM
         tableContainer.appendChild(gridContainer);
         
@@ -4972,6 +4976,12 @@ document.addEventListener('DOMContentLoaded', function() {
         insiderError.style.display = 'none';
         insiderErrorMessage.textContent = '';
         
+        // Reset the recent transactions grid
+        const gridContainer = document.getElementById('insider-trades-grid');
+        if (gridContainer && gridContainer.parentNode) {
+            gridContainer.parentNode.removeChild(gridContainer);
+        }
+        // Reset the table as fallback (legacy)
         const insiderTable = document.getElementById('insider-table');
         if (insiderTable && insiderTable.parentNode) {
             insiderTable.parentNode.innerHTML = '<table id="insider-table"><tbody></tbody></table>';
@@ -5086,33 +5096,29 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Determine time range based on period
             const range = getYahooFinanceRange(period);
-            
-            // Yahoo Finance API endpoint with AllOrigins proxy
-            const proxyUrl = 'https://api.allorigins.win/get?url=';
+
+            // Yahoo Finance API endpoint mit CORS-Proxy
+            const proxyUrl = 'https://corsproxy.io/?';
             const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=${range}`;
             const url = proxyUrl + encodeURIComponent(yahooUrl);
-            
+
             const response = await fetch(url);
-            
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            
-            const rawData = await response.json();
-            if (!rawData?.contents) {
-                throw new Error('Invalid data format received');
-            }
-            
-            const data = JSON.parse(rawData.contents);
-            
+
+            // corsproxy.io liefert das JSON direkt
+            const data = await response.json();
+
             if (!data.chart || !data.chart.result || !data.chart.result[0]) {
                 throw new Error('Invalid data format received from Yahoo Finance');
             }
-            
+
             const result = data.chart.result[0];
             const timestamps = result.timestamp;
             const closePrices = result.indicators.quote[0].close;
-            
+
             // Format dates for chart display
             const formattedDates = timestamps.map(timestamp => {
                 const date = new Date(timestamp * 1000);
@@ -5122,13 +5128,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     year: period === '1m' ? undefined : '2-digit'
                 });
             });
-            
+
             // Update the chart
             updateStockChart(formattedDates, closePrices);
-            
+
             // Update performance metrics
             updatePerformanceMetrics(timestamps, closePrices);
-            
+
         } catch (error) {
             console.error(`Error fetching stock data for ${ticker}:`, error.message);
             // Reset chart to empty state
