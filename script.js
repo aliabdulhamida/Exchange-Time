@@ -2569,6 +2569,13 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
 
     let resultHTML = "";
     if (allValid) {
+        // Halteperiode berechnen (in Tagen)
+        let holdingPeriodDays = 0;
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            holdingPeriodDays = Math.max(0, Math.round((end - start) / (1000 * 60 * 60 * 24)));
+        }
         const portfolioProfit = portfolioFinalValue - portfolioTotalInvested;
         const profitPercent = (portfolioProfit / portfolioTotalInvested) * 100;
         const profitColor = portfolioFinalValue >= portfolioTotalInvested ? "#00ff00" : "#ff0000";
@@ -2668,7 +2675,6 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
             border-radius: 8px; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             ">
-
                 <span class="metric-label" style="
                 color: white; 
                 font-size: clamp(0.9rem, 3vw, 1.1rem); 
@@ -2679,6 +2685,44 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
                 font-weight: bold;">
                 ${portfolioShares.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                </span>
+            </div>
+
+            <div class="metric-card" style="
+            background: rgba(33, 33, 33, 0.9); 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            ">
+                <span class="metric-label" style="
+                color: white; 
+                font-size: clamp(0.9rem, 3vw, 1.1rem); 
+                display: block; 
+                margin-bottom: 8px;">Total Dividends</span>
+                <span class="metric-value" style="
+                color: #FFD700; 
+                font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
+                font-weight: bold;">
+                $${(portfolioValuesOverTime.totalDividends || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                </span>
+            </div>
+
+            <div class="metric-card" style="
+            background: rgba(33, 33, 33, 0.9); 
+            padding: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            ">
+                <span class="metric-label" style="
+                color: white; 
+                font-size: clamp(0.9rem, 3vw, 1.1rem); 
+                display: block; 
+                margin-bottom: 8px;">Holding Period</span>
+                <span class="metric-value" style="
+                color: #FF9800; 
+                font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
+                font-weight: bold;">
+                ${holdingPeriodDays} days
                 </span>
             </div>
             </div>
