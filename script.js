@@ -1,3 +1,12 @@
+// Helper function to convert date to Unix timestamp
+function dateToUnix(dateStr) {
+    return Math.floor(new Date(dateStr).getTime() / 1000);
+}
+
+// Global chart instances for portfolio tracking
+let chartInstance = null;
+let dividendChartInstance = null;
+
 // Define marketHours with explicit holidays for each market
 const marketHours = {
     NYSE: {
@@ -172,36 +181,36 @@ const marketHours = {
         region: "Europe",
         city: "Madrid",
         holidays: {
-             "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-        "2025-04-18": { reason: "Good Friday", closeEarly: false },
-        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
-        "2025-05-01": { reason: "Labour Day", closeEarly: false },
-        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-        "2025-12-26": { reason: "Christmas Holiday", closeEarly: false }
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-26": { reason: "Christmas Holiday", closeEarly: false }
         }
     },
-  
-  LSE: {
-    open: "08:00",
-    close: "16:30",
-    timezone: "Europe/London",
-    region: "Europe",
-    city: "London",
-    holidays: {
-        // 2025 Holidays
-        "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-        "2025-04-18": { reason: "Good Friday", closeEarly: false },
-        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
-        "2025-05-05": { reason: "Early May Bank Holiday", closeEarly: false },
-        "2025-05-26": { reason: "Spring Bank Holiday", closeEarly: false },
-        "2025-08-25": { reason: "Summer Bank Holiday", closeEarly: false },
-        "2025-12-24": { reason: "Christmas Eve", closeEarly: true, earlyCloseTime: "12:30" },
-        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-        "2025-12-26": { reason: "Boxing Day", closeEarly: false },
-        "2025-12-31": { reason: "New Year's Eve", closeEarly: true, earlyCloseTime: "12:30" },
 
-    }
-},
+    LSE: {
+        open: "08:00",
+        close: "16:30",
+        timezone: "Europe/London",
+        region: "Europe",
+        city: "London",
+        holidays: {
+            // 2025 Holidays
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+            "2025-05-05": { reason: "Early May Bank Holiday", closeEarly: false },
+            "2025-05-26": { reason: "Spring Bank Holiday", closeEarly: false },
+            "2025-08-25": { reason: "Summer Bank Holiday", closeEarly: false },
+            "2025-12-24": { reason: "Christmas Eve", closeEarly: true, earlyCloseTime: "12:30" },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-26": { reason: "Boxing Day", closeEarly: false },
+            "2025-12-31": { reason: "New Year's Eve", closeEarly: true, earlyCloseTime: "12:30" },
+
+        }
+    },
     OMX: {
         open: "09:00",
         close: "17:30",
@@ -209,16 +218,16 @@ const marketHours = {
         region: "Europe",
         city: "Stockholm",
         holidays: {
-        "2025-04-18": { reason: "Good Friday", closeEarly: false },
-        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
-        "2025-05-01": { reason: "Labour Day", closeEarly: false },
-        "2025-05-29": { reason: "Ascension Day", closeEarly: false },
-        "2025-06-06": { reason: "National Day", closeEarly: false },
-        "2025-06-20": { reason: "Midsummer Eve OBS", closeEarly: false },
-        "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
-        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-        "2025-12-26": { reason: "Boxing Day", closeEarly: false },
-        "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-05-29": { reason: "Ascension Day", closeEarly: false },
+            "2025-06-06": { reason: "National Day", closeEarly: false },
+            "2025-06-20": { reason: "Midsummer Eve OBS", closeEarly: false },
+            "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-26": { reason: "Boxing Day", closeEarly: false },
+            "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
 
 
         }
@@ -230,12 +239,12 @@ const marketHours = {
         region: "Europe",
         city: "Moscow",
         holidays: {
-        "2025-05-01": { reason: "International Labour Day", closeEarly: false },
-        "2025-05-09": { reason: "Victory Day", closeEarly: false },
-        "2025-06-12": { reason: "Declaration of Russian Sovereignty", closeEarly: false },
-        "2025-11-04": { reason: "National Unity Day", closeEarly: false },
-        "2025-12-31": { reason: "New Year's Eve Holiday", closeEarly: false }
-    }
+            "2025-05-01": { reason: "International Labour Day", closeEarly: false },
+            "2025-05-09": { reason: "Victory Day", closeEarly: false },
+            "2025-06-12": { reason: "Declaration of Russian Sovereignty", closeEarly: false },
+            "2025-11-04": { reason: "National Unity Day", closeEarly: false },
+            "2025-12-31": { reason: "New Year's Eve Holiday", closeEarly: false }
+        }
     },
     BorsaItaliana: {
         open: "09:00",
@@ -244,16 +253,16 @@ const marketHours = {
         region: "Europe",
         city: "Milan",
         holidays: {
-        "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-        "2025-04-18": { reason: "Good Friday", closeEarly: false },
-        "2025-04-21": { reason: "Easter", closeEarly: false },
-        "2025-05-01": { reason: "Labour Day", closeEarly: false },
-        "2025-08-15": { reason: "Assumption Day", closeEarly: false },
-        "2025-12-24": { reason: "Christmas", closeEarly: false },
-        "2025-12-25": { reason: "Christmas", closeEarly: false },
-        "2025-12-26": { reason: "St. Stephen's Day", closeEarly: false },
-        "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
-    }
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-04-21": { reason: "Easter", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-08-15": { reason: "Assumption Day", closeEarly: false },
+            "2025-12-24": { reason: "Christmas", closeEarly: false },
+            "2025-12-25": { reason: "Christmas", closeEarly: false },
+            "2025-12-26": { reason: "St. Stephen's Day", closeEarly: false },
+            "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
+        }
     },
     WSE: {
         open: "09:00",
@@ -263,16 +272,16 @@ const marketHours = {
         city: "Warsaw",
         holidays: {
             "2025-04-18": { reason: "Good Friday", closeEarly: false },
-        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
-        "2025-05-01": { reason: "State Holiday/Labour Day", closeEarly: false },
-        "2025-06-19": { reason: "Corpus Christi", closeEarly: false },
-        "2025-08-15": { reason: "Assumption Day", closeEarly: false },
-        "2025-11-11": { reason: "Day of Independence", closeEarly: false },
-        "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
-        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-        "2025-12-26": { reason: "Christmas Holiday", closeEarly: false },
-        "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
-    }
+            "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+            "2025-05-01": { reason: "State Holiday/Labour Day", closeEarly: false },
+            "2025-06-19": { reason: "Corpus Christi", closeEarly: false },
+            "2025-08-15": { reason: "Assumption Day", closeEarly: false },
+            "2025-11-11": { reason: "Day of Independence", closeEarly: false },
+            "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-26": { reason: "Christmas Holiday", closeEarly: false },
+            "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
+        }
     },
     OSE: {
         open: "09:00",
@@ -282,16 +291,16 @@ const marketHours = {
         city: "Oslo",
         holidays: {
             "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
-        "2025-04-18": { reason: "Good Friday", closeEarly: false },
-        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
-        "2025-05-01": { reason: "Labour Day", closeEarly: false },
-        "2025-05-29": { reason: "Ascension Day", closeEarly: false },
-        "2025-06-09": { reason: "Whitmonday", closeEarly: false },
-        "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
-        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-        "2025-12-26": { reason: "Boxing Day", closeEarly: false },
-        "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
-    }
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-05-29": { reason: "Ascension Day", closeEarly: false },
+            "2025-06-09": { reason: "Whitmonday", closeEarly: false },
+            "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-26": { reason: "Boxing Day", closeEarly: false },
+            "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
+        }
     },
     ISE: {
         open: "09:00",
@@ -301,12 +310,12 @@ const marketHours = {
         city: "Dublin",
         holidays: {
             "2025-04-18": { reason: "Good Friday", closeEarly: false },
-        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
-        "2025-05-01": { reason: "Labour Day", closeEarly: false },
-        "2025-05-05": { reason: "May Bank Holiday", closeEarly: false },
-        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-        "2025-12-26": { reason: "Christmas Holiday", closeEarly: false }
-    }
+            "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-05-05": { reason: "May Bank Holiday", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-26": { reason: "Christmas Holiday", closeEarly: false }
+        }
     },
     JPX: {
         open1: "09:00", close1: "11:30",
@@ -315,21 +324,21 @@ const marketHours = {
         region: "Asia",
         city: "Tokyo",
         holidays: {
-        "2025-02-11": { reason: "National Founding Day", closeEarly: false },
-        "2025-02-24": { reason: "Emperor's Birthday OBS", closeEarly: false },
-        "2025-03-20": { reason: "Vernal Equinox", closeEarly: false },
-        "2025-04-29": { reason: "Showa Day (formerly Greenery Day)", closeEarly: false },
-        "2025-05-05": { reason: "Children's Day", closeEarly: false },
-        "2025-05-06": { reason: "Greenery Day (formerly National Holiday) OBS", closeEarly: false },
-        "2025-07-21": { reason: "Marine Day", closeEarly: false },
-        "2025-08-11": { reason: "Mountain Day", closeEarly: false },
-        "2025-09-15": { reason: "Respect for the Aged Day", closeEarly: false },
-        "2025-09-23": { reason: "Autumn Equinox", closeEarly: false },
-        "2025-10-13": { reason: "Health-Sports Day", closeEarly: false },
-        "2025-11-03": { reason: "Culture Day", closeEarly: false },
-        "2025-11-24": { reason: "Labour Thanksgiving Day OBS", closeEarly: false },
-        "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
-    }
+            "2025-02-11": { reason: "National Founding Day", closeEarly: false },
+            "2025-02-24": { reason: "Emperor's Birthday OBS", closeEarly: false },
+            "2025-03-20": { reason: "Vernal Equinox", closeEarly: false },
+            "2025-04-29": { reason: "Showa Day (formerly Greenery Day)", closeEarly: false },
+            "2025-05-05": { reason: "Children's Day", closeEarly: false },
+            "2025-05-06": { reason: "Greenery Day (formerly National Holiday) OBS", closeEarly: false },
+            "2025-07-21": { reason: "Marine Day", closeEarly: false },
+            "2025-08-11": { reason: "Mountain Day", closeEarly: false },
+            "2025-09-15": { reason: "Respect for the Aged Day", closeEarly: false },
+            "2025-09-23": { reason: "Autumn Equinox", closeEarly: false },
+            "2025-10-13": { reason: "Health-Sports Day", closeEarly: false },
+            "2025-11-03": { reason: "Culture Day", closeEarly: false },
+            "2025-11-24": { reason: "Labour Thanksgiving Day OBS", closeEarly: false },
+            "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
+        }
     },
     HKEX: {
         open: "09:30",
@@ -339,20 +348,20 @@ const marketHours = {
         city: "Hong Kong",
         holidays: {
             "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
-        "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
-        "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
-        "2025-04-04": { reason: "Ching Ming Festival", closeEarly: false },
-        "2025-04-18": { reason: "Good Friday", closeEarly: false },
-        "2025-04-21": { reason: "Easter Monday", closeEarly: false },
-        "2025-05-01": { reason: "Labour Day", closeEarly: false },
-        "2025-05-05": { reason: "Buddha's Birthday*", closeEarly: false },
-        "2025-07-01": { reason: "SAR Establishment Day", closeEarly: false },
-        "2025-10-01": { reason: "Chinese National Day", closeEarly: false },
-        "2025-10-07": { reason: "Day Following Mid-autumn Festival*", closeEarly: false },
-        "2025-10-29": { reason: "Chung Yeung Day*", closeEarly: false },
-        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-        "2025-12-26": { reason: "Christmas Holiday", closeEarly: false }
-    }
+            "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
+            "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
+            "2025-04-04": { reason: "Ching Ming Festival", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-05-05": { reason: "Buddha's Birthday*", closeEarly: false },
+            "2025-07-01": { reason: "SAR Establishment Day", closeEarly: false },
+            "2025-10-01": { reason: "Chinese National Day", closeEarly: false },
+            "2025-10-07": { reason: "Day Following Mid-autumn Festival*", closeEarly: false },
+            "2025-10-29": { reason: "Chung Yeung Day*", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-26": { reason: "Christmas Holiday", closeEarly: false }
+        }
     },
     SSE: {
         open: "09:30",
@@ -362,24 +371,24 @@ const marketHours = {
         city: "Shanghai",
         holidays: {
             "2025-01-28": { reason: "Lunar NY Eve 1", closeEarly: false },
-        "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
-        "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
-        "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
-        "2025-02-03": { reason: "Lunar New Year 6", closeEarly: false },
-        "2025-02-04": { reason: "Lunar New Year 7", closeEarly: false },
-        "2025-04-04": { reason: "Ching Ming Festival", closeEarly: false },
-        "2025-05-01": { reason: "Labour Day 1", closeEarly: false },
-        "2025-05-02": { reason: "Labour Day Holiday", closeEarly: false },
-        "2025-05-05": { reason: "Labour Day Holiday 2", closeEarly: false },
-        "2025-06-02": { reason: "Dragon Boat Festival Holiday", closeEarly: false },
-        "2025-10-01": { reason: "National Day 1", closeEarly: false },
-        "2025-10-02": { reason: "National Day 2", closeEarly: false },
-        "2025-10-03": { reason: "National Day 3", closeEarly: false },
-        "2025-10-06": { reason: "National Day 6", closeEarly: false },
-        "2025-10-06": { reason: "Mid-autumn Festival*", closeEarly: false },
-        "2025-10-07": { reason: "National Day 7", closeEarly: false },
-        "2025-10-08": { reason: "National Day 8", closeEarly: false }
-    }
+            "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
+            "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
+            "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
+            "2025-02-03": { reason: "Lunar New Year 6", closeEarly: false },
+            "2025-02-04": { reason: "Lunar New Year 7", closeEarly: false },
+            "2025-04-04": { reason: "Ching Ming Festival", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day 1", closeEarly: false },
+            "2025-05-02": { reason: "Labour Day Holiday", closeEarly: false },
+            "2025-05-05": { reason: "Labour Day Holiday 2", closeEarly: false },
+            "2025-06-02": { reason: "Dragon Boat Festival Holiday", closeEarly: false },
+            "2025-10-01": { reason: "National Day 1", closeEarly: false },
+            "2025-10-02": { reason: "National Day 2", closeEarly: false },
+            "2025-10-03": { reason: "National Day 3", closeEarly: false },
+            "2025-10-06": { reason: "National Day 6", closeEarly: false },
+            "2025-10-06": { reason: "Mid-autumn Festival*", closeEarly: false },
+            "2025-10-07": { reason: "National Day 7", closeEarly: false },
+            "2025-10-08": { reason: "National Day 8", closeEarly: false }
+        }
     },
     SZSE: {
         open: "09:30",
@@ -389,24 +398,24 @@ const marketHours = {
         city: "Shenzhen",
         holidays: {
             "2025-01-28": { reason: "Lunar NY Eve 1", closeEarly: false },
-        "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
-        "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
-        "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
-        "2025-02-03": { reason: "Lunar New Year 6", closeEarly: false },
-        "2025-02-04": { reason: "Lunar New Year 7", closeEarly: false },
-        "2025-04-04": { reason: "Ching Ming Festival", closeEarly: false },
-        "2025-05-01": { reason: "Labour Day 1", closeEarly: false },
-        "2025-05-02": { reason: "Labour Day Holiday", closeEarly: false },
-        "2025-05-05": { reason: "Labour Day Holiday 2", closeEarly: false },
-        "2025-06-02": { reason: "Dragon Boat Festival Holiday", closeEarly: false },
-        "2025-10-01": { reason: "National Day 1", closeEarly: false },
-        "2025-10-02": { reason: "National Day 2", closeEarly: false },
-        "2025-10-03": { reason: "National Day 3", closeEarly: false },
-        "2025-10-06": { reason: "National Day 6", closeEarly: false },
-        "2025-10-06": { reason: "Mid-autumn Festival*", closeEarly: false },
-        "2025-10-07": { reason: "National Day 7", closeEarly: false },
-        "2025-10-08": { reason: "National Day 8", closeEarly: false }
-    }
+            "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
+            "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
+            "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
+            "2025-02-03": { reason: "Lunar New Year 6", closeEarly: false },
+            "2025-02-04": { reason: "Lunar New Year 7", closeEarly: false },
+            "2025-04-04": { reason: "Ching Ming Festival", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day 1", closeEarly: false },
+            "2025-05-02": { reason: "Labour Day Holiday", closeEarly: false },
+            "2025-05-05": { reason: "Labour Day Holiday 2", closeEarly: false },
+            "2025-06-02": { reason: "Dragon Boat Festival Holiday", closeEarly: false },
+            "2025-10-01": { reason: "National Day 1", closeEarly: false },
+            "2025-10-02": { reason: "National Day 2", closeEarly: false },
+            "2025-10-03": { reason: "National Day 3", closeEarly: false },
+            "2025-10-06": { reason: "National Day 6", closeEarly: false },
+            "2025-10-06": { reason: "Mid-autumn Festival*", closeEarly: false },
+            "2025-10-07": { reason: "National Day 7", closeEarly: false },
+            "2025-10-08": { reason: "National Day 8", closeEarly: false }
+        }
     },
     BSE: {
         open: "09:15",
@@ -415,22 +424,22 @@ const marketHours = {
         region: "Asia",
         city: "Mumbai",
         holidays: {
-        "2025-02-26": { reason: "Mahashivratri*", closeEarly: false },
-        "2025-03-14": { reason: "Holi (2nd day)*", closeEarly: false },
-        "2025-03-31": { reason: "Ramzan-id (Id-ul-fitar)*", closeEarly: false },
-        "2025-04-10": { reason: "Mahavir Jayanti*", closeEarly: false },
-        "2025-04-14": { reason: "Dr. Babsaheb Ambedkar Jayanti", closeEarly: false },
-        "2025-04-18": { reason: "Good Friday", closeEarly: false },
-        "2025-05-01": { reason: "Maharashtra or May Day", closeEarly: false },
-        "2025-08-15": { reason: "Independence Day", closeEarly: false },
-        "2025-08-27": { reason: "Ganesh Chaturthi*", closeEarly: false },
-        "2025-10-02": { reason: "Mahatma Gandhi's Birthday", closeEarly: false },
-        "2025-10-02": { reason: "Dasara*", closeEarly: false },
-        "2025-10-21": { reason: "Diwali Amavasya (Muhurat trading)*", closeEarly: false },
-        "2025-10-22": { reason: "Diwali (Bali Pratipada)", closeEarly: false },
-        "2025-11-05": { reason: "Guru Nanak Jayanti*", closeEarly: false },
-        "2025-12-25": { reason: "Christmas Day", closeEarly: false }
-    }
+            "2025-02-26": { reason: "Mahashivratri*", closeEarly: false },
+            "2025-03-14": { reason: "Holi (2nd day)*", closeEarly: false },
+            "2025-03-31": { reason: "Ramzan-id (Id-ul-fitar)*", closeEarly: false },
+            "2025-04-10": { reason: "Mahavir Jayanti*", closeEarly: false },
+            "2025-04-14": { reason: "Dr. Babsaheb Ambedkar Jayanti", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-05-01": { reason: "Maharashtra or May Day", closeEarly: false },
+            "2025-08-15": { reason: "Independence Day", closeEarly: false },
+            "2025-08-27": { reason: "Ganesh Chaturthi*", closeEarly: false },
+            "2025-10-02": { reason: "Mahatma Gandhi's Birthday", closeEarly: false },
+            "2025-10-02": { reason: "Dasara*", closeEarly: false },
+            "2025-10-21": { reason: "Diwali Amavasya (Muhurat trading)*", closeEarly: false },
+            "2025-10-22": { reason: "Diwali (Bali Pratipada)", closeEarly: false },
+            "2025-11-05": { reason: "Guru Nanak Jayanti*", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false }
+        }
     },
     NSE: {
         open: "09:15",
@@ -439,22 +448,22 @@ const marketHours = {
         region: "Asia",
         city: "Mumbai",
         holidays: {
-        "2025-02-26": { reason: "Mahashivratri*", closeEarly: false },
-        "2025-03-14": { reason: "Holi (2nd day)*", closeEarly: false },
-        "2025-03-31": { reason: "Ramzan-id (Id-ul-fitar)*", closeEarly: false },
-        "2025-04-10": { reason: "Mahavir Jayanti*", closeEarly: false },
-        "2025-04-14": { reason: "Dr. Babsaheb Ambedkar Jayanti", closeEarly: false },
-        "2025-04-18": { reason: "Good Friday", closeEarly: false },
-        "2025-05-01": { reason: "Maharashtra or May Day", closeEarly: false },
-        "2025-08-15": { reason: "Independence Day", closeEarly: false },
-        "2025-08-27": { reason: "Ganesh Chaturthi*", closeEarly: false },
-        "2025-10-02": { reason: "Mahatma Gandhi's Birthday", closeEarly: false },
-        "2025-10-02": { reason: "Dasara*", closeEarly: false },
-        "2025-10-21": { reason: "Diwali Amavasya (Muhurat trading)*", closeEarly: false },
-        "2025-10-22": { reason: "Diwali (Bali Pratipada)", closeEarly: false },
-        "2025-11-05": { reason: "Guru Nanak Jayanti*", closeEarly: false },
-        "2025-12-25": { reason: "Christmas Day", closeEarly: false }
-    }
+            "2025-02-26": { reason: "Mahashivratri*", closeEarly: false },
+            "2025-03-14": { reason: "Holi (2nd day)*", closeEarly: false },
+            "2025-03-31": { reason: "Ramzan-id (Id-ul-fitar)*", closeEarly: false },
+            "2025-04-10": { reason: "Mahavir Jayanti*", closeEarly: false },
+            "2025-04-14": { reason: "Dr. Babsaheb Ambedkar Jayanti", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-05-01": { reason: "Maharashtra or May Day", closeEarly: false },
+            "2025-08-15": { reason: "Independence Day", closeEarly: false },
+            "2025-08-27": { reason: "Ganesh Chaturthi*", closeEarly: false },
+            "2025-10-02": { reason: "Mahatma Gandhi's Birthday", closeEarly: false },
+            "2025-10-02": { reason: "Dasara*", closeEarly: false },
+            "2025-10-21": { reason: "Diwali Amavasya (Muhurat trading)*", closeEarly: false },
+            "2025-10-22": { reason: "Diwali (Bali Pratipada)", closeEarly: false },
+            "2025-11-05": { reason: "Guru Nanak Jayanti*", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false }
+        }
     },
     KRX: {
         open: "09:00",
@@ -464,23 +473,23 @@ const marketHours = {
         city: "Seoul",
         holidays: {
             "2025-01-27": { reason: "Lunar New Year Additional Holiday", closeEarly: false },
-        "2025-01-28": { reason: "Lunar New Year's Eve", closeEarly: false },
-        "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
-        "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
-        "2025-03-03": { reason: "Independence Movement Day OBS", closeEarly: false },
-        "2025-05-01": { reason: "Labour Day", closeEarly: false },
-        "2025-05-05": { reason: "Children's Day", closeEarly: false },
-        "2025-05-06": { reason: "Buddha's Birthday", closeEarly: false },
-        "2025-06-06": { reason: "Memorial Day", closeEarly: false },
-        "2025-08-15": { reason: "Liberation Day", closeEarly: false },
-        "2025-10-03": { reason: "National Foundation Day", closeEarly: false },
-        "2025-10-06": { reason: "Harvest Moon Festival Day", closeEarly: false },
-        "2025-10-07": { reason: "Harvest Moon Festival Holiday", closeEarly: false },
-        "2025-10-08": { reason: "Harvest Moon Festival Additional Holiday", closeEarly: false },
-        "2025-10-09": { reason: "Hangul Day", closeEarly: false },
-        "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-        "2025-12-31": { reason: "Last Day of Year", closeEarly: false }
-    }
+            "2025-01-28": { reason: "Lunar New Year's Eve", closeEarly: false },
+            "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
+            "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
+            "2025-03-03": { reason: "Independence Movement Day OBS", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-05-05": { reason: "Children's Day", closeEarly: false },
+            "2025-05-06": { reason: "Buddha's Birthday", closeEarly: false },
+            "2025-06-06": { reason: "Memorial Day", closeEarly: false },
+            "2025-08-15": { reason: "Liberation Day", closeEarly: false },
+            "2025-10-03": { reason: "National Foundation Day", closeEarly: false },
+            "2025-10-06": { reason: "Harvest Moon Festival Day", closeEarly: false },
+            "2025-10-07": { reason: "Harvest Moon Festival Holiday", closeEarly: false },
+            "2025-10-08": { reason: "Harvest Moon Festival Additional Holiday", closeEarly: false },
+            "2025-10-09": { reason: "Hangul Day", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-31": { reason: "Last Day of Year", closeEarly: false }
+        }
     },
     TWSE: {
         open: "09:00",
@@ -490,20 +499,20 @@ const marketHours = {
         city: "Taipei",
         holidays: {
             "2025-01-23": { reason: "Lunar New Year - No Trading 2", closeEarly: false },
-        "2025-01-24": { reason: "Lunar New Year - No Trading 1", closeEarly: false },
-        "2025-01-27": { reason: "Additional Lunar New Year Holiday", closeEarly: false },
-        "2025-01-28": { reason: "Lunar New Year's Eve", closeEarly: false },
-        "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
-        "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
-        "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
-        "2025-02-28": { reason: "Peace Memorial Day", closeEarly: false },
-        "2025-04-03": { reason: "Ching Ming Festival", closeEarly: false },
-        "2025-04-04": { reason: "Children's Day", closeEarly: false },
-        "2025-05-01": { reason: "Labour Day", closeEarly: false },
-        "2025-05-30": { reason: "Dragon Boat Festival", closeEarly: false },
-        "2025-10-06": { reason: "Mid-Autumn Festival", closeEarly: false },
-        "2025-10-10": { reason: "National Day", closeEarly: false }
-    }
+            "2025-01-24": { reason: "Lunar New Year - No Trading 1", closeEarly: false },
+            "2025-01-27": { reason: "Additional Lunar New Year Holiday", closeEarly: false },
+            "2025-01-28": { reason: "Lunar New Year's Eve", closeEarly: false },
+            "2025-01-29": { reason: "Lunar New Year 1", closeEarly: false },
+            "2025-01-30": { reason: "Lunar New Year 2", closeEarly: false },
+            "2025-01-31": { reason: "Lunar New Year 3", closeEarly: false },
+            "2025-02-28": { reason: "Peace Memorial Day", closeEarly: false },
+            "2025-04-03": { reason: "Ching Ming Festival", closeEarly: false },
+            "2025-04-04": { reason: "Children's Day", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-05-30": { reason: "Dragon Boat Festival", closeEarly: false },
+            "2025-10-06": { reason: "Mid-Autumn Festival", closeEarly: false },
+            "2025-10-10": { reason: "National Day", closeEarly: false }
+        }
     },
     SGX: {
         open: "09:00",
@@ -596,25 +605,25 @@ const marketHours = {
         region: "Asia",
         city: "Bangkok",
         holidays: {
-    "2025-02-12": { reason: "Makha Bucha Day", closeEarly: false },
-    "2025-04-07": { reason: "Shakri Day OBS", closeEarly: false },
-    "2025-04-14": { reason: "Songkran Festival 2", closeEarly: false },
-    "2025-04-15": { reason: "Songkran Festival 3", closeEarly: false },
-    "2025-05-01": { reason: "Labour Day", closeEarly: false },
-    "2025-05-05": { reason: "Coronation Day OBS", closeEarly: false },
-    "2025-05-12": { reason: "Vishaka Bucha Day", closeEarly: false },
-    "2025-06-02": { reason: "Special Holiday", closeEarly: false },
-    "2025-06-03": { reason: "Queen Suthida's Birthday", closeEarly: false },
-    "2025-07-10": { reason: "Asarnha Bucha Day", closeEarly: false },
-    "2025-07-28": { reason: "King's Birthday", closeEarly: false },
-    "2025-08-11": { reason: "Special Holiday 2", closeEarly: false },
-    "2025-08-12": { reason: "Queen's Birthday", closeEarly: false },
-    "2025-10-13": { reason: "King Bhumibol Adulyadej Memorial Day", closeEarly: false },
-    "2025-10-23": { reason: "King Chulalongkorn Memorial Day", closeEarly: false },
-    "2025-12-05": { reason: "King Rama IX's Birthday", closeEarly: false },
-    "2025-12-10": { reason: "Constitution Day", closeEarly: false },
-    "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
-}
+            "2025-02-12": { reason: "Makha Bucha Day", closeEarly: false },
+            "2025-04-07": { reason: "Shakri Day OBS", closeEarly: false },
+            "2025-04-14": { reason: "Songkran Festival 2", closeEarly: false },
+            "2025-04-15": { reason: "Songkran Festival 3", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-05-05": { reason: "Coronation Day OBS", closeEarly: false },
+            "2025-05-12": { reason: "Vishaka Bucha Day", closeEarly: false },
+            "2025-06-02": { reason: "Special Holiday", closeEarly: false },
+            "2025-06-03": { reason: "Queen Suthida's Birthday", closeEarly: false },
+            "2025-07-10": { reason: "Asarnha Bucha Day", closeEarly: false },
+            "2025-07-28": { reason: "King's Birthday", closeEarly: false },
+            "2025-08-11": { reason: "Special Holiday 2", closeEarly: false },
+            "2025-08-12": { reason: "Queen's Birthday", closeEarly: false },
+            "2025-10-13": { reason: "King Bhumibol Adulyadej Memorial Day", closeEarly: false },
+            "2025-10-23": { reason: "King Chulalongkorn Memorial Day", closeEarly: false },
+            "2025-12-05": { reason: "King Rama IX's Birthday", closeEarly: false },
+            "2025-12-10": { reason: "Constitution Day", closeEarly: false },
+            "2025-12-31": { reason: "New Year's Eve", closeEarly: false }
+        }
     },
     PSE: {
         open: "09:30",
@@ -623,23 +632,23 @@ const marketHours = {
         region: "Asia",
         city: "Manila",
         holidays: {
-    "2025-01-29": { reason: "Chinese New Year", closeEarly: false },
-    "2025-03-31": { reason: "Eid-ul Fitre", closeEarly: false },
-    "2025-04-09": { reason: "Araw Ng Kagitingan", closeEarly: false },
-    "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
-    "2025-04-18": { reason: "Good Friday", closeEarly: false },
-    "2025-05-01": { reason: "Labour Day", closeEarly: false },
-    "2025-06-06": { reason: "Eid-ul Adha", closeEarly: false },
-    "2025-06-12": { reason: "Independence Day", closeEarly: false },
-    "2025-08-21": { reason: "Nino Aquino Day", closeEarly: false },
-    "2025-08-25": { reason: "National Heroes Day", closeEarly: false },
-    "2025-10-31": { reason: "All Saints Additional Obs.", closeEarly: false },
-    "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
-    "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
-    "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-    "2025-12-30": { reason: "Rizal Day", closeEarly: false },
-    "2025-12-31": { reason: "Bank Holiday", closeEarly: false }
-}
+            "2025-01-29": { reason: "Chinese New Year", closeEarly: false },
+            "2025-03-31": { reason: "Eid-ul Fitre", closeEarly: false },
+            "2025-04-09": { reason: "Araw Ng Kagitingan", closeEarly: false },
+            "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-06-06": { reason: "Eid-ul Adha", closeEarly: false },
+            "2025-06-12": { reason: "Independence Day", closeEarly: false },
+            "2025-08-21": { reason: "Nino Aquino Day", closeEarly: false },
+            "2025-08-25": { reason: "National Heroes Day", closeEarly: false },
+            "2025-10-31": { reason: "All Saints Additional Obs.", closeEarly: false },
+            "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
+            "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-30": { reason: "Rizal Day", closeEarly: false },
+            "2025-12-31": { reason: "Bank Holiday", closeEarly: false }
+        }
     },
     HOSE: {
         open: "09:00",
@@ -670,7 +679,7 @@ const marketHours = {
         holidays: {
             "2025-01-01": { reason: "New Year's Day", closeEarly: false },
             "2025-04-10": { reason: "Eid Al Fitr", closeEarly: false },
-            "2025-04-11": { reason: "Eid al Fitr Holiday 1", closeEarly: false }, 
+            "2025-04-11": { reason: "Eid al Fitr Holiday 1", closeEarly: false },
             "2025-04-12": { reason: "Eid al Fitr Holiday 2", closeEarly: false },
             "2025-06-17": { reason: "Eid Al Adha", closeEarly: false },
             "2025-06-18": { reason: "Eid Al Adha Holiday 1", closeEarly: false },
@@ -678,7 +687,7 @@ const marketHours = {
             "2025-12-02": { reason: "National Day", closeEarly: false },
             "2025-12-03": { reason: "National Day", closeEarly: false }
         }
-        },
+    },
     ADX: {
         open: "10:00",
         close: "14:00",
@@ -691,7 +700,7 @@ const marketHours = {
             "2024-04-09": { reason: "Eid al Fitr Holiday 2", closeEarly: false },
             "2024-04-10": { reason: "Eid al Fitr", closeEarly: false },
             "2024-04-11": { reason: "Eid al Fitr Holiday 3", closeEarly: false },
-            "2024-04-12": { reason: "Eid al Fitr Holiday 4", closeEarly: false },  
+            "2024-04-12": { reason: "Eid al Fitr Holiday 4", closeEarly: false },
             "2024-06-15": { reason: "Arafat (Hajj) Day", closeEarly: false },
             "2024-06-16": { reason: "Eid Al Adha", closeEarly: false },
             "2024-06-17": { reason: "Eid Al Adha Holiday 1", closeEarly: false },
@@ -710,15 +719,15 @@ const marketHours = {
         region: "Australia",
         city: "Sydney",
         holidays: {
-    "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-    "2025-01-27": { reason: "Australia Day OBS", closeEarly: false },
-    "2025-04-18": { reason: "Good Friday", closeEarly: false },
-    "2025-04-21": { reason: "Easter Monday", closeEarly: false },
-    "2025-04-25": { reason: "ANZAC Day", closeEarly: false },
-    "2025-06-09": { reason: "King's Birthday", closeEarly: false },
-    "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-    "2025-12-26": { reason: "Boxing Day", closeEarly: false }
-}
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2025-01-27": { reason: "Australia Day OBS", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+            "2025-04-25": { reason: "ANZAC Day", closeEarly: false },
+            "2025-06-09": { reason: "King's Birthday", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-26": { reason: "Boxing Day", closeEarly: false }
+        }
     },
     NZX: {
         open: "10:00",
@@ -727,17 +736,17 @@ const marketHours = {
         region: "Australia",
         city: "Wellington",
         holidays: {
-    "2025-01-01": { reason: "New Year's Day", closeEarly: false },
-    "2025-02-06": { reason: "Waitangi Day", closeEarly: false },
-    "2025-04-18": { reason: "Good Friday", closeEarly: false },
-    "2025-04-21": { reason: "Easter Monday", closeEarly: false },
-    "2025-04-25": { reason: "ANZAC Day", closeEarly: false },
-    "2025-06-02": { reason: "King's Birthday", closeEarly: false },
-    "2025-06-20": { reason: "Matariki Day", closeEarly: false },
-    "2025-10-27": { reason: "Labour Day", closeEarly: false },
-    "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-    "2025-12-26": { reason: "Boxing Day", closeEarly: false }
-}
+            "2025-01-01": { reason: "New Year's Day", closeEarly: false },
+            "2025-02-06": { reason: "Waitangi Day", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-04-21": { reason: "Easter Monday", closeEarly: false },
+            "2025-04-25": { reason: "ANZAC Day", closeEarly: false },
+            "2025-06-02": { reason: "King's Birthday", closeEarly: false },
+            "2025-06-20": { reason: "Matariki Day", closeEarly: false },
+            "2025-10-27": { reason: "Labour Day", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-26": { reason: "Boxing Day", closeEarly: false }
+        }
     },
     JSE: {
         open: "09:00",
@@ -776,7 +785,7 @@ const marketHours = {
             "2024-04-25": { reason: "Sinai Liberation Day", closeEarly: false },
             "2024-05-01": { reason: "Labor Day", closeEarly: false },
             "2024-05-06": { reason: "Sham El Nessim", closeEarly: false },
-            "2024-06-16": { reason: "Eid al-Adha", closeEarly: false },  
+            "2024-06-16": { reason: "Eid al-Adha", closeEarly: false },
             "2024-06-17": { reason: "Eid al-Adha Day 2", closeEarly: false },
             "2024-07-07": { reason: "Muharram", closeEarly: false },
             "2024-07-23": { reason: "Revolution Day", closeEarly: false },
@@ -808,7 +817,7 @@ const marketHours = {
             "2025-05-01": { reason: "International Workers' Day", closeEarly: false },
             "2025-05-30": { reason: "National Day", closeEarly: false },
             "2025-06-19": { reason: "Corpus Christi", closeEarly: false },
-            "2025-08-05": { reason: "Victory and Homeland Thanksgiving Day", closeEarly: false }, 
+            "2025-08-05": { reason: "Victory and Homeland Thanksgiving Day", closeEarly: false },
             "2025-08-15": { reason: "Assumption Day", closeEarly: false },
             "2025-11-18": { reason: "Remembrance Day", closeEarly: false },
             "2025-12-24": { reason: "Christmas Eve", closeEarly: false },
@@ -861,7 +870,7 @@ const marketHours = {
         holidays: {
             "2025-01-01": { reason: "New Year's Day", closeEarly: false },
             "2024-02-12": { reason: "Carnival", closeEarly: false },
-            "2024-02-13": { reason: "Carnival", closeEarly: false }, 
+            "2024-02-13": { reason: "Carnival", closeEarly: false },
             "2024-03-29": { reason: "Good Friday", closeEarly: false },
             "2024-05-30": { reason: "Corpus Christi Day", closeEarly: false },
             "2024-11-15": { reason: "Republic Day", closeEarly: false },
@@ -877,19 +886,19 @@ const marketHours = {
         region: "South America",
         city: "Santiago",
         holidays: {
-    "2025-04-18": { reason: "Good Friday", closeEarly: false },
-    "2025-05-01": { reason: "Labour Day", closeEarly: false },
-    "2025-05-21": { reason: "Battle of Iquique/Navy Day", closeEarly: false },
-    "2025-06-20": { reason: "National Day of Native Peoples", closeEarly: false },
-    "2025-07-16": { reason: "Solemnity of Virgin of Carmen", closeEarly: false },
-    "2025-08-15": { reason: "Assumption Day", closeEarly: false },
-    "2025-09-18": { reason: "Independence Day", closeEarly: false },
-    "2025-09-19": { reason: "Army Day", closeEarly: false },
-    "2025-10-31": { reason: "Evangelical Church Day", closeEarly: false },
-    "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
-    "2025-12-25": { reason: "Christmas Day", closeEarly: false },
-    "2025-12-31": { reason: "Bank Holiday", closeEarly: false }
-}
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-05-21": { reason: "Battle of Iquique/Navy Day", closeEarly: false },
+            "2025-06-20": { reason: "National Day of Native Peoples", closeEarly: false },
+            "2025-07-16": { reason: "Solemnity of Virgin of Carmen", closeEarly: false },
+            "2025-08-15": { reason: "Assumption Day", closeEarly: false },
+            "2025-09-18": { reason: "Independence Day", closeEarly: false },
+            "2025-09-19": { reason: "Army Day", closeEarly: false },
+            "2025-10-31": { reason: "Evangelical Church Day", closeEarly: false },
+            "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false },
+            "2025-12-31": { reason: "Bank Holiday", closeEarly: false }
+        }
     },
     BVC: {
         open: "09:00",
@@ -898,23 +907,23 @@ const marketHours = {
         region: "South America",
         city: "Bogotá",
         holidays: {
-    "2025-03-24": { reason: "St. Joseph's Day OBS", closeEarly: false },
-    "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
-    "2025-04-18": { reason: "Good Friday", closeEarly: false },
-    "2025-05-01": { reason: "Labour Day", closeEarly: false },
-    "2025-06-02": { reason: "Ascension", closeEarly: false },
-    "2025-06-23": { reason: "Corpus Christi", closeEarly: false },
-    "2025-06-30": { reason: "Sacred Heart", closeEarly: false },
-    "2025-06-30": { reason: "Sts. Peter and Paul OBS", closeEarly: false },
-    "2025-08-07": { reason: "Battle of Boyaca", closeEarly: false },
-    "2025-08-18": { reason: "Assumption Day OBS", closeEarly: false },
-    "2025-10-13": { reason: "Race Day OBS", closeEarly: false },
-    "2025-11-03": { reason: "All Saints' Day OBS", closeEarly: false },
-    "2025-11-17": { reason: "Independence of Cartagena OBS", closeEarly: false },
-    "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
-    "2025-12-25": { reason: "Christmas", closeEarly: false },
-    "2025-12-31": { reason: "Last business day of year", closeEarly: false }
-}
+            "2025-03-24": { reason: "St. Joseph's Day OBS", closeEarly: false },
+            "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-06-02": { reason: "Ascension", closeEarly: false },
+            "2025-06-23": { reason: "Corpus Christi", closeEarly: false },
+            "2025-06-30": { reason: "Sacred Heart", closeEarly: false },
+            "2025-06-30": { reason: "Sts. Peter and Paul OBS", closeEarly: false },
+            "2025-08-07": { reason: "Battle of Boyaca", closeEarly: false },
+            "2025-08-18": { reason: "Assumption Day OBS", closeEarly: false },
+            "2025-10-13": { reason: "Race Day OBS", closeEarly: false },
+            "2025-11-03": { reason: "All Saints' Day OBS", closeEarly: false },
+            "2025-11-17": { reason: "Independence of Cartagena OBS", closeEarly: false },
+            "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
+            "2025-12-25": { reason: "Christmas", closeEarly: false },
+            "2025-12-31": { reason: "Last business day of year", closeEarly: false }
+        }
     },
     BVL: {
         open: "09:00",
@@ -923,18 +932,18 @@ const marketHours = {
         region: "South America",
         city: "Lima",
         holidays: {
-    "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
-    "2025-04-18": { reason: "Good Friday", closeEarly: false },
-    "2025-05-01": { reason: "Labour Day", closeEarly: false },
-    "2025-07-23": { reason: "Dia de la Fuerza Aerea", closeEarly: false },
-    "2025-07-28": { reason: "Independence Day 1", closeEarly: false },
-    "2025-07-29": { reason: "Independence Day 2", closeEarly: false },
-    "2025-08-06": { reason: "Battle of Junin", closeEarly: false },
-    "2025-10-08": { reason: "Combat of Angamos", closeEarly: false },
-    "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
-    "2025-12-09": { reason: "Battle of Ayacucho", closeEarly: false },
-    "2025-12-25": { reason: "Christmas Day", closeEarly: false }
-}
+            "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-05-01": { reason: "Labour Day", closeEarly: false },
+            "2025-07-23": { reason: "Dia de la Fuerza Aerea", closeEarly: false },
+            "2025-07-28": { reason: "Independence Day 1", closeEarly: false },
+            "2025-07-29": { reason: "Independence Day 2", closeEarly: false },
+            "2025-08-06": { reason: "Battle of Junin", closeEarly: false },
+            "2025-10-08": { reason: "Combat of Angamos", closeEarly: false },
+            "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
+            "2025-12-09": { reason: "Battle of Ayacucho", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false }
+        }
     },
     BVBA: {
         open: "11:00",
@@ -943,23 +952,23 @@ const marketHours = {
         region: "South America",
         city: "Buenos Aires",
         holidays: {
-    "2025-03-03": { reason: "Carnival Monday", closeEarly: false },
-    "2025-03-04": { reason: "Carnival Tuesday", closeEarly: false },
-    "2025-03-24": { reason: "Truth and Justice Day", closeEarly: false },
-    "2025-04-02": { reason: "Malvinas Islands Memorial", closeEarly: false },
-    "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
-    "2025-04-18": { reason: "Good Friday", closeEarly: false },
-    "2025-05-01": { reason: "Workers' Day", closeEarly: false },
-    "2025-05-02": { reason: "Bridge Holiday 1", closeEarly: false },
-    "2025-06-16": { reason: "Martin Miguel de Guemes Day OBS", closeEarly: false },
-    "2025-06-20": { reason: "Flag Day", closeEarly: false },
-    "2025-07-09": { reason: "Independence Day", closeEarly: false },
-    "2025-08-15": { reason: "Bridge Holiday 2", closeEarly: false },
-    "2025-11-21": { reason: "Bridge Holiday 3", closeEarly: false },
-    "2025-11-24": { reason: "National Sovereignty Day OBS", closeEarly: false },
-    "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
-    "2025-12-25": { reason: "Christmas Day", closeEarly: false }
-}
+            "2025-03-03": { reason: "Carnival Monday", closeEarly: false },
+            "2025-03-04": { reason: "Carnival Tuesday", closeEarly: false },
+            "2025-03-24": { reason: "Truth and Justice Day", closeEarly: false },
+            "2025-04-02": { reason: "Malvinas Islands Memorial", closeEarly: false },
+            "2025-04-17": { reason: "Holy Thursday", closeEarly: false },
+            "2025-04-18": { reason: "Good Friday", closeEarly: false },
+            "2025-05-01": { reason: "Workers' Day", closeEarly: false },
+            "2025-05-02": { reason: "Bridge Holiday 1", closeEarly: false },
+            "2025-06-16": { reason: "Martin Miguel de Guemes Day OBS", closeEarly: false },
+            "2025-06-20": { reason: "Flag Day", closeEarly: false },
+            "2025-07-09": { reason: "Independence Day", closeEarly: false },
+            "2025-08-15": { reason: "Bridge Holiday 2", closeEarly: false },
+            "2025-11-21": { reason: "Bridge Holiday 3", closeEarly: false },
+            "2025-11-24": { reason: "National Sovereignty Day OBS", closeEarly: false },
+            "2025-12-08": { reason: "Immaculate Conception", closeEarly: false },
+            "2025-12-25": { reason: "Christmas Day", closeEarly: false }
+        }
     }
 };
 
@@ -1640,7 +1649,7 @@ function updateCards() {
         const openDisplay = formatHoursMinutes(openTime);
         const closeDisplay = formatHoursMinutes(closeTime);
 
-        let hoursDisplay = market === "JPX" 
+        let hoursDisplay = market === "JPX"
             ? `Session 1: ${marketData.open1} - ${marketData.close1}, Session 2: ${marketData.open2} - ${marketData.close2}`
             : `Open: ${openDisplay} - Close: ${closeDisplay}`;
 
@@ -1721,12 +1730,12 @@ function updateCards() {
 // Show exchange information modal
 function showExchangeInfo(exchange) {
     if (!exchangeInfo[exchange]) return;
-    
+
     const info = exchangeInfo[exchange];
-    
+
     // Create or update modal
     let modal = document.getElementById('exchange-info-modal');
-    
+
     if (!modal) {
         modal = document.createElement('div');
         modal.id = 'exchange-info-modal';
@@ -1778,22 +1787,22 @@ function showExchangeInfo(exchange) {
                 });
             }
         };
-        
+
         document.body.appendChild(modal);
         addTouchFeedback();
-        
+
         // Add close event listeners
         modal.querySelector('#close-exchange-info').addEventListener('click', () => {
             modal.style.display = 'none';
         });
-        
+
         // Close when clicking outside
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
         });
-        
+
         // Add touch event for mobile
         modal.addEventListener('touchstart', (event) => {
             if (event.target === modal) {
@@ -1801,7 +1810,7 @@ function showExchangeInfo(exchange) {
             }
         });
     }
-    
+
     // Format holidays for display
     let holidaysHTML = '';
     if (marketHours[exchange] && marketHours[exchange].holidays) {
@@ -1812,19 +1821,19 @@ function showExchangeInfo(exchange) {
                 ...marketHours[exchange].holidays[date]
             }))
             .sort((a, b) => new Date(a.date) - new Date(b.date));
-            
+
         // Group holidays by month
         const holidaysByMonth = {};
         holidays.forEach(holiday => {
             const date = new Date(holiday.date);
             const monthYear = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-            
+
             if (!holidaysByMonth[monthYear]) {
                 holidaysByMonth[monthYear] = [];
             }
             holidaysByMonth[monthYear].push(holiday);
         });
-        
+
         // Format holidays by month
         const monthsHTML = Object.keys(holidaysByMonth).map(monthYear => {
             const monthHolidays = holidaysByMonth[monthYear]
@@ -1832,11 +1841,11 @@ function showExchangeInfo(exchange) {
                     const date = new Date(holiday.date);
                     const dayName = date.toLocaleString('en-US', { weekday: 'short' });
                     const dayNum = date.getDate();
-                    
-                    const badge = holiday.closeEarly 
-                        ? `<span style="background: #FF9800; color: #000; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle;">EARLY CLOSE ${holiday.earlyCloseTime || ''}</span>` 
+
+                    const badge = holiday.closeEarly
+                        ? `<span style="background: #FF9800; color: #000; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle;">EARLY CLOSE ${holiday.earlyCloseTime || ''}</span>`
                         : `<span style="background: #F44336; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle;">CLOSED</span>`;
-                        
+
                     return `
                     <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
                         <div style="font-size: 0.9rem;">
@@ -1846,14 +1855,14 @@ function showExchangeInfo(exchange) {
                     </div>`;
                 })
                 .join('');
-                
+
             return `
             <div style="margin-bottom: 20px;">
                 <h5 style="color: #999; margin-bottom: 8px; font-size: 0.85rem; font-weight: 500;">${monthYear}</h5>
                 ${monthHolidays}
             </div>`;
         }).join('');
-        
+
         holidaysHTML = `
         <div class="holiday-calendar" style="margin-top: 25px;">
             <h4 style="color: #e0e0e0; margin-bottom: 16px; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
@@ -1865,13 +1874,13 @@ function showExchangeInfo(exchange) {
             </div>
         </div>`;
     }
-    
+
     // Determine if we're on a mobile device
     const isMobile = window.innerWidth < 768;
-    
+
     // Update modal content with minimalistic design
     document.getElementById('exchange-info-title').textContent = info.name;
-    
+
     document.getElementById('exchange-info-body').innerHTML = `
         <div class="exchange-info" style="color: #e0e0e0; line-height: 1.6; font-size: ${isMobile ? '0.95rem' : '1rem'};">
         <!-- Map with improved styling -->
@@ -2094,7 +2103,7 @@ function showExchangeInfo(exchange) {
         const maxAttempts = 5;
         const tryInitMap = () => {
             attempts++;
-            
+
             if (window.L) {
                 try {
                     const mapElement = document.getElementById('exchange-map');
@@ -2102,27 +2111,27 @@ function showExchangeInfo(exchange) {
                         if (attempts < maxAttempts) setTimeout(tryInitMap, 200);
                         return;
                     }
-                    
+
                     // Get coordinates for the specific exchange
                     const coordinates = geocode[exchange] || [0, 0];
-                    
+
                     // Initialize map with fewer controls for mobile
                     const map = L.map('exchange-map', {
                         zoomControl: !isMobile,
                         attributionControl: !isMobile
                     }).setView(coordinates, 13);
-                    
+
                     // Add dark theme tiles
                     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
                         subdomains: 'abcd',
                         maxZoom: 19
                     }).addTo(map);
-                    
+
                     // Simple marker for better mobile performance
                     const marker = L.marker(coordinates).addTo(map);
                     marker.bindPopup(info.name);
-                    
+
                     // Force map refresh after modal appears
                     setTimeout(() => {
                         map.invalidateSize();
@@ -2136,29 +2145,29 @@ function showExchangeInfo(exchange) {
                 setTimeout(tryInitMap, 200);
             }
         };
-        
+
         // Start the map initialization process
         tryInitMap();
     };
 
     // Start map initialization
     initMap();
-    
+
     // Show the modal
     modal.style.display = 'block';
-    
+
     // Prevent body scrolling when modal is open (to fix mobile scrolling issues)
     document.body.style.overflow = 'hidden';
-    
+
     // Restore scrolling when modal is closed
     const restoreScroll = () => {
         document.body.style.overflow = '';
     };
-    
+
     // Attach one-time event listeners to restore scroll when modal is closed
     const closeBtn = modal.querySelector('#close-exchange-info');
     const onceOptions = { once: true };
-    
+
     closeBtn.addEventListener('click', restoreScroll, onceOptions);
     modal.addEventListener('click', (e) => {
         if (e.target === modal) restoreScroll();
@@ -2228,7 +2237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const period1 = Math.floor(new Date(startDate).getTime() / 1000);
             const period2 = Math.floor(new Date(endDate).getTime() / 1000);
-            
+
             // Yahoo Finance API endpoint mit CORS-Proxy
             const proxyUrl = 'https://corsproxy.io/?';
             const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}?period1=${period1}&period2=${period2}&interval=1d`;
@@ -2263,15 +2272,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Make fetchStockData available globally
     window.fetchStockData = fetchStockData;
+
+    // Fetch dividend data from Yahoo Finance
+    async function fetchDividendData(stockSymbol, startDate, endDate) {
+        try {
+            const startUnix = dateToUnix(startDate);
+            const endUnix = dateToUnix(endDate);
+            
+            // Yahoo Finance API endpoint for dividends
+            const proxyUrl = 'https://corsproxy.io/?';
+            const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}?period1=${startUnix}&period2=${endUnix}&interval=1d&events=div`;
+            const url = proxyUrl + encodeURIComponent(yahooUrl);
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+
+            if (!data.chart || !data.chart.result || !data.chart.result[0]) {
+                return { error: 'Invalid data format received' };
+            }
+
+            const result = data.chart.result[0];
+            const dividends = result.events?.dividends ? Object.values(result.events.dividends).sort((a, b) => a.date - b.date) : [];
+
+            return dividends.map(div => ({
+                date: new Date(div.date * 1000).toISOString().split('T')[0],
+                amount: div.amount
+            }));
+
+        } catch (error) {
+            console.error(`Error fetching dividend data for ${stockSymbol}:`, error.message);
+            return { error: error.message };
+        }
+    }
+
+    // Make fetchDividendData available globally
+    window.fetchDividendData = fetchDividendData;
 });
 
-// Calculate investment for a single stock (initial + monthly) and track daily values
-function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerStock, startDate, endDate) {
+// Calculate investment for a single stock (initial + monthly) and track daily values including dividends
+function calculateStockInvestment(data, dividendData, initialAmountPerStock, monthlyAmountPerStock, startDate, endDate, reinvestDividends = false) {
     let totalShares = 0;
     let totalInvested = 0;
+    let totalDividends = 0;
+    let cashDividends = 0;
     const start = new Date(startDate);
     const end = new Date(endDate);
     const valueOverTime = [];
+    const monthlyDividendPayments = {};
 
     // Initial investment at start date
     const startPrice = data[0].close;
@@ -2286,8 +2338,16 @@ function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerS
     nextInvestmentDate.setMonth(nextInvestmentDate.getMonth() + 1);
     nextInvestmentDate.setDate(1);
 
+    let dividendIndex = 0;
+
     for (const day of data) {
         const currentDay = new Date(day.date);
+        const monthKey = `${currentDay.getFullYear()}-${String(currentDay.getMonth() + 1).padStart(2, '0')}`;
+
+        // Initialize monthly dividend for this month if not exists
+        if (!monthlyDividendPayments[monthKey]) {
+            monthlyDividendPayments[monthKey] = 0;
+        }
 
         // Add monthly investment if it's the first trading day of the month
         if (monthlyAmountPerStock > 0 && currentDay >= nextInvestmentDate && currentDay <= end) {
@@ -2297,16 +2357,43 @@ function calculateStockInvestment(data, initialAmountPerStock, monthlyAmountPerS
             nextInvestmentDate.setMonth(nextInvestmentDate.getMonth() + 1);
         }
 
+        // Process dividends for this date
+        while (dividendIndex < dividendData.length && new Date(dividendData[dividendIndex].date) <= currentDay) {
+            const dividend = dividendData[dividendIndex];
+            const dividendAmount = totalShares * dividend.amount;
+            totalDividends += dividendAmount;
+            monthlyDividendPayments[monthKey] += dividendAmount;
+
+            if (reinvestDividends) {
+                // Reinvest dividends to buy more shares
+                const additionalShares = dividendAmount / day.close;
+                totalShares += additionalShares;
+            } else {
+                // Keep dividends as cash
+                cashDividends += dividendAmount;
+            }
+            
+            dividendIndex++;
+        }
+
         // Record portfolio value for this day
         valueOverTime.push({
             date: day.date,
-            value: totalShares * day.close
+            value: totalShares * day.close + cashDividends
         });
     }
 
     const finalPrice = data[data.length - 1].close;
-    const finalValue = totalShares * finalPrice;
-    return { totalInvested, finalValue, totalShares, valueOverTime };
+    const finalValue = totalShares * finalPrice + cashDividends;
+    return { 
+        totalInvested, 
+        finalValue, 
+        totalShares, 
+        totalDividends, 
+        cashDividends,
+        valueOverTime,
+        monthlyDividendPayments
+    };
 }
 
 // Generate portfolio chart
@@ -2382,7 +2469,7 @@ function generatePortfolioChart(dates, portfolioValues) {
                     padding: 12,
                     displayColors: false,
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             return `$${context.parsed.y.toFixed(2)}`;
                         }
                     }
@@ -2406,7 +2493,7 @@ function generatePortfolioChart(dates, portfolioValues) {
 }
 
 // Backtest form submission handler (portfolio sum with chart)
-document.getElementById('backtest-form').addEventListener('submit', async function(event) {
+document.getElementById('backtest-form').addEventListener('submit', async function (event) {
     event.preventDefault();
 
     const stocksInput = document.getElementById('stocks').value.toUpperCase();
@@ -2518,47 +2605,75 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
     window.onload = () => document.querySelector(".loading").remove();
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll("img").forEach(img => {
-        img.onerror = function() {
-          this.style.display = "none"; 
-        };
-      });
+        document.querySelectorAll("img").forEach(img => {
+            img.onerror = function () {
+                this.style.display = "none";
+            };
+        });
     });
 
     // Fetch data for all stocks
     const promises = stockSymbols.map(symbol => fetchStockData(symbol, startDate, endDate));
+    const dividendPromises = stockSymbols.map(symbol => fetchDividendData(symbol, startDate, endDate));
     const results = await Promise.allSettled(promises);
+    const dividendResults = await Promise.allSettled(dividendPromises);
 
     let portfolioTotalInvested = 0;
     let portfolioFinalValue = 0;
     let portfolioShares = 0;
+    let portfolioTotalDividends = 0;
     let allValid = true;
     let errorMessages = [];
     const portfolioValuesOverTime = {};
-    
+    const portfolioMonthlyDividends = {};
+
+    // Get reinvestment preference
+    const reinvestDividends = document.getElementById('reinvest-dividends').checked;
+
     // Split amounts equally among stocks
     const initialAmountPerStock = initialAmount / stockSymbols.length;
     const monthlyAmountPerStock = monthlyAmount / stockSymbols.length;
 
     results.forEach((result, index) => {
         const stockSymbol = stockSymbols[index];
+        const dividendResult = dividendResults[index];
+        
         if (result.status === 'fulfilled' && result.value && !result.value.error && result.value.length >= 2) {
             const data = result.value;
-            const { totalInvested, finalValue, totalShares, valueOverTime } = calculateStockInvestment(
+            const dividendData = (dividendResult.status === 'fulfilled' && !dividendResult.value.error) 
+                ? dividendResult.value 
+                : [];
+
+            const { 
+                totalInvested, 
+                finalValue, 
+                totalShares, 
+                totalDividends, 
+                valueOverTime,
+                monthlyDividendPayments
+            } = calculateStockInvestment(
                 data,
+                dividendData,
                 initialAmountPerStock,
                 monthlyAmountPerStock,
                 startDate,
-                endDate
+                endDate,
+                reinvestDividends
             );
 
             portfolioTotalInvested += totalInvested;
             portfolioFinalValue += finalValue;
             portfolioShares += totalShares;
+            portfolioTotalDividends += totalDividends;
 
             // Aggregate daily portfolio values
             valueOverTime.forEach(({ date, value }) => {
                 portfolioValuesOverTime[date] = (portfolioValuesOverTime[date] || 0) + value;
+            });
+
+            // Aggregate monthly dividend payments
+            Object.keys(monthlyDividendPayments).forEach(month => {
+                portfolioMonthlyDividends[month] = (portfolioMonthlyDividends[month] || 0) + monthlyDividendPayments[month];
             });
         } else {
             allValid = false;
@@ -2581,7 +2696,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         const profitColor = portfolioFinalValue >= portfolioTotalInvested ? "#00ff00" : "#ff0000";
         const isMobile = window.matchMedia("(max-width: 800px)").matches;
         const mobileStyles = isMobile ? "padding: 0; width: 100%;" : "padding: 10px; width: 100%;";
-        
+
         resultHTML = `
             <div class="results-container" style="
             margin-bottom: 40px; 
@@ -2621,7 +2736,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 <span class="metric-value" style="
                 color: #2196F3; 
                 font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
-                font-weight: bold;">$${portfolioTotalInvested.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                font-weight: bold;">$${portfolioTotalInvested.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
 
             <div class="metric-card" style="
@@ -2641,7 +2756,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 color: ${portfolioFinalValue >= portfolioTotalInvested ? '#4CAF50' : '#F44336'}; 
                 font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
                 font-weight: bold;">
-                $${portfolioFinalValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                $${portfolioFinalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
 
             </div>
@@ -2664,7 +2779,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 font-size: 
                 clamp(1.1rem, 3.5vw, 1.3rem); 
                 font-weight: bold;">
-                $${portfolioProfit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                $${portfolioProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 <small style="font-size: clamp(0.8rem, 2.5vw, 1rem);">(${profitPercent >= 0 ? '+' : ''}${profitPercent.toFixed(2)}%)</small>
                 </span>
             </div>
@@ -2684,7 +2799,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 color: #607D8B; 
                 font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
                 font-weight: bold;">
-                ${portfolioShares.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                ${portfolioShares.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
             </div>
 
@@ -2703,7 +2818,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 color: #FFD700; 
                 font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
                 font-weight: bold;">
-                $${(portfolioValuesOverTime.totalDividends || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                $${portfolioTotalDividends.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
             </div>
 
@@ -2736,29 +2851,40 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
         const dates = Object.keys(portfolioValuesOverTime).sort();
         const portfolioValues = dates.map(date => portfolioValuesOverTime[date]);
 
+        // Erstelle Dividenden-Daten für das Balkendiagramm
+        const monthlyDividendLabels = Object.keys(portfolioMonthlyDividends).sort();
+        const monthlyDividendValues = monthlyDividendLabels.map(month => portfolioMonthlyDividends[month]);
+
         // Füge Canvas für das Chart hinzu
         resultDiv.innerHTML += `
             <div style="width: 100%; height: 400px; margin-top: 20px; position: relative;">
                 <canvas id="portfolio-chart" style="width: 100%; height: 100%;"></canvas>
             </div>
+            <div style="width: 100%; height: 250px; margin-top: 20px; position: relative;">
+                <canvas id="dividend-chart" style="width: 100%; height: 100%;"></canvas>
+            </div>
         `;
 
         const ctx = document.getElementById('portfolio-chart').getContext('2d');
-        
+        const dividendCtx = document.getElementById('dividend-chart').getContext('2d');
+
         // Gradient für den Hintergrund erstellen
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
         gradient.addColorStop(0, 'rgba(1, 195, 168, 0.3)');
         gradient.addColorStop(1, 'rgba(1, 195, 168, 0)');
 
-        // Zerstöre existierendes Chart wenn vorhanden
+        // Zerstöre existierende Charts wenn vorhanden
         if (window.portfolioChart) {
             window.portfolioChart.destroy();
+        }
+        if (window.dividendChart) {
+            window.dividendChart.destroy();
         }
 
         // Chart.js Plugin für Zoom registrieren
         Chart.register('chartjs-plugin-zoom');
 
-        // Erstelle neues Chart
+        // Erstelle Portfolio-Chart
         window.portfolioChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -2806,7 +2932,7 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                         ticks: {
                             padding: 10,
                             color: '#888',
-                            callback: function(value) {
+                            callback: function (value) {
                                 return '$' + value.toLocaleString('en-US', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2
@@ -2835,14 +2961,14 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                         padding: 12,
                         displayColors: false,
                         callbacks: {
-                            title: function(tooltipItems) {
+                            title: function (tooltipItems) {
                                 return new Date(tooltipItems[0].parsed.x).toLocaleDateString('de-DE', {
                                     day: 'numeric',
                                     month: 'short',
                                     year: 'numeric'
                                 });
                             },
-                            label: function(context) {
+                            label: function (context) {
                                 return 'Portfolio-Wert: $' + context.parsed.y.toLocaleString('en-US', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2
@@ -2854,6 +2980,88 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
                 interaction: {
                     mode: 'index',
                     intersect: false
+                }
+            }
+        });
+
+        // Erstelle Dividenden-Chart
+        window.dividendChart = new Chart(dividendCtx, {
+            type: 'bar',
+            data: {
+                labels: monthlyDividendLabels.map(month => {
+                    const [year, monthNum] = month.split('-');
+                    return new Date(year, monthNum - 1).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short' 
+                    });
+                }),
+                datasets: [{
+                    label: 'Monatliche Dividenden',
+                    data: monthlyDividendValues,
+                    backgroundColor: 'rgba(255, 215, 0, 0.6)',
+                    borderColor: '#FFD700',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#888'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            padding: 10,
+                            color: '#888',
+                            callback: function (value) {
+                                return '$' + value.toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function (context) {
+                                return 'Dividenden: $' + context.parsed.y.toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -2875,7 +3083,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const stockSymbolInput = document.getElementById("stock-symbol");
     const timeframeSelect = document.getElementById("analysis-timeframe");
 
- 
+
 
     function updateAnalysis(symbol) {
         stockSymbolInput.value = symbol;
@@ -3058,7 +3266,7 @@ function generateCalendar(year, region) {
 
             let marketsClosed = [];
             for (let market in marketHours) {
-                if ((region === "all" || marketHours[market].region === region) && 
+                if ((region === "all" || marketHours[market].region === region) &&
                     marketHours[market].holidays?.[dateStr]) {
                     const holiday = marketHours[market].holidays[dateStr];
                     marketsClosed.push(`${market}: ${holiday.reason}`);
@@ -3161,8 +3369,8 @@ function setupEventListeners() {
             updateCards();
         });
     });
-  
-  
+
+
 
     document.querySelectorAll("#toggle-view, .toggle-view").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -3188,13 +3396,13 @@ function setupEventListeners() {
         modal.style.display = "block";
     });
 
-    document.getElementById("calendar-region-filter")?.addEventListener("change", function() {
+    document.getElementById("calendar-region-filter")?.addEventListener("change", function () {
         generateCalendar(2025, this.value);
     });
 
     document.getElementById("search")?.addEventListener("input", updateCards);
 
-let justOpened = false;
+    let justOpened = false;
 
 
 
@@ -3230,25 +3438,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const filterBtn = document.getElementById("floating-filter-btn");
     const panel = document.getElementById("filter-panel");
     const closeBtn = document.getElementById("close-filter-panel");
-    
+
     // Initialize justOpened variable correctly
     let justOpened = false;
-    
+
     // Initial visibility check
     toggleFilterButtonVisibility(true);
-    
+
     // Listen for window resize to update button visibility
     window.addEventListener("resize", () => {
         toggleFilterButtonVisibility(true);
     });
-    
+
     if (filterBtn && panel) {
         filterBtn.addEventListener("click", (event) => {
             event.stopPropagation();
-            panel.style.display = "block"; 
+            panel.style.display = "block";
             panel.classList.add("filter-panel-open");
             filterBtn.style.display = "none"; // Hide button when clicked
-            
+
             justOpened = true;
             setTimeout(() => {
                 justOpened = false;
@@ -3264,9 +3472,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         document.addEventListener("click", (event) => {
-            if (!justOpened && 
-                !panel.contains(event.target) && 
-                !filterBtn.contains(event.target) && 
+            if (!justOpened &&
+                !panel.contains(event.target) &&
+                !filterBtn.contains(event.target) &&
                 panel.classList.contains("filter-panel-open")) {
             }
         });
@@ -3285,8 +3493,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 window.addEventListener("resize", setBodyPadding);
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('close').addEventListener('click', function() {
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('close').addEventListener('click', function () {
         const modal = this.closest('.modal');
         if (modal) {
             modal.style.display = 'none';
@@ -3334,7 +3542,7 @@ class StockAnalysis {
         this.analyzeBtn = document.getElementById('analyze-btn');
         this.errorDiv = document.getElementById('error-message');
         this.loadingOverlay = document.querySelector('.loading-overlay');
-        
+
         // Status-Management
         this.cache = new Map();
         this.chartInstances = new Map();
@@ -3365,7 +3573,7 @@ class StockAnalysis {
 
     setupEventListeners() {
         console.log('Setting up event listeners...');
-        
+
         // Enter-Taste im Input
         this.symbolInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -3403,10 +3611,10 @@ class StockAnalysis {
             button.addEventListener('click', () => {
                 const targetTab = button.dataset.tab;
                 console.log('Tab switched to:', targetTab);
-                
+
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
-                
+
                 tabPanes.forEach(pane => {
                     pane.classList.remove('active');
                     if (pane.id === targetTab) {
@@ -3424,7 +3632,7 @@ class StockAnalysis {
         try {
             console.log('Starting analysis for:', symbol);
             this.showLoading();
-            
+
             if (this.cache.has(symbol)) {
                 const cachedData = this.cache.get(symbol);
                 if (Date.now() - cachedData.timestamp < 5 * 60 * 1000) {
@@ -3438,7 +3646,7 @@ class StockAnalysis {
 
             const rawData = await this.fetchStockData(symbol);
             console.log('Raw data received:', rawData);
-            
+
             const analyzedData = this.analyzeData(rawData);
             console.log('Analyzed data:', analyzedData);
 
@@ -3466,7 +3674,7 @@ class StockAnalysis {
             const url = proxyUrl + encodeURIComponent(yahooUrl);
 
             const response = await fetch(url);
-            
+
             if (response.status === 429) {
                 console.warn('Rate limit reached, retrying...');
                 await new Promise(resolve => setTimeout(resolve, 1000));
@@ -3478,13 +3686,13 @@ class StockAnalysis {
             }
 
             const rawData = await response.json();
-            
+
             if (!rawData?.contents) {
                 throw new Error('Invalid API response format');
             }
 
             const data = JSON.parse(rawData.contents);
-            
+
             if (!data?.chart?.result?.[0]) {
                 throw new Error('No data available for this symbol');
             }
@@ -3495,582 +3703,582 @@ class StockAnalysis {
             console.error('Fetch error:', error);
             throw error;
         }
-        
+
     }
-    
-        async analyzeStock(symbol) {
-            try {
-                this.showLoading();
-                console.log('Analyzing stock:', symbol);
-                
-                // Prüfe Cache
-                if (this.cache.has(symbol)) {
-                    const cachedData = this.cache.get(symbol);
-                    if (Date.now() - cachedData.timestamp < 5 * 60 * 1000) {
-                        console.log('Using cached data');
-                        this.updateUI(cachedData.data);
-                        this.updateCharts(cachedData.data);
-                        this.hideLoading();
-                        return;
-                    }
-                }
-    
-                const rawData = await this.fetchStockData(symbol);
-                const analyzedData = this.analyzeData(rawData);
-                
-                this.cache.set(symbol, {
-                    timestamp: Date.now(),
-                    data: analyzedData
-                });
-    
-                this.updateUI(analyzedData);
-                this.updateCharts(analyzedData);
-    
-            } catch (error) {
-                console.error('Analysis error:', error);
-                this.showError(error.message);
-            } finally {
-                this.hideLoading();
-            }
-        }
-    
-        async fetchStockData(symbol) {
-            try {
-                const proxyUrl = 'https://api.allorigins.win/get?url=';
-                const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1y`;
-                const url = proxyUrl + encodeURIComponent(yahooUrl);
-    
-                console.log('Fetching from:', url);
-                const response = await fetch(url);
-                
-                if (response.status === 429) {
-                    console.warn('Rate limit reached, retrying...');
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    return this.fetchStockData(symbol);
-                }
-    
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
-                }
-    
-                const rawData = await response.json();
-                
-                if (!rawData?.contents) {
-                    throw new Error('Invalid API response format');
-                }
-    
-                const data = JSON.parse(rawData.contents);
-                
-                if (!data?.chart?.result?.[0]) {
-                    throw new Error('No data available for this symbol');
-                }
-    
-                return data.chart.result[0];
-    
-            } catch (error) {
-                console.error('Fetch error:', error);
-                throw error;
-            }
-        }
-    
-        analyzeData(rawData) {
-            const { meta, indicators, timestamp: timestamps } = rawData;
-            const quotes = indicators.quote[0];
-            const closePrices = quotes.close;
-            
-            return {
-                symbol: meta.symbol,
-                currency: meta.currency,
-                timestamps: timestamps,
-                priceHistory: timestamps.map((time, i) => ({
-                    time: time * 1000,
-                    value: quotes.close[i],
-                    open: quotes.open[i],
-                    high: quotes.high[i],
-                    low: quotes.low[i],
-                    volume: quotes.volume[i]
-                })).filter(item => item.value !== null),
-                technicalIndicators: {
-                    rsi: this.calculateRSI(closePrices),
-                    macd: this.calculateMACD(closePrices),
-                    ...this.calculateMovingAverages(closePrices),
-                    volatility: this.calculateVolatility(closePrices),
-                    momentum: this.calculateMomentum(closePrices),
-                    atr: this.calculateATR(quotes.high, quotes.low, closePrices),
-                    bollinger: this.calculateBollingerBands(closePrices)
-                },
-                fundamentalData: {
-                    marketCap: meta.marketCap,
-                    high52Week: meta.fiftyTwoWeekHigh,
-                    low52Week: meta.fiftyTwoWeekLow,
-                    avgVolume: meta.regularMarketVolume
-                }
-            };
-        }
-    
-        updateUI(data) {
-            const elements = {
-                'stock-name': data.symbol,
-                'current-price': `$${data.priceHistory[data.priceHistory.length-1].value.toFixed(2)}`,
-                'price-change': this.calculatePriceChange(data.priceHistory),
-                'market-cap': this.formatMarketCap(data.fundamentalData.marketCap),
-                'high-52-week': `$${data.fundamentalData.high52Week.toFixed(2)}`,
-                'low-52-week': `$${data.fundamentalData.low52Week.toFixed(2)}`,
-                'avg-volume': this.formatNumber(data.fundamentalData.avgVolume),
-                'rsi': data.technicalIndicators.rsi.toFixed(2),
-                'macd': data.technicalIndicators.macd.macd.toFixed(2),
-                'ma50': `$${data.technicalIndicators.MA50.toFixed(2)}`,
-                'ma200': `$${data.technicalIndicators.MA200.toFixed(2)}`
-            };
-    
-            for (const [id, value] of Object.entries(elements)) {
-                const element = document.getElementById(id);
-                if (element) element.textContent = value;
-            }
-    
-            this.updateSignals(data.technicalIndicators);
-        }
-    
-        // Technische Indikatoren
-calculateRSI(prices, period = 14) {
-    if (!prices || prices.length < period) return 0;
-    
-    const gains = [], losses = [];
-    for(let i = 1; i < prices.length; i++) {
-        const difference = prices[i] - prices[i-1];
-        gains.push(difference > 0 ? difference : 0);
-        losses.push(difference < 0 ? Math.abs(difference) : 0);
-    }
-    
-    const avgGain = gains.slice(0, period).reduce((a, b) => a + b) / period;
-    const avgLoss = losses.slice(0, period).reduce((a, b) => a + b) / period;
-    
-    if (avgLoss === 0) return 100;
-    const rs = avgGain / avgLoss;
-    return 100 - (100 / (1 + rs));
-}
 
-calculateMACD(prices, shortPeriod = 12, longPeriod = 26, signalPeriod = 9) {
-    if (!prices || prices.length < longPeriod) return { macd: 0, signal: 0, histogram: 0 };
-    
-    const shortEMA = this.calculateEMA(prices, shortPeriod);
-    const longEMA = this.calculateEMA(prices, longPeriod);
-    const macdLine = shortEMA - longEMA;
-    const signalLine = this.calculateEMA([macdLine], signalPeriod);
-    
-    return {
-        macd: macdLine,
-        signal: signalLine,
-        histogram: macdLine - signalLine
-    };
-}
+    async analyzeStock(symbol) {
+        try {
+            this.showLoading();
+            console.log('Analyzing stock:', symbol);
 
-calculateMovingAverages(prices) {
-    return {
-        MA50: this.calculateSMA(prices, 50),
-        MA200: this.calculateSMA(prices, 200)
-    };
-}
-
-calculateSMA(prices, period) {
-    if (!prices?.length || prices.length < period) return 0;
-    return prices.slice(-period).reduce((a, b) => a + b) / period;
-}
-
-calculateEMA(prices, period) {
-    if (!prices?.length || prices.length < period) return 0;
-    const multiplier = 2 / (period + 1);
-    let ema = prices.slice(0, period).reduce((a, b) => a + b) / period;
-    
-    for(let i = period; i < prices.length; i++) {
-        ema = (prices[i] - ema) * multiplier + ema;
-    }
-    return ema;
-}
-
-calculateATR(high, low, close, period = 14) {
-    if (!high?.length || !low?.length || !close?.length) return 0;
-    const tr = high.map((h, i) => {
-        if (i === 0) return h - low[i];
-        return Math.max(h - low[i], Math.abs(h - close[i-1]), Math.abs(low[i] - close[i-1]));
-    });
-    return this.calculateSMA(tr, period);
-}
-
-calculateBollingerBands(prices, period = 20, multiplier = 2) {
-    if (!prices?.length || prices.length < period) {
-        return { upper: 0, middle: 0, lower: 0 };
-    }
-    
-    const middle = this.calculateSMA(prices, period);
-    const deviation = Math.sqrt(
-        prices.slice(-period).reduce((sum, price) => 
-            sum + Math.pow(price - middle, 2), 0) / period
-    );
-    
-    return {
-        upper: middle + (multiplier * deviation),
-        middle: middle,
-        lower: middle - (multiplier * deviation)
-    };
-}
-
-calculateVolatility(prices, period = 20) {
-    if (!prices || prices.length < period) return 0;
-    
-    const returns = [];
-    for(let i = 1; i < prices.length; i++) {
-        returns.push((prices[i] - prices[i-1]) / prices[i-1]);
-    }
-    
-    const mean = returns.reduce((a, b) => a + b) / returns.length;
-    const variance = returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / returns.length;
-    
-    return Math.sqrt(variance) * Math.sqrt(252); // Annualisierte Volatilität
-}
-
-calculateMomentum(prices, period = 14) {
-    if (!prices || prices.length < period) return 0;
-    return (prices[prices.length - 1] / prices[prices.length - period - 1]) * 100;
-}
-
-calculatePriceChange(priceHistory) {
-    if (!priceHistory?.length) return '0.00%';
-    
-    const firstPrice = priceHistory[0].value;
-    const lastPrice = priceHistory[priceHistory.length - 1].value;
-    const change = ((lastPrice - firstPrice) / firstPrice) * 100;
-    
-    return `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
-}
-
-// Helper-Methoden
-formatMarketCap(value) {
-    if (!value) return 'N/A';
-    const billion = 1000000000;
-    const million = 1000000;
-    
-    if (value >= billion) {
-        return `$${(value / billion).toFixed(2)}B`;
-    }
-    return `$${(value / million).toFixed(2)}M`;
-}
-
-formatNumber(num) {
-    if (!num) return 'N/A';
-    return new Intl.NumberFormat().format(num);
-}
-
-showLoading() {
-    if (this.loadingOverlay) {
-        this.loadingOverlay.style.display = 'flex';
-    }
-}
-
-hideLoading() {
-    if (this.loadingOverlay) {
-        this.loadingOverlay.style.display = 'none';
-    }
-}
-
-showError(message) {
-    console.error(message);
-    if (this.errorDiv) {
-        this.errorDiv.textContent = message;
-        this.errorDiv.style.display = 'block';
-        setTimeout(() => {
-            this.errorDiv.style.display = 'none';
-        }, 5000);
-    }
-}
-
-// Nach der showError Methode hinzufügen:
-
-setupCharts() {
-    this.chartConfig = {
-        price: {
-            chart: {
-                type: 'candlestick',
-                height: 400,
-                background: '#fff',
-                foreColor: '#fff'
-            },
-            title: {
-                text: 'Price Chart',
-                align: 'left',
-                style: { color: '#fff' }
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    style: { colors: '#fff' }
-                }
-            },
-            yaxis: {
-                labels: {
-                    style: { colors: '#fff' },
-                    formatter: (value) => `$${value.toFixed(2)}`
-                }
-            },
-            grid: {
-                borderColor: '#404040'
-            }
-        },
-        technical: {
-            chart: {
-                type: 'line',
-                height: 350,
-                background: '#1a1a1a',
-                foreColor: '#fff',
-                toolbar: {
-                    show: true
-                }
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2
-            },
-            grid: {
-                borderColor: '#404040'
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    style: { colors: '#fff' }
-                }
-            },
-            yaxis: {
-                labels: {
-                    style: { colors: '#fff' }
+            // Prüfe Cache
+            if (this.cache.has(symbol)) {
+                const cachedData = this.cache.get(symbol);
+                if (Date.now() - cachedData.timestamp < 5 * 60 * 1000) {
+                    console.log('Using cached data');
+                    this.updateUI(cachedData.data);
+                    this.updateCharts(cachedData.data);
+                    this.hideLoading();
+                    return;
                 }
             }
-        }
-    };
-}
 
-setupCharts() {
-    // Stelle sicher, dass die Chart-Container existieren und leer sind
-    ['price-chart', 'technical-chart'].forEach(id => {
-        const container = document.getElementById(id);
-        if (container) {
-            container.innerHTML = '';
-        } else {
-            console.error(`Chart-Container ${id} nicht gefunden`);
-        }
-    });
+            const rawData = await this.fetchStockData(symbol);
+            const analyzedData = this.analyzeData(rawData);
 
-    // Basis-Chart-Konfiguration
-    this.chartConfig = {
-        shared: {
-            chart: {
-                type: 'line',
-                height: 350,
-                background: '#1a1a1a',
-                foreColor: '#fff',
-                animations: {
-                    enabled: true,
-                    easing: 'easeinout',
-                    dynamicAnimation: {
-                        speed: 1000
-                    }
-                },
-                toolbar: {
-                    show: true,
-                    tools: {
-                        download: true,
-                        selection: true,
-                        zoom: true,
-                        zoomin: true,
-                        zoomout: true,
-                        pan: true,
-                        reset: true
-                    }
-                }
-            },
-            theme: {
-                mode: 'dark',
-                palette: 'palette1'
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2,
-                lineCap: 'round'
-            },
-            markers: {
-                size: 0,
-                hover: {
-                    size: 5
-                }
-            },
-            grid: {
-                show: true,
-                borderColor: '#404040',
-                strokeDashArray: 0,
-                position: 'back'
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    style: { colors: '#fff' }
-                }
-            },
-            yaxis: {
-                labels: {
-                    style: { colors: '#fff' },
-                    formatter: (value) => `$${value.toFixed(2)}`
-                }
-            },
-            tooltip: {
-                enabled: true,
-                theme: 'dark',
-                x: {
-                    format: 'dd MMM yyyy'
-                }
+            this.cache.set(symbol, {
+                timestamp: Date.now(),
+                data: analyzedData
+            });
+
+            this.updateUI(analyzedData);
+            this.updateCharts(analyzedData);
+
+        } catch (error) {
+            console.error('Analysis error:', error);
+            this.showError(error.message);
+        } finally {
+            this.hideLoading();
+        }
+    }
+
+    async fetchStockData(symbol) {
+        try {
+            const proxyUrl = 'https://api.allorigins.win/get?url=';
+            const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1y`;
+            const url = proxyUrl + encodeURIComponent(yahooUrl);
+
+            console.log('Fetching from:', url);
+            const response = await fetch(url);
+
+            if (response.status === 429) {
+                console.warn('Rate limit reached, retrying...');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                return this.fetchStockData(symbol);
             }
+
+            if (!response.ok) {
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+
+            const rawData = await response.json();
+
+            if (!rawData?.contents) {
+                throw new Error('Invalid API response format');
+            }
+
+            const data = JSON.parse(rawData.contents);
+
+            if (!data?.chart?.result?.[0]) {
+                throw new Error('No data available for this symbol');
+            }
+
+            return data.chart.result[0];
+
+        } catch (error) {
+            console.error('Fetch error:', error);
+            throw error;
         }
-    };
-}
+    }
 
-updateCharts(data) {
-    console.log('Updating charts with data:', data);
-    this.destroyExistingCharts();
+    analyzeData(rawData) {
+        const { meta, indicators, timestamp: timestamps } = rawData;
+        const quotes = indicators.quote[0];
+        const closePrices = quotes.close;
 
-    try {
-        // Preis-Chart
-        const priceChartOptions = {
-            ...this.chartConfig.shared,
-            series: [{
-                name: 'Preis',
-                data: data.priceHistory.map(item => ({
-                    x: new Date(item.time).getTime(),
-                    y: item.value
-                }))
-            }],
-            title: {
-                text: `${data.symbol} Price Chart`,
-                align: 'left',
-                style: { color: '#fff' }
+        return {
+            symbol: meta.symbol,
+            currency: meta.currency,
+            timestamps: timestamps,
+            priceHistory: timestamps.map((time, i) => ({
+                time: time * 1000,
+                value: quotes.close[i],
+                open: quotes.open[i],
+                high: quotes.high[i],
+                low: quotes.low[i],
+                volume: quotes.volume[i]
+            })).filter(item => item.value !== null),
+            technicalIndicators: {
+                rsi: this.calculateRSI(closePrices),
+                macd: this.calculateMACD(closePrices),
+                ...this.calculateMovingAverages(closePrices),
+                volatility: this.calculateVolatility(closePrices),
+                momentum: this.calculateMomentum(closePrices),
+                atr: this.calculateATR(quotes.high, quotes.low, closePrices),
+                bollinger: this.calculateBollingerBands(closePrices)
+            },
+            fundamentalData: {
+                marketCap: meta.marketCap,
+                high52Week: meta.fiftyTwoWeekHigh,
+                low52Week: meta.fiftyTwoWeekLow,
+                avgVolume: meta.regularMarketVolume
             }
         };
+    }
 
-        // Technischer Chart
-        const technicalChartOptions = {
-            ...this.chartConfig.shared,
-            series: [
-                {
-                    name: 'Price',
+    updateUI(data) {
+        const elements = {
+            'stock-name': data.symbol,
+            'current-price': `$${data.priceHistory[data.priceHistory.length - 1].value.toFixed(2)}`,
+            'price-change': this.calculatePriceChange(data.priceHistory),
+            'market-cap': this.formatMarketCap(data.fundamentalData.marketCap),
+            'high-52-week': `$${data.fundamentalData.high52Week.toFixed(2)}`,
+            'low-52-week': `$${data.fundamentalData.low52Week.toFixed(2)}`,
+            'avg-volume': this.formatNumber(data.fundamentalData.avgVolume),
+            'rsi': data.technicalIndicators.rsi.toFixed(2),
+            'macd': data.technicalIndicators.macd.macd.toFixed(2),
+            'ma50': `$${data.technicalIndicators.MA50.toFixed(2)}`,
+            'ma200': `$${data.technicalIndicators.MA200.toFixed(2)}`
+        };
+
+        for (const [id, value] of Object.entries(elements)) {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        }
+
+        this.updateSignals(data.technicalIndicators);
+    }
+
+    // Technische Indikatoren
+    calculateRSI(prices, period = 14) {
+        if (!prices || prices.length < period) return 0;
+
+        const gains = [], losses = [];
+        for (let i = 1; i < prices.length; i++) {
+            const difference = prices[i] - prices[i - 1];
+            gains.push(difference > 0 ? difference : 0);
+            losses.push(difference < 0 ? Math.abs(difference) : 0);
+        }
+
+        const avgGain = gains.slice(0, period).reduce((a, b) => a + b) / period;
+        const avgLoss = losses.slice(0, period).reduce((a, b) => a + b) / period;
+
+        if (avgLoss === 0) return 100;
+        const rs = avgGain / avgLoss;
+        return 100 - (100 / (1 + rs));
+    }
+
+    calculateMACD(prices, shortPeriod = 12, longPeriod = 26, signalPeriod = 9) {
+        if (!prices || prices.length < longPeriod) return { macd: 0, signal: 0, histogram: 0 };
+
+        const shortEMA = this.calculateEMA(prices, shortPeriod);
+        const longEMA = this.calculateEMA(prices, longPeriod);
+        const macdLine = shortEMA - longEMA;
+        const signalLine = this.calculateEMA([macdLine], signalPeriod);
+
+        return {
+            macd: macdLine,
+            signal: signalLine,
+            histogram: macdLine - signalLine
+        };
+    }
+
+    calculateMovingAverages(prices) {
+        return {
+            MA50: this.calculateSMA(prices, 50),
+            MA200: this.calculateSMA(prices, 200)
+        };
+    }
+
+    calculateSMA(prices, period) {
+        if (!prices?.length || prices.length < period) return 0;
+        return prices.slice(-period).reduce((a, b) => a + b) / period;
+    }
+
+    calculateEMA(prices, period) {
+        if (!prices?.length || prices.length < period) return 0;
+        const multiplier = 2 / (period + 1);
+        let ema = prices.slice(0, period).reduce((a, b) => a + b) / period;
+
+        for (let i = period; i < prices.length; i++) {
+            ema = (prices[i] - ema) * multiplier + ema;
+        }
+        return ema;
+    }
+
+    calculateATR(high, low, close, period = 14) {
+        if (!high?.length || !low?.length || !close?.length) return 0;
+        const tr = high.map((h, i) => {
+            if (i === 0) return h - low[i];
+            return Math.max(h - low[i], Math.abs(h - close[i - 1]), Math.abs(low[i] - close[i - 1]));
+        });
+        return this.calculateSMA(tr, period);
+    }
+
+    calculateBollingerBands(prices, period = 20, multiplier = 2) {
+        if (!prices?.length || prices.length < period) {
+            return { upper: 0, middle: 0, lower: 0 };
+        }
+
+        const middle = this.calculateSMA(prices, period);
+        const deviation = Math.sqrt(
+            prices.slice(-period).reduce((sum, price) =>
+                sum + Math.pow(price - middle, 2), 0) / period
+        );
+
+        return {
+            upper: middle + (multiplier * deviation),
+            middle: middle,
+            lower: middle - (multiplier * deviation)
+        };
+    }
+
+    calculateVolatility(prices, period = 20) {
+        if (!prices || prices.length < period) return 0;
+
+        const returns = [];
+        for (let i = 1; i < prices.length; i++) {
+            returns.push((prices[i] - prices[i - 1]) / prices[i - 1]);
+        }
+
+        const mean = returns.reduce((a, b) => a + b) / returns.length;
+        const variance = returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / returns.length;
+
+        return Math.sqrt(variance) * Math.sqrt(252); // Annualisierte Volatilität
+    }
+
+    calculateMomentum(prices, period = 14) {
+        if (!prices || prices.length < period) return 0;
+        return (prices[prices.length - 1] / prices[prices.length - period - 1]) * 100;
+    }
+
+    calculatePriceChange(priceHistory) {
+        if (!priceHistory?.length) return '0.00%';
+
+        const firstPrice = priceHistory[0].value;
+        const lastPrice = priceHistory[priceHistory.length - 1].value;
+        const change = ((lastPrice - firstPrice) / firstPrice) * 100;
+
+        return `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
+    }
+
+    // Helper-Methoden
+    formatMarketCap(value) {
+        if (!value) return 'N/A';
+        const billion = 1000000000;
+        const million = 1000000;
+
+        if (value >= billion) {
+            return `$${(value / billion).toFixed(2)}B`;
+        }
+        return `$${(value / million).toFixed(2)}M`;
+    }
+
+    formatNumber(num) {
+        if (!num) return 'N/A';
+        return new Intl.NumberFormat().format(num);
+    }
+
+    showLoading() {
+        if (this.loadingOverlay) {
+            this.loadingOverlay.style.display = 'flex';
+        }
+    }
+
+    hideLoading() {
+        if (this.loadingOverlay) {
+            this.loadingOverlay.style.display = 'none';
+        }
+    }
+
+    showError(message) {
+        console.error(message);
+        if (this.errorDiv) {
+            this.errorDiv.textContent = message;
+            this.errorDiv.style.display = 'block';
+            setTimeout(() => {
+                this.errorDiv.style.display = 'none';
+            }, 5000);
+        }
+    }
+
+    // Nach der showError Methode hinzufügen:
+
+    setupCharts() {
+        this.chartConfig = {
+            price: {
+                chart: {
+                    type: 'candlestick',
+                    height: 400,
+                    background: '#fff',
+                    foreColor: '#fff'
+                },
+                title: {
+                    text: 'Price Chart',
+                    align: 'left',
+                    style: { color: '#fff' }
+                },
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        style: { colors: '#fff' }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: { colors: '#fff' },
+                        formatter: (value) => `$${value.toFixed(2)}`
+                    }
+                },
+                grid: {
+                    borderColor: '#404040'
+                }
+            },
+            technical: {
+                chart: {
+                    type: 'line',
+                    height: 350,
+                    background: '#1a1a1a',
+                    foreColor: '#fff',
+                    toolbar: {
+                        show: true
+                    }
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 2
+                },
+                grid: {
+                    borderColor: '#404040'
+                },
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        style: { colors: '#fff' }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: { colors: '#fff' }
+                    }
+                }
+            }
+        };
+    }
+
+    setupCharts() {
+        // Stelle sicher, dass die Chart-Container existieren und leer sind
+        ['price-chart', 'technical-chart'].forEach(id => {
+            const container = document.getElementById(id);
+            if (container) {
+                container.innerHTML = '';
+            } else {
+                console.error(`Chart-Container ${id} nicht gefunden`);
+            }
+        });
+
+        // Basis-Chart-Konfiguration
+        this.chartConfig = {
+            shared: {
+                chart: {
+                    type: 'line',
+                    height: 350,
+                    background: '#1a1a1a',
+                    foreColor: '#fff',
+                    animations: {
+                        enabled: true,
+                        easing: 'easeinout',
+                        dynamicAnimation: {
+                            speed: 1000
+                        }
+                    },
+                    toolbar: {
+                        show: true,
+                        tools: {
+                            download: true,
+                            selection: true,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: true,
+                            reset: true
+                        }
+                    }
+                },
+                theme: {
+                    mode: 'dark',
+                    palette: 'palette1'
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 2,
+                    lineCap: 'round'
+                },
+                markers: {
+                    size: 0,
+                    hover: {
+                        size: 5
+                    }
+                },
+                grid: {
+                    show: true,
+                    borderColor: '#404040',
+                    strokeDashArray: 0,
+                    position: 'back'
+                },
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        style: { colors: '#fff' }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: { colors: '#fff' },
+                        formatter: (value) => `$${value.toFixed(2)}`
+                    }
+                },
+                tooltip: {
+                    enabled: true,
+                    theme: 'dark',
+                    x: {
+                        format: 'dd MMM yyyy'
+                    }
+                }
+            }
+        };
+    }
+
+    updateCharts(data) {
+        console.log('Updating charts with data:', data);
+        this.destroyExistingCharts();
+
+        try {
+            // Preis-Chart
+            const priceChartOptions = {
+                ...this.chartConfig.shared,
+                series: [{
+                    name: 'Preis',
                     data: data.priceHistory.map(item => ({
                         x: new Date(item.time).getTime(),
                         y: item.value
                     }))
-                },
-                {
-                    name: 'MA50',
-                    data: data.priceHistory.map(item => ({
-                        x: new Date(item.time).getTime(),
-                        y: data.technicalIndicators.MA50
-                    }))
-                },
-                {
-                    name: 'MA200',
-                    data: data.priceHistory.map(item => ({
-                        x: new Date(item.time).getTime(),
-                        y: data.technicalIndicators.MA200
-                    }))
+                }],
+                title: {
+                    text: `${data.symbol} Price Chart`,
+                    align: 'left',
+                    style: { color: '#fff' }
                 }
-            ]
+            };
+
+            // Technischer Chart
+            const technicalChartOptions = {
+                ...this.chartConfig.shared,
+                series: [
+                    {
+                        name: 'Price',
+                        data: data.priceHistory.map(item => ({
+                            x: new Date(item.time).getTime(),
+                            y: item.value
+                        }))
+                    },
+                    {
+                        name: 'MA50',
+                        data: data.priceHistory.map(item => ({
+                            x: new Date(item.time).getTime(),
+                            y: data.technicalIndicators.MA50
+                        }))
+                    },
+                    {
+                        name: 'MA200',
+                        data: data.priceHistory.map(item => ({
+                            x: new Date(item.time).getTime(),
+                            y: data.technicalIndicators.MA200
+                        }))
+                    }
+                ]
+            };
+
+            const priceChart = new ApexCharts(
+                document.getElementById('price-chart'),
+                priceChartOptions
+            );
+
+            const technicalChart = new ApexCharts(
+                document.getElementById('technical-chart'),
+                technicalChartOptions
+            );
+
+            console.log('Rendering charts...');
+            priceChart.render();
+            technicalChart.render();
+
+            this.chartInstances.set('price', priceChart);
+            this.chartInstances.set('technical', technicalChart);
+
+        } catch (error) {
+            console.error('Fehler beim Erstellen der Charts:', error);
+            this.showError('Charts konnten nicht erstellt werden');
+        }
+    }
+
+    destroyExistingCharts() {
+        console.log('Destroying existing charts...');
+        this.chartInstances.forEach((chart, key) => {
+            try {
+                if (chart && typeof chart.destroy === 'function') {
+                    chart.destroy();
+                    console.log(`Chart ${key} destroyed`);
+                }
+            } catch (error) {
+                console.error(`Fehler beim Zerstören des Charts ${key}:`, error);
+            }
+        });
+        this.chartInstances.clear();
+    }
+
+    updateTechnicalCharts() {
+        const symbol = this.symbolInput.value.trim().toUpperCase();
+        if (symbol && this.cache.has(symbol)) {
+            const data = this.cache.get(symbol).data;
+            this.updateCharts(data);
+        }
+    }
+
+    updateSignals(indicators) {
+        const signalElements = {
+            'ma-signal': this.calculateMASignal(indicators.MA50, indicators.MA200),
+            'momentum-signal': this.calculateMomentumSignal(indicators.rsi, indicators.macd)
         };
 
-        const priceChart = new ApexCharts(
-            document.getElementById('price-chart'),
-            priceChartOptions
-        );
-
-        const technicalChart = new ApexCharts(
-            document.getElementById('technical-chart'),
-            technicalChartOptions
-        );
-
-        console.log('Rendering charts...');
-        priceChart.render();
-        technicalChart.render();
-
-        this.chartInstances.set('price', priceChart);
-        this.chartInstances.set('technical', technicalChart);
-
-    } catch (error) {
-        console.error('Fehler beim Erstellen der Charts:', error);
-        this.showError('Charts konnten nicht erstellt werden');
+        for (const [id, signal] of Object.entries(signalElements)) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.className = 'signal-indicator';
+                element.classList.add(signal.type);
+                element.title = signal.message;
+            }
+        }
     }
-}
 
-destroyExistingCharts() {
-    console.log('Destroying existing charts...');
-    this.chartInstances.forEach((chart, key) => {
-        try {
+    calculateMASignal(ma50, ma200) {
+        if (ma50 > ma200) {
+            return { type: 'bullish', message: 'Bullish: MA50 above MA200' };
+        } else {
+            return { type: 'bearish', message: 'Bearish: MA50 below MA200' };
+        }
+    }
+
+    calculateMomentumSignal(rsi, macd) {
+        let signal = { type: 'neutral', message: 'Neutral momentum' };
+
+        if (rsi > 70 || macd.histogram < 0) {
+            signal = { type: 'overbought', message: 'Overbought conditions' };
+        } else if (rsi < 30 || macd.histogram > 0) {
+            signal = { type: 'oversold', message: 'Oversold conditions' };
+        }
+
+        return signal;
+    }
+
+    destroyExistingCharts() {
+        this.chartInstances.forEach(chart => {
             if (chart && typeof chart.destroy === 'function') {
                 chart.destroy();
-                console.log(`Chart ${key} destroyed`);
             }
-        } catch (error) {
-            console.error(`Fehler beim Zerstören des Charts ${key}:`, error);
-        }
-    });
-    this.chartInstances.clear();
-}
-
-updateTechnicalCharts() {
-    const symbol = this.symbolInput.value.trim().toUpperCase();
-    if (symbol && this.cache.has(symbol)) {
-        const data = this.cache.get(symbol).data;
-        this.updateCharts(data);
+        });
+        this.chartInstances.clear();
     }
-}
-
-updateSignals(indicators) {
-    const signalElements = {
-        'ma-signal': this.calculateMASignal(indicators.MA50, indicators.MA200),
-        'momentum-signal': this.calculateMomentumSignal(indicators.rsi, indicators.macd)
-    };
-
-    for (const [id, signal] of Object.entries(signalElements)) {
-        const element = document.getElementById(id);
-        if (element) {
-            element.className = 'signal-indicator';
-            element.classList.add(signal.type);
-            element.title = signal.message;
-        }
-    }
-}
-
-calculateMASignal(ma50, ma200) {
-    if (ma50 > ma200) {
-        return { type: 'bullish', message: 'Bullish: MA50 above MA200' };
-    } else {
-        return { type: 'bearish', message: 'Bearish: MA50 below MA200' };
-    }
-}
-
-calculateMomentumSignal(rsi, macd) {
-    let signal = { type: 'neutral', message: 'Neutral momentum' };
-    
-    if (rsi > 70 || macd.histogram < 0) {
-        signal = { type: 'overbought', message: 'Overbought conditions' };
-    } else if (rsi < 30 || macd.histogram > 0) {
-        signal = { type: 'oversold', message: 'Oversold conditions' };
-    }
-    
-    return signal;
-}
-
-destroyExistingCharts() {
-    this.chartInstances.forEach(chart => {
-        if (chart && typeof chart.destroy === 'function') {
-            chart.destroy();
-        }
-    });
-    this.chartInstances.clear();
-}
 
 }
 
@@ -4080,21 +4288,21 @@ document.addEventListener('DOMContentLoaded', () => {
     window.stockAnalysis = new StockAnalysis();
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const aboutModal = document.getElementById('about-modal');
     const aboutLink = document.getElementById('about-link');
     const closeAbout = document.getElementById('close-about');
 
-    aboutLink.addEventListener('click', function(e) {
+    aboutLink.addEventListener('click', function (e) {
         e.preventDefault();
         aboutModal.style.display = 'block';
     });
 
-    closeAbout.addEventListener('click', function() {
+    closeAbout.addEventListener('click', function () {
         aboutModal.style.display = 'none';
     });
 
-    window.addEventListener('click', function(e) {
+    window.addEventListener('click', function (e) {
         if (e.target === aboutModal) {
             aboutModal.style.display = 'none';
         }
@@ -4150,16 +4358,16 @@ class NewsletterManager {
         this.statusMessage = document.createElement('div');
         this.statusMessage.className = 'newsletter-status';
         this.statusMessage.style.color = '#fff'; // Set text color to white
-        
+
         if (this.form) {
             this.form.appendChild(this.statusMessage);
         }
-        
+
         // Use environment variables if available, otherwise use fallback values
         this.API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNmVhZjAxZTJjMzhlZjY3ZTllNTNjMzA1NDM0MmE3MDI2YmQyMDliNDkzMzQ3M2M2MjFlMDljMzdlNjg5NWE4MDFkZjIzOTBlMDdkYzg4MzYiLCJpYXQiOiIxNzQyMzI5OTE1LjExODEyMCIsIm5iZiI6IjE3NDIzMjk5MTUuMTE4MTI0IiwiZXhwIjoiNDg5NTkyOTkxNS4xMTY3NDQiLCJzdWIiOiI5NjI3NjAiLCJzY29wZXMiOltdfQ.KHwUWoVXE_EoonOTfqGR0X4LDtQ8QACk_w5mk-Dcb6jYyQpkyhxYknG-nMoXUmPYQ0L_zjapIyFrwMU1QdKIQw';
         this.API_URL = 'https://api.sender.net/v2/subscribers';
         this.GROUP_ID = 'bYrJOn';
-        
+
         this.headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${this.API_KEY}`
@@ -4267,13 +4475,13 @@ class ExchangeRateCalculator {
             'exchange-rate',
             'last-updated'
         ];
-        
+
         return requiredElements.every(id => document.getElementById(id));
     }
 
     initializeElements() {
         this.modal = document.getElementById('exchange-rate-modal');
-        this.toggleButton = document.getElementById('toggle-exchange'); 
+        this.toggleButton = document.getElementById('toggle-exchange');
         this.closeButton = document.getElementById('close-exchange');
         this.form = document.getElementById('exchange-form');
         this.amountInput = document.getElementById('amount');
@@ -4326,7 +4534,7 @@ class ExchangeRateCalculator {
             { code: 'JPY', name: 'Japanese Yen' },
             { code: 'GBP', name: 'British Pound' },
             { code: 'AUD', name: 'Australian Dollar' },
-            { code: 'CAD', name: 'Canadian Dollar' }, 
+            { code: 'CAD', name: 'Canadian Dollar' },
             { code: 'CHF', name: 'Swiss Franc' },
             { code: 'CNY', name: 'Chinese Yuan' },
             { code: 'NZD', name: 'New Zealand Dollar' },
@@ -4358,20 +4566,20 @@ class ExchangeRateCalculator {
             { code: 'JOD', name: 'Jordanian Dinar' },
             { code: 'IQD', name: 'Iraqi Dinar' }
         ];
-        
+
         this.populateCurrencySelects(currencies);
     }
 
     populateCurrencySelects(currencies) {
         this.fromSelect.innerHTML = '';
         this.toSelect.innerHTML = '';
-        
+
         currencies.forEach(currency => {
             const option = `<option value="${currency.code}">${currency.code} - ${currency.name}</option>`;
             this.fromSelect.insertAdjacentHTML('beforeend', option);
             this.toSelect.insertAdjacentHTML('beforeend', option);
         });
-        
+
         this.fromSelect.value = 'USD';
         this.toSelect.value = 'EUR';
 
@@ -4409,7 +4617,7 @@ class ExchangeRateCalculator {
 
     async handleConvert(e) {
         e.preventDefault();
-        
+
         try {
             const amount = parseFloat(this.amountInput.value);
             const fromCurrency = this.fromSelect.value;
@@ -4427,11 +4635,11 @@ class ExchangeRateCalculator {
 
             const response = await fetch(url);
             const data = await response.json();
-            
+
             if (data.chart && data.chart.result && data.chart.result[0]) {
                 const rate = data.chart.result[0].meta.regularMarketPrice;
                 const result = amount * rate;
-                
+
                 this.displayResult({
                     base_code: fromCurrency,
                     target_code: toCurrency,
@@ -4459,15 +4667,15 @@ class ExchangeRateCalculator {
         errorDiv.className = 'error-message';
         errorDiv.textContent = message;
         this.form.insertBefore(errorDiv, this.resultContainer);
-        
+
         setTimeout(() => {
             errorDiv.remove();
         }, 3000);
     }
 
     swapCurrencies() {
-        [this.fromSelect.value, this.toSelect.value] = 
-        [this.toSelect.value, this.fromSelect.value];
+        [this.fromSelect.value, this.toSelect.value] =
+            [this.toSelect.value, this.fromSelect.value];
     }
 }
 
@@ -4479,25 +4687,25 @@ document.addEventListener('DOMContentLoaded', () => {
 function updateHeaderDateTime() {
     const timeElement = document.getElementById('header-time');
     const dateElement = document.getElementById('header-date');
-    
+
     const now = new Date();
-    
+
     // Format time
-    const timeOptions = { 
-        hour: '2-digit', 
-        minute: '2-digit', 
+    const timeOptions = {
+        hour: '2-digit',
+        minute: '2-digit',
         second: '2-digit',
         hour12: true // Show in 12-hour format with AM/PM
     };
-    
+
     // Format date
-    const dateOptions = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+    const dateOptions = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
     };
-    
+
     if (timeElement && dateElement) {
         timeElement.textContent = now.toLocaleTimeString('en-US', timeOptions);
         dateElement.textContent = now.toLocaleDateString('en-US', dateOptions);
@@ -4523,11 +4731,11 @@ function updateClocks() {
     Object.entries(timeZones).forEach(([city, timezone]) => {
         const clock = document.querySelector(`.clock.${city}`);
         if (!clock) return;
-        
+
         try {
             // Get the current time in the timezone using Intl.DateTimeFormat
             const now = new Date();
-            
+
             // Get individual time components using Intl.DateTimeFormat
             const formatter = new Intl.DateTimeFormat('en-US', {
                 timeZone: timezone,
@@ -4536,19 +4744,19 @@ function updateClocks() {
                 second: 'numeric',
                 hour12: false
             });
-            
+
             // Parse the formatted time string
             const formattedTime = formatter.format(now);
             const timeParts = formattedTime.split(':');
-            
+
             // Extract hours, minutes, seconds
             let hours = parseInt(timeParts[0]);
             const minutes = parseInt(timeParts[1]);
             const seconds = parseInt(timeParts[2] || 0); // Handle if seconds aren't returned
-            
+
             // Convert to 12-hour format for the clock
             const hours12 = hours % 12 || 12;
-            
+
             // Calculate rotation angles
             // Hours: Each hour = 30° (360/12), plus a little extra for the minutes
             // Minutes: Each minute = 6° (360/60)
@@ -4556,16 +4764,16 @@ function updateClocks() {
             const hourDegrees = (hours12 * 30) + (minutes / 2);
             const minuteDegrees = minutes * 6;
             const secondDegrees = seconds * 6;
-            
+
             // Apply rotations to the hands
             const hourHand = clock.querySelector('.hour');
             const minuteHand = clock.querySelector('.minute');
             const secondHand = clock.querySelector('.second');
-            
+
             if (hourHand) hourHand.style.transform = `rotate(${hourDegrees}deg)`;
             if (minuteHand) minuteHand.style.transform = `rotate(${minuteDegrees}deg)`;
             if (secondHand) secondHand.style.transform = `rotate(${secondDegrees}deg)`;
-            
+
             // Update digital time display if it exists
             const digitalDisplay = clock.querySelector('.digital-time');
             if (digitalDisplay) {
@@ -4583,48 +4791,48 @@ updateClocks();
 setInterval(updateClocks, 1000);
 
 // Fear & Greed Index Modal Functionality
-document.getElementById('fearGreedBtn').addEventListener('click', function() {
+document.getElementById('fearGreedBtn').addEventListener('click', function () {
     document.getElementById('fearGreedModal').style.display = 'block';
     fetchFearGreedIndex(); // Fetch data when modal is opened
-  });
-  
-  // Close modal when clicking on X
-  document.querySelectorAll('.close-modal').forEach(closeBtn => {
-    closeBtn.addEventListener('click', function() {
-      const modalId = this.getAttribute('data-modal');
-      document.getElementById(modalId).style.display = 'none';
+});
+
+// Close modal when clicking on X
+document.querySelectorAll('.close-modal').forEach(closeBtn => {
+    closeBtn.addEventListener('click', function () {
+        const modalId = this.getAttribute('data-modal');
+        document.getElementById(modalId).style.display = 'none';
     });
-  });
-  
-  // Close modal when clicking outside of it
-  window.addEventListener('click', function(event) {
+});
+
+// Close modal when clicking outside of it
+window.addEventListener('click', function (event) {
     if (event.target.classList.contains('modal')) {
-      event.target.style.display = 'none';
+        event.target.style.display = 'none';
     }
-  });
-  
-  // Fear & Greed Index API functionality
-   function getDescription(score) {
+});
+
+// Fear & Greed Index API functionality
+function getDescription(score) {
     if (score <= 25) return "Extreme Fear";
     if (score <= 45) return "Fear";
     if (score <= 55) return "Neutral";
     if (score <= 75) return "Greed";
     return "Extreme Greed";
-  }
-  
-  function updateGauge(score) {
+}
+
+function updateGauge(score) {
     const needle = document.getElementById("needle");
     const indexValue = document.getElementById("indexValue");
     const description = document.getElementById("description");
-  
+
     const angle = (score / 100) * 180 - 90;
     needle.style.transform = `rotate(${angle}deg)`;
-  
+
     indexValue.textContent = score;
     description.textContent = getDescription(score);
-  }
-  
-  async function fetchFearGreedIndex() {
+}
+
+async function fetchFearGreedIndex() {
     const url = 'https://fear-and-greed-index.p.rapidapi.com/v1/fgi';
     const options = {
         method: 'GET',
@@ -4633,15 +4841,15 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
             'x-rapidapi-host': 'fear-and-greed-index.p.rapidapi.com'
         }
     };
-    
+
     try {
-      const response = await fetch(url, options);
-      const data = await response.json();
-      const score = data.fgi.now.value;
-      updateGauge(score);
+        const response = await fetch(url, options);
+        const data = await response.json();
+        const score = data.fgi.now.value;
+        updateGauge(score);
     } catch (error) {
-      console.error("API fetch error:", error);
-      document.getElementById("description").textContent = "Error fetching data";
+        console.error("API fetch error:", error);
+        document.getElementById("description").textContent = "Error fetching data";
     }
 }
 
@@ -4649,7 +4857,7 @@ document.getElementById('fearGreedBtn').addEventListener('click', function() {
 
 
 // Insider Trades Modal Functionality
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const insiderTradesBtn = document.getElementById('insiderTradesBtn');
     const mobileInsiderTradesBtn = document.getElementById('mobile-insider-trades-btn');
     const insiderTradesModal = document.getElementById('insiderTradesModal');
@@ -4663,17 +4871,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const insiderErrorMessage = document.getElementById('insider-error-message');
     const insiderCompanyName = document.getElementById('insider-company-name');
     let stockChart = null;
-    
+
     // Open modal when button is clicked
-    insiderTradesBtn.addEventListener('click', function() {
+    insiderTradesBtn.addEventListener('click', function () {
         insiderTradesModal.style.display = 'block';
         resetInsiderModal();
         initializeStockChart();
     });
-    
+
     // For mobile
     if (mobileInsiderTradesBtn) {
-        mobileInsiderTradesBtn.addEventListener('click', function() {
+        mobileInsiderTradesBtn.addEventListener('click', function () {
             insiderTradesModal.style.display = 'block';
             document.querySelector('.mobile-menu-overlay').style.display = 'none';
             document.querySelector('.mobile-menu').classList.remove('open');
@@ -4681,29 +4889,29 @@ document.addEventListener('DOMContentLoaded', function() {
             initializeStockChart();
         });
     }
-    
+
     // Close modal when clicked on X
-    closeInsiderModal.addEventListener('click', function() {
+    closeInsiderModal.addEventListener('click', function () {
         insiderTradesModal.style.display = 'none';
     });
-    
+
     // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
+    window.addEventListener('click', function (event) {
         if (event.target === insiderTradesModal) {
             insiderTradesModal.style.display = 'none';
         }
     });
-    
+
     // Search on button click
-    searchButton.addEventListener('click', function() {
+    searchButton.addEventListener('click', function () {
         const ticker = tickerInput.value.trim().toUpperCase();
         if (ticker) {
             fetchInsiderTrades(ticker);
         }
     });
-    
+
     // Search on Enter key
-    tickerInput.addEventListener('keypress', function(e) {
+    tickerInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             const ticker = tickerInput.value.trim().toUpperCase();
@@ -4712,22 +4920,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    
+
     // Chart Period Buttons Event Handlers
     document.querySelectorAll('.chart-period-btn').forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             // Remove active class from all buttons
             document.querySelectorAll('.chart-period-btn').forEach(btn => {
                 btn.classList.remove('active');
                 btn.style.background = 'rgba(255,255,255,0.05)';
                 btn.style.color = '#ccc';
             });
-            
+
             // Add active class to clicked button
             this.classList.add('active');
             this.style.background = 'rgba(1,195,168,0.15)';
             this.style.color = '#01c3a8';
-            
+
             // Update chart with selected period
             const period = this.getAttribute('data-period');
             const ticker = tickerInput.value.trim().toUpperCase();
@@ -4736,7 +4944,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     async function fetchInsiderTrades(ticker) {
         // Reset and show loading state
         resetInsiderModal();
@@ -4773,16 +4981,16 @@ document.addEventListener('DOMContentLoaded', function() {
             insiderLoading.style.display = 'none';
         }
     }
-    
+
     // Parse Finviz HTML to extract insider trades
     function parseFinvizInsiderTrades(html, ticker) {
         const trades = [];
         let companyName = ticker; // Default to ticker
-        
+
         try {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
-            
+
             // Try to extract company name from title
             const title = doc.querySelector('title');
             if (title) {
@@ -4791,19 +4999,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     companyName = titleMatch[1].trim();
                 }
             }
-            
+
             // Find the insider table
             const insiderTable = [...doc.querySelectorAll('table.body-table')].find(table => {
                 const headers = table.querySelectorAll('th');
                 return [...headers].some(th => th.textContent.includes('Insider Trading'));
             });
-            
+
             if (insiderTable) {
                 const rows = insiderTable.querySelectorAll('tr');
-                
+
                 [...rows].forEach((row, index) => {
                     if (index === 0) return; // Skip header row
-                    
+
                     const cells = row.querySelectorAll('td');
                     if (cells.length >= 5) {
                         const transaction_date = cells[0]?.textContent?.trim();
@@ -4813,7 +5021,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const price = parseFloat(cells[4]?.textContent?.replace(/[^\d.-]/g, ''));
                         const shares = parseFloat(cells[5]?.textContent?.replace(/[^\d.-]/g, ''));
                         const value = shares * price;
-                        
+
                         trades.push({
                             transaction_date,
                             insider_name,
@@ -4834,10 +5042,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (e) {
             console.error('Error parsing Finviz HTML:', e);
         }
-        
+
         return { trades, companyName };
     }
-    
+
     // Helper function to determine transaction type
     function getTransactionType(text) {
         text = text.toLowerCase();
@@ -4846,7 +5054,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (text.includes('exercise') || text.includes('conversion')) return 'Exercise/Conversion';
         return text;
     }
-    
+
     // Display parsed insider trades
     function displayParsedInsiderTrades(trades, ticker, companyName) {
         // Create a data object for display
@@ -4856,10 +5064,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 company: { name: companyName }
             }))
         };
-        
+
         displayInsiderTrades(result, ticker);
     }
-    
+
     // Helper function to get company name for ticker (fallback)
     function getCompanyNameForTicker(ticker) {
         const companyMap = {
@@ -4871,53 +5079,53 @@ document.addEventListener('DOMContentLoaded', function() {
             'TSLA': 'Tesla, Inc.',
             'NVDA': 'NVIDIA Corporation'
         };
-        
+
         return companyMap[ticker] || null;
     }
-    
+
     // Display insider trades data
     function displayInsiderTrades(result, ticker) {
         console.log("Displaying data for", ticker, "with", result.data.length, "trades");
-        
+
         insiderResults.style.display = 'block';
-        
+
         // Extract trades from data array
         const trades = result.data;
-        
+
         // Set company name - find it from the first entry
         const companyName = trades[0]?.company?.name || ticker;
         insiderCompanyName.textContent = companyName;
         insiderCompanyName.nextElementSibling.textContent = ticker;
-        
+
         // Create summary metrics
-        const buys = trades.filter(trade => 
-            trade.transaction_type === 'Buy' || 
+        const buys = trades.filter(trade =>
+            trade.transaction_type === 'Buy' ||
             trade.transaction_type === 'Exercise/Conversion'
         ).length;
-        
-        const sells = trades.filter(trade => 
+
+        const sells = trades.filter(trade =>
             trade.transaction_type === 'Sale'
         ).length;
-        
+
         let totalBuyValue = 0;
         let totalSellValue = 0;
-        
+
         trades.forEach(trade => {
             const value = parseFloat(trade.value || 0);
-            
+
             if (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') {
                 totalBuyValue += value;
             } else if (trade.transaction_type === 'Sale') {
                 totalSellValue += value;
             }
         });
-        
+
         // Format currency
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD'
         });
-        
+
         // Display summary
         const insiderSummary = document.getElementById('insider-summary');
         insiderSummary.innerHTML = `
@@ -4940,11 +5148,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         `;
-        
+
         // Update the last updated date
         const today = new Date();
         document.getElementById('insider-last-updated').textContent = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        
+
         // Create a grid container for cards
         const insiderTableElement = document.getElementById('insider-table');
 
@@ -4972,7 +5180,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add the grid container to the DOM
         tableContainer.appendChild(gridContainer);
-        
+
         // Create cards for each trade
         trades.forEach(trade => {
             try {
@@ -4990,24 +5198,24 @@ document.addEventListener('DOMContentLoaded', function() {
                         formattedDate = trade.transaction_date;
                     }
                 }
-                
+
                 // Position or role
                 const position = trade.position || trade.formatted_roles || '-';
-                
+
                 // Transaction color
-                const transactionColor = (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion') 
-                    ? '#7FFF8E' 
+                const transactionColor = (trade.transaction_type === 'Buy' || trade.transaction_type === 'Exercise/Conversion')
+                    ? '#7FFF8E'
                     : '#ff8a80';
-                
+
                 // Format shares
                 const shares = numberWithCommas(trade.shares);
-                
+
                 // Format price
                 const price = trade.formatted_price || (trade.price ? `$${parseFloat(trade.price).toFixed(2)}` : '-');
-                
+
                 // Format value
                 const value = trade.formatted_value || (trade.value ? formatter.format(trade.value) : '-');
-                
+
                 // Create a card for this trade
                 const card = document.createElement('div');
                 card.className = 'insider-trade-card';
@@ -5038,7 +5246,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 `;
-                
+
                 // Add the card to the grid
                 gridContainer.appendChild(card);
             } catch (error) {
@@ -5046,20 +5254,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Helper function to format numbers with commas
     function numberWithCommas(x) {
         if (!x) return '-';
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
-    
+
     // Reset insider modal to initial state
     function resetInsiderModal() {
         insiderResults.style.display = 'none';
         insiderNoData.style.display = 'none';
         insiderError.style.display = 'none';
         insiderErrorMessage.textContent = '';
-        
+
         // Reset the recent transactions grid
         const gridContainer = document.getElementById('insider-trades-grid');
         if (gridContainer && gridContainer.parentNode) {
@@ -5071,17 +5279,17 @@ document.addEventListener('DOMContentLoaded', function() {
             insiderTable.parentNode.innerHTML = '<table id="insider-table"><tbody></tbody></table>';
         }
     }
-    
+
     // Function to initialize the stock chart
     function initializeStockChart() {
         const ctx = document.getElementById('insider-stock-chart');
         if (!ctx) return;
-        
+
         // If a chart exists, destroy it
         if (stockChart) {
             stockChart.destroy();
         }
-        
+
         // Create empty chart
         stockChart = new Chart(ctx, {
             type: 'line',
@@ -5143,7 +5351,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         padding: 12,
                         displayColors: false,
                         callbacks: {
-                            label: function(context) {
+                            label: function (context) {
                                 return `$${context.parsed.y.toFixed(2)}`;
                             }
                         }
@@ -5165,16 +5373,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     function createGradient(ctx) {
         if (!ctx) return 'rgba(1, 195, 168, 0.2)';
-        
+
         const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 250);
         gradient.addColorStop(0, 'rgba(1, 195, 168, 0.4)');
         gradient.addColorStop(1, 'rgba(1, 195, 168, 0)');
         return gradient;
     }
-    
+
     // Function to fetch stock price data from Yahoo Finance
     async function fetchStockData(ticker, period = '1m') {
         try {
@@ -5229,7 +5437,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-    
+
     // Helper to get Yahoo Finance range parameter
     function getYahooFinanceRange(period) {
         switch (period) {
@@ -5240,26 +5448,26 @@ document.addEventListener('DOMContentLoaded', function() {
             default: return '1mo';
         }
     }
-    
+
     // Update the chart with new data
     function updateStockChart(dates, prices) {
         if (!stockChart) return;
-        
+
         stockChart.data.labels = dates;
         stockChart.data.datasets[0].data = prices;
         stockChart.update();
     }
-    
+
     // Update performance metrics based on stock data
     function updatePerformanceMetrics(timestamps, prices) {
         // Skip if data is insufficient
         if (!timestamps || !prices || timestamps.length < 2) return;
-        
+
         // Calculate YTD Performance
         const currentYear = new Date().getFullYear();
         const startOfYear = new Date(currentYear, 0, 1);
         const startOfYearTimestamp = Math.floor(startOfYear.getTime() / 1000);
-        
+
         // Find the closest data point after the start of the year
         let ytdStartPrice = prices[0];
         for (let i = 0; i < timestamps.length; i++) {
@@ -5268,12 +5476,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             }
         }
-        
+
         // Calculate 52-week performance
         const oneYearAgo = new Date();
         oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
         const oneYearAgoTimestamp = Math.floor(oneYearAgo.getTime() / 1000);
-        
+
         // Find the closest data point after one year ago
         let w52StartPrice = prices[0];
         for (let i = 0; i < timestamps.length; i++) {
@@ -5282,26 +5490,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             }
         }
-        
+
         const currentPrice = prices[prices.length - 1];
         const ytdChangePercent = ((currentPrice - ytdStartPrice) / ytdStartPrice) * 100;
         const w52ChangePercent = ((currentPrice - w52StartPrice) / w52StartPrice) * 100;
-        
+
         // Update the UI
         const ytdChangeElement = document.getElementById('ytd-change');
         const w52ChangeElement = document.getElementById('52w-change');
-        
+
         if (ytdChangeElement) {
             ytdChangeElement.textContent = formatPercentChange(ytdChangePercent);
             ytdChangeElement.style.color = ytdChangePercent >= 0 ? '#7FFF8E' : '#ff8a80';
         }
-        
+
         if (w52ChangeElement) {
             w52ChangeElement.textContent = formatPercentChange(w52ChangePercent);
             w52ChangeElement.style.color = w52ChangePercent >= 0 ? '#7FFF8E' : '#ff8a80';
         }
     }
-    
+
     function formatPercentChange(change) {
         const sign = change >= 0 ? '+' : '';
         return `${sign}${change.toFixed(2)}%`;
@@ -5309,63 +5517,63 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Mobile menu functionality
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Hamburger menu functionality
     const hamburgerIcon = document.querySelector('.hamburger-icon');
     const mobileMenu = document.querySelector('.mobile-menu');
     const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
-    
+
     if (hamburgerIcon && mobileMenu && mobileMenuOverlay) {
-        hamburgerIcon.addEventListener('click', function() {
+        hamburgerIcon.addEventListener('click', function () {
             hamburgerIcon.classList.toggle('open');
             mobileMenu.classList.toggle('open');
             mobileMenuOverlay.classList.toggle('open');
             document.body.classList.toggle('menu-open');
         });
-        
-        mobileMenuOverlay.addEventListener('click', function() {
+
+        mobileMenuOverlay.addEventListener('click', function () {
             hamburgerIcon.classList.remove('open');
             mobileMenu.classList.remove('open');
             mobileMenuOverlay.classList.remove('open');
             document.body.classList.remove('menu-open');
         });
-        
+
         // Link mobile menu buttons to desktop buttons
-        document.getElementById('mobile-toggle-analysis')?.addEventListener('click', function() {
+        document.getElementById('mobile-toggle-analysis')?.addEventListener('click', function () {
             document.getElementById('toggle-analysis').click();
             closeMenu();
         });
-        
-        document.getElementById('mobile-toggle-exchange')?.addEventListener('click', function() {
+
+        document.getElementById('mobile-toggle-exchange')?.addEventListener('click', function () {
             document.getElementById('toggle-exchange').click();
             closeMenu();
         });
-        
-        document.getElementById('mobile-toggle-calendar')?.addEventListener('click', function() {
+
+        document.getElementById('mobile-toggle-calendar')?.addEventListener('click', function () {
             document.getElementById('toggle-calendar').click();
             closeMenu();
         });
-        
-        document.getElementById('mobile-toggle-backtest')?.addEventListener('click', function() {
+
+        document.getElementById('mobile-toggle-backtest')?.addEventListener('click', function () {
             document.getElementById('toggle-backtest').click();
             closeMenu();
         });
-        
-        document.getElementById('mobile-toggle-market-summary')?.addEventListener('click', function() {
+
+        document.getElementById('mobile-toggle-market-summary')?.addEventListener('click', function () {
             document.getElementById('toggle-market-summary').click();
             closeMenu();
         });
-        
-        document.getElementById('mobile-fear-greed-btn')?.addEventListener('click', function() {
+
+        document.getElementById('mobile-fear-greed-btn')?.addEventListener('click', function () {
             document.getElementById('fearGreedBtn').click();
             closeMenu();
         });
-        
-        document.getElementById('mobile-insider-trades-btn')?.addEventListener('click', function() {
+
+        document.getElementById('mobile-insider-trades-btn')?.addEventListener('click', function () {
             document.getElementById('insiderTradesBtn').click();
             closeMenu();
         });
-        
+
         function closeMenu() {
             hamburgerIcon.classList.remove('open');
             mobileMenu.classList.remove('open');
@@ -5374,3 +5582,180 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// Enhanced dividend analysis function for backtest integration
+async function getYahooDividends(symbol, startDate, endDate, initialInvestment = 0, monthlyInvestment = 0, reinvest = false) {
+    if (!symbol || !startDate || !endDate) {
+        console.error('Missing required parameters for dividend analysis');
+        return null;
+    }
+
+    const startUnix = dateToUnix(startDate);
+    const endUnix = dateToUnix(endDate);
+
+    if (startUnix >= endUnix) {
+        console.error('Start date must be before end date');
+        return null;
+    }
+
+    const rawUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?period1=${startUnix}&period2=${endUnix}&interval=1mo&events=div`;
+    const url = `https://corsproxy.io/?${encodeURIComponent(rawUrl)}`;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const result = data.chart.result?.[0];
+        if (!result) {
+            console.error('No data found for', symbol);
+            return null;
+        }
+
+        const timestamps = result.timestamp;
+        const prices = result.indicators.adjclose[0].adjclose;
+        const dividends = result.events?.dividends ? Object.values(result.events.dividends).sort((a, b) => a.date - b.date) : [];
+
+        const dates = timestamps.map(ts => new Date(ts * 1000));
+        let shares = 0;
+        let cashDividends = 0;
+        let totalDividends = 0;
+        let portfolioValues = [];
+        let labels = [];
+        let monthlyDividends = [];
+
+        const firstPrice = prices[0];
+        if (!firstPrice) {
+            console.error('No price data available at start date for', symbol);
+            return null;
+        }
+        shares = initialInvestment / firstPrice;
+
+        let divIndex = 0;
+
+        for (let i = 0; i < timestamps.length; i++) {
+            const ts = timestamps[i];
+            const price = prices[i];
+            if (!price) continue;
+
+            if (i > 0 && monthlyInvestment > 0) {
+                shares += monthlyInvestment / price;
+            }
+
+            let monthlyDividend = 0;
+
+            while (divIndex < dividends.length && dividends[divIndex].date <= ts) {
+                const divPerShare = dividends[divIndex].amount;
+                const divAmount = shares * divPerShare;
+                totalDividends += divAmount;
+                monthlyDividend += divAmount;
+
+                if (reinvest) {
+                    shares += divAmount / price;
+                } else {
+                    cashDividends += divAmount;
+                }
+                divIndex++;
+            }
+
+            const portfolioValue = shares * price + cashDividends;
+            portfolioValues.push(portfolioValue);
+            labels.push(dates[i].toLocaleDateString(undefined, { year: 'numeric', month: 'short' }));
+            monthlyDividends.push(monthlyDividend.toFixed(2));
+        }
+
+        return {
+            totalDividends: totalDividends.toFixed(2),
+            finalPortfolioValue: portfolioValues[portfolioValues.length - 1].toFixed(2),
+            finalShares: shares.toFixed(2),
+            portfolioValues,
+            labels,
+            monthlyDividends
+        };
+
+    } catch (err) {
+        console.error('Error fetching dividend data for', symbol, ':', err);
+        return null;
+    }
+}
+
+function drawChart(labels, portfolioData, dividendData) {
+    const ctx1 = document.getElementById('portfolioChart')?.getContext('2d');
+    const ctx2 = document.getElementById('dividendChart')?.getContext('2d');
+
+    if (!ctx1 || !ctx2) {
+        console.warn('Chart canvases not found. Charts will not be drawn.');
+        return;
+    }
+
+    if (chartInstance) chartInstance.destroy();
+    if (dividendChartInstance) dividendChartInstance.destroy();
+
+    chartInstance = new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Portfolio Value ($)',
+                data: portfolioData,
+                borderColor: '#00bfff',
+                backgroundColor: 'rgba(0, 191, 255, 0.3)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 3,
+                pointHoverRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { ticks: { color: '#eee' }, grid: { color: '#333' } },
+                y: { ticks: { color: '#eee' }, grid: { color: '#333' } }
+            },
+            plugins: {
+                legend: {
+                    labels: { color: '#00bfff', font: { size: 14 } }
+                },
+                tooltip: {
+                    backgroundColor: '#00bfff',
+                    titleColor: '#121212',
+                    bodyColor: '#121212'
+                }
+            }
+        }
+    });
+
+    dividendChartInstance = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Monthly Dividends ($)',
+                data: dividendData,
+                backgroundColor: 'rgba(0, 255, 127, 0.5)',
+                borderColor: '#00ff7f',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { ticks: { color: '#eee' }, grid: { color: '#333' } },
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: '#eee' },
+                    grid: { color: '#333' }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: { color: '#00ff7f', font: { size: 14 } }
+                },
+                tooltip: {
+                    backgroundColor: '#00ff7f',
+                    titleColor: '#121212',
+                    bodyColor: '#121212'
+                }
+            }
+        }
+    });
+}
