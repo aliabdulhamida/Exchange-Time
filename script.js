@@ -5842,6 +5842,11 @@ document.addEventListener('DOMContentLoaded', function () {
             closeMenu();
         });
 
+        document.getElementById('mobile-earnings-calendar-btn')?.addEventListener('click', function () {
+            document.getElementById('earningsCalendarBtn').click();
+            closeMenu();
+        });
+
         function closeMenu() {
             hamburgerIcon.classList.remove('open');
             mobileMenu.classList.remove('open');
@@ -6027,3 +6032,292 @@ function drawChart(labels, portfolioData, dividendData) {
         }
     });
 }
+
+// Earnings Calendar Modal Functionality
+function initEarningsCalendar() {
+    // Use the actual current local date - construct it properly to avoid timezone shifts
+    const now = new Date();
+    // Create date from local date components to ensure we get the right day
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const date = now.getDate();
+    const currentDateUTC = new Date(year, month, date, 12, 0, 0, 0); // Use noon to avoid timezone issues
+
+    const dateSelector = document.getElementById('earningsDateSelector');
+    const currentDateDisplay = document.getElementById('earningsCurrentDate');
+    const earningsList = document.getElementById('earningsEarningsList');
+    const totalEarnings = document.getElementById('earningsTotalEarnings');
+    const noDataMessage = document.getElementById('earningsNoDataMessage');
+    const statusText = document.getElementById('earningsStatusText');
+    const searchInput = document.getElementById('earningsSearchInput');
+    const filterButtons = document.querySelectorAll('.filter-button');
+    const loadingIndicator = document.getElementById('earningsLoadingIndicator');
+    const calendarWeekNumber = document.getElementById('calendarWeekNumber');
+
+    let selectedDate = currentDateUTC;
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    // Function to get ISO week number
+    function getWeekNumber(date) {
+        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        const dayNum = d.getUTCDay() || 7;
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    }
+
+const EARNINGS_DATA = {
+    '2025-07-14': [
+        { ticker: 'FAST', company_name: 'Fastenal Company', release_time: 'Before Market Open', eps_estimate: '0.51', eps_actual: null, revenue_estimate: '1.94', revenue_actual: null },
+        { ticker: 'SLP', company_name: 'Simulations Plus, Inc.', release_time: 'After Market Close', eps_estimate: '0.12', eps_actual: null, revenue_estimate: '0.02', revenue_actual: null }
+    ],
+    '2025-07-15': [
+        { ticker: 'JPM', company_name: 'JPMorgan Chase & Co.', release_time: 'Before Market Open', eps_estimate: '4.46', eps_actual: null, revenue_estimate: '43.50', revenue_actual: null },
+        { ticker: 'C', company_name: 'Citigroup Inc.', release_time: 'Before Market Open', eps_estimate: '1.45', eps_actual: null, revenue_estimate: '20.20', revenue_actual: null },
+        { ticker: 'WFC', company_name: 'Wells Fargo & Company', release_time: 'Before Market Open', eps_estimate: '1.35', eps_actual: null, revenue_estimate: '20.60', revenue_actual: null },
+        { ticker: 'BLK', company_name: 'BlackRock, Inc.', release_time: 'Before Market Open', eps_estimate: '10.12', eps_actual: null, revenue_estimate: '5.20', revenue_actual: null },
+        { ticker: 'JBHT', company_name: 'J.B. Hunt Transport Services, Inc.', release_time: 'After Market Close', eps_estimate: '1.65', eps_actual: null, revenue_estimate: '3.15', revenue_actual: null }
+    ],
+    '2025-07-16': [
+        { ticker: 'BAC', company_name: 'Bank of America Corporation', release_time: 'Before Market Open', eps_estimate: '0.85', eps_actual: null, revenue_estimate: '25.50', revenue_actual: null },
+        { ticker: 'GS', company_name: 'The Goldman Sachs Group, Inc.', release_time: 'Before Market Open', eps_estimate: '8.90', eps_actual: null, revenue_estimate: '13.10', revenue_actual: null },
+        { ticker: 'MS', company_name: 'Morgan Stanley', release_time: 'Before Market Open', eps_estimate: '1.75', eps_actual: null, revenue_estimate: '14.80', revenue_actual: null },
+        { ticker: 'PNC', company_name: 'The PNC Financial Services Group, Inc.', release_time: 'Before Market Open', eps_estimate: '3.30', eps_actual: null, revenue_estimate: '5.45', revenue_actual: null },
+        { ticker: 'PGR', company_name: 'The Progressive Corporation', release_time: 'Before Market Open', eps_estimate: '2.95', eps_actual: null, revenue_estimate: '17.90', revenue_actual: null },
+        { ticker: 'UAL', company_name: 'United Airlines Holdings, Inc.', release_time: 'After Market Close', eps_estimate: '3.85', eps_actual: null, revenue_estimate: '15.20', revenue_actual: null },
+        { ticker: 'JNJ', company_name: 'Johnson & Johnson', release_time: 'Before Market Open', eps_estimate: '2.90', eps_actual: null, revenue_estimate: '22.80', revenue_actual: null },
+        { ticker: 'AA', company_name: 'Alcoa Corporation', release_time: 'After Market Close', eps_estimate: '0.25', eps_actual: null, revenue_estimate: '2.85', revenue_actual: null },
+        { ticker: 'KMI', company_name: 'Kinder Morgan, Inc.', release_time: 'After Market Close', eps_estimate: '0.27', eps_actual: null, revenue_estimate: '4.10', revenue_actual: null }
+    ],
+    '2025-07-17': [
+        { ticker: 'NFLX', company_name: 'Netflix, Inc.', release_time: 'After Market Close', eps_estimate: '7.06', eps_actual: null, revenue_estimate: '11.04', revenue_actual: null },
+        { ticker: 'TSM', company_name: 'Taiwan Semiconductor Manufacturing Company', release_time: 'Before Market Open', eps_estimate: '1.80', eps_actual: null, revenue_estimate: '22.50', revenue_actual: null },
+        { ticker: 'PEP', company_name: 'PepsiCo, Inc.', release_time: 'Before Market Open', eps_estimate: '2.15', eps_actual: null, revenue_estimate: '22.70', revenue_actual: null },
+        { ticker: 'ABT', company_name: 'Abbott Laboratories', release_time: 'Before Market Open', eps_estimate: '1.15', eps_actual: null, revenue_estimate: '10.50', revenue_actual: null },
+        { ticker: 'NVS', company_name: 'Novartis AG', release_time: 'Before Market Open', eps_estimate: '1.95', eps_actual: null, revenue_estimate: '12.80', revenue_actual: null },
+        { ticker: 'CTAS', company_name: 'Cintas Corporation', release_time: 'Before Market Open', eps_estimate: '4.10', eps_actual: null, revenue_estimate: '2.60', revenue_actual: null },
+        { ticker: 'USB', company_name: 'U.S. Bancorp', release_time: 'Before Market Open', eps_estimate: '1.05', eps_actual: null, revenue_estimate: '7.10', revenue_actual: null },
+        { ticker: 'IBKR', company_name: 'Interactive Brokers Group, Inc.', release_time: 'After Market Close', eps_estimate: '1.75', eps_actual: null, revenue_estimate: '1.20', revenue_actual: null },
+        { ticker: 'TRV', company_name: 'The Travelers Companies, Inc.', release_time: 'Before Market Open', eps_estimate: '2.50', eps_actual: null, revenue_estimate: '11.30', revenue_actual: null }
+    ],
+    '2025-07-18': [
+        { ticker: 'AXP', company_name: 'American Express Company', release_time: 'Before Market Open', eps_estimate: '3.25', eps_actual: null, revenue_estimate: '16.90', revenue_actual: null },
+        { ticker: 'SCHW', company_name: 'The Charles Schwab Corporation', release_time: 'Before Market Open', eps_estimate: '0.80', eps_actual: null, revenue_estimate: '4.85', revenue_actual: null },
+        { ticker: 'HBAN', company_name: 'Huntington Bancshares Incorporated', release_time: 'Before Market Open', eps_estimate: '0.35', eps_actual: null, revenue_estimate: '1.85', revenue_actual: null },
+        { ticker: 'RF', company_name: 'Regions Financial Corporation', release_time: 'Before Market Open', eps_estimate: '0.55', eps_actual: null, revenue_estimate: '2.35', revenue_actual: null },
+        { ticker: 'TFC', company_name: 'Truist Financial Corporation', release_time: 'Before Market Open', eps_estimate: '0.90', eps_actual: null, revenue_estimate: '5.80', revenue_actual: null },
+        { ticker: 'MMM', company_name: '3M Company', release_time: 'Before Market Open', eps_estimate: '1.70', eps_actual: null, revenue_estimate: '6.10', revenue_actual: null },
+        { ticker: 'SLB', company_name: 'Schlumberger Limited', release_time: 'Before Market Open', eps_estimate: '0.90', eps_actual: null, revenue_estimate: '9.20', revenue_actual: null }
+    ],
+    '2025-07-19': [],
+    '2025-07-20': []
+};
+
+    function formatDate(date) {
+        return date.toISOString().split('T')[0];
+    }
+
+    function formatDayName(date) {
+        return date.toLocaleDateString(undefined, { weekday: 'short' });
+    }
+
+    function displayEarnings(data) {
+        if (!earningsList) return;
+        
+        earningsList.innerHTML = '';
+        
+        if (data.length === 0) {
+            noDataMessage.classList.add('show');
+            return;
+        }
+        
+        noDataMessage.classList.remove('show');
+
+        data.forEach(item => {
+            const container = document.createElement('div');
+            container.className = 'earnings-item';
+
+            const companyInfo = document.createElement('div');
+            companyInfo.className = 'company-info';
+            companyInfo.innerHTML = `
+                <div class="ticker">${item.ticker}</div>
+                <div class="company-name">${item.company_name}</div>
+            `;
+
+            const earningsInfo = document.createElement('div');
+            earningsInfo.className = 'earnings-info';
+
+            const time = document.createElement('div');
+            time.className = 'time-label';
+            time.textContent = item.release_time;
+
+            const estimates = document.createElement('div');
+            estimates.className = 'estimates';
+
+            // EPS
+            const eps = document.createElement('div');
+            eps.className = 'estimate-row';
+            
+            let epsHtml = `<span class="estimate-label">EPS:</span>`;
+            if (item.eps_actual) {
+                const surprise = ((parseFloat(item.eps_actual) - parseFloat(item.eps_estimate)) / parseFloat(item.eps_estimate) * 100).toFixed(1);
+                const surpriseClass = surprise > 0 ? 'positive' : 'negative';
+                epsHtml += `<span class="estimate-value">$${item.eps_actual}</span><span class="surprise ${surpriseClass}">(${surprise > 0 ? '+' : ''}${surprise}%)</span>`;
+            } else {
+                epsHtml += `<span class="estimate-value">$${item.eps_estimate}</span>`;
+            }
+            eps.innerHTML = epsHtml;
+            estimates.appendChild(eps);
+
+            // Revenue
+            const rev = document.createElement('div');
+            rev.className = 'estimate-row';
+            
+            let revHtml = `<span class="estimate-label">Rev:</span>`;
+            if (item.revenue_actual) {
+                const surprise = ((parseFloat(item.revenue_actual) - parseFloat(item.revenue_estimate)) / parseFloat(item.revenue_estimate) * 100).toFixed(1);
+                const surpriseClass = surprise > 0 ? 'positive' : 'negative';
+                revHtml += `<span class="estimate-value">$${item.revenue_actual}B</span><span class="surprise ${surpriseClass}">(${surprise > 0 ? '+' : ''}${surprise}%)</span>`;
+            } else {
+                revHtml += `<span class="estimate-value">$${item.revenue_estimate}B</span>`;
+            }
+            rev.innerHTML = revHtml;
+            estimates.appendChild(rev);
+
+            earningsInfo.appendChild(time);
+            earningsInfo.appendChild(estimates);
+
+            container.appendChild(companyInfo);
+            container.appendChild(earningsInfo);
+            earningsList.appendChild(container);
+        });
+    }
+
+    function updateDateSelector() {
+        if (!dateSelector) return;
+        
+        dateSelector.innerHTML = '';
+        const weekStart = new Date(selectedDate);
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+        
+        // Update calendar week number
+        if (calendarWeekNumber) {
+            calendarWeekNumber.textContent = getWeekNumber(selectedDate);
+        }
+        
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(weekStart);
+            date.setDate(weekStart.getDate() + i);
+            const formatted = formatDate(date);
+
+            const btn = document.createElement('button');
+            btn.className = 'date-button';
+            if (formatDate(selectedDate) === formatted) btn.classList.add('selected');
+
+            btn.innerHTML = `<span class="day-name">${formatDayName(date)}</span><span class="date-text">${date.getDate()}</span>`;
+            btn.addEventListener('click', () => {
+                selectedDate = date;
+                if (currentDateDisplay) {
+                    currentDateDisplay.textContent = selectedDate.toDateString();
+                }
+                updateDateSelector();
+                applyFilters();
+            });
+            dateSelector.appendChild(btn);
+        }
+    }
+
+    function applyFilters() {
+        const formatted = formatDate(selectedDate);
+        let items = EARNINGS_DATA[formatted] || [];
+
+        if (currentFilter !== 'all') {
+            items = items.filter(item => {
+                if (currentFilter === 'before') {
+                    return item.release_time.toLowerCase().includes('before');
+                } else if (currentFilter === 'after') {
+                    return item.release_time.toLowerCase().includes('after');
+                }
+                return true;
+            });
+        }
+
+        if (searchQuery) {
+            items = items.filter(item =>
+                item.ticker.toLowerCase().includes(searchQuery) ||
+                item.company_name.toLowerCase().includes(searchQuery)
+            );
+        }
+
+        displayEarnings(items);
+        
+        if (statusText) {
+            statusText.textContent = `Showing ${items.length} of ${(EARNINGS_DATA[formatted] || []).length} earnings for ${selectedDate.toDateString()}`;
+        }
+    }
+
+    // Event Listeners
+    if (filterButtons.length > 0) {
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                applyFilters();
+            });
+        });
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', e => {
+            searchQuery = e.target.value.toLowerCase();
+            applyFilters();
+        });
+    }
+
+    function updateTotal() {
+        let total = 0;
+        Object.values(EARNINGS_DATA).forEach(arr => total += arr.length);
+        if (totalEarnings) {
+            totalEarnings.textContent = total;
+        }
+    }
+
+    // Initialize
+    if (currentDateDisplay) {
+        currentDateDisplay.textContent = selectedDate.toDateString();
+    }
+    updateDateSelector();
+    applyFilters();
+    updateTotal();
+}
+
+// Initialize Earnings Calendar when modal opens
+document.addEventListener('DOMContentLoaded', function() {
+    const earningsCalendarBtn = document.getElementById('earningsCalendarBtn');
+    const earningsCalendarModal = document.getElementById('earningsCalendarModal');
+    const closeEarningsModal = document.getElementById('closeEarningsModal');
+
+    if (earningsCalendarBtn && earningsCalendarModal) {
+        earningsCalendarBtn.addEventListener('click', function() {
+            earningsCalendarModal.style.display = 'block';
+            initEarningsCalendar();
+        });
+    }
+
+    if (closeEarningsModal && earningsCalendarModal) {
+        closeEarningsModal.addEventListener('click', function() {
+            earningsCalendarModal.style.display = 'none';
+        });
+    }
+
+    // Close modal when clicking outside
+    if (earningsCalendarModal) {
+        earningsCalendarModal.addEventListener('click', function(e) {
+            if (e.target === earningsCalendarModal) {
+                earningsCalendarModal.style.display = 'none';
+            }
+        });
+    }
+});

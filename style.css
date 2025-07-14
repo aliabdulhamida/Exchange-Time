@@ -319,6 +319,21 @@ p, ul { font-weight: 300; color: var(--text); }
     transition: background 0.3s ease;
 }
 
+#closeEarningsModal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--closed);
+    color: white;
+    padding: 5px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
 #close:hover {
     background: #a62828;
 }
@@ -3973,4 +3988,453 @@ th, td {
     grid-template-columns: 1fr 1fr;
     gap: 30px;
     padding: 0 30px;
+}
+
+/* Earnings Calendar Modal Styles */
+.earnings-modal {
+    max-width: 750px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #000000;
+    border-radius: 30px;
+    color: #ffffff;
+}
+
+.earnings-container {
+    padding: 20px;
+}
+
+.calendar-week-label {
+    text-align: left;
+    margin-bottom: 16px;
+}
+
+.calendar-week-label h4 {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.calendar-week-label h4 span {
+    color: #01c3a8;
+    font-weight: 600;
+}
+
+.earnings-header {
+    margin-bottom: 16px;
+}
+
+.earnings-header .date-display {
+    font-size: 14px;
+    color: #888888;
+    margin-bottom: 16px;
+}
+
+.date-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    justify-content: center;
+}
+
+.date-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #333333;
+    background-color: transparent;
+    cursor: pointer;
+    color: #ffffff;
+    min-width: 60px;
+    transition: all 0.3s ease;
+}
+
+.date-button:hover {
+    background-color: #1a1a1a;
+    border-color: #444444;
+}
+
+.date-button .day-name {
+    font-size: 14px;
+    color: #888888;
+}
+
+.date-button .date-text {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.date-button.selected {
+    background-color: #01c3a8;
+    color: #000000;
+    border-color: #01c3a8;
+}
+
+.date-button.selected .day-name {
+    color: #000000;
+}
+
+.filter-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.filter-button {
+    background-color: transparent;
+    color: white;
+    border: 1px solid #333333;
+    padding: 6px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.filter-button:hover {
+    background-color: #1a1a1a;
+    border-color: #444444;
+}
+
+.filter-button.active {
+    background-color: #01c3a8;
+    color: #000000;
+    border-color: #01c3a8;
+}
+
+.disclaimer-text {
+    margin: 8px 0 15px 0;
+    text-align: left;
+}
+
+.disclaimer-text p {
+    margin: 0;
+    font-size: 12px;
+    color: #aaaaaa;
+    line-height: 1.4;
+}
+
+.search-section {
+    margin-bottom: 15px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background-color: #2a2a2a;
+    border: 1px solid #3c3f47;
+    color: white;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #01c3a8;
+}
+
+.search-input::placeholder {
+    color: #888888;
+}
+
+.status-bar {
+    background-color: transparent;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    border: 1px solid #333333;
+    font-size: 14px;
+    color: #888888;
+}
+
+.calendar-container {
+    min-height: 200px;
+    position: relative;
+}
+
+.earnings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.earnings-item {
+    background-color: transparent;
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    border: 1px solid #333333;
+}
+
+.earnings-item:hover {
+    background-color: #1a1a1a;
+    border-color: #444444;
+}
+
+.company-info .ticker {
+    font-size: 18px;
+    font-weight: bold;
+    color: #01c3a8;
+}
+
+.company-info .company-name {
+    font-size: 14px;
+    color: #888888;
+    margin-top: 2px;
+}
+
+.earnings-info {
+    text-align: right;
+}
+
+.earnings-info .time-label {
+    font-size: 14px;
+    color: #01c3a8;
+    margin-bottom: 4px;
+    text-align: right;
+}
+
+.estimates {
+    text-align: right;
+    font-size: 14px;
+}
+
+.estimate-row {
+    margin-top: 2px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.estimate-label {
+    color: #888888;
+    margin-right: 4px;
+    font-weight: 500;
+}
+
+.estimate-value {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.surprise {
+    font-size: 12px;
+    margin-left: 4px;
+    font-weight: bold;
+}
+
+.surprise.positive {
+    color: #00c853;
+}
+
+.surprise.negative {
+    color: #ff3d00;
+}
+
+.loading-indicator {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+
+.loading-indicator.show {
+    display: flex;
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 4px solid rgba(1, 195, 168, 0.2);
+    border-top-color: #01c3a8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.no-data-message,
+.error-message {
+    display: none;
+    color: #888888;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+}
+
+.no-data-message.show,
+.error-message.show {
+    display: block;
+}
+
+.data-source-info {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #888888;
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #333333;
+}
+
+.data-source-info p {
+    margin: 4px 0;
+}
+
+.data-source-info span {
+    color: #01c3a8;
+    font-weight: 500;
+}
+
+/* Responsive Design für Earnings Calendar */
+@media (max-width: 768px) {
+    .earnings-modal {
+        max-width: 95vw;
+        margin: 10px;
+        max-height: 95vh;
+    }
+    
+    .earnings-container {
+        padding: 15px;
+    }
+    
+    .earnings-item {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 12px;
+        background-color: transparent;
+        border: 1px solid #333333;
+    }
+    
+    .earnings-item:hover {
+        background-color: #1a1a1a;
+        border-color: #444444;
+    }
+    
+    .company-info {
+        flex: 1;
+        text-align: left;
+    }
+    
+    .company-info .ticker {
+        font-size: 16px;
+        margin-bottom: 2px;
+    }
+    
+    .company-info .company-name {
+        font-size: 12px;
+        color: #888888;
+    }
+    
+    .earnings-info {
+        text-align: right;
+        flex-shrink: 0;
+        padding: 0;
+        background: none;
+        border: none;
+    }
+    
+    .earnings-info .time-label {
+        text-align: right;
+        font-size: 12px;
+        margin-bottom: 4px;
+        color: #01c3a8;
+    }
+    
+    .estimates {
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    
+    .estimate-row {
+        justify-content: flex-end;
+        background: none;
+        padding: 0;
+        border-radius: 0;
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .estimate-label {
+        font-size: 11px;
+        color: #888888;
+    }
+    
+    .estimate-value {
+        font-size: 12px;
+        font-weight: normal;
+    }
+    
+    .filter-section {
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+    
+    .filter-button {
+        font-size: 13px;
+        padding: 8px 16px;
+        background-color: transparent;
+        border: 1px solid #333333;
+    }
+    
+    .filter-button.active {
+        background-color: #01c3a8;
+        color: #000000;
+        border-color: #01c3a8;
+    }
+    
+    .date-selector {
+        gap: 6px;
+        margin-bottom: 16px;
+    }
+    
+    .date-button {
+        min-width: 50px;
+        padding: 8px 6px;
+        background-color: transparent;
+        border: 1px solid #333333;
+    }
+    
+    .date-button:hover {
+        background-color: #1a1a1a;
+    }
+    
+    .date-button.selected {
+        background-color: #01c3a8;
+        color: #000000;
+        border-color: #01c3a8;
+    }
+    
+    .date-button .day-name {
+        font-size: 11px;
+    }
+    
+    .date-button .date-text {
+        font-size: 14px;
+    }
+    
+    .status-bar {
+        font-size: 12px;
+        margin-bottom: 12px;
+        background-color: transparent;
+        border: 1px solid #333333;
+    }
 }
