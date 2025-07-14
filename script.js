@@ -6119,7 +6119,7 @@ const EARNINGS_DATA = {
     }
 
     function formatDayName(date) {
-        return date.toLocaleDateString(undefined, { weekday: 'short' });
+        return date.toLocaleDateString('en-US', { weekday: 'short' });
     }
 
     function displayEarnings(data) {
