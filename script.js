@@ -4892,6 +4892,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const insiderErrorMessage = document.getElementById('insider-error-message');
     const insiderCompanyName = document.getElementById('insider-company-name');
     let stockChart = null;
+    let performanceMetricsData = null; // Store fixed YTD and 52W data
 
     // Open modal when button is clicked
     insiderTradesBtn.addEventListener('click', function () {
@@ -4972,6 +4973,9 @@ document.addEventListener('DOMContentLoaded', function () {
         insiderLoading.style.display = 'block';
 
         try {
+            // First, fetch performance metrics data (YTD and 52W) - this should remain fixed
+            await fetchAndCachePerformanceMetrics(ticker);
+
             // Fetch data from Finviz through a proxy
             const finvizUrl = `https://finviz.com/quote.ashx?t=${ticker}`;
             const proxyUrl = 'https://corsproxy.io/?';
@@ -5003,6 +5007,105 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Function to fetch and cache YTD and 52W performance metrics
+    async function fetchAndCachePerformanceMetrics(ticker) {
+        try {
+            // Fetch 1 year of data to calculate both YTD and 52W properly
+            const proxyUrl = 'https://corsproxy.io/?';
+            const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1y`;
+            const url = proxyUrl + encodeURIComponent(yahooUrl);
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+
+            if (!data.chart || !data.chart.result || !data.chart.result[0]) {
+                throw new Error('Invalid data format received from Yahoo Finance');
+            }
+
+            const result = data.chart.result[0];
+            const timestamps = result.timestamp;
+            const closePrices = result.indicators.quote[0].close;
+
+            // Calculate and cache performance metrics
+            performanceMetricsData = calculateFixedPerformanceMetrics(timestamps, closePrices);
+            
+            // Update the UI with cached data
+            updatePerformanceMetricsUI();
+
+        } catch (error) {
+            console.error('Error fetching performance metrics:', error);
+            // Set default values if fetch fails
+            performanceMetricsData = { ytdChange: 0, w52Change: 0 };
+        }
+    }
+
+    // Function to calculate fixed YTD and 52W metrics
+    function calculateFixedPerformanceMetrics(timestamps, prices) {
+        if (!timestamps || !prices || timestamps.length < 2) {
+            return { ytdChange: 0, w52Change: 0 };
+        }
+
+        // Calculate YTD Performance
+        const currentYear = new Date().getFullYear();
+        const startOfYear = new Date(currentYear, 0, 1);
+        const startOfYearTimestamp = Math.floor(startOfYear.getTime() / 1000);
+
+        // Find the closest data point after the start of the year
+        let ytdStartPrice = prices[0];
+        for (let i = 0; i < timestamps.length; i++) {
+            if (timestamps[i] >= startOfYearTimestamp) {
+                ytdStartPrice = prices[i];
+                break;
+            }
+        }
+
+        // Calculate 52-week performance
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        const oneYearAgoTimestamp = Math.floor(oneYearAgo.getTime() / 1000);
+
+        // Find the closest data point after one year ago
+        let w52StartPrice = prices[0];
+        for (let i = 0; i < timestamps.length; i++) {
+            if (timestamps[i] >= oneYearAgoTimestamp) {
+                w52StartPrice = prices[i];
+                break;
+            }
+        }
+
+        const currentPrice = prices[prices.length - 1];
+        const ytdChangePercent = ((currentPrice - ytdStartPrice) / ytdStartPrice) * 100;
+        const w52ChangePercent = ((currentPrice - w52StartPrice) / w52StartPrice) * 100;
+
+        return {
+            ytdChange: ytdChangePercent,
+            w52Change: w52ChangePercent
+        };
+    }
+
+    // Function to update performance metrics UI with cached data
+    function updatePerformanceMetricsUI() {
+        if (!performanceMetricsData) return;
+
+        const ytdChangeElement = document.getElementById('ytd-change');
+        const w52ChangeElement = document.getElementById('52w-change');
+
+        if (ytdChangeElement) {
+            ytdChangeElement.textContent = formatPercentChange(performanceMetricsData.ytdChange);
+            ytdChangeElement.style.color = performanceMetricsData.ytdChange >= 0 ? '#7FFF8E' : '#ff8a80';
+        }
+
+        if (w52ChangeElement) {
+            w52ChangeElement.textContent = formatPercentChange(performanceMetricsData.w52Change);
+            w52ChangeElement.style.color = performanceMetricsData.w52Change >= 0 ? '#7FFF8E' : '#ff8a80';
+        }
+    }
+
     // Parse Finviz HTML to extract insider trades
     function parseFinvizInsiderTrades(html, ticker) {
         const trades = [];
@@ -5012,14 +5115,106 @@ document.addEventListener('DOMContentLoaded', function () {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
 
-            // Try to extract company name from title
+            // Method 1: Try to extract company name from title
             const title = doc.querySelector('title');
-            if (title) {
-                const titleMatch = title.textContent.match(/(.+)\s*\(.*?\)\s*-/);
-                if (titleMatch && titleMatch[1]) {
-                    companyName = titleMatch[1].trim();
+            if (title && title.textContent) {
+                console.log('Title content:', title.textContent);
+                
+                // Multiple regex patterns to try
+                const titlePatterns = [
+                    /(.+?)\s*\([A-Z]+\)\s*-/,                    // Company Name (TICKER) -
+                    /(.+?)\s*\([A-Z]+\)/,                       // Company Name (TICKER)
+                    /(.+?)\s*\|\s*[A-Z]+/,                      // Company Name | TICKER
+                    /(.+?)\s*-\s*[A-Z]+/,                       // Company Name - TICKER
+                    /^([^|()-]+)/                               // Everything before first special char
+                ];
+                
+                for (const pattern of titlePatterns) {
+                    const titleMatch = title.textContent.match(pattern);
+                    if (titleMatch && titleMatch[1] && titleMatch[1].trim().length > 2) {
+                        const extracted = titleMatch[1].trim();
+                        if (!extracted.toLowerCase().includes('finviz') && 
+                            !extracted.toLowerCase().includes('stock') &&
+                            extracted !== ticker) {
+                            companyName = extracted;
+                            console.log('Extracted company name from title:', companyName);
+                            break;
+                        }
+                    }
                 }
             }
+
+            // Method 2: Try to extract from meta tags
+            if (companyName === ticker) {
+                const metaTags = doc.querySelectorAll('meta[name="description"], meta[property="og:title"], meta[property="og:description"]');
+                for (const meta of metaTags) {
+                    const content = meta.getAttribute('content');
+                    if (content) {
+                        const metaMatch = content.match(/(.+?)\s*\([A-Z]+\)/);
+                        if (metaMatch && metaMatch[1] && metaMatch[1].trim().length > 2) {
+                            const extracted = metaMatch[1].trim();
+                            if (!extracted.toLowerCase().includes('finviz')) {
+                                companyName = extracted;
+                                console.log('Extracted company name from meta:', companyName);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Method 3: Try to extract from page headers/headings
+            if (companyName === ticker) {
+                const headings = doc.querySelectorAll('h1, h2, .quote-header, .quote-name, .company-name');
+                for (const heading of headings) {
+                    if (heading.textContent && heading.textContent.trim().length > 2) {
+                        const headingText = heading.textContent.trim();
+                        // Look for company name patterns in headings
+                        const headingMatch = headingText.match(/(.+?)\s*\([A-Z]+\)/);
+                        if (headingMatch && headingMatch[1]) {
+                            const extracted = headingMatch[1].trim();
+                            if (!extracted.toLowerCase().includes('finviz') && extracted !== ticker) {
+                                companyName = extracted;
+                                console.log('Extracted company name from heading:', companyName);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Method 4: Try to find company name in table cells or divs
+            if (companyName === ticker) {
+                const textElements = doc.querySelectorAll('td, div, span');
+                for (const element of textElements) {
+                    if (element.textContent) {
+                        const text = element.textContent.trim();
+                        // Look for text that contains ticker in parentheses
+                        const match = text.match(new RegExp(`(.+?)\\s*\\(${ticker}\\)`, 'i'));
+                        if (match && match[1] && match[1].trim().length > 2) {
+                            const extracted = match[1].trim();
+                            if (!extracted.toLowerCase().includes('finviz') && 
+                                !extracted.toLowerCase().includes('stock') &&
+                                extracted.length < 50) { // Reasonable company name length
+                                companyName = extracted;
+                                console.log('Extracted company name from element:', companyName);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Method 5: Use fallback company mapping if still not found
+            if (companyName === ticker) {
+                const fallbackName = getCompanyNameForTicker(ticker);
+                if (fallbackName) {
+                    companyName = fallbackName;
+                    console.log('Used fallback company name:', companyName);
+                }
+            }
+
+            console.log('Final company name:', companyName);
 
             // Find the insider table
             const insiderTable = [...doc.querySelectorAll('table.body-table')].find(table => {
@@ -5092,13 +5287,94 @@ document.addEventListener('DOMContentLoaded', function () {
     // Helper function to get company name for ticker (fallback)
     function getCompanyNameForTicker(ticker) {
         const companyMap = {
+            // Tech Giants
             'AAPL': 'Apple Inc.',
             'MSFT': 'Microsoft Corporation',
             'GOOGL': 'Alphabet Inc.',
+            'GOOG': 'Alphabet Inc.',
             'AMZN': 'Amazon.com, Inc.',
             'META': 'Meta Platforms, Inc.',
             'TSLA': 'Tesla, Inc.',
-            'NVDA': 'NVIDIA Corporation'
+            'NVDA': 'NVIDIA Corporation',
+            'NFLX': 'Netflix, Inc.',
+            'CRM': 'Salesforce, Inc.',
+            'ORCL': 'Oracle Corporation',
+            'ADBE': 'Adobe Inc.',
+            'IBM': 'International Business Machines Corporation',
+            'INTC': 'Intel Corporation',
+            'AMD': 'Advanced Micro Devices, Inc.',
+            
+            // Financial
+            'JPM': 'JPMorgan Chase & Co.',
+            'BAC': 'Bank of America Corporation',
+            'WFC': 'Wells Fargo & Company',
+            'GS': 'The Goldman Sachs Group, Inc.',
+            'MS': 'Morgan Stanley',
+            'C': 'Citigroup Inc.',
+            'BRK.A': 'Berkshire Hathaway Inc.',
+            'BRK.B': 'Berkshire Hathaway Inc.',
+            'V': 'Visa Inc.',
+            'MA': 'Mastercard Incorporated',
+            'PYPL': 'PayPal Holdings, Inc.',
+            
+            // Healthcare
+            'JNJ': 'Johnson & Johnson',
+            'UNH': 'UnitedHealth Group Incorporated',
+            'PFE': 'Pfizer Inc.',
+            'ABT': 'Abbott Laboratories',
+            'TMO': 'Thermo Fisher Scientific Inc.',
+            'MRK': 'Merck & Co., Inc.',
+            'ABBV': 'AbbVie Inc.',
+            'LLY': 'Eli Lilly and Company',
+            'BMY': 'Bristol-Myers Squibb Company',
+            'AMGN': 'Amgen Inc.',
+            
+            // Consumer
+            'KO': 'The Coca-Cola Company',
+            'PEP': 'PepsiCo, Inc.',
+            'WMT': 'Walmart Inc.',
+            'HD': 'The Home Depot, Inc.',
+            'MCD': 'McDonald\'s Corporation',
+            'NKE': 'NIKE, Inc.',
+            'SBUX': 'Starbucks Corporation',
+            'DIS': 'The Walt Disney Company',
+            'COST': 'Costco Wholesale Corporation',
+            'TGT': 'Target Corporation',
+            
+            // Industrial
+            'BA': 'The Boeing Company',
+            'CAT': 'Caterpillar Inc.',
+            'GE': 'General Electric Company',
+            'MMM': '3M Company',
+            'HON': 'Honeywell International Inc.',
+            'UPS': 'United Parcel Service, Inc.',
+            'FDX': 'FedEx Corporation',
+            'LMT': 'Lockheed Martin Corporation',
+            'RTX': 'Raytheon Technologies Corporation',
+            
+            // Energy
+            'XOM': 'Exxon Mobil Corporation',
+            'CVX': 'Chevron Corporation',
+            'COP': 'ConocoPhillips',
+            'SLB': 'Schlumberger Limited',
+            'EOG': 'EOG Resources, Inc.',
+            'KMI': 'Kinder Morgan, Inc.',
+            'OXY': 'Occidental Petroleum Corporation',
+            
+            // Telecom
+            'VZ': 'Verizon Communications Inc.',
+            'T': 'AT&T Inc.',
+            'TMUS': 'T-Mobile US, Inc.',
+            'CMCSA': 'Comcast Corporation',
+            
+            // Others
+            'BABA': 'Alibaba Group Holding Limited',
+            'TSM': 'Taiwan Semiconductor Manufacturing Company Limited',
+            'ASML': 'ASML Holding N.V.',
+            'NVO': 'Novo Nordisk A/S',
+            'SAP': 'SAP SE',
+            'TM': 'Toyota Motor Corporation',
+            'SONY': 'Sony Group Corporation'
         };
 
         return companyMap[ticker] || null;
@@ -5289,6 +5565,21 @@ document.addEventListener('DOMContentLoaded', function () {
         insiderError.style.display = 'none';
         insiderErrorMessage.textContent = '';
 
+        // Reset cached performance metrics
+        performanceMetricsData = null;
+
+        // Reset performance metrics UI
+        const ytdChangeElement = document.getElementById('ytd-change');
+        const w52ChangeElement = document.getElementById('52w-change');
+        if (ytdChangeElement) {
+            ytdChangeElement.textContent = '--';
+            ytdChangeElement.style.color = '#ccc';
+        }
+        if (w52ChangeElement) {
+            w52ChangeElement.textContent = '--';
+            w52ChangeElement.style.color = '#ccc';
+        }
+
         // Reset the recent transactions grid
         const gridContainer = document.getElementById('insider-trades-grid');
         if (gridContainer && gridContainer.parentNode) {
@@ -5445,8 +5736,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Update the chart
             updateStockChart(formattedDates, closePrices);
 
-            // Update performance metrics
-            updatePerformanceMetrics(timestamps, closePrices);
+            // Performance metrics are already cached and don't need to be updated
+            // Keep them fixed regardless of chart period
 
         } catch (error) {
             console.error(`Error fetching stock data for ${ticker}:`, error.message);
@@ -5479,56 +5770,12 @@ document.addEventListener('DOMContentLoaded', function () {
         stockChart.update();
     }
 
+    // Legacy function - no longer used as performance metrics are now cached
     // Update performance metrics based on stock data
-    function updatePerformanceMetrics(timestamps, prices) {
-        // Skip if data is insufficient
-        if (!timestamps || !prices || timestamps.length < 2) return;
-
-        // Calculate YTD Performance
-        const currentYear = new Date().getFullYear();
-        const startOfYear = new Date(currentYear, 0, 1);
-        const startOfYearTimestamp = Math.floor(startOfYear.getTime() / 1000);
-
-        // Find the closest data point after the start of the year
-        let ytdStartPrice = prices[0];
-        for (let i = 0; i < timestamps.length; i++) {
-            if (timestamps[i] >= startOfYearTimestamp) {
-                ytdStartPrice = prices[i];
-                break;
-            }
-        }
-
-        // Calculate 52-week performance
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-        const oneYearAgoTimestamp = Math.floor(oneYearAgo.getTime() / 1000);
-
-        // Find the closest data point after one year ago
-        let w52StartPrice = prices[0];
-        for (let i = 0; i < timestamps.length; i++) {
-            if (timestamps[i] >= oneYearAgoTimestamp) {
-                w52StartPrice = prices[i];
-                break;
-            }
-        }
-
-        const currentPrice = prices[prices.length - 1];
-        const ytdChangePercent = ((currentPrice - ytdStartPrice) / ytdStartPrice) * 100;
-        const w52ChangePercent = ((currentPrice - w52StartPrice) / w52StartPrice) * 100;
-
-        // Update the UI
-        const ytdChangeElement = document.getElementById('ytd-change');
-        const w52ChangeElement = document.getElementById('52w-change');
-
-        if (ytdChangeElement) {
-            ytdChangeElement.textContent = formatPercentChange(ytdChangePercent);
-            ytdChangeElement.style.color = ytdChangePercent >= 0 ? '#7FFF8E' : '#ff8a80';
-        }
-
-        if (w52ChangeElement) {
-            w52ChangeElement.textContent = formatPercentChange(w52ChangePercent);
-            w52ChangeElement.style.color = w52ChangePercent >= 0 ? '#7FFF8E' : '#ff8a80';
-        }
+    function updatePerformanceMetrics_OLD(timestamps, prices) {
+        // This function is no longer used - performance metrics are now cached
+        // and remain fixed regardless of chart period selection
+        console.log('Legacy updatePerformanceMetrics function called - metrics are now cached');
     }
 
     function formatPercentChange(change) {
