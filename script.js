@@ -2404,6 +2404,12 @@ function generatePortfolioChart(dates, portfolioValues) {
         return;
     }
 
+    // Show the portfolio chart title
+    const titleElement = document.getElementById('portfolio-chart-title');
+    if (titleElement) {
+        titleElement.style.display = 'block';
+    }
+
     // Destroy existing Chart.js chart if present
     if (window.portfolioChart) {
         window.portfolioChart.destroy();
@@ -2857,10 +2863,12 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
 
         // Füge Canvas für das Chart hinzu
         resultDiv.innerHTML += `
-            <div style="width: 100%; height: 400px; margin-top: 20px; position: relative;">
+            <h3 style="color: #fff; margin-top: 30px; margin-bottom: 10px; font-size: 1.2em; font-weight: 600;">Portfolio Value</h3>
+            <div style="width: 100%; height: 400px; margin-top: 10px; position: relative;">
                 <canvas id="portfolio-chart" style="width: 100%; height: 100%;"></canvas>
             </div>
-            <div style="width: 100%; height: 250px; margin-top: 20px; position: relative;">
+            <h3 style="color: #fff; margin-top: 30px; margin-bottom: 10px; font-size: 1.2em; font-weight: 600;">Dividends</h3>
+            <div style="width: 100%; height: 250px; margin-top: 10px; position: relative;">
                 <canvas id="dividend-chart" style="width: 100%; height: 100%;"></canvas>
             </div>
         `;
@@ -4847,9 +4855,22 @@ async function fetchFearGreedIndex() {
         const data = await response.json();
         const score = data.fgi.now.value;
         updateGauge(score);
+        
+        // Update the last updated time
+        const lastUpdateElement = document.getElementById('last-update-time');
+        if (lastUpdateElement) {
+            const now = new Date();
+            lastUpdateElement.textContent = now.toLocaleString();
+        }
     } catch (error) {
         console.error("API fetch error:", error);
         document.getElementById("description").textContent = "Error fetching data";
+        
+        // Still update the timestamp even on error
+        const lastUpdateElement = document.getElementById('last-update-time');
+        if (lastUpdateElement) {
+            lastUpdateElement.textContent = "Error fetching data";
+        }
     }
 }
 
