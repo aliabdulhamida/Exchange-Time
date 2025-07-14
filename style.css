@@ -107,7 +107,7 @@
     z-index: 1005;
     overflow-y: auto;
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-    padding: 90px 25px 30px;
+    padding: 30px 25px 30px;
     display: flex;
     flex-direction: column;
     gap: 18px;
