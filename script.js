@@ -6291,6 +6291,155 @@ const EARNINGS_DATA = {
     updateDateSelector();
     applyFilters();
     updateTotal();
+
+    // Add ICS download functionality
+    const downloadIcsBtn = document.getElementById('downloadIcsBtn');
+    if (downloadIcsBtn) {
+        downloadIcsBtn.addEventListener('click', () => {
+            downloadEarningsICS();
+        });
+    }
+}
+
+// Function to generate and download ICS file for earnings calendar
+function downloadEarningsICS() {
+    const icsContent = generateEarningsICS();
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `earnings-calendar-${new Date().toISOString().split('T')[0]}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+// Function to generate ICS content from earnings data
+function generateEarningsICS() {
+    const now = new Date();
+    const timestamp = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    
+    let icsContent = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Exchange Time//Earnings Calendar//EN',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'X-WR-CALNAME:Earnings Calendar',
+        'X-WR-CALDESC:Stock earnings announcements and release dates'
+    ].join('\r\n') + '\r\n';
+
+    // Get earnings data from the EARNINGS_DATA object used in initEarningsCalendar
+    const EARNINGS_DATA = {
+        '2025-07-14': [
+            { ticker: 'FAST', company_name: 'Fastenal Company', release_time: 'Before Market Open', eps_estimate: '0.51', eps_actual: null, revenue_estimate: '1.94', revenue_actual: null },
+            { ticker: 'SLP', company_name: 'Simulations Plus, Inc.', release_time: 'After Market Close', eps_estimate: '0.12', eps_actual: null, revenue_estimate: '0.02', revenue_actual: null }
+        ],
+        '2025-07-15': [
+            { ticker: 'JPM', company_name: 'JPMorgan Chase & Co.', release_time: 'Before Market Open', eps_estimate: '4.46', eps_actual: null, revenue_estimate: '43.50', revenue_actual: null },
+            { ticker: 'C', company_name: 'Citigroup Inc.', release_time: 'Before Market Open', eps_estimate: '1.45', eps_actual: null, revenue_estimate: '20.20', revenue_actual: null },
+            { ticker: 'WFC', company_name: 'Wells Fargo & Company', release_time: 'Before Market Open', eps_estimate: '1.35', eps_actual: null, revenue_estimate: '20.60', revenue_actual: null },
+            { ticker: 'BLK', company_name: 'BlackRock, Inc.', release_time: 'Before Market Open', eps_estimate: '10.12', eps_actual: null, revenue_estimate: '5.20', revenue_actual: null },
+            { ticker: 'JBHT', company_name: 'J.B. Hunt Transport Services, Inc.', release_time: 'After Market Close', eps_estimate: '1.65', eps_actual: null, revenue_estimate: '3.15', revenue_actual: null }
+        ],
+        '2025-07-16': [
+            { ticker: 'BAC', company_name: 'Bank of America Corporation', release_time: 'Before Market Open', eps_estimate: '0.85', eps_actual: null, revenue_estimate: '25.50', revenue_actual: null },
+            { ticker: 'GS', company_name: 'The Goldman Sachs Group, Inc.', release_time: 'Before Market Open', eps_estimate: '8.90', eps_actual: null, revenue_estimate: '13.10', revenue_actual: null },
+            { ticker: 'MS', company_name: 'Morgan Stanley', release_time: 'Before Market Open', eps_estimate: '1.75', eps_actual: null, revenue_estimate: '14.80', revenue_actual: null },
+            { ticker: 'PNC', company_name: 'The PNC Financial Services Group, Inc.', release_time: 'Before Market Open', eps_estimate: '3.30', eps_actual: null, revenue_estimate: '5.45', revenue_actual: null },
+            { ticker: 'PGR', company_name: 'The Progressive Corporation', release_time: 'Before Market Open', eps_estimate: '2.95', eps_actual: null, revenue_estimate: '17.90', revenue_actual: null },
+            { ticker: 'UAL', company_name: 'United Airlines Holdings, Inc.', release_time: 'After Market Close', eps_estimate: '3.85', eps_actual: null, revenue_estimate: '15.20', revenue_actual: null },
+            { ticker: 'JNJ', company_name: 'Johnson & Johnson', release_time: 'Before Market Open', eps_estimate: '2.90', eps_actual: null, revenue_estimate: '22.80', revenue_actual: null },
+            { ticker: 'AA', company_name: 'Alcoa Corporation', release_time: 'After Market Close', eps_estimate: '0.25', eps_actual: null, revenue_estimate: '2.85', revenue_actual: null },
+            { ticker: 'KMI', company_name: 'Kinder Morgan, Inc.', release_time: 'After Market Close', eps_estimate: '0.27', eps_actual: null, revenue_estimate: '4.10', revenue_actual: null }
+        ],
+        '2025-07-17': [
+            { ticker: 'NFLX', company_name: 'Netflix, Inc.', release_time: 'After Market Close', eps_estimate: '7.06', eps_actual: null, revenue_estimate: '11.04', revenue_actual: null },
+            { ticker: 'TSM', company_name: 'Taiwan Semiconductor Manufacturing Company', release_time: 'Before Market Open', eps_estimate: '1.80', eps_actual: null, revenue_estimate: '22.50', revenue_actual: null },
+            { ticker: 'PEP', company_name: 'PepsiCo, Inc.', release_time: 'Before Market Open', eps_estimate: '2.15', eps_actual: null, revenue_estimate: '22.70', revenue_actual: null },
+            { ticker: 'ABT', company_name: 'Abbott Laboratories', release_time: 'Before Market Open', eps_estimate: '1.15', eps_actual: null, revenue_estimate: '10.50', revenue_actual: null },
+            { ticker: 'NVS', company_name: 'Novartis AG', release_time: 'Before Market Open', eps_estimate: '1.95', eps_actual: null, revenue_estimate: '12.80', revenue_actual: null },
+            { ticker: 'CTAS', company_name: 'Cintas Corporation', release_time: 'Before Market Open', eps_estimate: '4.10', eps_actual: null, revenue_estimate: '2.60', revenue_actual: null },
+            { ticker: 'USB', company_name: 'U.S. Bancorp', release_time: 'Before Market Open', eps_estimate: '1.05', eps_actual: null, revenue_estimate: '7.10', revenue_actual: null },
+            { ticker: 'IBKR', company_name: 'Interactive Brokers Group, Inc.', release_time: 'After Market Close', eps_estimate: '1.75', eps_actual: null, revenue_estimate: '1.20', revenue_actual: null },
+            { ticker: 'TRV', company_name: 'The Travelers Companies, Inc.', release_time: 'Before Market Open', eps_estimate: '2.50', eps_actual: null, revenue_estimate: '11.30', revenue_actual: null }
+        ],
+        '2025-07-18': [
+            { ticker: 'AXP', company_name: 'American Express Company', release_time: 'Before Market Open', eps_estimate: '3.25', eps_actual: null, revenue_estimate: '16.90', revenue_actual: null },
+            { ticker: 'SCHW', company_name: 'The Charles Schwab Corporation', release_time: 'Before Market Open', eps_estimate: '0.80', eps_actual: null, revenue_estimate: '4.85', revenue_actual: null },
+            { ticker: 'HBAN', company_name: 'Huntington Bancshares Incorporated', release_time: 'Before Market Open', eps_estimate: '0.35', eps_actual: null, revenue_estimate: '1.85', revenue_actual: null },
+            { ticker: 'RF', company_name: 'Regions Financial Corporation', release_time: 'Before Market Open', eps_estimate: '0.55', eps_actual: null, revenue_estimate: '2.35', revenue_actual: null },
+            { ticker: 'TFC', company_name: 'Truist Financial Corporation', release_time: 'Before Market Open', eps_estimate: '0.90', eps_actual: null, revenue_estimate: '5.80', revenue_actual: null },
+            { ticker: 'MMM', company_name: '3M Company', release_time: 'Before Market Open', eps_estimate: '1.70', eps_actual: null, revenue_estimate: '6.10', revenue_actual: null },
+            { ticker: 'SLB', company_name: 'Schlumberger Limited', release_time: 'Before Market Open', eps_estimate: '0.90', eps_actual: null, revenue_estimate: '9.20', revenue_actual: null }
+        ],
+        '2025-07-19': [],
+        '2025-07-20': []
+    };
+
+    // Helper function to format date for ICS
+    function formatICSDate(dateStr, time) {
+        const date = new Date(dateStr);
+        
+        // Set time based on release time
+        if (time.toLowerCase().includes('before')) {
+            date.setHours(9, 30, 0, 0); // 9:30 AM EST (market open)
+        } else if (time.toLowerCase().includes('after')) {
+            date.setHours(16, 0, 0, 0); // 4:00 PM EST (market close)
+        } else {
+            date.setHours(12, 0, 0, 0); // Default to noon
+        }
+        
+        return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    }
+
+    // Generate unique ID for each event
+    let eventCounter = 1;
+
+    // Process each date in the earnings data
+    Object.entries(EARNINGS_DATA).forEach(([date, earnings]) => {
+        earnings.forEach(earning => {
+            const startTime = formatICSDate(date, earning.release_time);
+            const endTime = new Date(startTime.replace('Z', ''));
+            endTime.setMinutes(endTime.getMinutes() + 30); // 30-minute event
+            const endTimeFormatted = endTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            
+            const summary = `${earning.ticker} Earnings Release`;
+            const description = [
+                `Company: ${earning.company_name}`,
+                `Ticker: ${earning.ticker}`,
+                `Release Time: ${earning.release_time}`,
+                `Expected EPS: $${earning.eps_estimate}`,
+                `Expected Revenue: $${earning.revenue_estimate}B`,
+                '',
+                'Generated by Exchange Time - Your Financial Markets Hub'
+            ].join('\\n');
+
+            const uid = `earnings-${earning.ticker}-${date.replace(/-/g, '')}-${eventCounter}@exchangetime.app`;
+            
+            icsContent += [
+                'BEGIN:VEVENT',
+                `UID:${uid}`,
+                `DTSTAMP:${timestamp}`,
+                `DTSTART:${startTime}`,
+                `DTEND:${endTimeFormatted}`,
+                `SUMMARY:${summary}`,
+                `DESCRIPTION:${description}`,
+                `LOCATION:Stock Market`,
+                `CATEGORIES:Earnings,Finance,Stock Market`,
+                `STATUS:CONFIRMED`,
+                `TRANSP:TRANSPARENT`,
+                'END:VEVENT'
+            ].join('\r\n') + '\r\n';
+            
+            eventCounter++;
+        });
+    });
+
+    icsContent += 'END:VCALENDAR\r\n';
+    return icsContent;
 }
 
 // Initialize Earnings Calendar when modal opens

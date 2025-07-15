@@ -4108,6 +4108,40 @@ th, td {
     border-color: #01c3a8;
 }
 
+.download-ics-btn {
+    background-color: #01c3a8;
+    color: #000000;
+    border: 1px solid #01c3a8;
+    padding: 6px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    font-weight: 500;
+}
+
+.download-ics-btn:hover {
+    background-color: #00a691;
+    border-color: #00a691;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(1, 195, 168, 0.3);
+}
+
+.download-ics-btn svg {
+    flex-shrink: 0;
+}
+
+.filter-section {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
 .disclaimer-text {
     margin: 8px 0 15px 0;
     text-align: left;
