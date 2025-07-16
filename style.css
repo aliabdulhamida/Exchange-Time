@@ -4337,12 +4337,13 @@ th, td {
 @media (max-width: 768px) {
     .earnings-modal {
         max-width: 95vw;
-        margin: 10px;
-        max-height: 95vh;
+        margin: 5px;
+        max-height: 85vh;
+        border-radius: 16px;
     }
     
     .earnings-container {
-        padding: 15px;
+        padding: 12px;
     }
     
     .earnings-item {
@@ -4423,10 +4424,20 @@ th, td {
     }
     
     .filter-button {
-        font-size: 13px;
-        padding: 8px 16px;
+        font-size: 12px;
+        padding: 6px 12px;
         background-color: transparent;
         border: 1px solid #333333;
+    }
+    
+    .download-ics-btn {
+        font-size: 12px;
+        padding: 6px 10px;
+        gap: 4px;
+    }
+    
+    .download-text {
+        display: none;
     }
     
     .filter-button.active {
@@ -4543,80 +4554,74 @@ th, td {
     padding: 0 0 20px 0;
 }
 
-.company-basic-info {
-    text-align: center;
-    margin-bottom: 25px;
-    padding: 20px;
-    background: linear-gradient(135deg, rgba(1, 195, 168, 0.1) 0%, rgba(1, 195, 168, 0.05) 100%);
-    border-radius: 8px;
-    border: 1px solid rgba(1, 195, 168, 0.2);
-}
-
-.company-title-section {
+.company-basic-info-minimal {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
+    margin-bottom: 25px;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.company-basic-info h3 {
+.company-main-info h3 {
     color: #fff;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
-    margin: 0;
+    margin: 0 0 5px 0;
     line-height: 1.2;
 }
 
-.action-btn-compact {
-    background: linear-gradient(135deg, rgba(1, 195, 168, 0.2) 0%, rgba(1, 195, 168, 0.1) 100%);
-    color: #01c3a8;
-    border: 1px solid rgba(1, 195, 168, 0.3);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.company-meta {
     display: flex;
     align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #b8bec6;
+}
+
+.ticker-minimal {
+    font-size: 16px;
+    font-weight: 700;
+    color: #01c3a8;
+    letter-spacing: 0.5px;
+}
+
+.separator {
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 300;
+}
+
+.exchange-minimal {
+    color: #b8bec6;
+    font-weight: 400;
+}
+
+.insider-btn-minimal {
+    background: transparent;
+    border: 1px solid rgba(1, 195, 168, 0.3);
+    color: #01c3a8;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
     white-space: nowrap;
 }
 
-.action-btn-compact:hover {
-    background: linear-gradient(135deg, rgba(1, 195, 168, 0.3) 0%, rgba(1, 195, 168, 0.2) 100%);
+.insider-btn-minimal:hover {
+    background: rgba(1, 195, 168, 0.1);
     border-color: rgba(1, 195, 168, 0.5);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(1, 195, 168, 0.2);
 }
 
-.action-btn-compact svg {
+.insider-btn-minimal svg {
     stroke: currentColor;
-}
-
-.company-ticker-display {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.ticker-large {
-    font-size: 28px;
-    font-weight: 700;
-    color: #01c3a8;
-    letter-spacing: 1px;
-}
-
-.company-exchange {
-    font-size: 14px;
-    color: #888;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 4px 8px;
-    border-radius: 4px;
+    flex-shrink: 0;
 }
 
 .earnings-details, .company-additional-info {
@@ -4795,31 +4800,50 @@ th, td {
 /* Responsive design for company details modal */
 @media (max-width: 768px) {
     .company-details-modal {
-        padding: 10px;
+        padding: 5px;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
     }
     
     .company-details-content {
         margin: 0;
-        max-width: calc(100vw - 20px);
-        max-height: calc(100vh - 20px);
+        max-width: calc(100vw - 10px);
+        max-height: calc(100vh - 40px);
+        padding: 20px;
+        border-radius: 16px;
     }
     
-    .company-basic-info h3 {
+    .company-basic-info-minimal {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 10px 0;
+    }
+    
+    .company-main-info h3 {
         font-size: 20px;
     }
     
-    .ticker-large {
-        font-size: 24px;
+    .company-meta {
+        font-size: 13px;
+    }
+    
+    .ticker-minimal {
+        font-size: 15px;
+    }
+    
+    .insider-btn-minimal {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+    
+    .insider-btn-minimal svg {
+        width: 12px;
+        height: 12px;
     }
     
     .earnings-grid, .info-grid {
         grid-template-columns: 1fr;
-    }
-    .company-ticker-display {
-        flex-direction: column;
-        gap: 8px;
     }
 }
 
@@ -4829,17 +4853,79 @@ th, td {
         padding: 4px 8px;
     }
     
+    .filter-button {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+    
+    .download-ics-btn {
+        font-size: 11px;
+        padding: 8px;
+        gap: 0;
+        min-width: 36px;
+        justify-content: center;
+    }
+    
+    .download-ics-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .download-text {
+        display: none;
+    }
+    
+    .earnings-modal {
+        max-height: 80vh;
+        margin: 2px;
+        border-radius: 12px;
+    }
+    
+    .earnings-container {
+        padding: 10px;
+    }
+    
+    .company-details-modal {
+        padding: 2px;
+    }
+    
+    .company-details-content {
+        max-width: calc(100vw - 4px);
+        max-height: calc(100vh - 20px);
+        padding: 15px;
+        border-radius: 12px;
+    }
+    
     .earnings-item {
-        flex-direction: column;
-        gap: 10px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .company-info {
+        flex: 1;
+        min-width: 0;
     }
     
     .earnings-info {
-        align-items: flex-start;
-        width: 100%;
+        align-items: flex-end;
+        min-width: 120px;
+        flex-shrink: 0;
     }
     
     .more-info-btn {
         margin-left: 0;
+        align-self: flex-start;
+        margin-top: 4px;
+    }
+    
+    .company-name {
+        font-size: 14px;
+        line-height: 1.2;
+    }
+    
+    .ticker {
+        font-size: 11px;
     }
 }
