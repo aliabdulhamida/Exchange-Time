@@ -4497,6 +4497,7 @@ th, td {
     max-width: 700px;
     max-height: 90vh;
     overflow-y: auto;
+    overflow-x: hidden;
     background: #000000;
     border: 1px solid #333;
     border-radius: 12px;
@@ -4504,6 +4505,8 @@ th, td {
     margin-left: 25%;
     margin-right: 20px;
     padding: 30px;
+    word-wrap: break-word;
+    box-sizing: border-box;
 }
 
 /* Modal header styling */
@@ -4639,9 +4642,11 @@ th, td {
 
 .earnings-grid, .info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
     gap: 12px;
     margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .earnings-metric, .info-item {
@@ -4652,18 +4657,27 @@ th, td {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
 }
 
 .metric-label, .info-label {
     color: #888;
     font-size: 13px;
     font-weight: 500;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .metric-value, .info-value {
     color: #fff;
     font-size: 14px;
     font-weight: 600;
+    text-align: right;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .company-description {
@@ -4671,6 +4685,9 @@ th, td {
     padding: 15px;
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
 }
 
 .description-header {
@@ -4803,21 +4820,56 @@ th, td {
         padding: 5px;
         justify-content: center;
         align-items: flex-start;
+        padding-top: 20px;
     }
     
     .company-details-content {
         margin: 0;
         max-width: calc(100vw - 10px);
-        max-height: calc(100vh - 40px);
-        padding: 20px;
+        max-height: calc(100vh - 120px);
+        padding: 15px;
         border-radius: 16px;
+        overflow-x: hidden;
+        word-wrap: break-word;
+        box-sizing: border-box;
+    }
+    
+    .company-details-content .modal-header {
+        position: sticky;
+        top: -20px;
+        padding: 15px;
+        margin: -15px -15px 15px -15px;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
     }
     
     .company-basic-info-minimal {
         flex-direction: column;
         align-items: flex-start;
-        gap: 15px;
-        padding: 10px 0;
+        gap: 10px;
+        padding: 5px 0;
+    }
+    
+    .earnings-details, .company-additional-info {
+        margin-bottom: 20px;
+    }
+    
+    .earnings-details h4, .company-additional-info h4 {
+        font-size: 17px;
+        margin: 0 0 12px 0;
+        padding-bottom: 6px;
+    }
+    
+    .earnings-grid, .info-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 18px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .earnings-metric, .info-item {
+        padding: 10px;
     }
     
     .company-main-info h3 {
@@ -4887,13 +4939,69 @@ th, td {
     
     .company-details-modal {
         padding: 2px;
+        padding-top: 10px;
     }
     
     .company-details-content {
         max-width: calc(100vw - 4px);
-        max-height: calc(100vh - 20px);
-        padding: 15px;
+        max-height: calc(100vh - 80px);
+        padding: 12px;
         border-radius: 12px;
+        overflow-x: hidden;
+        word-wrap: break-word;
+        box-sizing: border-box;
+    }
+    
+    .company-details-content .modal-header {
+        position: sticky;
+        top: -15px;
+        padding: 10px;
+        margin: -12px -12px 10px -12px;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+    
+    .company-details-content .modal-header h2 {
+        font-size: 18px;
+    }
+    
+    .company-basic-info-minimal {
+        gap: 8px;
+        padding: 3px 0;
+    }
+    
+    .earnings-details, .company-additional-info {
+        margin-bottom: 12px;
+    }
+    
+    .earnings-details h4, .company-additional-info h4 {
+        font-size: 15px;
+        margin: 0 0 8px 0;
+        padding-bottom: 4px;
+    }
+    
+    .earnings-grid, .info-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        margin-bottom: 12px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .earnings-metric, .info-item {
+        padding: 6px;
+    }
+    
+    .company-main-info h3 {
+        font-size: 18px;
+    }
+    
+    .company-meta {
+        font-size: 12px;
+    }
+    
+    .ticker-minimal {
+        font-size: 14px;
     }
     
     .earnings-item {
