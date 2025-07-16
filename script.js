@@ -6148,6 +6148,16 @@ const EARNINGS_DATA = {
                 <div class="company-name">${item.company_name}</div>
             `;
 
+            // Add "More Info" button to company info section
+            const moreInfoBtn = document.createElement('button');
+            moreInfoBtn.className = 'more-info-btn';
+            moreInfoBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> Info';
+            moreInfoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showCompanyDetails(item);
+            });
+            companyInfo.appendChild(moreInfoBtn);
+
             const earningsInfo = document.createElement('div');
             earningsInfo.className = 'earnings-info';
 
@@ -6194,6 +6204,855 @@ const EARNINGS_DATA = {
             container.appendChild(companyInfo);
             container.appendChild(earningsInfo);
             earningsList.appendChild(container);
+        });
+    }
+
+    // Function to show detailed company information
+    function showCompanyDetails(company) {
+        // Create company details modal
+        let companyModal = document.getElementById('company-details-modal');
+        
+        if (!companyModal) {
+            // Create modal HTML
+            companyModal = document.createElement('div');
+            companyModal.id = 'company-details-modal';
+            companyModal.className = 'modal company-details-modal';
+            companyModal.innerHTML = `
+                <div class="modal-content company-details-content">
+                    <div class="modal-header">
+                        <h2 id="company-details-title">Company Details</h2>
+                        <button class="btn" id="close-company-details">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="company-overview">
+                            <div class="company-basic-info">
+                                <div class="company-title-section">
+                                    <h3 id="company-full-name">Company Name</h3>
+                                    <button class="action-btn-compact" id="view-insider-trades-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                        Insider Trades
+                                    </button>
+                                </div>
+                                <div class="company-ticker-display">
+                                    <span class="ticker-large" id="company-ticker-large">TICKER</span>
+                                    <span class="company-exchange" id="company-exchange">NASDAQ</span>
+                                </div>
+                            </div>
+                            
+                            <div class="earnings-details">
+                                <h4>Earnings Information</h4>
+                                <div class="earnings-grid">
+                                    <div class="earnings-metric">
+                                        <span class="metric-label">Release Time:</span>
+                                        <span class="metric-value" id="company-release-time">-</span>
+                                    </div>
+                                    <div class="earnings-metric">
+                                        <span class="metric-label">EPS Estimate:</span>
+                                        <span class="metric-value" id="company-eps-estimate">-</span>
+                                    </div>
+                                    <div class="earnings-metric">
+                                        <span class="metric-label">Revenue Estimate:</span>
+                                        <span class="metric-value" id="company-revenue-estimate">-</span>
+                                    </div>
+                                    <div class="earnings-metric" id="company-eps-actual-container" style="display: none;">
+                                        <span class="metric-label">EPS Actual:</span>
+                                        <span class="metric-value" id="company-eps-actual">-</span>
+                                    </div>
+                                    <div class="earnings-metric" id="company-revenue-actual-container" style="display: none;">
+                                        <span class="metric-label">Revenue Actual:</span>
+                                        <span class="metric-value" id="company-revenue-actual">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="company-additional-info">
+                                <h4>Company Information</h4>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">Sector:</span>
+                                        <span class="info-value" id="company-sector">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Industry:</span>
+                                        <span class="info-value" id="company-industry">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Market Cap:</span>
+                                        <span class="info-value" id="company-market-cap">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Employees:</span>
+                                        <span class="info-value" id="company-employees">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">CEO:</span>
+                                        <span class="info-value" id="company-ceo">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Founded:</span>
+                                        <span class="info-value" id="company-founded">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Headquarters:</span>
+                                        <span class="info-value" id="company-headquarters">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Revenue TTM:</span>
+                                        <span class="info-value" id="company-revenue-ttm">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">P/E Ratio:</span>
+                                        <span class="info-value" id="company-pe-ratio">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Div Yield:</span>
+                                        <span class="info-value" id="company-dividend-yield">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">52W High:</span>
+                                        <span class="info-value" id="company-52w-high">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">52W Low:</span>
+                                        <span class="info-value" id="company-52w-low">-</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="company-description">
+                                    <div class="description-header">
+                                        <h5>Business Description</h5>
+                                        <button class="description-toggle-btn" id="description-toggle-btn" title="Expand description">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="17,14 12,9 7,14"></polyline>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <p id="company-description-text" class="description-collapsed">Loading company information...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(companyModal);
+            
+            // Add close event listeners
+            const closeBtn = companyModal.querySelector('#close-company-details');
+            closeBtn.addEventListener('click', () => {
+                companyModal.style.display = 'none';
+            });
+            
+            // Close on outside click
+            companyModal.addEventListener('click', (e) => {
+                if (e.target === companyModal) {
+                    companyModal.style.display = 'none';
+                }
+            });
+        }
+        
+        // Populate modal with company data
+        populateCompanyModal(company, companyModal);
+        
+        // Show modal
+        companyModal.style.display = 'block';
+    }
+    
+    // Function to populate company modal with data
+    function populateCompanyModal(company, modal) {
+        // Basic info
+        modal.querySelector('#company-full-name').textContent = company.company_name;
+        modal.querySelector('#company-ticker-large').textContent = company.ticker;
+        modal.querySelector('#company-release-time').textContent = company.release_time;
+        modal.querySelector('#company-eps-estimate').textContent = `$${company.eps_estimate}`;
+        modal.querySelector('#company-revenue-estimate').textContent = `$${company.revenue_estimate}B`;
+        
+        // Show actual values if available
+        if (company.eps_actual) {
+            modal.querySelector('#company-eps-actual-container').style.display = 'block';
+            modal.querySelector('#company-eps-actual').textContent = `$${company.eps_actual}`;
+        } else {
+            modal.querySelector('#company-eps-actual-container').style.display = 'none';
+        }
+        
+        if (company.revenue_actual) {
+            modal.querySelector('#company-revenue-actual-container').style.display = 'block';
+            modal.querySelector('#company-revenue-actual').textContent = `$${company.revenue_actual}B`;
+        } else {
+            modal.querySelector('#company-revenue-actual-container').style.display = 'none';
+        }
+        
+        // Get additional company information
+        const companyInfo = getCompanyInfo(company.ticker);
+        modal.querySelector('#company-sector').textContent = companyInfo.sector;
+        modal.querySelector('#company-industry').textContent = companyInfo.industry;
+        modal.querySelector('#company-market-cap').textContent = companyInfo.marketCap;
+        modal.querySelector('#company-employees').textContent = companyInfo.employees;
+        modal.querySelector('#company-ceo').textContent = companyInfo.ceo;
+        modal.querySelector('#company-founded').textContent = companyInfo.founded;
+        modal.querySelector('#company-headquarters').textContent = companyInfo.headquarters;
+        modal.querySelector('#company-revenue-ttm').textContent = companyInfo.revenueTTM;
+        modal.querySelector('#company-pe-ratio').textContent = companyInfo.peRatio;
+        modal.querySelector('#company-dividend-yield').textContent = companyInfo.dividendYield;
+        modal.querySelector('#company-52w-high').textContent = companyInfo.high52w;
+        modal.querySelector('#company-52w-low').textContent = companyInfo.low52w;
+        modal.querySelector('#company-description-text').textContent = companyInfo.description;
+        
+        // Setup action buttons
+        setupCompanyActionButtons(company.ticker, modal);
+    }
+    
+    // Function to get additional company information
+    function getCompanyInfo(ticker) {
+        const companyData = {
+            'AAPL': {
+                sector: 'Technology',
+                industry: 'Consumer Electronics',
+                marketCap: '$3.5T',
+                employees: '161,000',
+                ceo: 'Tim Cook',
+                founded: '1976',
+                headquarters: 'Cupertino, CA, USA',
+                revenueTTM: '$394.3B',
+                peRatio: '35.2',
+                dividendYield: '0.43%',
+                high52w: '$199.62',
+                low52w: '$164.08',
+                description: 'Apple Inc. is the world\'s largest technology company by revenue and market capitalization. The company designs, develops, and sells consumer electronics, computer software, and online services. Apple\'s flagship products include the iPhone smartphone, iPad tablet computer, Mac personal computer, iPod portable media player, Apple Watch smartwatch, Apple TV digital media player, AirPods wireless earbuds, and HomePod smart speaker. Apple\'s software includes iOS, macOS, watchOS, and tvOS operating systems, the iTunes media player, the Safari web browser, and the iLife and iWork creativity and productivity suites. The company operates the App Store, iTunes Store, and Apple Music streaming service. Apple leads innovation in mobile technology, wearables, and services, with a strong ecosystem that encourages customer loyalty and repeat purchases.'
+            },
+            'MSFT': {
+                sector: 'Technology',
+                industry: 'Software',
+                marketCap: '$3.1T',
+                employees: '221,000',
+                ceo: 'Satya Nadella',
+                founded: '1975',
+                headquarters: 'Redmond, WA, USA',
+                revenueTTM: '$245.1B',
+                peRatio: '34.8',
+                dividendYield: '0.72%',
+                high52w: '$468.35',
+                low52w: '$362.90',
+                description: 'Microsoft Corporation is a multinational technology company that develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services. Microsoft is best known for its Windows operating systems, Microsoft Office suite, and Internet Explorer and Edge web browsers. The company\'s flagship hardware products are the Xbox video game consoles and the Microsoft Surface lineup of touchscreen personal computers. Microsoft operates three main business segments: Productivity and Business Processes (including Office 365, Microsoft Teams, and LinkedIn), Intelligent Cloud (including Azure cloud computing platform, Windows Server, and SQL Server), and More Personal Computing (including Windows operating systems, devices, Xbox, and search advertising). Microsoft Azure is one of the leading cloud computing platforms globally, competing directly with Amazon Web Services and Google Cloud Platform.'
+            },
+            'JPM': {
+                sector: 'Financial Services',
+                industry: 'Banks',
+                marketCap: '$650B',
+                employees: '293,723',
+                ceo: 'Jamie Dimon',
+                founded: '1799',
+                headquarters: 'New York, NY, USA',
+                revenueTTM: '$162.4B',
+                peRatio: '12.8',
+                dividendYield: '2.15%',
+                high52w: '$234.26',
+                low52w: '$155.12',
+                description: 'JPMorgan Chase & Co. is the largest bank in the United States and one of the largest banks globally by market capitalization and total assets. The company provides a wide range of financial services including investment banking, commercial banking, financial transaction processing, and asset management. JPMorgan operates through four main segments: Consumer & Community Banking (retail banking, credit cards, mortgages, and auto loans), Corporate & Investment Bank (investment banking, market making, and treasury services), Commercial Banking (lending, treasury services, and investment banking for middle-market companies), and Asset & Wealth Management (investment and wealth management services for institutions and high-net-worth individuals). The bank serves millions of customers worldwide and is a key player in global financial markets, known for its strong risk management and diversified revenue streams.'
+            },
+            'NFLX': {
+                sector: 'Communication Services',
+                industry: 'Entertainment',
+                marketCap: '$220B',
+                employees: '13,000',
+                ceo: 'Ted Sarandos',
+                founded: '1997',
+                headquarters: 'Los Gatos, CA, USA',
+                revenueTTM: '$33.7B',
+                peRatio: '45.2',
+                dividendYield: 'N/A',
+                high52w: '$700.99',
+                low52w: '$344.73',
+                description: 'Netflix, Inc. is the world\'s leading streaming entertainment service with over 260 million paid memberships in more than 190 countries enjoying TV series, documentaries, and feature films across a wide variety of genres and languages. The company revolutionized the entertainment industry by pioneering the subscription-based streaming model and has invested heavily in original content production. Netflix operates in three main areas: streaming services (the core business model with monthly subscriptions), original content creation (producing award-winning series and films), and global expansion (localizing content for different markets worldwide). The company competes with traditional media companies, other streaming services like Disney+, Amazon Prime Video, and HBO Max, as well as broader entertainment options. Netflix has been at the forefront of using data analytics and machine learning to personalize content recommendations and optimize content production decisions.'
+            },
+            'TSLA': {
+                sector: 'Consumer Cyclical',
+                industry: 'Auto Manufacturers',
+                marketCap: '$800B',
+                employees: '140,473',
+                ceo: 'Elon Musk',
+                founded: '2003',
+                headquarters: 'Austin, TX, USA',
+                revenueTTM: '$96.8B',
+                peRatio: '65.4',
+                dividendYield: 'N/A',
+                high52w: '$299.29',
+                low52w: '$138.80',
+                description: 'Tesla, Inc. is an American electric vehicle and clean energy company founded by Elon Musk and others. Tesla is the world\'s most valuable automaker and a leader in electric vehicle production, battery energy storage, and solar panel manufacturing. The company operates in several key areas: Automotive (electric vehicles including Model S, 3, X, Y, and upcoming Cybertruck), Energy Generation and Storage (solar panels, Solar Roof, and Powerwall/Powerpack battery systems), and Services (Supercharger network, insurance, and autonomous driving software). Tesla has revolutionized the automotive industry by proving that electric vehicles can be desirable, high-performance, and profitable. The company is also developing Full Self-Driving (FSD) technology and operates one of the world\'s largest networks of fast-charging stations. Tesla\'s integrated approach includes manufacturing, software development, and energy solutions, positioning it as more than just an automaker but as a sustainable energy ecosystem company.'
+            },
+            'C': {
+                sector: 'Financial Services',
+                industry: 'Banks',
+                marketCap: '$120B',
+                employees: '240,000',
+                ceo: 'Jane Fraser',
+                founded: '1812',
+                headquarters: 'New York, NY, USA',
+                revenueTTM: '$75.3B',
+                peRatio: '11.2',
+                dividendYield: '3.47%',
+                high52w: '$69.11',
+                low52w: '$40.01',
+                description: 'Citigroup Inc. is a diversified financial services holding company and one of the largest banks in the world. The company provides banking, investment, and financial services to consumer and corporate customers globally. Citigroup operates through two primary business segments: Global Consumer Banking (retail banking, credit cards, and mortgage services for individual customers) and Institutional Clients Group (corporate and investment banking, securities and banking services, transaction services, and wealth management for institutional clients). The bank has a significant international presence, operating in more than 160 countries and jurisdictions. Citigroup is known for its strength in emerging markets, foreign exchange trading, and corporate banking. The company has been undergoing a strategic transformation to streamline operations, improve efficiency, and focus on its core markets while maintaining its position as a global systemically important bank.'
+            },
+            'WFC': {
+                sector: 'Financial Services',
+                industry: 'Banks',
+                marketCap: '$220B',
+                employees: '238,698',
+                ceo: 'Charles Scharf',
+                founded: '1852',
+                headquarters: 'San Francisco, CA, USA',
+                revenueTTM: '$73.8B',
+                peRatio: '13.5',
+                dividendYield: '2.54%',
+                high52w: '$62.55',
+                low52w: '$40.09',
+                description: 'Wells Fargo & Company is a diversified financial services company and one of the largest banks in the United States by assets and market capitalization. The company provides banking, investment, and mortgage products and services, as well as consumer and commercial finance. Wells Fargo operates through four main business segments: Consumer Banking and Lending (retail banking, credit cards, auto loans, and mortgages), Commercial Banking (banking and credit products for middle market companies), Corporate and Investment Banking (capital markets, banking, and financial advisory services for large corporations), and Wealth and Asset Management (investment advisory, brokerage, and retirement services). The bank has an extensive branch and ATM network across the United States and serves one in three households in America. Wells Fargo has been focusing on operational excellence, risk management improvements, and regulatory compliance while maintaining its position as a leading provider of mortgage lending and small business banking services.'
+            },
+            'BLK': {
+                sector: 'Financial Services',
+                industry: 'Asset Management',
+                marketCap: '$130B',
+                employees: '20,000',
+                ceo: 'Larry Fink',
+                founded: '1988',
+                headquarters: 'New York, NY, USA',
+                revenueTTM: '$20.2B',
+                peRatio: '22.3',
+                dividendYield: '2.28%',
+                high52w: '$973.21',
+                low52w: '$595.94',
+                description: 'BlackRock, Inc. is the world\'s largest asset management company, managing over $10 trillion in assets under management (AUM) for institutional and individual investors worldwide. The company provides investment management, risk management, and advisory services to institutional, intermediary, and individual investors. BlackRock operates through several key areas: Active equity and fixed income management, ETF business (iShares is the world\'s largest ETF provider), Alternative investments (private equity, real estate, hedge funds), and Technology services (Aladdin risk management platform used by many financial institutions). The company serves a diverse client base including pension plans, endowments, foundations, charities, sovereign wealth funds, insurance companies, mutual funds, and individual investors. BlackRock\'s Aladdin technology platform is widely used across the financial industry for portfolio management and risk analysis. As a leading advocate for sustainable investing and ESG principles, BlackRock has significant influence on corporate governance and environmental policies of the companies in which it invests.'
+            },
+            'BAC': {
+                sector: 'Financial Services',
+                industry: 'Banks',
+                marketCap: '$320B',
+                employees: '216,823',
+                ceo: 'Brian Moynihan',
+                founded: '1904',
+                headquarters: 'Charlotte, NC, USA',
+                revenueTTM: '$94.9B',
+                peRatio: '15.2',
+                dividendYield: '2.96%',
+                high52w: '$47.37',
+                low52w: '$26.13',
+                description: 'Bank of America Corporation is the second-largest bank in the United States by assets and one of the largest banks globally. The company provides a wide range of banking, investing, asset management, and other financial and risk management products and services. Bank of America operates through four key business segments: Consumer Banking (deposit products, credit cards, home loans, and auto loans), Global Wealth & Investment Management (wealth management and brokerage services for affluent and high-net-worth clients), Global Banking (commercial banking and corporate investment banking), and Global Markets (sales and trading of fixed income, credit, currency, commodity, and equity products). The bank serves individual consumers, small and middle-market businesses, institutional investors, large corporations, and governments worldwide. Bank of America is known for its extensive branch network, digital banking capabilities, and leadership in sustainable finance and environmental initiatives. The company has been investing heavily in technology and digital transformation to improve customer experience and operational efficiency.'
+            },
+            'PEP': {
+                sector: 'Consumer Defensive',
+                industry: 'Beverages',
+                marketCap: '$230B',
+                employees: '309,000',
+                ceo: 'Ramon Laguarta',
+                founded: '1965',
+                headquarters: 'Purchase, NY, USA',
+                revenueTTM: '$91.5B',
+                peRatio: '25.8',
+                dividendYield: '2.87%',
+                high52w: '$183.58',
+                low52w: '$155.85',
+                description: 'PepsiCo, Inc. is one of the world\'s largest food and beverage companies, known for its iconic brands and global reach. The company operates in the convenient foods and beverages industry through several key business divisions: Frito-Lay North America (snack foods including Lay\'s, Doritos, Cheetos, and Fritos), Quaker Foods North America (cereals, rice, pasta, and other breakfast foods), PepsiCo Beverages North America (Pepsi, Mountain Dew, Gatorade, and other beverages), and international divisions covering Latin America, Europe, Africa, Middle East, South Asia, and Asia Pacific regions. PepsiCo\'s portfolio includes 23 brands that each generate over $1 billion in annual sales, such as Pepsi-Cola, Lay\'s, Gatorade, Quaker, Tropicana, and Doritos. The company has been transforming its business to meet changing consumer preferences by expanding its portfolio of healthier snacks and beverages, reducing sugar and sodium content, and investing in sustainable packaging and operations. PepsiCo operates in over 200 countries and territories worldwide.'
+            },
+            'JNJ': {
+                sector: 'Healthcare',
+                industry: 'Drug Manufacturers',
+                marketCap: '$460B',
+                employees: '152,700',
+                ceo: 'Joaquin Duato',
+                founded: '1886',
+                headquarters: 'New Brunswick, NJ, USA',
+                revenueTTM: '$85.2B',
+                peRatio: '15.7',
+                dividendYield: '3.12%',
+                high52w: '$169.94',
+                low52w: '$143.13',
+                description: 'Johnson & Johnson is a multinational healthcare and pharmaceutical corporation and one of the largest healthcare companies in the world. Following its 2023 spin-off of Kenvue (consumer products), J&J now focuses on two main business segments: Innovative Medicine (pharmaceuticals including treatments for immunology, oncology, neuroscience, pulmonary hypertension, and infectious diseases) and MedTech (medical devices including surgical equipment, orthopedic products, cardiovascular devices, and diabetes care solutions). The company is known for developing life-saving medications and breakthrough medical technologies. J&J\'s pharmaceutical division includes blockbuster drugs for cancer treatment, autoimmune diseases, and other serious medical conditions. The MedTech segment provides essential medical devices used in surgeries and patient care worldwide. Johnson & Johnson operates in over 60 countries and sells products in more than 175 countries. The company has a strong research and development pipeline and is committed to addressing some of the world\'s most pressing healthcare challenges through innovation and scientific advancement.'
+            },
+            'FAST': {
+                sector: 'Industrials',
+                industry: 'Industrial Distribution',
+                marketCap: '$40B',
+                employees: '21,000',
+                ceo: 'Dan Florness',
+                founded: '1967',
+                headquarters: 'Winona, MN, USA',
+                revenueTTM: '$7.3B',
+                peRatio: '29.4',
+                dividendYield: '2.41%',
+                high52w: '$75.39',
+                low52w: '$55.90',
+                description: 'Fastenal Company is a leading industrial and construction supply company that distributes fasteners, tools, and other industrial and construction supplies. The company operates through a unique multi-channel distribution model that includes traditional branches, industrial vending machines (FMI - Fastenal Managed Inventory), and onsite customer locations. Fastenal serves a diverse customer base including manufacturers, contractors, farmers, truckers, railroads, mining companies, municipalities, schools, and retail customers. The company\'s product offerings include threaded fasteners, miscellaneous supplies and hardware, automotive aftermarket products, cutting tools, hydraulic and pneumatic products, material handling equipment, storage and packaging products, janitorial supplies, electrical supplies, welding supplies, safety supplies, metals, and office supplies. Fastenal differentiates itself through its extensive network of local branches providing personalized service, innovative vending solutions that help customers manage inventory more efficiently, and strong relationships with both suppliers and customers built over decades of operation.'
+            },
+            'SLP': {
+                sector: 'Healthcare',
+                industry: 'Health Information Services',
+                marketCap: '$2B',
+                employees: '300',
+                ceo: 'Shawn O\'Connor',
+                founded: '1996',
+                headquarters: 'Lancaster, CA, USA',
+                revenueTTM: '$0.12B',
+                peRatio: '52.1',
+                dividendYield: 'N/A',
+                high52w: '$65.45',
+                low52w: '$32.14',
+                description: 'Simulations Plus, Inc. is a premier developer of simulation software and provider of consulting services for pharmaceutical research and development. The company specializes in computer-aided drug discovery and development through sophisticated modeling and simulation technologies that help pharmaceutical companies predict how drugs will behave in the human body. Simulations Plus offers several key products and services: GastroPlus (mechanistic modeling and simulation software for drug absorption, pharmacokinetics, and pharmacodynamics), ADMET Predictor (software for predicting drug absorption, distribution, metabolism, excretion, and toxicity properties), PKPlus (population pharmacokinetic modeling software), and comprehensive consulting services for regulatory submissions and pharmacometric modeling. The company serves pharmaceutical, biotechnology, chemical, food, and cosmetics companies worldwide. Simulations Plus helps clients reduce drug development costs and timelines by using computational models to predict drug behavior before expensive clinical trials, supporting regulatory submissions with modeling and simulation data, and optimizing drug formulations and dosing regimens.'
+            },
+            'JBHT': {
+                sector: 'Industrials',
+                industry: 'Trucking',
+                marketCap: '$18B',
+                employees: '31,000',
+                ceo: 'John Roberts',
+                founded: '1961',
+                headquarters: 'Lowell, AR, USA',
+                revenueTTM: '$14.2B',
+                peRatio: '26.3',
+                dividendYield: '1.34%',
+                high52w: '$190.71',
+                low52w: '$155.89',
+                description: 'J.B. Hunt Transport Services, Inc. is one of the largest supply chain solutions providers in North America, offering comprehensive transportation and logistics services. The company operates through five primary business segments: Intermodal (combining truck and rail transportation for long-haul freight), Dedicated Contract Services (providing customized transportation solutions with dedicated drivers and equipment for specific customers), Integrated Capacity Solutions (freight brokerage and logistics management), Final Mile Services (last-mile delivery for large items like appliances and furniture), and Truckload (traditional over-the-road trucking services). J.B. Hunt has been a pioneer in intermodal transportation, which is more fuel-efficient and environmentally friendly than traditional trucking. The company leverages advanced technology and data analytics to optimize routes, improve efficiency, and provide real-time tracking and visibility to customers. J.B. Hunt serves a diverse range of industries including retail, automotive, agriculture, chemicals, and manufacturing, helping businesses manage their supply chains more effectively and efficiently.'
+            },
+            'GS': {
+                sector: 'Financial Services',
+                industry: 'Investment Banking',
+                marketCap: '$140B',
+                employees: '49,100',
+                ceo: 'David Solomon',
+                founded: '1869',
+                headquarters: 'New York, NY, USA',
+                revenueTTM: '$51.9B',
+                peRatio: '14.8',
+                dividendYield: '2.44%',
+                high52w: '$505.75',
+                low52w: '$332.57',
+                description: 'The Goldman Sachs Group, Inc. is a leading global investment banking, securities, and investment management firm that provides a wide range of financial services to a substantial and diversified client base. The company operates through four main business segments: Investment Banking (providing financial advisory services, underwriting, and financing solutions for corporations, financial institutions, governments, and individuals), Global Markets (client execution activities for institutional clients across fixed income, equity, and commodities markets), Asset Management (investment management services and solutions for institutions and individuals), and Consumer & Wealth Management (wealth advisory, private banking, and consumer banking services). Goldman Sachs serves corporations, financial institutions, governments, and individuals worldwide. The firm is known for its expertise in mergers and acquisitions advisory, securities underwriting, market making, and alternative investments. Goldman Sachs has a strong presence in emerging markets and continues to expand its digital banking and fintech capabilities.'
+            },
+            'MS': {
+                sector: 'Financial Services',
+                industry: 'Investment Banking',
+                marketCap: '$180B',
+                employees: '82,000',
+                ceo: 'Ted Pick',
+                founded: '1935',
+                headquarters: 'New York, NY, USA',
+                revenueTTM: '$54.4B',
+                peRatio: '13.2',
+                dividendYield: '3.47%',
+                high52w: '$109.73',
+                low52w: '$72.36',
+                description: 'Morgan Stanley is a leading global financial services firm providing investment banking, securities, wealth management, and investment management services. The company operates through three main business segments: Institutional Securities (investment banking, sales and trading, and research services for corporations, governments, financial institutions, and individuals), Wealth Management (comprehensive financial planning, advisory, and investment services for high-net-worth individuals, families, and institutions), and Investment Management (asset management products and services for institutional and individual investors through various investment vehicles). Morgan Stanley serves a diversified group of corporations, governments, financial institutions, and individuals. The firm is recognized for its expertise in equity and fixed income markets, mergers and acquisitions advisory, and wealth management services. Morgan Stanley has been investing heavily in technology and digital platforms to enhance client experience and operational efficiency while maintaining its leadership position in global capital markets.'
+            },
+            'PNC': {
+                sector: 'Financial Services',
+                industry: 'Banks',
+                marketCap: '$75B',
+                employees: '52,000',
+                ceo: 'William Demchak',
+                founded: '1852',
+                headquarters: 'Pittsburgh, PA, USA',
+                revenueTTM: '$21.4B',
+                peRatio: '12.5',
+                dividendYield: '3.28%',
+                high52w: '$199.84',
+                low52w: '$126.23',
+                description: 'The PNC Financial Services Group, Inc. is one of the largest diversified financial services organizations in the United States, providing retail and business banking, residential mortgage banking, specialized services for corporations and government entities, and asset management and processing services. The company operates through four main business segments: Retail Banking (deposit, lending, investment, and cash management services for consumer and small business customers), Corporate & Institutional Banking (lending, treasury management, and capital markets services for mid-sized to large corporations and government entities), Asset Management Group (investment and fiduciary services for individuals, corporations, and institutions), and Residential Mortgage Banking (origination, sale, and servicing of residential mortgages). PNC operates primarily in 19 states and the District of Columbia, with a strong presence in key markets including Pennsylvania, Ohio, Illinois, Michigan, Florida, and the Carolinas. The bank is known for its customer-centric approach, innovative digital banking solutions, and commitment to supporting local communities through lending and investment activities.'
+            },
+            'PGR': {
+                sector: 'Financial Services',
+                industry: 'Insurance',
+                marketCap: '$135B',
+                employees: '65,000',
+                ceo: 'Tricia Griffith',
+                founded: '1937',
+                headquarters: 'Mayfield Village, OH, USA',
+                revenueTTM: '$64.6B',
+                peRatio: '21.4',
+                dividendYield: '0.35%',
+                high52w: '$263.79',
+                low52w: '$153.78',
+                description: 'The Progressive Corporation is one of the largest providers of personal and commercial auto insurance in the United States, known for its innovative approach to insurance and customer service. The company operates through three main business segments: Personal Lines (auto insurance for individual consumers, including standard and preferred risk auto insurance, motorcycle, watercraft, RV, and renters insurance), Commercial Lines (auto insurance and related services for small businesses, contractors, and fleets), and Property (residential property insurance in select states). Progressive is recognized for its usage-based insurance programs, competitive pricing, and direct-to-consumer sales model through online platforms, call centers, and independent agents. The company pioneered several industry innovations including immediate response claims service, online rate comparison tools, and telematics-based insurance pricing through its Snapshot program. Progressive continues to invest heavily in technology, data analytics, and digital platforms to enhance customer experience, improve underwriting accuracy, and maintain its competitive position in the rapidly evolving insurance market.'
+            },
+            'UAL': {
+                sector: 'Industrials',
+                industry: 'Airlines',
+                marketCap: '$18B',
+                employees: '92,000',
+                ceo: 'Scott Kirby',
+                founded: '1926',
+                headquarters: 'Chicago, IL, USA',
+                revenueTTM: '$57.3B',
+                peRatio: '8.9',
+                dividendYield: 'N/A',
+                high52w: '$63.23',
+                low52w: '$37.02',
+                description: 'United Airlines Holdings, Inc. is one of the world\'s largest airlines, providing air transportation services in North America, Asia, Europe, Africa, the Pacific, the Middle East, and Latin America. The company operates through its primary subsidiary, United Airlines, Inc., which provides scheduled air transportation for passengers and cargo through its mainline operations and regional carrier connections. United operates a comprehensive domestic and international route network, with major hubs in Chicago, Denver, Houston, Los Angeles, New York/Newark, San Francisco, and Washington D.C. The airline offers various service classes including United First, United Business, United Premium Plus, and United Economy, along with cargo services and MileagePlus loyalty program. United has been investing heavily in fleet modernization with orders for new fuel-efficient aircraft, sustainable aviation fuel initiatives, and digital technology improvements to enhance customer experience. The company is focused on achieving carbon neutrality by 2050 and has made significant commitments to environmental sustainability while rebuilding and expanding its route network following the COVID-19 pandemic recovery.'
+            },
+            'AA': {
+                sector: 'Basic Materials',
+                industry: 'Aluminum',
+                marketCap: '$7B',
+                employees: '12,900',
+                ceo: 'William Oplinger',
+                founded: '2016',
+                headquarters: 'Pittsburgh, PA, USA',
+                revenueTTM: '$10.9B',
+                peRatio: '25.8',
+                dividendYield: '1.02%',
+                high52w: '$48.26',
+                low52w: '$29.12',
+                description: 'Alcoa Corporation is a global leader in bauxite, alumina, and aluminum products, built on a foundation of strong values and operating excellence dating back more than 130 years to the world\'s first aluminum company. The company operates through two main business segments: Bauxite (mining of bauxite ore, the primary raw material for aluminum production), and Alumina (refining of bauxite into alumina, which is then used to produce aluminum). Alcoa serves customers in the aerospace, automotive, commercial transportation, building and construction, industrial, and packaging markets worldwide. The company is committed to sustainable practices and has set ambitious goals for carbon reduction, including achieving carbon neutrality by 2050. Alcoa operates bauxite mines in Australia, Brazil, Guinea, and Jamaica, and alumina refineries in Australia, Brazil, Spain, and the United States. The company is positioned to benefit from the growing demand for lightweight, sustainable materials in electric vehicles, renewable energy infrastructure, and other applications where aluminum\'s properties provide significant advantages over other materials.'
+            },
+            'KMI': {
+                sector: 'Energy',
+                industry: 'Oil & Gas Midstream',
+                marketCap: '$45B',
+                employees: '11,000',
+                ceo: 'Steven Kean',
+                founded: '1997',
+                headquarters: 'Houston, TX, USA',
+                revenueTTM: '$15.2B',
+                peRatio: '18.7',
+                dividendYield: '6.87%',
+                high52w: '$22.49',
+                low52w: '$16.45',
+                description: 'Kinder Morgan, Inc. is one of North America\'s largest energy infrastructure companies, operating an extensive pipeline network that transports natural gas, refined petroleum products, crude oil, condensate, CO2, and other energy products. The company operates through four main business segments: Natural Gas Pipelines (interstate and intrastate natural gas transmission and storage systems), Products Pipelines (refined petroleum products, crude oil, and condensate pipelines), Terminals (liquids and bulk terminal facilities), and CO2 (carbon dioxide production, transportation, and enhanced oil recovery services). Kinder Morgan owns and operates approximately 83,000 miles of pipelines and 140 terminals across North America. The company plays a critical role in North American energy infrastructure, connecting supply sources to key demand markets and providing essential services to energy producers, utilities, and industrial customers. Kinder Morgan is committed to operating safely and responsibly while providing reliable energy transportation services. The company generates stable cash flows through its fee-based business model and has been focused on debt reduction and returning capital to shareholders through dividends.'
+            },
+            'TSM': {
+                sector: 'Technology',
+                industry: 'Semiconductors',
+                marketCap: '$850B',
+                employees: '76,000',
+                ceo: 'C.C. Wei',
+                founded: '1987',
+                headquarters: 'Hsinchu, Taiwan',
+                revenueTTM: '$75.9B',
+                peRatio: '23.4',
+                dividendYield: '1.47%',
+                high52w: '$193.47',
+                low52w: '$84.02',
+                description: 'Taiwan Semiconductor Manufacturing Company Limited (TSMC) is the world\'s largest dedicated semiconductor foundry, providing manufacturing services for a wide range of semiconductor products including logic chips, specialty technologies, and advanced packaging services. The company serves customers across various end markets including smartphones, high-performance computing, automotive, IoT devices, and digital consumer electronics. TSMC is the leading manufacturer of advanced semiconductor technologies, including 3nm, 5nm, and 7nm process nodes, and continues to invest heavily in research and development to maintain its technological leadership. The company operates primarily through its foundry business, manufacturing chips designed by fabless semiconductor companies, integrated device manufacturers, and system companies. Major customers include Apple, NVIDIA, AMD, Qualcomm, and Broadcom. TSMC has been at the forefront of semiconductor innovation for over three decades and plays a critical role in enabling technological advancement across multiple industries. The company is investing billions in new manufacturing capacity, including facilities in Taiwan, the United States, and Japan, to meet growing global demand for advanced semiconductors.'
+            },
+            'ABT': {
+                sector: 'Healthcare',
+                industry: 'Medical Devices',
+                marketCap: '$200B',
+                employees: '115,000',
+                ceo: 'Robert Ford',
+                founded: '1888',
+                headquarters: 'Abbott Park, IL, USA',
+                revenueTTM: '$42.7B',
+                peRatio: '21.8',
+                dividendYield: '1.73%',
+                high52w: '$121.64',
+                low52w: '$100.25',
+                description: 'Abbott Laboratories is a global healthcare company that discovers, develops, manufactures, and sells a broad range of branded generic pharmaceuticals, medical devices, diagnostics products, and nutritional products. The company operates through four main business segments: Established Pharmaceutical Products (branded generic pharmaceuticals in emerging markets), Diagnostic Products (laboratory and point-of-care diagnostic systems, including molecular, immunoassay, clinical chemistry, and hematology systems), Nutritional Products (pediatric and adult nutritional products), and Medical Devices (cardiovascular, diabetes care, neuromodulation, and structural heart devices). Abbott is known for innovative products including FreeStyle continuous glucose monitoring systems, MitraClip heart valve repair system, and Similac infant formula. The company has a strong presence in emerging markets and continues to invest in research and development to bring innovative healthcare solutions to patients worldwide. Abbott\'s diversified portfolio provides stability and growth opportunities across multiple healthcare sectors, with a focus on improving health outcomes and quality of life for people around the world.'
+            },
+            'NVS': {
+                sector: 'Healthcare',
+                industry: 'Drug Manufacturers',
+                marketCap: '$210B',
+                employees: '104,000',
+                ceo: 'Vas Narasimhan',
+                founded: '1996',
+                headquarters: 'Basel, Switzerland',
+                revenueTTM: '$47.4B',
+                peRatio: '14.2',
+                dividendYield: '3.12%',
+                high52w: '$116.79',
+                low52w: '$87.95',
+                description: 'Novartis AG is a Swiss multinational pharmaceutical corporation and one of the largest pharmaceutical companies in the world. The company focuses on developing and commercializing innovative medicines to address serious medical needs. Novartis operates through two main business divisions: Innovative Medicines (prescription medicines including treatments for oncology, immunology, neuroscience, cardiovascular, and respiratory diseases) and Sandoz (generic pharmaceuticals and biosimilars). The company has a strong portfolio of blockbuster drugs and a robust pipeline of potential new treatments. Novartis is known for breakthrough therapies in areas such as CAR-T cell therapy for cancer treatment, gene therapy for rare diseases, and innovative treatments for multiple sclerosis, heart failure, and other serious conditions. The company invests heavily in research and development, including cutting-edge technologies like artificial intelligence and digital therapeutics. Novartis operates in over 140 countries worldwide and is committed to reimagining medicine to improve and extend people\'s lives through scientific innovation and global access initiatives.'
+            },
+            'CTAS': {
+                sector: 'Industrials',
+                industry: 'Specialty Business Services',
+                marketCap: '$50B',
+                employees: '49,000',
+                ceo: 'Todd Schneider',
+                founded: '1968',
+                headquarters: 'Cincinnati, OH, USA',
+                revenueTTM: '$8.8B',
+                peRatio: '36.2',
+                dividendYield: '1.23%',
+                high52w: '$197.11',
+                low52w: '$147.38',
+                description: 'Cintas Corporation provides specialized services to businesses of all types primarily throughout North America. The company operates through several business segments: Uniform Rental and Facility Services (rental and servicing of uniforms, mats, towels, restroom supplies, first aid and safety products, fire extinguishers, and safety training), First Aid and Safety Services (first aid and safety products and training), and All Other (fire protection services, uniform direct sale, and document management services). Cintas serves over one million businesses ranging from small service and manufacturing companies to major corporations. The company is known for its Ready Sites facilities strategically located throughout North America, comprehensive product offerings, and high-quality customer service. Cintas has built a reputation for reliability, professionalism, and helping businesses create professional appearances and safe work environments. The company continues to expand its service offerings and geographic reach through organic growth and strategic acquisitions, while maintaining its focus on operational excellence and customer satisfaction.'
+            },
+            'USB': {
+                sector: 'Financial Services',
+                industry: 'Banks',
+                marketCap: '$65B',
+                employees: '74,000',
+                ceo: 'Andy Cecere',
+                founded: '1863',
+                headquarters: 'Minneapolis, MN, USA',
+                revenueTTM: '$25.6B',
+                peRatio: '11.8',
+                dividendYield: '3.82%',
+                high52w: '$52.46',
+                low52w: '$35.14',
+                description: 'U.S. Bancorp is one of the largest commercial banks in the United States, providing a comprehensive range of financial services including lending, depository services, cash management, and ancillary services to individuals, businesses, institutional organizations, governmental entities, and other financial institutions. The company operates through five main business segments: Consumer and Business Banking (branch-based services including checking, savings, and credit products for consumers and small businesses), Payment Services (merchant processing, corporate and purchasing card services, and consumer credit cards), Corporate and Commercial Banking (lending, leasing, deposit services, treasury management, and credit services to middle market and large corporate customers), Wealth Management and Securities Services (trust, private banking, financial advisory, investment management, and mutual fund services), and Treasury and Corporate Support (asset-liability management, funding, and capital management activities). U.S. Bank operates primarily in the Western and Midwestern United States, with a strong digital banking platform serving customers nationwide. The bank is known for its strong credit quality, diversified revenue streams, and disciplined risk management approach.'
+            },
+            'IBKR': {
+                sector: 'Financial Services',
+                industry: 'Capital Markets',
+                marketCap: '$40B',
+                employees: '2,900',
+                ceo: 'Milan Galik',
+                founded: '1978',
+                headquarters: 'Greenwich, CT, USA',
+                revenueTTM: '$4.2B',
+                peRatio: '25.3',
+                dividendYield: '0.65%',
+                high52w: '$152.14',
+                low52w: '$98.03',
+                description: 'Interactive Brokers Group, Inc. is a global electronic broker that provides trading and clearing services for institutional and individual customers worldwide. The company operates through two main business segments: Electronic Brokerage (commission and fee-based brokerage services) and Market Making (electronic market making in equity securities, options, futures, foreign exchange, and fixed income securities). Interactive Brokers offers access to stocks, options, futures, forex, bonds, and funds on over 150 markets in 33 countries and 23 currencies, all from a single account. The company is known for its advanced trading technology, competitive pricing structure, and comprehensive range of investment products and tools. Interactive Brokers serves active traders, financial advisors, proprietary trading groups, introducing brokers, and hedge funds. The company\'s technology platform provides sophisticated trading tools, real-time market data, and risk management capabilities. Interactive Brokers has been expanding globally and continues to invest in technology innovation to maintain its competitive position in the rapidly evolving electronic brokerage industry.'
+            },
+            'TRV': {
+                sector: 'Financial Services',
+                industry: 'Insurance',
+                marketCap: '$55B',
+                employees: '30,000',
+                ceo: 'Alan Schnitzer',
+                founded: '1853',
+                headquarters: 'New York, NY, USA',
+                revenueTTM: '$38.4B',
+                peRatio: '13.8',
+                dividendYield: '2.41%',
+                high52w: '$255.40',
+                low52w: '$179.52',
+                description: 'The Travelers Companies, Inc. is one of the largest property and casualty insurance companies in the United States, providing commercial and personal insurance products and services to businesses, government units, associations, and individuals. The company operates through three main business segments: Business Insurance (commercial property and casualty insurance for mid-sized and large businesses), Bond & Specialty Insurance (surety, crime, management liability, professional liability, and other specialty coverages), and Personal Insurance (automobile, homeowners, and other personal lines for individuals). Travelers serves customers through independent agents and brokers as well as through direct channels. The company is known for its strong underwriting discipline, comprehensive risk management capabilities, and financial strength. Travelers has a diversified portfolio of insurance products and operates throughout the United States, with select operations in Canada, the United Kingdom, and the Republic of Ireland. The company leverages advanced analytics, technology, and data-driven insights to improve underwriting accuracy, enhance customer experience, and drive operational efficiency while maintaining its commitment to policyholder service and claims handling excellence.'
+            },
+            'AXP': {
+                sector: 'Financial Services',
+                industry: 'Credit Services',
+                marketCap: '$190B',
+                employees: '77,300',
+                ceo: 'Stephen Squeri',
+                founded: '1850',
+                headquarters: 'New York, NY, USA',
+                revenueTTM: '$60.5B',
+                peRatio: '19.7',
+                dividendYield: '1.16%',
+                high52w: '$277.21',
+                low52w: '$168.10',
+                description: 'American Express Company is a globally integrated payments company that provides customers with access to products, insights, and experiences that enrich lives and build business success. The company operates through four main business segments: Global Consumer Services Group (charge and credit card products and fee services for consumers), Global Commercial Services (charge and credit card products and payment services for small businesses and corporate customers), Global Merchant and Network Services (merchant acquisition and processing, network services, and global network partnership revenue), and International Card Services (consumer and small business card services outside the United States). American Express is known for its premium brand, exceptional customer service, and comprehensive rewards programs. The company operates a unique business model that combines issuing cards to consumers and businesses with operating a payment network accepted by merchants worldwide. American Express has been investing in digital capabilities, partnerships, and new products to expand its customer base and enhance cardholder experiences while maintaining its focus on serving affluent and high-spending customers globally.'
+            },
+            'SCHW': {
+                sector: 'Financial Services',
+                industry: 'Capital Markets',
+                marketCap: '$135B',
+                employees: '35,400',
+                ceo: 'Walt Bettinger',
+                founded: '1971',
+                headquarters: 'Westlake, TX, USA',
+                revenueTTM: '$20.8B',
+                peRatio: '23.5',
+                dividendYield: '1.47%',
+                high52w: '$87.08',
+                low52w: '$62.55',
+                description: 'The Charles Schwab Corporation is a leading provider of financial services, including wealth management, securities brokerage, banking, money management, and financial advisory services to individual investors and independent investment advisors. The company operates through two main business segments: Investor Services (brokerage and banking services to individual investors and retirement plan participants) and Advisor Services (custody, trading, and support services to independent investment advisors and their clients). Schwab serves over 34 million client accounts with over $8 trillion in client assets. The company is known for its low-cost approach to investing, comprehensive financial planning services, and innovative technology platforms. Schwab has been a pioneer in discount brokerage and continues to lead industry changes, including the elimination of online equity trade commissions. The company completed its acquisition of TD Ameritrade in 2020, significantly expanding its scale and capabilities. Schwab continues to invest in digital platforms, advisory services, and client experience enhancements while maintaining its commitment to helping investors achieve their financial goals through accessible, low-cost investment solutions.'
+            },
+            'HBAN': {
+                sector: 'Financial Services',
+                industry: 'Banks',
+                marketCap: '$23B',
+                employees: '20,000',
+                ceo: 'Steve Steinour',
+                founded: '1866',
+                headquarters: 'Columbus, OH, USA',
+                revenueTTM: '$7.4B',
+                peRatio: '12.1',
+                dividendYield: '4.85%',
+                high52w: '$16.81',
+                low52w: '$10.51',
+                description: 'Huntington Bancshares Incorporated is a regional bank holding company that provides full-service commercial, small business, and consumer banking services, mortgage banking services, treasury management and foreign exchange services, equipment leasing, wealth and investment management services, trust services, brokerage services, customized insurance brokerage and service programs, and other financial products and services. The company operates through four main business segments: Consumer and Business Banking (deposit, lending, and other banking products and services to consumer and business customers), Commercial Banking (middle market lending, asset-based lending, equipment financing, and treasury management services), Vehicle Finance (automobile, light-duty truck, recreational vehicle, and marine craft financing), and Regional Banking and The Huntington Private Client Group (private banking, investment management, and retirement services). Huntington operates primarily in Ohio, Michigan, Pennsylvania, Indiana, West Virginia, Kentucky, Illinois, and Wisconsin. The bank is known for its customer-centric approach, community focus, and innovative digital banking solutions. Huntington has been expanding its market presence through strategic acquisitions and organic growth while maintaining its commitment to supporting local communities and small businesses.'
+            },
+            'RF': {
+                sector: 'Financial Services',
+                industry: 'Banks',
+                marketCap: '$25B',
+                employees: '18,000',
+                ceo: 'John Turner',
+                founded: '1971',
+                headquarters: 'Birmingham, AL, USA',
+                revenueTTM: '$8.9B',
+                peRatio: '11.8',
+                dividendYield: '3.95%',
+                high52w: '$25.19',
+                low52w: '$17.32',
+                description: 'Regions Financial Corporation is a regional bank holding company that provides traditional commercial, retail, and mortgage banking services, as well as other financial services in the fields of investment banking, asset management, trust, mutual funds, securities brokerage, insurance brokerage, and other specialty financing. The company operates through three main business segments: Corporate Bank (commercial banking products and services to commercial, government, and professional customers), Consumer Bank (deposit, lending, and other banking products and services to consumer and small business customers), and Wealth Management (trust, investment management, asset management, retirement, and estate planning solutions). Regions operates approximately 1,300 banking offices and 2,000 ATMs across 15 states in the South, Midwest, and Texas. The bank serves individual and business customers with a full range of banking, wealth management, and mortgage products and services. Regions is known for its strong community presence, customer service focus, and commitment to supporting economic development in the markets it serves. The company has been investing in digital banking capabilities and technology infrastructure to enhance customer experience while maintaining its relationship-based approach to banking.'
+            },
+            'TFC': {
+                sector: 'Financial Services',
+                industry: 'Banks',
+                marketCap: '$55B',
+                employees: '52,000',
+                ceo: 'William Rogers',
+                founded: '2019',
+                headquarters: 'Charlotte, NC, USA',
+                revenueTTM: '$22.7B',
+                peRatio: '12.4',
+                dividendYield: '3.98%',
+                high52w: '$49.90',
+                low52w: '$32.11',
+                description: 'Truist Financial Corporation is one of the largest commercial banks in the United States, formed through the merger of BB&T Corporation and SunTrust Banks in 2019. The company provides a wide range of banking and trust services for consumer and commercial clients through its subsidiary, Truist Bank, as well as various other subsidiaries. Truist operates through three main business segments: Consumer Banking and Wealth (deposit, lending, and investment services to consumers and small businesses), Corporate and Commercial Banking (lending, leasing, and treasury services to commercial, corporate, and institutional clients), and Insurance Holdings (property and casualty insurance, life insurance, and commercial insurance products and services). The bank operates approximately 2,200 banking offices in 15 states and Washington, D.C., primarily throughout the Southeast and Mid-Atlantic regions. Truist is known for its purpose-driven culture focused on helping clients achieve their financial goals and supporting community development. The company has been investing heavily in technology integration and digital transformation following the merger while maintaining its commitment to relationship-based banking and community involvement.'
+            },
+            'MMM': {
+                sector: 'Industrials',
+                industry: 'Conglomerates',
+                marketCap: '$75B',
+                employees: '92,000',
+                ceo: 'Mike Roman',
+                founded: '1902',
+                headquarters: 'Saint Paul, MN, USA',
+                revenueTTM: '$35.4B',
+                peRatio: '18.9',
+                dividendYield: '6.12%',
+                high52w: '$140.20',
+                low52w: '$98.66',
+                description: '3M Company is a diversified global technology company that operates through four main business segments: Safety and Industrial (personal protective equipment, advanced materials, abrasives, and automotive aftermarket products), Transportation and Electronics (electronic materials, automotive and aerospace solutions, commercial solutions, and transportation safety), Health Care (medical solutions, oral care, health information systems, and separation and purification sciences), and Consumer (home improvement, stationery and office supplies, home care, and consumer health care products). 3M is known for its innovation and research capabilities, with tens of thousands of products based on dozens of core technology platforms. The company serves customers in nearly 200 countries worldwide across diverse end markets including automotive, electronics, energy, health care, manufacturing, mining, oil and gas, safety, and transportation. 3M has a strong commitment to sustainability and has set ambitious goals for carbon neutrality, water stewardship, and waste reduction. The company continues to invest in research and development, manufacturing capabilities, and digital transformation to drive innovation and maintain its competitive position across its diverse portfolio of businesses.'
+            },
+            'SLB': {
+                sector: 'Energy',
+                industry: 'Oil & Gas Equipment & Services',
+                marketCap: '$65B',
+                employees: '95,000',
+                ceo: 'Olivier Le Peuch',
+                founded: '1926',
+                headquarters: 'Houston, TX, USA',
+                revenueTTM: '$33.1B',
+                peRatio: '15.2',
+                dividendYield: '2.44%',
+                high52w: '$55.83',
+                low52w: '$40.46',
+                description: 'Schlumberger Limited (SLB) is the world\'s largest oilfield services company, providing technology, information solutions, and integrated project management services to the international oil and gas industry. The company operates through four main business segments: Digital & Integration (reservoir characterization, drilling, production, and processing technologies, along with digital solutions), Reservoir Performance (well services including stimulation, intervention, coiled-tubing, and artificial lift), Well Construction (drilling services, well planning and drilling engineering, drilling fluids, completion tools, and land drilling rigs), and Production Systems (surface production systems, midstream infrastructure, and processing solutions for onshore and offshore oil and gas production). SLB operates in more than 120 countries and provides services across the entire oil and gas value chain. The company is known for its technological innovation, research and development capabilities, and comprehensive portfolio of oilfield services and products. SLB has been adapting to the energy transition by investing in carbon capture, renewable energy technologies, and digital solutions while maintaining its leadership position in traditional oil and gas services. The company continues to focus on operational efficiency, technology advancement, and sustainable energy solutions to support the evolving needs of the global energy industry.'
+            }
+        };
+        
+        return companyData[ticker] || {
+            sector: 'Information not available',
+            industry: 'Information not available',
+            marketCap: 'N/A',
+            employees: 'N/A',
+            ceo: 'N/A',
+            founded: 'N/A',
+            headquarters: 'N/A',
+            revenueTTM: 'N/A',
+            peRatio: 'N/A',
+            dividendYield: 'N/A',
+            high52w: 'N/A',
+            low52w: 'N/A',
+            description: 'Detailed company information is not available for this ticker. This company is scheduled to release earnings as shown in the calendar.'
+        };
+    }
+    
+    // Function to setup action buttons in company modal
+    function setupCompanyActionButtons(ticker, modal) {
+        const insiderBtn = modal.querySelector('#view-insider-trades-btn');
+        const descriptionToggleBtn = modal.querySelector('#description-toggle-btn');
+        const descriptionText = modal.querySelector('#company-description-text');
+        
+        // Store the full description
+        const fullDescription = descriptionText.textContent;
+        
+        // Create shortened description (first 200 characters + ...)
+        const shortDescription = fullDescription.length > 200 
+            ? fullDescription.substring(0, 200) + '...' 
+            : fullDescription;
+        
+        // Description toggle functionality
+        let isExpanded = false; // Start collapsed
+        
+        // Initially show short description
+        descriptionText.textContent = shortDescription;
+        descriptionText.className = 'description-collapsed';
+        
+        descriptionToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            isExpanded = !isExpanded;
+            
+            if (isExpanded) {
+                // Show full description
+                descriptionText.textContent = fullDescription;
+                descriptionText.className = 'description-expanded';
+                descriptionToggleBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="7,10 12,15 17,10"></polyline>
+                    </svg>
+                `;
+                descriptionToggleBtn.title = 'Collapse description';
+            } else {
+                // Show shortened description
+                descriptionText.textContent = shortDescription;
+                descriptionText.className = 'description-collapsed';
+                descriptionToggleBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="17,14 12,9 7,14"></polyline>
+                    </svg>
+                `;
+                descriptionToggleBtn.title = 'Expand description';
+            }
+        });
+        
+        // Insider Trades button
+        insiderBtn.addEventListener('click', () => {
+            // Close all modals first
+            closeAllModals();
+            
+            // Open insider trades modal with this ticker
+            const insiderTradesBtn = document.getElementById('insiderTradesBtn');
+            if (insiderTradesBtn) {
+                insiderTradesBtn.click();
+                
+                // Wait for modal to open and then search for the ticker
+                setTimeout(() => {
+                    const tickerInput = document.getElementById('insider-ticker');
+                    const searchButton = document.getElementById('search-insider');
+                    if (tickerInput && searchButton) {
+                        tickerInput.value = ticker;
+                        searchButton.click();
+                    }
+                }, 300);
+            }
+        });
+    }
+
+    // Function to close all modals
+    function closeAllModals() {
+        // List of modal IDs to close
+        const modalIds = [
+            'company-details-modal',
+            'insider-modal',
+            'stock-analysis-modal',
+            'earnings-calendar-modal',
+            'dividend-modal',
+            'screener-modal',
+            'news-modal'
+        ];
+        
+        modalIds.forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Also close any modal with class 'modal' that might be open
+        const allModals = document.querySelectorAll('.modal');
+        allModals.forEach(modal => {
+            if (modal.style.display === 'block' || modal.style.display === 'flex') {
+                modal.style.display = 'none';
+            }
         });
     }
 
