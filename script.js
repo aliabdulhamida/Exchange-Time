@@ -6348,7 +6348,7 @@ function downloadEarningsICS() {
         const downloadBtn = document.getElementById('downloadIcsBtn');
         if (downloadBtn) {
             const originalText = downloadBtn.innerHTML;
-            downloadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Downloaded!';
+            downloadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
             downloadBtn.style.backgroundColor = '#28a745';
             
             setTimeout(() => {
@@ -6393,57 +6393,17 @@ function generateEarningsICS() {
         'X-WR-CALDESC:Stock earnings announcements and release dates'
     ].join('\r\n') + '\r\n';
 
-    // Get earnings data - use global data or define it here
-    const EARNINGS_DATA = window.EARNINGS_DATA || {
-        '2025-07-14': [
-            { ticker: 'FAST', company_name: 'Fastenal Company', release_time: 'Before Market Open', eps_estimate: '0.51', eps_actual: null, revenue_estimate: '1.94', revenue_actual: null },
-            { ticker: 'SLP', company_name: 'Simulations Plus, Inc.', release_time: 'After Market Close', eps_estimate: '0.12', eps_actual: null, revenue_estimate: '0.02', revenue_actual: null }
-        ],
-        '2025-07-15': [
-            { ticker: 'JPM', company_name: 'JPMorgan Chase & Co.', release_time: 'Before Market Open', eps_estimate: '4.46', eps_actual: null, revenue_estimate: '43.50', revenue_actual: null },
-            { ticker: 'C', company_name: 'Citigroup Inc.', release_time: 'Before Market Open', eps_estimate: '1.45', eps_actual: null, revenue_estimate: '20.20', revenue_actual: null },
-            { ticker: 'WFC', company_name: 'Wells Fargo & Company', release_time: 'Before Market Open', eps_estimate: '1.35', eps_actual: null, revenue_estimate: '20.60', revenue_actual: null },
-            { ticker: 'BLK', company_name: 'BlackRock, Inc.', release_time: 'Before Market Open', eps_estimate: '10.12', eps_actual: null, revenue_estimate: '5.20', revenue_actual: null },
-            { ticker: 'JBHT', company_name: 'J.B. Hunt Transport Services, Inc.', release_time: 'After Market Close', eps_estimate: '1.65', eps_actual: null, revenue_estimate: '3.15', revenue_actual: null }
-        ],
-        '2025-07-16': [
-            { ticker: 'BAC', company_name: 'Bank of America Corporation', release_time: 'Before Market Open', eps_estimate: '0.85', eps_actual: null, revenue_estimate: '25.50', revenue_actual: null },
-            { ticker: 'GS', company_name: 'The Goldman Sachs Group, Inc.', release_time: 'Before Market Open', eps_estimate: '8.90', eps_actual: null, revenue_estimate: '13.10', revenue_actual: null },
-            { ticker: 'MS', company_name: 'Morgan Stanley', release_time: 'Before Market Open', eps_estimate: '1.75', eps_actual: null, revenue_estimate: '14.80', revenue_actual: null },
-            { ticker: 'PNC', company_name: 'The PNC Financial Services Group, Inc.', release_time: 'Before Market Open', eps_estimate: '3.30', eps_actual: null, revenue_estimate: '5.45', revenue_actual: null },
-            { ticker: 'PGR', company_name: 'The Progressive Corporation', release_time: 'Before Market Open', eps_estimate: '2.95', eps_actual: null, revenue_estimate: '17.90', revenue_actual: null },
-            { ticker: 'UAL', company_name: 'United Airlines Holdings, Inc.', release_time: 'After Market Close', eps_estimate: '3.85', eps_actual: null, revenue_estimate: '15.20', revenue_actual: null },
-            { ticker: 'JNJ', company_name: 'Johnson & Johnson', release_time: 'Before Market Open', eps_estimate: '2.90', eps_actual: null, revenue_estimate: '22.80', revenue_actual: null },
-            { ticker: 'AA', company_name: 'Alcoa Corporation', release_time: 'After Market Close', eps_estimate: '0.25', eps_actual: null, revenue_estimate: '2.85', revenue_actual: null },
-            { ticker: 'KMI', company_name: 'Kinder Morgan, Inc.', release_time: 'After Market Close', eps_estimate: '0.27', eps_actual: null, revenue_estimate: '4.10', revenue_actual: null }
-        ],
-        '2025-07-17': [
-            { ticker: 'NFLX', company_name: 'Netflix, Inc.', release_time: 'After Market Close', eps_estimate: '7.06', eps_actual: null, revenue_estimate: '11.04', revenue_actual: null },
-            { ticker: 'TSM', company_name: 'Taiwan Semiconductor Manufacturing Company', release_time: 'Before Market Open', eps_estimate: '1.80', eps_actual: null, revenue_estimate: '22.50', revenue_actual: null },
-            { ticker: 'PEP', company_name: 'PepsiCo, Inc.', release_time: 'Before Market Open', eps_estimate: '2.15', eps_actual: null, revenue_estimate: '22.70', revenue_actual: null },
-            { ticker: 'ABT', company_name: 'Abbott Laboratories', release_time: 'Before Market Open', eps_estimate: '1.15', eps_actual: null, revenue_estimate: '10.50', revenue_actual: null },
-            { ticker: 'NVS', company_name: 'Novartis AG', release_time: 'Before Market Open', eps_estimate: '1.95', eps_actual: null, revenue_estimate: '12.80', revenue_actual: null },
-            { ticker: 'CTAS', company_name: 'Cintas Corporation', release_time: 'Before Market Open', eps_estimate: '4.10', eps_actual: null, revenue_estimate: '2.60', revenue_actual: null },
-            { ticker: 'USB', company_name: 'U.S. Bancorp', release_time: 'Before Market Open', eps_estimate: '1.05', eps_actual: null, revenue_estimate: '7.10', revenue_actual: null },
-            { ticker: 'IBKR', company_name: 'Interactive Brokers Group, Inc.', release_time: 'After Market Close', eps_estimate: '1.75', eps_actual: null, revenue_estimate: '1.20', revenue_actual: null },
-            { ticker: 'TRV', company_name: 'The Travelers Companies, Inc.', release_time: 'Before Market Open', eps_estimate: '2.50', eps_actual: null, revenue_estimate: '11.30', revenue_actual: null }
-        ],
-        '2025-07-18': [
-            { ticker: 'AXP', company_name: 'American Express Company', release_time: 'Before Market Open', eps_estimate: '3.25', eps_actual: null, revenue_estimate: '16.90', revenue_actual: null },
-            { ticker: 'SCHW', company_name: 'The Charles Schwab Corporation', release_time: 'Before Market Open', eps_estimate: '0.80', eps_actual: null, revenue_estimate: '4.85', revenue_actual: null },
-            { ticker: 'HBAN', company_name: 'Huntington Bancshares Incorporated', release_time: 'Before Market Open', eps_estimate: '0.35', eps_actual: null, revenue_estimate: '1.85', revenue_actual: null },
-            { ticker: 'RF', company_name: 'Regions Financial Corporation', release_time: 'Before Market Open', eps_estimate: '0.55', eps_actual: null, revenue_estimate: '2.35', revenue_actual: null },
-            { ticker: 'TFC', company_name: 'Truist Financial Corporation', release_time: 'Before Market Open', eps_estimate: '0.90', eps_actual: null, revenue_estimate: '5.80', revenue_actual: null },
-            { ticker: 'MMM', company_name: '3M Company', release_time: 'Before Market Open', eps_estimate: '1.70', eps_actual: null, revenue_estimate: '6.10', revenue_actual: null },
-            { ticker: 'SLB', company_name: 'Schlumberger Limited', release_time: 'Before Market Open', eps_estimate: '0.90', eps_actual: null, revenue_estimate: '9.20', revenue_actual: null }
-        ],
-        '2025-07-19': [],
-        '2025-07-20': []
-    };
+    // Get earnings data - use global data
+    const EARNINGS_DATA = window.EARNINGS_DATA;
+    
+    if (!EARNINGS_DATA) {
+        console.error('No earnings data available');
+        return 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Exchange Time//Earnings Calendar//EN\r\nEND:VCALENDAR\r\n';
+    }
 
-    // Helper function to format date for ICS
-    function formatICSDate(dateStr, time) {
-        const date = new Date(dateStr);
+    // Helper function to format date for ICS (all-day events)
+    function formatICSDateAllDay(dateStr) {
+        const date = new Date(dateStr + 'T00:00:00');
         
         // Check if date is valid
         if (isNaN(date.getTime())) {
@@ -6451,16 +6411,16 @@ function generateEarningsICS() {
             return null;
         }
         
-        // Set time based on release time
-        if (time.toLowerCase().includes('before')) {
-            date.setHours(9, 30, 0, 0); // 9:30 AM EST (market open)
-        } else if (time.toLowerCase().includes('after')) {
-            date.setHours(16, 0, 0, 0); // 4:00 PM EST (market close)
-        } else {
-            date.setHours(12, 0, 0, 0); // Default to noon
-        }
+        console.log(`Processing ${dateStr} as all-day event`); // Debug log
         
-        return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        // For all-day events, we return just the date in YYYYMMDD format
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        
+        const formattedDate = `${year}${month}${day}`;
+        console.log(`Formatted all-day date: ${formattedDate}`); // Debug log
+        return formattedDate;
     }
 
     // Generate unique ID for each event
@@ -6469,27 +6429,16 @@ function generateEarningsICS() {
     // Process each date in the earnings data
     Object.entries(EARNINGS_DATA).forEach(([date, earnings]) => {
         earnings.forEach(earning => {
-            const startTime = formatICSDate(date, earning.release_time);
-            if (!startTime) {
+            const eventDate = formatICSDateAllDay(date);
+            if (!eventDate) {
                 console.error('Failed to format date for:', earning.ticker, date);
                 return; // Skip this earning if date formatting fails
             }
             
-            // Create end time by parsing the formatted start time back to a Date object
-            const startDate = new Date(date);
-            const endDate = new Date(startDate);
-            
-            // Set the same time as start time, then add 30 minutes
-            if (earning.release_time.toLowerCase().includes('before')) {
-                endDate.setHours(9, 30, 0, 0);
-            } else if (earning.release_time.toLowerCase().includes('after')) {
-                endDate.setHours(16, 0, 0, 0);
-            } else {
-                endDate.setHours(12, 0, 0, 0);
-            }
-            endDate.setMinutes(endDate.getMinutes() + 30); // 30-minute event
-            
-            const endTimeFormatted = endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            // For all-day events, end date should be the next day
+            const nextDate = new Date(date + 'T00:00:00');
+            nextDate.setDate(nextDate.getDate() + 1);
+            const endEventDate = formatICSDateAllDay(nextDate.toISOString().split('T')[0]);
             
             const summary = `${earning.ticker} Earnings Release`;
             const description = [
@@ -6508,8 +6457,8 @@ function generateEarningsICS() {
                 'BEGIN:VEVENT',
                 `UID:${uid}`,
                 `DTSTAMP:${timestamp}`,
-                `DTSTART:${startTime}`,
-                `DTEND:${endTimeFormatted}`,
+                `DTSTART;VALUE=DATE:${eventDate}`,
+                `DTEND;VALUE=DATE:${endEventDate}`,
                 `SUMMARY:${summary}`,
                 `DESCRIPTION:${description}`,
                 `LOCATION:Stock Market`,
@@ -6547,6 +6496,49 @@ window.testICSDownload = function() {
     } catch (e) {
         console.error('Test download failed:', e);
     }
+};
+
+// Debug function to check timing
+window.debugEarningsTimes = function() {
+    console.log('=== DEBUGGING EARNINGS TIMES (ALL-DAY EVENTS) ===');
+    const EARNINGS_DATA = window.EARNINGS_DATA || {};
+    
+    Object.entries(EARNINGS_DATA).forEach(([date, earnings]) => {
+        console.log(`\nDate: ${date}`);
+        earnings.forEach(earning => {
+            console.log(`  ${earning.ticker}: ${earning.release_time}`);
+            // Test the formatICSDateAllDay function
+            const testDate = new Date(date + 'T00:00:00');
+            const year = testDate.getFullYear();
+            const month = String(testDate.getMonth() + 1).padStart(2, '0');
+            const day = String(testDate.getDate()).padStart(2, '0');
+            const formattedDate = `${year}${month}${day}`;
+            console.log(`    All-day event date: ${formattedDate} (${earning.release_time})`);
+        });
+    });
+    console.log('=== END DEBUG ===');
+};
+
+// Debug function to check generated ICS content
+window.debugICSContent = function() {
+    console.log('=== DEBUGGING ICS CONTENT ===');
+    const icsContent = generateEarningsICS();
+    console.log('Full ICS Content:');
+    console.log(icsContent);
+    
+    // Look for any time stamps that shouldn't be there
+    const lines = icsContent.split('\n');
+    lines.forEach((line, index) => {
+        if (line.includes('DTSTART') || line.includes('DTEND')) {
+            console.log(`Line ${index + 1}: ${line}`);
+            if (line.includes('T') && !line.includes('VALUE=DATE')) {
+                console.error(`❌ PROBLEM: This line has a timestamp instead of all-day format!`);
+            } else if (line.includes('VALUE=DATE')) {
+                console.log(`✅ CORRECT: This is properly formatted as all-day event`);
+            }
+        }
+    });
+    console.log('=== END ICS DEBUG ===');
 };
 
 // Initialize Earnings Calendar when modal opens
