@@ -6230,18 +6230,17 @@ const EARNINGS_DATA = {
                     </div>
                     <div class="modal-body">
                         <div class="company-overview">
-                            <div class="company-basic-info">
-                                <div class="company-title-section">
+                            <div class="company-basic-info-minimal">
+                                <div class="company-main-info">
                                     <h3 id="company-full-name">Company Name</h3>
-                                    <button class="action-btn-compact" id="view-insider-trades-btn">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                        Insider Trades
-                                    </button>
+                                    <div class="company-meta">
+                                        <span class="ticker-minimal" id="company-ticker-large">TICKER</span>
+                                    </div>
                                 </div>
-                                <div class="company-ticker-display">
-                                    <span class="ticker-large" id="company-ticker-large">TICKER</span>
-                                    <span class="company-exchange" id="company-exchange">NASDAQ</span>
-                                </div>
+                                <button class="insider-btn-minimal" id="view-insider-trades-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                    <span>Insider Trades</span>
+                                </button>
                             </div>
                             
                             <div class="earnings-details">
@@ -6960,6 +6959,21 @@ const EARNINGS_DATA = {
         const descriptionToggleBtn = modal.querySelector('#description-toggle-btn');
         const descriptionText = modal.querySelector('#company-description-text');
         
+        // Remove any existing event listeners by cloning the elements
+        if (insiderBtn) {
+            const newInsiderBtn = insiderBtn.cloneNode(true);
+            insiderBtn.parentNode.replaceChild(newInsiderBtn, insiderBtn);
+        }
+        
+        if (descriptionToggleBtn) {
+            const newToggleBtn = descriptionToggleBtn.cloneNode(true);
+            descriptionToggleBtn.parentNode.replaceChild(newToggleBtn, descriptionToggleBtn);
+        }
+        
+        // Get the new elements after cloning
+        const newInsiderBtn = modal.querySelector('#view-insider-trades-btn');
+        const newDescriptionToggleBtn = modal.querySelector('#description-toggle-btn');
+        
         // Store the full description
         const fullDescription = descriptionText.textContent;
         
@@ -6975,7 +6989,7 @@ const EARNINGS_DATA = {
         descriptionText.textContent = shortDescription;
         descriptionText.className = 'description-collapsed';
         
-        descriptionToggleBtn.addEventListener('click', (e) => {
+        newDescriptionToggleBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             
@@ -6985,29 +6999,37 @@ const EARNINGS_DATA = {
                 // Show full description
                 descriptionText.textContent = fullDescription;
                 descriptionText.className = 'description-expanded';
-                descriptionToggleBtn.innerHTML = `
+                newDescriptionToggleBtn.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="7,10 12,15 17,10"></polyline>
                     </svg>
                 `;
-                descriptionToggleBtn.title = 'Collapse description';
+                newDescriptionToggleBtn.title = 'Collapse description';
             } else {
                 // Show shortened description
                 descriptionText.textContent = shortDescription;
                 descriptionText.className = 'description-collapsed';
-                descriptionToggleBtn.innerHTML = `
+                newDescriptionToggleBtn.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="17,14 12,9 7,14"></polyline>
                     </svg>
                 `;
-                descriptionToggleBtn.title = 'Expand description';
+                newDescriptionToggleBtn.title = 'Expand description';
             }
         });
         
         // Insider Trades button
-        insiderBtn.addEventListener('click', () => {
+        newInsiderBtn.addEventListener('click', () => {
+            console.log('Insider Trades clicked for ticker:', ticker); // Debug log
+            
             // Close all modals first
             closeAllModals();
+            
+            // Clear any existing ticker input first
+            const existingTickerInput = document.getElementById('insider-ticker');
+            if (existingTickerInput) {
+                existingTickerInput.value = '';
+            }
             
             // Open insider trades modal with this ticker
             const insiderTradesBtn = document.getElementById('insiderTradesBtn');
@@ -7019,7 +7041,15 @@ const EARNINGS_DATA = {
                     const tickerInput = document.getElementById('insider-ticker');
                     const searchButton = document.getElementById('search-insider');
                     if (tickerInput && searchButton) {
+                        console.log('Setting ticker input to:', ticker); // Debug log
+                        // Clear the input field first to ensure clean state
+                        tickerInput.value = '';
+                        // Set the new ticker value
                         tickerInput.value = ticker;
+                        // Trigger any input events that might be needed
+                        tickerInput.dispatchEvent(new Event('input', { bubbles: true }));
+                        tickerInput.dispatchEvent(new Event('change', { bubbles: true }));
+                        // Click search button
                         searchButton.click();
                     }
                 }, 300);
