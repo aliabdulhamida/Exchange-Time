@@ -6114,6 +6114,9 @@ const EARNINGS_DATA = {
     '2025-07-20': []
 };
 
+    // Make earnings data globally available
+    window.EARNINGS_DATA = EARNINGS_DATA;
+
     function formatDate(date) {
         return date.toISOString().split('T')[0];
     }
@@ -6303,17 +6306,76 @@ const EARNINGS_DATA = {
 
 // Function to generate and download ICS file for earnings calendar
 function downloadEarningsICS() {
-    const icsContent = generateEarningsICS();
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `earnings-calendar-${new Date().toISOString().split('T')[0]}.ics`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    try {
+        console.log('Starting ICS download...');
+        const icsContent = generateEarningsICS();
+        console.log('ICS content generated:', icsContent.substring(0, 200) + '...');
+        
+        // Create blob with correct MIME type
+        const blob = new Blob([icsContent], { 
+            type: 'text/calendar;charset=utf-8' 
+        });
+        
+        // Create download link
+        const url = URL.createObjectURL(blob);
+        const filename = `earnings-calendar-${new Date().toISOString().split('T')[0]}.ics`;
+        
+        // Try modern download approach first
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+            // For IE/Edge
+            window.navigator.msSaveOrOpenBlob(blob, filename);
+        } else {
+            // For modern browsers
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.style.display = 'none';
+            
+            // Add to DOM, click, and remove
+            document.body.appendChild(link);
+            link.click();
+            
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 100);
+        }
+        
+        console.log('ICS download initiated successfully');
+        
+        // Show user feedback
+        const downloadBtn = document.getElementById('downloadIcsBtn');
+        if (downloadBtn) {
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Downloaded!';
+            downloadBtn.style.backgroundColor = '#28a745';
+            
+            setTimeout(() => {
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.style.backgroundColor = '#01c3a8';
+            }, 2000);
+        }
+        
+    } catch (error) {
+        console.error('Error downloading ICS file:', error);
+        
+        // Show error feedback
+        const downloadBtn = document.getElementById('downloadIcsBtn');
+        if (downloadBtn) {
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Error';
+            downloadBtn.style.backgroundColor = '#dc3545';
+            
+            setTimeout(() => {
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.style.backgroundColor = '#01c3a8';
+            }, 2000);
+        }
+        
+        // Fallback: show alert with content
+        alert('Download failed. Please copy this ICS content and save it manually:\n\n' + generateEarningsICS().substring(0, 500) + '...');
+    }
 }
 
 // Function to generate ICS content from earnings data
@@ -6331,8 +6393,8 @@ function generateEarningsICS() {
         'X-WR-CALDESC:Stock earnings announcements and release dates'
     ].join('\r\n') + '\r\n';
 
-    // Get earnings data from the EARNINGS_DATA object used in initEarningsCalendar
-    const EARNINGS_DATA = {
+    // Get earnings data - use global data or define it here
+    const EARNINGS_DATA = window.EARNINGS_DATA || {
         '2025-07-14': [
             { ticker: 'FAST', company_name: 'Fastenal Company', release_time: 'Before Market Open', eps_estimate: '0.51', eps_actual: null, revenue_estimate: '1.94', revenue_actual: null },
             { ticker: 'SLP', company_name: 'Simulations Plus, Inc.', release_time: 'After Market Close', eps_estimate: '0.12', eps_actual: null, revenue_estimate: '0.02', revenue_actual: null }
@@ -6383,6 +6445,12 @@ function generateEarningsICS() {
     function formatICSDate(dateStr, time) {
         const date = new Date(dateStr);
         
+        // Check if date is valid
+        if (isNaN(date.getTime())) {
+            console.error('Invalid date string:', dateStr);
+            return null;
+        }
+        
         // Set time based on release time
         if (time.toLowerCase().includes('before')) {
             date.setHours(9, 30, 0, 0); // 9:30 AM EST (market open)
@@ -6402,9 +6470,26 @@ function generateEarningsICS() {
     Object.entries(EARNINGS_DATA).forEach(([date, earnings]) => {
         earnings.forEach(earning => {
             const startTime = formatICSDate(date, earning.release_time);
-            const endTime = new Date(startTime.replace('Z', ''));
-            endTime.setMinutes(endTime.getMinutes() + 30); // 30-minute event
-            const endTimeFormatted = endTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            if (!startTime) {
+                console.error('Failed to format date for:', earning.ticker, date);
+                return; // Skip this earning if date formatting fails
+            }
+            
+            // Create end time by parsing the formatted start time back to a Date object
+            const startDate = new Date(date);
+            const endDate = new Date(startDate);
+            
+            // Set the same time as start time, then add 30 minutes
+            if (earning.release_time.toLowerCase().includes('before')) {
+                endDate.setHours(9, 30, 0, 0);
+            } else if (earning.release_time.toLowerCase().includes('after')) {
+                endDate.setHours(16, 0, 0, 0);
+            } else {
+                endDate.setHours(12, 0, 0, 0);
+            }
+            endDate.setMinutes(endDate.getMinutes() + 30); // 30-minute event
+            
+            const endTimeFormatted = endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
             
             const summary = `${earning.ticker} Earnings Release`;
             const description = [
@@ -6442,6 +6527,28 @@ function generateEarningsICS() {
     return icsContent;
 }
 
+// Make functions globally available
+window.downloadEarningsICS = downloadEarningsICS;
+window.generateEarningsICS = generateEarningsICS;
+
+// Test function for debugging
+window.testICSDownload = function() {
+    console.log('Testing ICS download...');
+    try {
+        const testContent = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:Test\r\nBEGIN:VEVENT\r\nSUMMARY:Test Event\r\nDTSTART:20250716T090000Z\r\nDTEND:20250716T100000Z\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n';
+        const blob = new Blob([testContent], { type: 'text/calendar' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'test.ics';
+        a.click();
+        URL.revokeObjectURL(url);
+        console.log('Test download completed');
+    } catch (e) {
+        console.error('Test download failed:', e);
+    }
+};
+
 // Initialize Earnings Calendar when modal opens
 document.addEventListener('DOMContentLoaded', function() {
     const earningsCalendarBtn = document.getElementById('earningsCalendarBtn');
@@ -6452,6 +6559,19 @@ document.addEventListener('DOMContentLoaded', function() {
         earningsCalendarBtn.addEventListener('click', function() {
             earningsCalendarModal.style.display = 'block';
             initEarningsCalendar();
+            
+            // Add download button event listener after modal is shown
+            setTimeout(() => {
+                const downloadBtn = document.getElementById('downloadIcsBtn');
+                if (downloadBtn && !downloadBtn.hasAttribute('data-listener-added')) {
+                    downloadBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        console.log('Download button clicked');
+                        downloadEarningsICS();
+                    });
+                    downloadBtn.setAttribute('data-listener-added', 'true');
+                }
+            }, 100);
         });
     }
 
