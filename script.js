@@ -3864,6 +3864,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const allElements = document.querySelectorAll('*[id*="price"], *[id*="change"], *[class*="price"], *[class*="change"]');
         console.log('All price/change related elements:', allElements);
         
+        // Update stock name in header (ensure it shows full company name)
+        const stockNameElem = document.getElementById('stock-name');
+        if (stockNameElem && data.name) {
+            stockNameElem.textContent = data.name;
+            console.log('Updated stock name in overview:', data.name);
+        } else if (stockNameElem && data.symbol) {
+            stockNameElem.textContent = data.symbol;
+            console.log('Fallback to symbol for stock name:', data.symbol);
+        }
+        
         // Update price - using correct selectors from HTML
         const priceElement = document.getElementById('current-price');
         
@@ -4697,6 +4707,7 @@ class StockAnalysis {
 
         return {
             symbol: meta.symbol,
+            name: meta.longName || meta.shortName || meta.symbol, // Add full company name
             currency: meta.currency,
             timestamps: timestamps,
             priceHistory: timestamps.map((time, i) => ({
@@ -4729,7 +4740,7 @@ class StockAnalysis {
 
     updateUI(data) {
         const elements = {
-            'stock-name': data.symbol,
+            'stock-name': data.name || data.symbol, // Use full name if available, otherwise symbol
             'current-price': `$${data.priceHistory[data.priceHistory.length - 1].value.toFixed(2)}`,
             'market-cap': this.formatMarketCap(data.fundamentalData.marketCap),
             'high-52-week': `$${data.fundamentalData.high52Week.toFixed(2)}`,

@@ -4915,11 +4915,11 @@ th, td {
     stroke: currentColor;
 }
 
-/* Stock Overview */
+/* Stock Overview - Enhanced Design */
 .stock-overview {
-    margin-bottom: 25px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 30px;
+    padding: 24px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .stock-title {
@@ -4927,32 +4927,59 @@ th, td {
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 20px;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, rgba(1, 195, 168, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(1, 195, 168, 0.1);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.stock-title:hover {
+    background: linear-gradient(135deg, rgba(1, 195, 168, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+    border-color: rgba(1, 195, 168, 0.2);
+    transform: translateY(-1px);
 }
 
 .stock-title h2 {
     color: #fff;
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 28px;
+    font-weight: 700;
     margin: 0;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .price-display {
     display: flex !important;
     align-items: center !important;
-    gap: 12px !important;
+    gap: 16px !important;
+    padding: 12px 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .price-display .price {
-    font-size: 20px !important;
-    font-weight: 700 !important;
-    color: #fff !important;
+    font-size: 24px !important;
+    font-weight: 800 !important;
+    color: #01c3a8 !important;
+    text-shadow: 0 0 10px rgba(1, 195, 168, 0.3);
+    letter-spacing: -0.5px;
 }
 
-/* CRITICAL: Price change visibility fixes */
+/* CRITICAL: Price and stock name enhanced styling */
 #current-price {
+    color: #01c3a8 !important;
+    font-weight: 800 !important;
+    font-size: 24px !important;
+    text-shadow: 0 0 10px rgba(1, 195, 168, 0.3) !important;
+    letter-spacing: -0.5px !important;
+}
+
+#stock-name {
     color: #fff !important;
-    font-weight: 700 !important;
+    font-weight: 400 !important;
     font-size: 20px !important;
 }
 
@@ -4960,21 +4987,21 @@ th, td {
     display: inline-block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    padding: 6px 12px !important;
-    border-radius: 8px !important;
-    margin-left: 8px !important;
+    font-weight: 400 !important;
+    font-size: 12px !important;
+    padding: 2px 6px !important;
+    border-radius: 2px !important;
+    margin-left: 6px !important;
 }
 
 /* Stock statistics (YTD and 52W) styling */
 .stock-stats span {
-    font-size: 0.75rem !important;
+    font-size: 0.7rem !important;
 }
 
 .stock-stats span:last-child {
-    font-size: 0.8rem !important;
-    font-weight: 600 !important;
+    font-size: 0.7rem !important;
+    font-weight: 400 !important;
 }
 
 /* YTD and 52W performance colors (similar to insider trading modal) */
@@ -5007,24 +5034,11 @@ th, td {
     color: #ccc !important;
 }
 
-/* Percentage color classes for stock price changes */
-#price-change.positive,
-#price-change .positive,
-.price-change-positive {
-    color: #4CAF50 !important;
-    background: rgba(76, 175, 80, 0.1) !important;
-}
-
-#price-change.negative,
-#price-change .negative,
-.price-change-negative {
-    color: #f44336 !important;
-    background: rgba(244, 67, 54, 0.1) !important;
-}
-
-#stock-name {
+/* Minimalistic stock styling */
+#current-price {
     color: #fff !important;
-    font-weight: 600 !important;
+    font-weight: 400 !important;
+    font-size: 22px !important;
 }
 
 /* Analysis Tabs - Minimalistic Design */
@@ -5506,16 +5520,29 @@ th, td {
     }
     
     .indicator-item {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         gap: 8px;
         padding: 12px 16px;
         border-radius: 12px;
     }
     
+    .indicator-name {
+        flex: 1;
+        text-align: left;
+    }
+    
+    .indicator-values {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+    
     .indicator-value {
         margin: 0;
-        text-align: left;
+        text-align: right;
         min-width: auto;
     }
     
@@ -5673,6 +5700,9 @@ th, td {
     }
     
     .indicator-item {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         padding: 10px 12px;
         border-radius: 10px;
         gap: 6px;
@@ -5681,6 +5711,14 @@ th, td {
     .indicator-name {
         font-size: 13px;
         font-weight: 500;
+        flex: 1;
+    }
+    
+    .indicator-values {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
     }
     
     .indicator-value {
@@ -5835,6 +5873,9 @@ th, td {
     }
     
     .indicator-item {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         padding: 8px 10px;
         border-radius: 8px;
         gap: 4px;
@@ -5843,6 +5884,14 @@ th, td {
     .indicator-name {
         font-size: 12px;
         font-weight: 500;
+        flex: 1;
+    }
+    
+    .indicator-values {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
     }
     
     .indicator-value {
