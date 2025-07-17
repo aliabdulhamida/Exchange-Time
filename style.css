@@ -4892,7 +4892,7 @@ th, td {
     padding: 14px 16px;
     background: none;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 0;
+    border-radius: 12px;
     color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -4977,26 +4977,34 @@ th, td {
     font-weight: 600 !important;
 }
 
-/* YTD and 52W performance colors with higher specificity */
-.stock-stats #ytd-performance.positive,
-.stock-stats #52w-performance.positive,
-#ytd-performance.positive,
-#52w-performance.positive {
-    color: #4CAF50 !important;
+/* YTD and 52W performance colors (similar to insider trading modal) */
+.stock-stats #ytd-performance,
+.stock-stats #52w-performance,
+#ytd-performance,
+#52w-performance {
+    transition: color 0.2s ease;
 }
 
-.stock-stats #ytd-performance.negative,
-.stock-stats #52w-performance.negative,
-#ytd-performance.negative,
-#52w-performance.negative {
-    color: #f44336 !important;
+/* Ensure inline styles work for YTD and 52W performance colors */
+#analysis-modal #ytd-performance[style*="color: #7FFF8E"],
+#analysis-modal #ytd-performance[style*="color:#7FFF8E"],
+#analysis-modal #52w-performance[style*="color: #7FFF8E"],
+#analysis-modal #52w-performance[style*="color:#7FFF8E"] {
+    color: #7FFF8E !important;
 }
 
-.stock-stats #ytd-performance.neutral,
-.stock-stats #52w-performance.neutral,
-#ytd-performance.neutral,
-#52w-performance.neutral {
-    color: rgba(255, 255, 255, 0.6) !important;
+#analysis-modal #ytd-performance[style*="color: #ff8a80"],
+#analysis-modal #ytd-performance[style*="color:#ff8a80"],
+#analysis-modal #52w-performance[style*="color: #ff8a80"],
+#analysis-modal #52w-performance[style*="color:#ff8a80"] {
+    color: #ff8a80 !important;
+}
+
+#analysis-modal #ytd-performance[style*="color: #ccc"],
+#analysis-modal #ytd-performance[style*="color:#ccc"],
+#analysis-modal #52w-performance[style*="color: #ccc"],
+#analysis-modal #52w-performance[style*="color:#ccc"] {
+    color: #ccc !important;
 }
 
 /* Percentage color classes for stock price changes */
@@ -5012,46 +5020,6 @@ th, td {
 .price-change-negative {
     color: #f44336 !important;
     background: rgba(244, 67, 54, 0.1) !important;
-}
-
-/* YTD and 52W performance colors - with higher specificity */
-#ytd-performance.positive,
-#52w-performance.positive,
-.performance-positive,
-#analysis-modal #ytd-performance.positive,
-#analysis-modal #52w-performance.positive {
-    color: #4CAF50 !important;
-}
-
-#ytd-performance.negative,
-#52w-performance.negative,
-.performance-negative,
-#analysis-modal #ytd-performance.negative,
-#analysis-modal #52w-performance.negative {
-    color: #f44336 !important;
-}
-
-#ytd-performance.neutral,
-#52w-performance.neutral,
-.performance-neutral,
-#analysis-modal #ytd-performance.neutral,
-#analysis-modal #52w-performance.neutral {
-    color: rgba(255, 255, 255, 0.6) !important;
-}
-
-/* Ensure inline styles work for YTD and 52W performance */
-#analysis-modal #ytd-performance[style*="color: #4CAF50"],
-#analysis-modal #ytd-performance[style*="color:#4CAF50"],
-#analysis-modal #52w-performance[style*="color: #4CAF50"],
-#analysis-modal #52w-performance[style*="color:#4CAF50"] {
-    color: #4CAF50 !important;
-}
-
-#analysis-modal #ytd-performance[style*="color: #f44336"],
-#analysis-modal #ytd-performance[style*="color:#f44336"],
-#analysis-modal #52w-performance[style*="color: #f44336"],
-#analysis-modal #52w-performance[style*="color:#f44336"] {
-    color: #f44336 !important;
 }
 
 #stock-name {
@@ -5644,20 +5612,20 @@ th, td {
         font-weight: 600 !important;
     }
     
-    /* Ensure YTD and 52W colors work on mobile */
-    .stock-stats #ytd-performance.positive,
-    .stock-stats #52w-performance.positive {
-        color: #4CAF50 !important;
+    /* Ensure YTD and 52W colors work on mobile (insider trading style) */
+    .stock-stats #ytd-performance[style*="color: #7FFF8E"],
+    .stock-stats #52w-performance[style*="color: #7FFF8E"] {
+        color: #7FFF8E !important;
     }
     
-    .stock-stats #ytd-performance.negative,
-    .stock-stats #52w-performance.negative {
-        color: #f44336 !important;
+    .stock-stats #ytd-performance[style*="color: #ff8a80"],
+    .stock-stats #52w-performance[style*="color: #ff8a80"] {
+        color: #ff8a80 !important;
     }
     
-    .stock-stats #ytd-performance.neutral,
-    .stock-stats #52w-performance.neutral {
-        color: rgba(255, 255, 255, 0.6) !important;
+    .stock-stats #ytd-performance[style*="color: #ccc"],
+    .stock-stats #52w-performance[style*="color: #ccc"] {
+        color: #ccc !important;
     }
     
     /* Optimize chart controls container on mobile */
@@ -5839,20 +5807,20 @@ th, td {
         font-size: 0.7rem !important;
     }
     
-    /* Ensure YTD and 52W colors work on very small screens */
-    .stock-stats #ytd-performance.positive,
-    .stock-stats #52w-performance.positive {
-        color: #4CAF50 !important;
+    /* Ensure YTD and 52W colors work on very small screens (insider trading style) */
+    .stock-stats #ytd-performance[style*="color: #7FFF8E"],
+    .stock-stats #52w-performance[style*="color: #7FFF8E"] {
+        color: #7FFF8E !important;
     }
     
-    .stock-stats #ytd-performance.negative,
-    .stock-stats #52w-performance.negative {
-        color: #f44336 !important;
+    .stock-stats #ytd-performance[style*="color: #ff8a80"],
+    .stock-stats #52w-performance[style*="color: #ff8a80"] {
+        color: #ff8a80 !important;
     }
     
-    .stock-stats #ytd-performance.neutral,
-    .stock-stats #52w-performance.neutral {
-        color: rgba(255, 255, 255, 0.6) !important;
+    .stock-stats #ytd-performance[style*="color: #ccc"],
+    .stock-stats #52w-performance[style*="color: #ccc"] {
+        color: #ccc !important;
     }
     
     /* Ultra compact chart controls */

@@ -3810,30 +3810,26 @@ document.addEventListener("DOMContentLoaded", () => {
             if (ytdElement) {
                 ytdElement.textContent = ytdPerformance;
                 ytdElement.classList.remove('positive', 'negative', 'neutral');
+                // Apply color formatting similar to insider trading modal
                 if (ytdPerformance.includes('+')) {
-                    ytdElement.style.color = '#4CAF50'; // Green for positive
-                    ytdElement.classList.add('positive');
+                    ytdElement.style.color = '#7FFF8E'; // Light green for positive
                 } else if (ytdPerformance.includes('-')) {
-                    ytdElement.style.color = '#f44336'; // Red for negative
-                    ytdElement.classList.add('negative');
+                    ytdElement.style.color = '#ff8a80'; // Light red for negative
                 } else {
-                    ytdElement.style.color = 'rgba(255, 255, 255, 0.6)'; // Gray for N/A
-                    ytdElement.classList.add('neutral');
+                    ytdElement.style.color = '#ccc'; // Gray for N/A
                 }
             }
             
             if (week52Element) {
                 week52Element.textContent = week52Performance;
                 week52Element.classList.remove('positive', 'negative', 'neutral');
+                // Apply color formatting similar to insider trading modal
                 if (week52Performance.includes('+')) {
-                    week52Element.style.color = '#4CAF50'; // Green for positive
-                    week52Element.classList.add('positive');
+                    week52Element.style.color = '#7FFF8E'; // Light green for positive
                 } else if (week52Performance.includes('-')) {
-                    week52Element.style.color = '#f44336'; // Red for negative
-                    week52Element.classList.add('negative');
+                    week52Element.style.color = '#ff8a80'; // Light red for negative
                 } else {
-                    week52Element.style.color = 'rgba(255, 255, 255, 0.6)'; // Gray for N/A
-                    week52Element.classList.add('neutral');
+                    week52Element.style.color = '#ccc'; // Gray for N/A
                 }
             }
             
