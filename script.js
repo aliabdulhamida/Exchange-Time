@@ -5966,8 +5966,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const insiderError = document.getElementById('insider-error');
     const insiderErrorMessage = document.getElementById('insider-error-message');
     const insiderCompanyName = document.getElementById('insider-company-name');
+    const openStockAnalysisBtn = document.getElementById('open-stock-analysis');
+    console.log('Stock Analysis Button found:', openStockAnalysisBtn);
     let stockChart = null;
     let performanceMetricsData = null; // Store fixed YTD and 52W data
+    let currentTickerSymbol = null; // Store current ticker for stock analysis
+
+    // Global function to set the current ticker symbol for the stock analysis button
+    window.setStockAnalysisTicker = function(ticker) {
+        currentTickerSymbol = ticker ? ticker.toUpperCase() : null;
+        console.log('Stock Analysis ticker set to:', currentTickerSymbol);
+    };
 
     // Open modal when button is clicked
     insiderTradesBtn.addEventListener('click', function () {
@@ -6043,6 +6052,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     async function fetchInsiderTrades(ticker) {
+        // Store current ticker for stock analysis button
+        currentTickerSymbol = ticker.toUpperCase();
+        
         // Reset and show loading state
         resetInsiderModal();
         insiderLoading.style.display = 'block';
@@ -7305,17 +7317,30 @@ const EARNINGS_DATA = {
                     </div>
                     <div class="modal-body">
                         <div class="company-overview">
-                            <div class="company-basic-info-minimal">
-                                <div class="company-main-info">
-                                    <h3 id="company-full-name">Company Name</h3>
-                                    <div class="company-meta">
-                                        <span class="ticker-minimal" id="company-ticker-large">TICKER</span>
+                            <div class="company-header-section" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                                <div class="company-basic-info-minimal">
+                                    <div class="company-main-info">
+                                        <div class="company-name-section">
+                                            <h3 id="company-full-name">Company Name</h3>
+                                            <div class="company-meta">
+                                                <span class="ticker-minimal" id="company-ticker-large">TICKER</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <button class="insider-btn-minimal" id="view-insider-trades-btn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                                    <span>Insider Trades</span>
-                                </button>
+                                
+                                <div class="action-buttons-container" style="display: flex; gap: 12px; flex-direction: column;">
+                                    <button class="insider-btn-minimal" id="view-insider-trades-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                        <span>Insider Trades</span>
+                                    </button>
+                                    <button class="insider-btn-minimal" id="view-stock-analysis-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                                        </svg>
+                                        <span>Stock Analysis</span>
+                                    </button>
+                                </div>
                             </div>
                             
                             <div class="earnings-details">
@@ -8031,6 +8056,7 @@ const EARNINGS_DATA = {
     // Function to setup action buttons in company modal
     function setupCompanyActionButtons(ticker, modal) {
         const insiderBtn = modal.querySelector('#view-insider-trades-btn');
+        const stockAnalysisBtn = modal.querySelector('#view-stock-analysis-btn');
         const descriptionToggleBtn = modal.querySelector('#description-toggle-btn');
         const descriptionText = modal.querySelector('#company-description-text');
         
@@ -8040,6 +8066,11 @@ const EARNINGS_DATA = {
             insiderBtn.parentNode.replaceChild(newInsiderBtn, insiderBtn);
         }
         
+        if (stockAnalysisBtn) {
+            const newStockAnalysisBtn = stockAnalysisBtn.cloneNode(true);
+            stockAnalysisBtn.parentNode.replaceChild(newStockAnalysisBtn, stockAnalysisBtn);
+        }
+        
         if (descriptionToggleBtn) {
             const newToggleBtn = descriptionToggleBtn.cloneNode(true);
             descriptionToggleBtn.parentNode.replaceChild(newToggleBtn, descriptionToggleBtn);
@@ -8047,6 +8078,7 @@ const EARNINGS_DATA = {
         
         // Get the new elements after cloning
         const newInsiderBtn = modal.querySelector('#view-insider-trades-btn');
+        const newStockAnalysisBtn = modal.querySelector('#view-stock-analysis-btn');
         const newDescriptionToggleBtn = modal.querySelector('#description-toggle-btn');
         
         // Store the full description
@@ -8130,6 +8162,30 @@ const EARNINGS_DATA = {
                 }, 300);
             }
         });
+        
+        // Stock Analysis button
+        newStockAnalysisBtn.addEventListener('click', () => {
+            console.log('Stock Analysis clicked for ticker:', ticker);
+            
+            // Close all modals first
+            closeAllModals();
+            
+            // Open stock analysis modal with this ticker
+            const analysisModal = document.getElementById('analysis-modal');
+            const stockSymbolInput = document.getElementById('stock-symbol');
+            const analyzeButton = document.getElementById('analyze-btn');
+            
+            if (analysisModal && stockSymbolInput && analyzeButton) {
+                // Open the analysis modal
+                analysisModal.style.display = 'block';
+                
+                // Set the ticker in the search input
+                stockSymbolInput.value = ticker;
+                
+                // Trigger the search
+                analyzeButton.click();
+            }
+        });
     }
 
     // Function to close all modals
@@ -8138,7 +8194,7 @@ const EARNINGS_DATA = {
         const modalIds = [
             'company-details-modal',
             'insider-modal',
-            'stock-analysis-modal',
+            'analysis-modal',
             'earnings-calendar-modal',
             'dividend-modal',
             'screener-modal',
