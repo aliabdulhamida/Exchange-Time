@@ -4932,13 +4932,6 @@ th, td {
     background: linear-gradient(135deg, rgba(1, 195, 168, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
     border: 1px solid rgba(1, 195, 168, 0.1);
     border-radius: 16px;
-    transition: all 0.3s ease;
-}
-
-.stock-title:hover {
-    background: linear-gradient(135deg, rgba(1, 195, 168, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
-    border-color: rgba(1, 195, 168, 0.2);
-    transform: translateY(-1px);
 }
 
 .stock-title h2 {
