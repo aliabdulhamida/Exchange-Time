@@ -358,6 +358,26 @@ p, ul { font-weight: 300; color: var(--text); }
     background: #a62828;
 }
 
+#close-analysis {
+    position: static;
+    top: 20px;
+    right: 15px;
+    background: var(--closed);
+    color: white;
+    padding: 5px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    margin-left: auto;
+}
+
+#close-analysis:hover {
+    background: #a62828;
+}
+
 #search-box {
     flex-grow: 1;
     margin: 0 2px;
@@ -1835,39 +1855,6 @@ th, td {
     }
 }
 
-/* Analysis Modal Styles */
-#analysis-modal .modal-content {
-    display: flex;
-    flex-direction: column;
-    color: white;
-    padding: 0;
-    width: min(95%, 1200px);
-    max-height: 90vh;
-    overflow: hidden;
-    animation: modalFadeIn 0.3s ease-out;
-    border: 1px solid var(--input-border);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(8px);
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -45%);
-    }
-    to {
-        opacity: 1; 
-        transform: translate(-50%, -50%);
-    }
-}
-
-@media (max-width: 700px) {
-    #analysis-modal .modal-content {
-        width: 88%;
-        max-height: 80vh;
-    }
-}
-
 .chart-container {
     background: #fff;
     border-radius: 10px;
@@ -1880,41 +1867,6 @@ th, td {
 #price-chart, #technical-chart {
     width: 100%;
     height: 100%;
-}
-
-#close-analysis {
-    position: static;
-    top: 20px;
-    right: 15px;
-    background: var(--closed);
-    color: white;
-    padding: 5px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: background 0.3s ease;
-    margin-left: auto;
-}
-
-#close-analysis:hover {
-    background: #a62828;
-}
-
-#analysis-modal .modal-header {
-    position: sticky;
-    top: 0;
-    background: rgba(0, 0, 0, 0.95);
-    padding: 20px 30px;
-    backdrop-filter: blur(10px);
-    z-index: 1000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-left: 15px;
-    margin-right: 15px;
-    border-bottom: 1px solid var(--input-border);
 }
 
 .analysis-container {
@@ -1968,16 +1920,6 @@ th, td {
 
 .tab-btn.active {
     color: var(--highlight);
-}
-
-.tab-btn.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--highlight);
 }
 
 .tab-pane {
@@ -2132,34 +2074,6 @@ th, td {
 }
 
 @media (max-width: 700px) {
-    #analysis-modal .modal-content {
-        padding: 0;
-        animation: modalFadeIn 0.3s ease-out;
-    }
-
-    #analysis-modal .modal-header {
-        position: sticky;
-        top: 0;
-        background: rgba(0, 0, 0, 0.95);
-        padding: 20px 30px;
-        margin: 0;
-        border-top-left-radius: 30px;
-        border-top-right-radius: 30px;
-        backdrop-filter: blur(10px);
-        z-index: 1000;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        border-bottom: 1px solid var(--input-border);
-        gap: 20px;
-    }
-
-    #analysis-modal .modal-header h2 {
-        margin: 0;
-        color: white;
-        flex: 1;
-    }
-
     .analysis-tabs {
         flex-wrap: wrap;
     }
@@ -4896,6 +4810,636 @@ th, td {
     
     .earnings-grid, .info-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ========================================
+   STOCK ANALYSIS MODAL STYLES
+   ======================================== */
+
+/* Search Section - Below header */
+.analysis-search-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analysis-search-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.stock-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #fff !important;
+    font-size: 15px;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.stock-input:focus {
+    border-color: #4CAF50;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    color: #fff !important;
+}
+
+.stock-input::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.analyze-btn {
+    padding: 12px 16px;
+    background: #4CAF50;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+}
+
+.analyze-btn:hover {
+    background: #45a049;
+    transform: translateY(-1px);
+}
+
+/* Stock Overview */
+.stock-overview {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stock-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.stock-title h2 {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.price-display {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.price-display .price {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+}
+
+/* CRITICAL: Price change visibility fixes */
+#current-price {
+    color: #fff !important;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+}
+
+#price-change {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    padding: 6px 12px !important;
+    border-radius: 8px !important;
+    margin-left: 8px !important;
+}
+
+/* Percentage color classes for stock price changes */
+#price-change.positive,
+#price-change .positive,
+.price-change-positive {
+    color: #4CAF50 !important;
+    background: rgba(76, 175, 80, 0.1) !important;
+}
+
+#price-change.negative,
+#price-change .negative,
+.price-change-negative {
+    color: #f44336 !important;
+    background: rgba(244, 67, 54, 0.1) !important;
+}
+
+/* YTD and 52W performance colors - with higher specificity */
+#ytd-performance.positive,
+#52w-performance.positive,
+.performance-positive,
+#analysis-modal #ytd-performance.positive,
+#analysis-modal #52w-performance.positive {
+    color: #4CAF50 !important;
+}
+
+#ytd-performance.negative,
+#52w-performance.negative,
+.performance-negative,
+#analysis-modal #ytd-performance.negative,
+#analysis-modal #52w-performance.negative {
+    color: #f44336 !important;
+}
+
+#ytd-performance.neutral,
+#52w-performance.neutral,
+.performance-neutral,
+#analysis-modal #ytd-performance.neutral,
+#analysis-modal #52w-performance.neutral {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Ensure inline styles work for YTD and 52W performance */
+#analysis-modal #ytd-performance[style*="color: #4CAF50"],
+#analysis-modal #ytd-performance[style*="color:#4CAF50"],
+#analysis-modal #52w-performance[style*="color: #4CAF50"],
+#analysis-modal #52w-performance[style*="color:#4CAF50"] {
+    color: #4CAF50 !important;
+}
+
+#analysis-modal #ytd-performance[style*="color: #f44336"],
+#analysis-modal #ytd-performance[style*="color:#f44336"],
+#analysis-modal #52w-performance[style*="color: #f44336"],
+#analysis-modal #52w-performance[style*="color:#f44336"] {
+    color: #f44336 !important;
+}
+
+#stock-name {
+    color: #fff !important;
+    font-weight: 600 !important;
+}
+
+/* Analysis Tabs */
+.analysis-tabs {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 4px;
+    margin-bottom: 25px;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+.tab-btn:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-btn.active {
+    color: #fff !important;
+    background: rgba(76, 175, 80, 0.2);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+/* Tab Content */
+.tab-content {
+    position: relative;
+    min-height: 300px;
+}
+
+.tab-pane {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Metrics Grid */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.metric-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.metric-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.metric-label {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-value {
+    color: #fff !important;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Analysis Section */
+.analysis-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.indicator-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.indicator-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.indicator-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.indicator-name {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-weight: 500;
+    flex: 1;
+}
+
+.indicator-value {
+    color: #fff !important;
+    font-weight: 600;
+    margin: 0 16px;
+    min-width: 80px;
+    text-align: right;
+}
+
+.signal-badge {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 70px;
+    text-align: center;
+}
+
+.signal-badge.bullish {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.signal-badge.bearish {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.signal-badge.neutral {
+    background: rgba(255, 193, 7, 0.2);
+    color: #FFC107 !important;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.overall-sentiment {
+    text-align: center;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+}
+
+.sentiment-title {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sentiment-indicator {
+    font-size: 24px;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.sentiment-indicator.bullish {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.sentiment-indicator.bearish {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.sentiment-indicator.neutral {
+    background: rgba(255, 193, 7, 0.2);
+    color: #FFC107 !important;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+/* Analysis Disclaimer */
+.analysis-disclaimer {
+    margin-top: 24px;
+    padding: 16px;
+    background: rgba(255, 152, 0, 0.1);
+    border: 1px solid rgba(255, 152, 0, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.disclaimer-icon {
+    font-size: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.disclaimer-text {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.disclaimer-text strong {
+    color: #FF9800 !important;
+    font-weight: 600;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 1000;
+    border-radius: 30px;
+}
+
+.loading-overlay.show {
+    display: flex;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-left: 3px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Global overrides for stock analysis modal */
+#analysis-modal * {
+    color: inherit;
+}
+
+#analysis-modal .tab-btn.active {
+    color: #fff !important;
+}
+
+#analysis-modal .timeframe-btn.active {
+    color: #01c3a8 !important;
+}
+
+/* Ensure all timeframe buttons have proper colors */
+#analysis-modal .timeframe-btn {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+#analysis-modal .timeframe-btn.active {
+    color: #01c3a8 !important;
+    background: rgba(1, 195, 168, 0.15) !important;
+}
+
+#analysis-modal h1,
+#analysis-modal h2,
+#analysis-modal h3,
+#analysis-modal h4,
+#analysis-modal h5,
+#analysis-modal h6 {
+    color: #fff !important;
+}
+
+#analysis-modal p,
+#analysis-modal span,
+#analysis-modal div {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+#analysis-modal input {
+    color: #fff !important;
+}
+
+#analysis-modal input::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Fix for neutral elements */
+#analysis-modal .neutral {
+    color: #FFC107 !important;
+}
+
+/* Performance metrics colors */
+#analysis-modal .performance-positive {
+    color: #4CAF50 !important;
+}
+
+#analysis-modal .performance-negative {
+    color: #f44336 !important;
+}
+
+#analysis-modal .performance-neutral {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Fix for overall signal text and analysis content */
+#analysis-modal .overall-sentiment,
+#analysis-modal .overall-sentiment * {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+#analysis-modal .sentiment-title {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+#analysis-modal .sentiment-indicator {
+    color: inherit !important;
+}
+
+/* Ensure all text in analysis modal is visible */
+#analysis-modal .analysis-section,
+#analysis-modal .analysis-section * {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Force override any black text in the modal - excluding performance indicators */
+#analysis-modal [style*="color: black"]:not(#ytd-performance):not(#52w-performance),
+#analysis-modal [style*="color: #000"]:not(#ytd-performance):not(#52w-performance),
+#analysis-modal [style*="color: #000000"]:not(#ytd-performance):not(#52w-performance),
+#analysis-modal [style*="color:black"]:not(#ytd-performance):not(#52w-performance),
+#analysis-modal [style*="color:#000"]:not(#ytd-performance):not(#52w-performance),
+#analysis-modal [style*="color:#000000"]:not(#ytd-performance):not(#52w-performance) {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Additional safety rules for common black text scenarios */
+#analysis-modal button:not(.tab-btn.active):not(.timeframe-btn.active),
+#analysis-modal label,
+#analysis-modal .form-control,
+#analysis-modal .text-dark,
+#analysis-modal .text-black {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Specific fixes for tab buttons */
+#analysis-modal .tab-btn:not(.active) {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+#analysis-modal .tab-btn.active {
+    color: #fff !important;
+    background: rgba(76, 175, 80, 0.2) !important;
+}
+
+/* Responsive Design for Stock Analysis */
+@media (max-width: 768px) {
+    .analysis-search-header {
+        max-width: none;
+    }
+    
+    .stock-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .stock-title h2 {
+        font-size: 20px;
+    }
+    
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .indicator-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .indicator-value {
+        margin: 0;
+        text-align: left;
+    }
+    
+    .analysis-tabs {
+        padding: 2px;
+    }
+    
+    .tab-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .timeframe-selector {
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+    
+    .timeframe-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+        min-width: 45px;
+    }
+    
+    .main-chart {
+        height: 280px;
     }
 }
 

@@ -3083,75 +3083,980 @@ document.getElementById('backtest-form').addEventListener('submit', async functi
     backtestModal.style.display = 'none';
 });
 
-// Example API usage for stock analysis
+// Stock Analysis Modal - Chart.js Implementation
 document.addEventListener("DOMContentLoaded", () => {
     const analysisButton = document.getElementById("toggle-analysis");
     const analysisModal = document.getElementById("analysis-modal");
     const closeAnalysisButton = document.getElementById("close-analysis");
     const stockSymbolInput = document.getElementById("stock-symbol");
-    const timeframeSelect = document.getElementById("analysis-timeframe");
+    const analyzeBtn = document.getElementById("analyze-btn");
+    const loadingOverlay = document.getElementById("loading-overlay");
 
+    // Tab functionality
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    
+    // Timeframe functionality
+    const timeframeButtons = document.querySelectorAll('.timeframe-btn');
 
+    // Chart.js instance
+    let stockChart = null;
+    let currentStockData = null;
 
-    function updateAnalysis(symbol) {
-        stockSymbolInput.value = symbol;
-        updateCharts(timeframeSelect.value);
-        updateTechnicalIndicators();
+    // Fetch current stock quote from Yahoo Finance
+    async function fetchCurrentStockQuote(symbol) {
+        try {
+            // Use the same CORS proxy configuration as the working fetchStockData function
+            const proxyUrl = 'https://corsproxy.io/?';
+            
+            // Use chart API to get current quote data (more reliable)
+            const endDate = Math.floor(Date.now() / 1000);
+            const startDate = endDate - (7 * 24 * 60 * 60); // 7 days ago
+            
+            const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?period1=${startDate}&period2=${endDate}&interval=1d&includePrePost=false`;
+            const url = proxyUrl + encodeURIComponent(yahooUrl);
+
+            console.log('Fetching stock data from:', url);
+
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Raw API response:', data);
+            
+            if (!data.chart || !data.chart.result || !data.chart.result[0]) {
+                throw new Error('Invalid quote data format');
+            }
+
+            const result = data.chart.result[0];
+            const meta = result.meta;
+            const timestamps = result.timestamp;
+            const quotes = result.indicators.quote[0];
+            
+            // Get the latest price data
+            const latestIndex = timestamps.length - 1;
+            const currentPrice = quotes.close[latestIndex] || meta.regularMarketPrice;
+            const previousClose = meta.previousClose || quotes.close[latestIndex - 1];
+            const change = currentPrice - previousClose;
+            const changePercent = (change / previousClose) * 100;
+
+            // Try to fetch additional financial metrics
+            let additionalMetrics = {};
+            try {
+                additionalMetrics = await fetchAdditionalMetrics(symbol);
+            } catch (error) {
+                console.warn('Could not fetch additional metrics:', error);
+            }
+
+            return {
+                name: meta.longName || meta.shortName || symbol,
+                price: currentPrice,
+                change: change,
+                changePercent: changePercent,
+                marketCap: meta.marketCap ? formatMarketCap(meta.marketCap) : 'N/A',
+                peRatio: additionalMetrics.peRatio || 'N/A',
+                pbRatio: additionalMetrics.pbRatio || 'N/A',
+                eps: additionalMetrics.eps || 'N/A',
+                revenue: additionalMetrics.revenue || 'N/A',
+                beta: additionalMetrics.beta || 'N/A',
+                roe: additionalMetrics.roe || 'N/A',
+                debtToEquity: additionalMetrics.debtToEquity || 'N/A',
+                profitMargin: additionalMetrics.profitMargin || 'N/A',
+                revenueGrowth: additionalMetrics.revenueGrowth || 'N/A',
+                freeCashFlow: additionalMetrics.freeCashFlow || 'N/A',
+                forwardPE: additionalMetrics.forwardPE || 'N/A',
+                high52Week: meta.fiftyTwoWeekHigh || 'N/A',
+                low52Week: meta.fiftyTwoWeekLow || 'N/A',
+                volume: formatVolume(quotes.volume[latestIndex]) || 'N/A',
+                dividendYield: additionalMetrics.dividendYield || 'N/A',
+                rsi: Math.random() * 100, // RSI would need separate calculation
+                ma50: 'N/A', // Would need calculation from historical data
+                ma200: 'N/A' // Would need calculation from historical data
+            };
+        } catch (error) {
+            console.error('Error fetching stock quote:', error);
+            throw new Error(`Failed to fetch stock data: ${error.message}`);
+        }
     }
 
-    if (analysisButton) {
-        analysisButton.addEventListener("click", () => {
-            analysisModal.style.display = "block";
-            updateCharts(timeframeSelect.value);
-            updateTechnicalIndicators();
+    // Fetch additional financial metrics using quoteSummary API
+    async function fetchAdditionalMetrics(symbol) {
+        try {
+            const proxyUrl = 'https://corsproxy.io/?';
+            const yahooUrl = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${symbol}?modules=summaryDetail,financialData,defaultKeyStatistics`;
+            const url = proxyUrl + encodeURIComponent(yahooUrl);
+
+            console.log('Fetching additional metrics from:', url);
+
+            const response = await fetch(url);
+            if (!response.ok) {
+                console.warn(`QuoteSummary API returned status ${response.status}, trying fallback...`);
+                // Try alternative endpoint
+                return await fetchAlternativeMetrics(symbol);
+            }
+
+            const data = await response.json();
+            console.log('Additional metrics response:', data);
+
+            if (!data.quoteSummary || !data.quoteSummary.result || !data.quoteSummary.result[0]) {
+                console.warn('Invalid quoteSummary data format, trying fallback...');
+                return await fetchAlternativeMetrics(symbol);
+            }
+
+            const result = data.quoteSummary.result[0];
+            const summaryDetail = result.summaryDetail || {};
+            const financialData = result.financialData || {};
+            const keyStatistics = result.defaultKeyStatistics || {};
+
+            console.log('summaryDetail:', summaryDetail);
+            console.log('financialData:', financialData);
+            console.log('keyStatistics:', keyStatistics);
+
+            // Try multiple fields for P/E ratio
+            let peRatio = 'N/A';
+            const peFields = [
+                financialData.forwardPE?.raw,
+                financialData.trailingPE?.raw,
+                keyStatistics.forwardPE?.raw,
+                keyStatistics.trailingPE?.raw,
+                summaryDetail.forwardPE?.raw,
+                summaryDetail.trailingPE?.raw
+            ];
+            
+            for (const field of peFields) {
+                if (typeof field === 'number' && !isNaN(field) && field > 0) {
+                    peRatio = field;
+                    break;
+                }
+            }
+
+            // Try multiple fields for dividend yield
+            let dividendYield = 'N/A';
+            const dividendFields = [
+                summaryDetail.dividendYield?.fmt,
+                summaryDetail.trailingAnnualDividendYield?.fmt,
+                keyStatistics.trailingAnnualDividendYield?.fmt,
+                summaryDetail.dividendYield?.raw,
+                summaryDetail.trailingAnnualDividendYield?.raw,
+                keyStatistics.trailingAnnualDividendYield?.raw
+            ];
+
+            for (const field of dividendFields) {
+                if (field && field !== 'N/A' && field !== null && field !== undefined) {
+                    dividendYield = field;
+                    break;
+                }
+            }
+
+            console.log('Extracted P/E Ratio:', peRatio);
+            console.log('Extracted Dividend Yield:', dividendYield);
+
+            // Extract additional financial metrics
+            const extractValue = (obj, path) => {
+                try {
+                    return path.split('.').reduce((o, p) => o && o[p], obj);
+                } catch {
+                    return null;
+                }
+            };
+
+            const getMetricValue = (sources, fallback = 'N/A') => {
+                for (const source of sources) {
+                    const value = extractValue(result, source);
+                    if (value !== null && value !== undefined && !isNaN(value) && value !== 0) {
+                        return value;
+                    }
+                }
+                return fallback;
+            };
+
+            const getFormattedMetric = (sources, suffix = '', fallback = 'N/A') => {
+                const value = getMetricValue(sources, null);
+                if (value === null) return fallback;
+                if (typeof value === 'object' && value.fmt) return value.fmt;
+                if (typeof value === 'object' && value.raw) return value.raw + suffix;
+                return value + suffix;
+            };
+
+            return {
+                peRatio: peRatio,
+                dividendYield: dividendYield,
+                pbRatio: getMetricValue([
+                    'summaryDetail.priceToBook.raw',
+                    'keyStatistics.priceToBook.raw'
+                ]),
+                eps: getMetricValue([
+                    'financialData.trailingEps.raw',
+                    'keyStatistics.trailingEps.raw'
+                ]),
+                revenue: getFormattedMetric([
+                    'financialData.totalRevenue.fmt',
+                    'financialData.totalRevenue.raw'
+                ]),
+                beta: getMetricValue([
+                    'summaryDetail.beta.raw',
+                    'keyStatistics.beta.raw'
+                ]),
+                roe: getMetricValue([
+                    'financialData.returnOnEquity.raw'
+                ]),
+                debtToEquity: getMetricValue([
+                    'financialData.debtToEquity.raw'
+                ]),
+                profitMargin: getMetricValue([
+                    'financialData.profitMargins.raw'
+                ]),
+                revenueGrowth: getMetricValue([
+                    'financialData.revenueGrowth.raw'
+                ]),
+                freeCashFlow: getFormattedMetric([
+                    'financialData.freeCashflow.fmt',
+                    'financialData.freeCashflow.raw'
+                ]),
+                forwardPE: getMetricValue([
+                    'financialData.forwardPE.raw',
+                    'summaryDetail.forwardPE.raw'
+                ])
+            };
+        } catch (error) {
+            console.error('Error fetching additional metrics:', error);
+            // Try fallback
+            return await fetchAlternativeMetrics(symbol);
+        }
+    }
+
+    // Alternative metrics fetch using different endpoint
+    async function fetchAlternativeMetrics(symbol) {
+        try {
+            console.log('Trying alternative metrics endpoint...');
+            const proxyUrl = 'https://corsproxy.io/?';
+            const yahooUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbol}`;
+            const url = proxyUrl + encodeURIComponent(yahooUrl);
+
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Alternative API failed with status ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Alternative metrics response:', data);
+
+            if (data.quoteResponse && data.quoteResponse.result && data.quoteResponse.result[0]) {
+                const quote = data.quoteResponse.result[0];
+                console.log('Alternative quote data:', quote);
+                
+                return {
+                    peRatio: quote.forwardPE || quote.trailingPE || 'N/A',
+                    dividendYield: quote.dividendYield || quote.trailingAnnualDividendYield || 'N/A',
+                    pbRatio: quote.priceToBook || 'N/A',
+                    eps: quote.epsTrailingTwelveMonths || quote.epsForward || 'N/A',
+                    revenue: 'N/A', // Not available in this endpoint
+                    beta: quote.beta || 'N/A',
+                    roe: 'N/A', // Not available in this endpoint
+                    debtToEquity: 'N/A', // Not available in this endpoint
+                    profitMargin: 'N/A', // Not available in this endpoint
+                    revenueGrowth: 'N/A', // Not available in this endpoint
+                    freeCashFlow: 'N/A', // Not available in this endpoint
+                    forwardPE: quote.forwardPE || 'N/A'
+                };
+            }
+
+            throw new Error('Invalid alternative API response');
+        } catch (error) {
+            console.error('Alternative metrics fetch failed:', error);
+            return {
+                peRatio: 'N/A',
+                dividendYield: 'N/A',
+                pbRatio: 'N/A',
+                eps: 'N/A',
+                revenue: 'N/A',
+                beta: 'N/A',
+                roe: 'N/A',
+                debtToEquity: 'N/A',
+                profitMargin: 'N/A',
+                revenueGrowth: 'N/A',
+                freeCashFlow: 'N/A',
+                forwardPE: 'N/A'
+            };
+        }
+    }
+
+    // Helper function to format market cap
+    function formatMarketCap(marketCap) {
+        if (marketCap >= 1e12) {
+            return `${(marketCap / 1e12).toFixed(2)}T`;
+        } else if (marketCap >= 1e9) {
+            return `${(marketCap / 1e9).toFixed(2)}B`;
+        } else if (marketCap >= 1e6) {
+            return `${(marketCap / 1e6).toFixed(2)}M`;
+        }
+        return marketCap.toString();
+    }
+
+    // Helper function to format volume
+    function formatVolume(volume) {
+        if (!volume) return 'N/A';
+        if (volume >= 1e9) {
+            return `${(volume / 1e9).toFixed(2)}B`;
+        } else if (volume >= 1e6) {
+            return `${(volume / 1e6).toFixed(2)}M`;
+        } else if (volume >= 1e3) {
+            return `${(volume / 1e3).toFixed(2)}K`;
+        }
+        return volume.toLocaleString();
+    }
+
+    // Fetch historical chart data for different timeframes
+    async function fetchHistoricalData(symbol, period = '1mo') {
+        try {
+            console.log(`Fetching historical data for ${symbol}, period: ${period}`);
+            
+            // Calculate date range based on period
+            const endDate = new Date();
+            const startDate = new Date();
+            
+            switch(period) {
+                case '1D':
+                    startDate.setDate(endDate.getDate() - 2); // 2 days to ensure we have data
+                    break;
+                case '7D':
+                    startDate.setDate(endDate.getDate() - 7);
+                    break;
+                case '1M':
+                    startDate.setMonth(endDate.getMonth() - 1);
+                    break;
+                case '3M':
+                    startDate.setMonth(endDate.getMonth() - 3);
+                    break;
+                case '6M':
+                    startDate.setMonth(endDate.getMonth() - 6);
+                    break;
+                case '1Y':
+                    startDate.setFullYear(endDate.getFullYear() - 1);
+                    break;
+                default:
+                    startDate.setDate(endDate.getDate() - 7);
+            }
+
+            console.log(`Date range: ${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`);
+
+            // Use existing fetchStockData function which already works
+            const historicalData = await window.fetchStockData(symbol, startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
+            
+            console.log('Historical data received:', historicalData);
+            
+            if (historicalData.error) {
+                throw new Error(historicalData.error);
+            }
+
+            if (!historicalData || historicalData.length === 0) {
+                throw new Error('No historical data available');
+            }
+
+            // Transform data for Chart.js with appropriate date formatting
+            const labels = historicalData.map(item => {
+                const date = new Date(item.date);
+                if (period === '1D') {
+                    return date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+                } else if (period === '7D') {
+                    return date.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit' });
+                } else if (period === '1M') {
+                    return date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+                } else if (period === '3M') {
+                    return date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+                } else if (period === '6M') {
+                    return date.toLocaleDateString('de-DE', { month: 'short', year: '2-digit' });
+                } else {
+                    return date.toLocaleDateString('de-DE', { month: 'short', year: '2-digit' });
+                }
+            });
+
+            const prices = historicalData.map(item => parseFloat(item.close)).filter(price => !isNaN(price));
+
+            console.log('Processed chart data:', { 
+                labels: labels.length > 10 ? `${labels.slice(0, 5)}...${labels.slice(-5)}` : labels, 
+                prices: prices.length > 10 ? `${prices.slice(0, 5)}...${prices.slice(-5)}` : prices,
+                totalPoints: labels.length
+            });
+
+            return {
+                labels,
+                prices
+            };
+        } catch (error) {
+            console.error('Error fetching historical data:', error);
+            throw new Error(`Failed to load historical data: ${error.message}`);
+        }
+    }
+
+    // Create gradient for stock analysis chart (matching insider trades style)
+    function createStockAnalysisGradient(ctx) {
+        if (!ctx) return 'rgba(1, 195, 168, 0.2)';
+
+        const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 250);
+        gradient.addColorStop(0, 'rgba(1, 195, 168, 0.4)');
+        gradient.addColorStop(1, 'rgba(1, 195, 168, 0)');
+        return gradient;
+    }
+
+    // Create or update Chart.js chart (matching insider trades modal style exactly)
+    function createStockChart(chartData, timeframe = '7D') {
+        const ctx = document.getElementById('stock-price-chart');
+        
+        // Destroy existing chart if it exists
+        if (stockChart) {
+            stockChart.destroy();
+        }
+
+        // Chart configuration matching insider trades modal exactly
+        stockChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: 'Stock Price',
+                    data: chartData.prices,
+                    borderColor: '#01c3a8',
+                    backgroundColor: createStockAnalysisGradient(ctx),
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 8,
+                            color: '#888'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            padding: 10,
+                            color: '#888',
+                            callback: function(value) {
+                                return '$' + value.toFixed(2);
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function (context) {
+                                return `$${context.parsed.y.toFixed(2)}`;
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        hoverRadius: 6,
+                        hoverBorderWidth: 2,
+                        hoverBackgroundColor: '#fff',
+                        hoverBorderColor: '#01c3a8'
+                    }
+                }
+            }
         });
     }
 
+    // Update chart based on timeframe
+    async function updateChartTimeframe(symbol, timeframe) {
+        try {
+            console.log(`Updating chart for ${symbol} with timeframe ${timeframe}`);
+            
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+            }
+
+            // Map UI timeframe to API timeframe
+            let apiTimeframe;
+            switch(timeframe) {
+                case '1D':
+                    apiTimeframe = '1D';
+                    break;
+                case '1W':
+                    apiTimeframe = '7D';
+                    break;
+                case '1M':
+                    apiTimeframe = '1M';
+                    break;
+                case '3M':
+                    apiTimeframe = '3M';
+                    break;
+                case '6M':
+                    apiTimeframe = '6M';
+                    break;
+                case '1Y':
+                    apiTimeframe = '1Y';
+                    break;
+                default:
+                    apiTimeframe = '1M';
+            }
+
+            const chartData = await fetchHistoricalData(symbol, apiTimeframe);
+            console.log('New chart data:', chartData);
+            
+            if (stockChart) {
+                stockChart.data.labels = chartData.labels;
+                stockChart.data.datasets[0].data = chartData.prices;
+                stockChart.update();
+                console.log('Chart updated successfully');
+            } else {
+                console.warn('No chart instance available to update');
+            }
+        } catch (error) {
+            console.error('Error updating chart:', error);
+            showErrorMessage(`Error loading chart data for ${timeframe}: ${error.message}`);
+        } finally {
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+        }
+    }
+
+    // Update timeframe button styles
+    function updateTimeframeButtonStyles(activeButton) {
+        const timeframeButtons = document.querySelectorAll('.timeframe-btn');
+        timeframeButtons.forEach(btn => {
+            if (btn === activeButton) {
+                btn.style.background = 'rgba(1,195,168,0.15)';
+                btn.style.color = '#01c3a8';
+                btn.classList.add('active');
+            } else {
+                btn.style.background = 'rgba(255,255,255,0.05)';
+                btn.style.color = '#ccc';
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    // Analyze stock with real API data
+    async function analyzeStock(symbol) {
+        if (!symbol) {
+            showErrorMessage('Please enter a stock symbol');
+            return;
+        }
+
+        const upperSymbol = symbol.toUpperCase();
+        console.log(`Starting analysis for symbol: ${upperSymbol}`);
+
+        try {
+            // Show loading
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+            }
+
+            console.log('Fetching current quote...');
+            // Fetch current quote data
+            const stockData = await fetchCurrentStockQuote(upperSymbol);
+            console.log('Stock data received:', stockData);
+            currentStockData = stockData;
+
+            console.log('Fetching historical data...');
+            // Fetch historical chart data (default to 1M to match button)
+            const chartData = await fetchHistoricalData(upperSymbol, '1M');
+            console.log('Chart data received:', chartData);
+
+            // Update UI with stock data
+            console.log('Updating overview metrics with data:', stockData);
+            updateOverviewMetrics(stockData);
+            
+            // Calculate and update performance metrics (YTD and 52W) in background
+            console.log('Calculating performance metrics...');
+            updatePerformanceMetrics(upperSymbol, stockData.price).catch(error => {
+                console.warn('Performance metrics calculation failed:', error);
+            });
+            
+            // Create chart
+            createStockChart(chartData);
+            
+            // Set 1M button as active by default
+            const defaultButton = document.querySelector('.timeframe-btn[data-period="1M"]');
+            if (defaultButton) {
+                updateTimeframeButtonStyles(defaultButton);
+            }
+            
+            // Switch to chart tab to automatically show the chart
+            activateTab('chart');
+
+            console.log('Analysis completed successfully');
+
+        } catch (error) {
+            console.error('Error analyzing stock:', error);
+            showErrorMessage(`Error loading stock information for ${upperSymbol}: ${error.message}`);
+        } finally {
+            // Hide loading
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+            }
+        }
+    }
+
+    // Show error message
+    function showErrorMessage(message) {
+        // Create temporary error message
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #f44336;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            z-index: 10000;
+            font-weight: 500;
+            max-width: 300px;
+        `;
+        errorDiv.textContent = message;
+        document.body.appendChild(errorDiv);
+        
+        setTimeout(() => {
+            if (document.body.contains(errorDiv)) {
+                document.body.removeChild(errorDiv);
+            }
+        }, 5000);
+    }
+
+    // Calculate and update YTD and 52W performance
+    async function updatePerformanceMetrics(symbol, currentPrice) {
+        try {
+            console.log(`Calculating performance metrics for ${symbol} at current price $${currentPrice}`);
+            
+            // Set loading state for performance indicators
+            const ytdElement = document.getElementById('ytd-performance');
+            const week52Element = document.getElementById('52w-performance');
+            
+            if (ytdElement) ytdElement.textContent = '...';
+            if (week52Element) week52Element.textContent = '...';
+            
+            // Calculate YTD performance (from January 1st of current year)
+            const currentYear = new Date().getFullYear();
+            const ytdStartDate = new Date(currentYear, 0, 1); // January 1st
+            const endDate = new Date();
+            
+            // Calculate 52W performance (from 52 weeks ago)
+            const weeks52Ago = new Date();
+            weeks52Ago.setDate(weeks52Ago.getDate() - (52 * 7));
+            
+            // Fetch both datasets in parallel for better performance
+            const [ytdData, week52Data] = await Promise.all([
+                window.fetchStockData(symbol, ytdStartDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]),
+                window.fetchStockData(symbol, weeks52Ago.toISOString().split('T')[0], endDate.toISOString().split('T')[0])
+            ]);
+            
+            let ytdPerformance = 'N/A';
+            let week52Performance = 'N/A';
+            
+            // Calculate YTD performance
+            if (ytdData && !ytdData.error && ytdData.length > 0) {
+                const ytdStartPrice = parseFloat(ytdData[0].close);
+                if (!isNaN(ytdStartPrice) && ytdStartPrice > 0 && currentPrice > 0) {
+                    const ytdChange = ((currentPrice - ytdStartPrice) / ytdStartPrice) * 100;
+                    ytdPerformance = `${ytdChange >= 0 ? '+' : ''}${ytdChange.toFixed(2)}%`;
+                    console.log(`YTD: Start price $${ytdStartPrice}, Current $${currentPrice}, Change: ${ytdPerformance}`);
+                }
+            }
+            
+            // Calculate 52W performance
+            if (week52Data && !week52Data.error && week52Data.length > 0) {
+                const week52StartPrice = parseFloat(week52Data[0].close);
+                if (!isNaN(week52StartPrice) && week52StartPrice > 0 && currentPrice > 0) {
+                    const week52Change = ((currentPrice - week52StartPrice) / week52StartPrice) * 100;
+                    week52Performance = `${week52Change >= 0 ? '+' : ''}${week52Change.toFixed(2)}%`;
+                    console.log(`52W: Start price $${week52StartPrice}, Current $${currentPrice}, Change: ${week52Performance}`);
+                }
+            }
+            
+            // Update the UI elements with appropriate colors
+            if (ytdElement) {
+                ytdElement.textContent = ytdPerformance;
+                ytdElement.classList.remove('positive', 'negative', 'neutral');
+                if (ytdPerformance.includes('+')) {
+                    ytdElement.style.color = '#4CAF50'; // Green for positive
+                    ytdElement.classList.add('positive');
+                } else if (ytdPerformance.includes('-')) {
+                    ytdElement.style.color = '#f44336'; // Red for negative
+                    ytdElement.classList.add('negative');
+                } else {
+                    ytdElement.style.color = 'rgba(255, 255, 255, 0.6)'; // Gray for N/A
+                    ytdElement.classList.add('neutral');
+                }
+            }
+            
+            if (week52Element) {
+                week52Element.textContent = week52Performance;
+                week52Element.classList.remove('positive', 'negative', 'neutral');
+                if (week52Performance.includes('+')) {
+                    week52Element.style.color = '#4CAF50'; // Green for positive
+                    week52Element.classList.add('positive');
+                } else if (week52Performance.includes('-')) {
+                    week52Element.style.color = '#f44336'; // Red for negative
+                    week52Element.classList.add('negative');
+                } else {
+                    week52Element.style.color = 'rgba(255, 255, 255, 0.6)'; // Gray for N/A
+                    week52Element.classList.add('neutral');
+                }
+            }
+            
+            console.log(`Performance metrics updated - YTD: ${ytdPerformance}, 52W: ${week52Performance}`);
+            
+        } catch (error) {
+            console.error('Error calculating performance metrics:', error);
+            
+            // Set fallback values on error
+            const ytdElement = document.getElementById('ytd-performance');
+            const week52Element = document.getElementById('52w-performance');
+            
+            if (ytdElement) {
+                ytdElement.textContent = 'Error';
+                ytdElement.style.color = '#f44336';
+                ytdElement.classList.add('negative');
+            }
+            if (week52Element) {
+                week52Element.textContent = 'Error';
+                week52Element.style.color = '#f44336';
+                week52Element.classList.add('negative');
+            }
+        }
+    }
+
+    // Update overview metrics with real API data
+    function updateOverviewMetrics(data) {
+        console.log('updateOverviewMetrics called with data:', data);
+        
+        // Debug: Check if elements exist
+        console.log('Searching for elements...');
+        const allElements = document.querySelectorAll('*[id*="price"], *[id*="change"], *[class*="price"], *[class*="change"]');
+        console.log('All price/change related elements:', allElements);
+        
+        // Update price - using correct selectors from HTML
+        const priceElement = document.getElementById('current-price');
+        
+        console.log('Price element found:', priceElement);
+        
+        if (priceElement) {
+            priceElement.textContent = `$${data.price.toFixed(2)}`;
+            priceElement.style.color = '#fff';
+            priceElement.style.fontWeight = '700';
+            console.log('Updated price element:', priceElement.textContent);
+        } else {
+            console.error('Price element (#current-price) not found!');
+            // Try alternative selectors
+            const altPrice = document.querySelector('.price');
+            console.log('Alternative price element:', altPrice);
+        }
+
+        // Format P/E Ratio
+        let formattedPeRatio = 'N/A';
+        if (typeof data.peRatio === 'number' && !isNaN(data.peRatio)) {
+            formattedPeRatio = data.peRatio.toFixed(2);
+        } else if (data.peRatio && data.peRatio !== 'N/A') {
+            formattedPeRatio = data.peRatio.toString();
+        }
+        console.log('Formatted P/E Ratio:', formattedPeRatio, 'from:', data.peRatio);
+
+        // Format Dividend Yield
+        let formattedDividendYield = 'N/A';
+        if (typeof data.dividendYield === 'string' && data.dividendYield.includes('%')) {
+            formattedDividendYield = data.dividendYield;
+        } else if (typeof data.dividendYield === 'number' && !isNaN(data.dividendYield)) {
+            formattedDividendYield = `${(data.dividendYield * 100).toFixed(2)}%`;
+        } else if (data.dividendYield && data.dividendYield !== 'N/A') {
+            formattedDividendYield = data.dividendYield.toString();
+        }
+        console.log('Formatted Dividend Yield:', formattedDividendYield, 'from:', data.dividendYield);
+
+        // Update metrics with proper handling of N/A values
+        const metricsMap = {
+            'market-cap': data.marketCap,
+            'pe-ratio': formattedPeRatio,
+            'pb-ratio': typeof data.pbRatio === 'number' ? data.pbRatio.toFixed(2) : 'N/A',
+            'eps': typeof data.eps === 'number' ? `$${data.eps.toFixed(2)}` : 'N/A',
+            'revenue': data.revenue || 'N/A',
+            'beta': typeof data.beta === 'number' ? data.beta.toFixed(2) : 'N/A',
+            'high-52-week': typeof data.high52Week === 'number' ? `$${data.high52Week.toFixed(2)}` : data.high52Week,
+            'low-52-week': typeof data.low52Week === 'number' ? `$${data.low52Week.toFixed(2)}` : data.low52Week,
+            'avg-volume': data.volume,
+            'dividend-yield': formattedDividendYield,
+            'roe': typeof data.roe === 'number' ? `${data.roe.toFixed(2)}%` : 'N/A',
+            'debt-equity': typeof data.debtToEquity === 'number' ? data.debtToEquity.toFixed(2) : 'N/A',
+            'profit-margin': typeof data.profitMargin === 'number' ? `${data.profitMargin.toFixed(2)}%` : 'N/A',
+            'revenue-growth': typeof data.revenueGrowth === 'number' ? `${data.revenueGrowth.toFixed(2)}%` : 'N/A',
+            'free-cash-flow': data.freeCashFlow || 'N/A',
+            'forward-pe': typeof data.forwardPE === 'number' ? data.forwardPE.toFixed(2) : 'N/A'
+        };
+
+        console.log('Metrics to update:', metricsMap);
+
+        Object.entries(metricsMap).forEach(([id, value]) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value || 'N/A';
+                console.log(`Updated ${id} element:`, element.textContent);
+            } else {
+                console.warn(`Element with id '${id}' not found`);
+            }
+        });
+
+        // Update stock name in header
+        const stockNameElement = document.getElementById('stock-name');
+        if (stockNameElement) {
+            stockNameElement.textContent = data.name;
+            console.log('Updated stock name:', data.name);
+        } else {
+            console.warn('Stock name element (#stock-name) not found');
+        }
+    }
+
+    // Activate tab
+    function activateTab(tabId) {
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabPanes.forEach(pane => pane.classList.remove('active'));
+        
+        const tabButton = document.querySelector(`[data-tab="${tabId}"]`);
+        const tabPane = document.getElementById(tabId);
+        
+        if (tabButton) tabButton.classList.add('active');
+        if (tabPane) tabPane.classList.add('active');
+    }
+
+    // Open modal
+    if (analysisButton) {
+        analysisButton.addEventListener("click", () => {
+            analysisModal.style.display = "block";
+        });
+    }
+
+    // Close modal
     if (closeAnalysisButton) {
         closeAnalysisButton.addEventListener("click", () => {
             analysisModal.style.display = "none";
         });
     }
 
-    if (timeframeSelect) {
-        timeframeSelect.addEventListener("change", () => {
-            updateCharts(timeframeSelect.value);
-        });
-    }
-
-    if (stockSymbolInput) {
-        stockSymbolInput.addEventListener("change", () => {
-            updateCharts(timeframeSelect.value);
-            updateTechnicalIndicators();
-        });
-    }
-
+    // Close modal on outside click
     window.addEventListener("click", (event) => {
         if (event.target === analysisModal) {
             analysisModal.style.display = "none";
         }
     });
 
-    // Initial load
-    updateCharts(timeframeSelect.value);
-
-    stockSymbolInput.addEventListener('change', (e) => {
-        const symbol = e.target.value.trim().toUpperCase();
-        if (symbol) {
-            updateAnalysis(symbol);
-        }
+    // Tab switching
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.dataset.tab;
+            
+            // Update active tab
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Update active pane
+            tabPanes.forEach(pane => {
+                pane.classList.remove('active');
+                if (pane.id === targetTab) {
+                    pane.classList.add('active');
+                }
+            });
+        });
     });
 
-    timeframeSelect.addEventListener('change', () => {
-        const symbol = stockSymbolInput.value.trim().toUpperCase();
-        if (symbol) {
-            updateAnalysis(symbol);
-        }
+    // Timeframe switching with real data and proper styling
+    timeframeButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            console.log('Timeframe button clicked:', button.dataset.period);
+            
+            // Update button styles
+            updateTimeframeButtonStyles(button);
+            
+            // Update chart with new timeframe
+            const period = button.dataset.period;
+            const currentSymbol = stockSymbolInput?.value?.toUpperCase();
+            
+            if (currentSymbol && currentStockData) {
+                console.log(`Switching to timeframe ${period} for symbol ${currentSymbol}`);
+                await updateChartTimeframe(currentSymbol, period);
+            } else {
+                console.warn('No current symbol or stock data available for timeframe update');
+                if (!currentSymbol) {
+                    showErrorMessage('Bitte analysieren Sie zuerst eine Aktie');
+                }
+            }
+        });
     });
+
+    // Analyze button functionality
+    if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', () => {
+            const symbol = stockSymbolInput.value.trim();
+            if (symbol) {
+                // Call both the standalone function and the StockAnalysis class method
+                analyzeStock(symbol);
+                if (window.stockAnalysis && typeof window.stockAnalysis.analyzeStock === 'function') {
+                    window.stockAnalysis.analyzeStock(symbol);
+                }
+            } else {
+                showErrorMessage('Bitte geben Sie ein Aktiensymbol ein');
+            }
+        });
+    }
+
+    // Enter key support for search
+    if (stockSymbolInput) {
+        stockSymbolInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const symbol = stockSymbolInput.value.trim();
+                if (symbol) {
+                    // Call both the standalone function and the StockAnalysis class method
+                    analyzeStock(symbol);
+                    if (window.stockAnalysis && typeof window.stockAnalysis.analyzeStock === 'function') {
+                        window.stockAnalysis.analyzeStock(symbol);
+                    }
+                } else {
+                    showErrorMessage('Bitte geben Sie ein Aktiensymbol ein');
+                }
+            }
+        });
+    }
 });
-
-
-
 
 // Plays a sound when a market opens
 function playMarketOpenSound() {
@@ -3582,26 +4487,26 @@ class StockAnalysis {
     setupEventListeners() {
         console.log('Setting up event listeners...');
 
-        // Enter-Taste im Input
-        this.symbolInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const symbol = this.symbolInput.value.trim().toUpperCase();
-                console.log('Enter pressed with symbol:', symbol);
-                if (symbol) this.analyzeStock(symbol);
-            }
-        });
+        // Enter-Taste im Input - ENTFERNT für manuelle Suche
+        // this.symbolInput.addEventListener('keypress', (e) => {
+        //     if (e.key === 'Enter') {
+        //         const symbol = this.symbolInput.value.trim().toUpperCase();
+        //         console.log('Enter pressed with symbol:', symbol);
+        //         if (symbol) this.analyzeStock(symbol);
+        //     }
+        // });
 
-        // Debounced Input-Handler
-        this.symbolInput.addEventListener('input', (e) => {
-            clearTimeout(this.debounceTimer);
-            this.debounceTimer = setTimeout(() => {
-                const symbol = e.target.value.trim().toUpperCase();
-                console.log('Input debounced with symbol:', symbol);
-                if (symbol.length >= 2) {
-                    this.analyzeStock(symbol);
-                }
-            }, 500);
-        });
+        // Debounced Input-Handler - ENTFERNT für manuelle Suche  
+        // this.symbolInput.addEventListener('input', (e) => {
+        //     clearTimeout(this.debounceTimer);
+        //     this.debounceTimer = setTimeout(() => {
+        //         const symbol = e.target.value.trim().toUpperCase();
+        //         console.log('Input debounced with symbol:', symbol);
+        //         if (symbol.length >= 2) {
+        //             this.analyzeStock(symbol);
+        //         }
+        //     }, 500);
+        // });
 
         // Analyze-Button Handler
         this.analyzeBtn.addEventListener('click', () => {
@@ -3813,7 +4718,9 @@ class StockAnalysis {
                 volatility: this.calculateVolatility(closePrices),
                 momentum: this.calculateMomentum(closePrices),
                 atr: this.calculateATR(quotes.high, quotes.low, closePrices),
-                bollinger: this.calculateBollingerBands(closePrices)
+                bollinger: this.calculateBollingerBands(closePrices),
+                volume: quotes.volume[quotes.volume.length - 1],
+                avgVolume: this.calculateAverageVolume(quotes.volume)
             },
             fundamentalData: {
                 marketCap: meta.marketCap,
@@ -3828,7 +4735,6 @@ class StockAnalysis {
         const elements = {
             'stock-name': data.symbol,
             'current-price': `$${data.priceHistory[data.priceHistory.length - 1].value.toFixed(2)}`,
-            'price-change': this.calculatePriceChange(data.priceHistory),
             'market-cap': this.formatMarketCap(data.fundamentalData.marketCap),
             'high-52-week': `$${data.fundamentalData.high52Week.toFixed(2)}`,
             'low-52-week': `$${data.fundamentalData.low52Week.toFixed(2)}`,
@@ -3915,7 +4821,7 @@ class StockAnalysis {
 
     calculateBollingerBands(prices, period = 20, multiplier = 2) {
         if (!prices?.length || prices.length < period) {
-            return { upper: 0, middle: 0, lower: 0 };
+            return { upper: 0, middle: 0, lower: 0, position: 0.5 };
         }
 
         const middle = this.calculateSMA(prices, period);
@@ -3924,10 +4830,18 @@ class StockAnalysis {
                 sum + Math.pow(price - middle, 2), 0) / period
         );
 
+        const upper = middle + (multiplier * deviation);
+        const lower = middle - (multiplier * deviation);
+        const currentPrice = prices[prices.length - 1];
+        
+        // Calculate position within bands (0 = lower band, 1 = upper band)
+        const position = upper === lower ? 0.5 : (currentPrice - lower) / (upper - lower);
+
         return {
-            upper: middle + (multiplier * deviation),
+            upper: upper,
             middle: middle,
-            lower: middle - (multiplier * deviation)
+            lower: lower,
+            position: Math.max(0, Math.min(1, position)) // Clamp between 0 and 1
         };
     }
 
@@ -3939,10 +4853,21 @@ class StockAnalysis {
             returns.push((prices[i] - prices[i - 1]) / prices[i - 1]);
         }
 
-        const mean = returns.reduce((a, b) => a + b) / returns.length;
-        const variance = returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / returns.length;
+        const avgReturn = returns.reduce((sum, ret) => sum + ret, 0) / returns.length;
+        const variance = returns.reduce((sum, ret) => sum + Math.pow(ret - avgReturn, 2), 0) / returns.length;
+        
+        return Math.sqrt(variance * 252); // Annualized volatility
+    }
 
-        return Math.sqrt(variance) * Math.sqrt(252); // Annualisierte Volatilität
+    calculateAverageVolume(volumes, period = 50) {
+        if (!volumes || volumes.length === 0) return 0;
+        
+        const recentVolumes = volumes.slice(-Math.min(period, volumes.length));
+        const validVolumes = recentVolumes.filter(vol => vol !== null && vol !== undefined && vol > 0);
+        
+        if (validVolumes.length === 0) return 0;
+        
+        return validVolumes.reduce((sum, vol) => sum + vol, 0) / validVolumes.length;
     }
 
     calculateMomentum(prices, period = 14) {
@@ -4244,39 +5169,182 @@ class StockAnalysis {
     }
 
     updateSignals(indicators) {
-        const signalElements = {
-            'ma-signal': this.calculateMASignal(indicators.MA50, indicators.MA200),
-            'momentum-signal': this.calculateMomentumSignal(indicators.rsi, indicators.macd)
-        };
+        // RSI Signal
+        const rsiElement = document.getElementById('rsi');
+        const rsiSignalElement = document.getElementById('rsi-signal');
+        if (rsiElement && rsiSignalElement && indicators.rsi) {
+            rsiElement.textContent = indicators.rsi.toFixed(2);
+            const rsiSignal = this.calculateRSISignal(indicators.rsi);
+            rsiSignalElement.textContent = rsiSignal.label;
+            rsiSignalElement.className = `signal-badge ${rsiSignal.type}`;
+        }
 
-        for (const [id, signal] of Object.entries(signalElements)) {
-            const element = document.getElementById(id);
-            if (element) {
-                element.className = 'signal-indicator';
-                element.classList.add(signal.type);
-                element.title = signal.message;
-            }
+        // MA50 Signal
+        const ma50Element = document.getElementById('ma50');
+        const ma50SignalElement = document.getElementById('ma50-signal');
+        if (ma50Element && ma50SignalElement && indicators.MA50) {
+            ma50Element.textContent = `$${indicators.MA50.toFixed(2)}`;
+            const ma50Signal = this.calculateMA50Signal(indicators.MA50, indicators.MA200);
+            ma50SignalElement.textContent = ma50Signal.label;
+            ma50SignalElement.className = `signal-badge ${ma50Signal.type}`;
+        }
+
+        // MA200 Signal
+        const ma200Element = document.getElementById('ma200');
+        const ma200SignalElement = document.getElementById('ma200-signal');
+        if (ma200Element && ma200SignalElement && indicators.MA200) {
+            ma200Element.textContent = `$${indicators.MA200.toFixed(2)}`;
+            const ma200Signal = this.calculateMA200Signal(indicators.MA50, indicators.MA200);
+            ma200SignalElement.textContent = ma200Signal.label;
+            ma200SignalElement.className = `signal-badge ${ma200Signal.type}`;
+        }
+
+        // MACD Signal
+        const macdElement = document.getElementById('macd');
+        const macdSignalElement = document.getElementById('macd-signal');
+        if (macdElement && macdSignalElement && indicators.macd) {
+            macdElement.textContent = indicators.macd.macd.toFixed(2);
+            const macdSignal = this.calculateMACDSignal(indicators.macd);
+            macdSignalElement.textContent = macdSignal.label;
+            macdSignalElement.className = `signal-badge ${macdSignal.type}`;
+        }
+
+        // Volume Signal
+        const volumeElement = document.getElementById('volume-indicator');
+        const volumeSignalElement = document.getElementById('volume-signal');
+        if (volumeElement && volumeSignalElement && indicators.volume) {
+            volumeElement.textContent = this.formatVolume(indicators.volume);
+            const volumeSignal = this.calculateVolumeSignal(indicators.volume, indicators.avgVolume);
+            volumeSignalElement.textContent = volumeSignal.label;
+            volumeSignalElement.className = `signal-badge ${volumeSignal.type}`;
+        }
+
+        // Bollinger Bands Signal
+        const bollingerElement = document.getElementById('bollinger');
+        const bollingerSignalElement = document.getElementById('bollinger-signal');
+        if (bollingerElement && bollingerSignalElement && indicators.bollinger) {
+            const position = indicators.bollinger.position;
+            bollingerElement.textContent = `${(position * 100).toFixed(1)}%`;
+            const bollingerSignal = this.calculateBollingerSignal(indicators.bollinger);
+            bollingerSignalElement.textContent = bollingerSignal.label;
+            bollingerSignalElement.className = `signal-badge ${bollingerSignal.type}`;
+        }
+
+        // Overall Signal
+        const overallSignalElement = document.getElementById('overall-signal');
+        if (overallSignalElement) {
+            const overallSignal = this.calculateOverallSignal(indicators);
+            overallSignalElement.textContent = overallSignal.label;
+            overallSignalElement.className = `sentiment-indicator ${overallSignal.type}`;
         }
     }
 
-    calculateMASignal(ma50, ma200) {
-        if (ma50 > ma200) {
-            return { type: 'bullish', message: 'Bullish: MA50 above MA200' };
+    calculateRSISignal(rsi) {
+        if (rsi > 70) {
+            return { type: 'bearish', label: 'SELL' };
+        } else if (rsi < 30) {
+            return { type: 'bullish', label: 'BUY' };
         } else {
-            return { type: 'bearish', message: 'Bearish: MA50 below MA200' };
+            return { type: 'neutral', label: 'HOLD' };
         }
     }
 
-    calculateMomentumSignal(rsi, macd) {
-        let signal = { type: 'neutral', message: 'Neutral momentum' };
+    calculateMA50Signal(ma50, ma200) {
+        if (ma50 > ma200) {
+            return { type: 'bullish', label: 'BULLISH' };
+        } else {
+            return { type: 'bearish', label: 'BEARISH' };
+        }
+    }
 
-        if (rsi > 70 || macd.histogram < 0) {
-            signal = { type: 'overbought', message: 'Overbought conditions' };
-        } else if (rsi < 30 || macd.histogram > 0) {
-            signal = { type: 'oversold', message: 'Oversold conditions' };
+    calculateMA200Signal(ma50, ma200) {
+        if (ma50 > ma200) {
+            return { type: 'bullish', label: 'BULLISH' };
+        } else {
+            return { type: 'bearish', label: 'BEARISH' };
+        }
+    }
+
+    calculateOverallSignal(indicators) {
+        let bullishCount = 0;
+        let bearishCount = 0;
+
+        // RSI evaluation
+        if (indicators.rsi > 70) bearishCount++;
+        else if (indicators.rsi < 30) bullishCount++;
+
+        // MA evaluation
+        if (indicators.MA50 > indicators.MA200) bullishCount++;
+        else bearishCount++;
+
+        // MACD evaluation (if available)
+        if (indicators.macd && indicators.macd.histogram > 0) bullishCount++;
+        else if (indicators.macd && indicators.macd.histogram < 0) bearishCount++;
+
+        // Volume evaluation
+        if (indicators.volume && indicators.avgVolume && indicators.volume > indicators.avgVolume * 1.5) bullishCount++;
+
+        // Bollinger Bands evaluation
+        if (indicators.bollinger) {
+            if (indicators.bollinger.position < 0.2) bullishCount++; // Near lower band (oversold)
+            else if (indicators.bollinger.position > 0.8) bearishCount++; // Near upper band (overbought)
         }
 
-        return signal;
+        if (bullishCount > bearishCount) {
+            return { type: 'bullish', label: 'BULLISH' };
+        } else if (bearishCount > bullishCount) {
+            return { type: 'bearish', label: 'BEARISH' };
+        } else {
+            return { type: 'neutral', label: 'NEUTRAL' };
+        }
+    }
+
+    calculateMACDSignal(macd) {
+        if (macd.histogram > 0 && macd.macd > macd.signal) {
+            return { type: 'bullish', label: 'BUY' };
+        } else if (macd.histogram < 0 && macd.macd < macd.signal) {
+            return { type: 'bearish', label: 'SELL' };
+        } else {
+            return { type: 'neutral', label: 'HOLD' };
+        }
+    }
+
+    calculateVolumeSignal(volume, avgVolume) {
+        if (!avgVolume) return { type: 'neutral', label: 'N/A' };
+        
+        const ratio = volume / avgVolume;
+        if (ratio > 2) {
+            return { type: 'bullish', label: 'HIGH' };
+        } else if (ratio > 1.5) {
+            return { type: 'neutral', label: 'ABOVE AVG' };
+        } else if (ratio < 0.5) {
+            return { type: 'bearish', label: 'LOW' };
+        } else {
+            return { type: 'neutral', label: 'NORMAL' };
+        }
+    }
+
+    calculateBollingerSignal(bollinger) {
+        const position = bollinger.position;
+        if (position < 0.2) {
+            return { type: 'bullish', label: 'OVERSOLD' };
+        } else if (position > 0.8) {
+            return { type: 'bearish', label: 'OVERBOUGHT' };
+        } else {
+            return { type: 'neutral', label: 'NORMAL' };
+        }
+    }
+
+    formatVolume(volume) {
+        if (volume >= 1000000000) {
+            return `${(volume / 1000000000).toFixed(1)}B`;
+        } else if (volume >= 1000000) {
+            return `${(volume / 1000000).toFixed(1)}M`;
+        } else if (volume >= 1000) {
+            return `${(volume / 1000).toFixed(1)}K`;
+        } else {
+            return volume.toString();
+        }
     }
 
     destroyExistingCharts() {
@@ -5752,7 +6820,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Helper to get Yahoo Finance range parameter
     function getYahooFinanceRange(period) {
-        switch (period) {
+        switch (period.toLowerCase()) {
             case '1m': return '1mo';
             case '3m': return '3mo';
             case '6m': return '6mo';

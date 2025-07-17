@@ -815,8 +815,7 @@
             </div>
             </div>
         </div>
-        <!-- Neues Modal für Stock Analysis -->
-
+        <!-- Stock Analysis Modal - Redesigned -->
     <div id="analysis-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -829,99 +828,189 @@
                 </button>
             </div>
             
-            <div class="analysis-container">
-                <div class="analysis-search">
-                    <input type="text" id="stock-symbol" placeholder="Enter stock symbol (e.g., AAPL)" class="form-control">
-                    <button id="analyze-btn" class="btn">Analyze</button>
+            <div class="analysis-search-section">
+                <div class="analysis-search-header">
+                    <input type="text" id="stock-symbol" placeholder="Enter ticker (e.g., AAPL)" class="stock-input">
+                    <button id="analyze-btn" class="analyze-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="M21 21l-4.35-4.35"></path>
+                        </svg>
+                    </button>
                 </div>
-
-                <div class="analysis-tabs">
-                    <button class="tab-btn active" data-tab="overview">Overview</button>
-                    <button class="tab-btn" data-tab="technical">Technical</button>
-                    <button class="tab-btn" data-tab="fundamental">Fundamental</button>
-                    <button class="tab-btn" data-tab="news">News</button>
+            </div>
+            
+            <div class="stock-overview" id="stock-overview">
+                <div class="stock-title">
+                    <h2 id="stock-name">Select a stock to analyze</h2>
+                    <div class="price-display">
+                        <span id="current-price" class="price">-</span>
+                    </div>
                 </div>
+            </div>
 
-                <div class="tab-content">
-                    <div id="overview" class="tab-pane active">
-                        <div class="stock-header">
-                            <h3 id="stock-name">-</h3>
-                            <div class="price-info">
-                                <span id="current-price">-</span>
-                                <span id="price-change" class="change">-</span>
-                            </div>
-                        </div>
-                        <div class="chart-container">
-                            <div id="price-chart"></div>
-                           
-                        </div>
-                        <div class="key-stats">
-                            <div class="stat-item">
-                                <span class="label">Market Cap</span>
-                                <span id="market-cap" class="value">-</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="label">52W High</span>
-                                <span id="high-52-week" class="value">-</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="label">52W Low</span>
-                                <span id="low-52-week" class="value">-</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="label">Volume</span>
-                                <span id="avg-volume" class="value">-</span>
-                            </div>
-                        </div>
-                        <div class="chart-container">
-                            <div id="technical-chart"></div>
-                        </div>
-                    </div>
-                    
-                    <div id="technical" class="tab-pane">
-                        <div class="indicators-grid">
-                            <div class="indicator-card">
-                                <h4>Moving Averages</h4>
-                                <p>MA(50): <span id="ma50">-</span></p>
-                                <p>MA(200): <span id="ma200">-</span></p>
-                                <div class="signal-indicator" id="ma-signal"></div>
-                            </div>
-                            <div class="indicator-card">
-                                <h4>Momentum</h4>
-                                <p>RSI(14): <span id="rsi">-</span></p>
-                                <p>MACD: <span id="macd">-</span></p>
-                                <div class="signal-indicator" id="momentum-signal"></div>
-                            </div>
+            <div class="analysis-tabs">
+                <button class="tab-btn active" data-tab="chart">Chart</button>
+                <button class="tab-btn" data-tab="metrics">Metrics</button>
+                <button class="tab-btn" data-tab="analysis">Analysis</button>
+            </div>
 
-                        </div>
-                        <canvas id="technical-chart"></canvas>
-                    </div>
-
-                    <div id="fundamental" class="tab-pane">
-                        <div class="fundamental-metrics"></div>
-                            <div class="metric-group">
-                                <h4>Valuation</h4>
-                                <p>P/E Ratio: <span id="pe-ratio">-</span></p>
-                                <p>PEG Ratio: <span id="peg-ratio">-</span></p>
-                                <p>P/B Ratio: <span id="pb-ratio">-</span></p>
+            <div class="tab-content">
+                <div id="chart" class="tab-pane active">
+                    <div class="chart-wrapper">
+                        <div class="stock-chart-container" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                            <h4 style="color: #01c3a8; margin-top: 0; margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#01c3a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                                    <path d="M3 3v18h18"></path>
+                                    <path d="m19 9-5 5-4-4-3 3"></path>
+                                </svg>
+                                Stock Price Chart
+                            </h4>
+                            <div id="stock-chart-container" style="width: 100%; height: 350px; background: rgba(0,0,0,0.2); border-radius: 6px; overflow: hidden; position: relative;">
+                                <canvas id="stock-price-chart"></canvas>
                             </div>
-                            <div class="metric-group">
-                                <h4>Dividends</h4>
-                                <p>Yield: <span id="dividend-yield">-</span></p>
-                                <p>Payout Ratio: <span id="payout-ratio">-</span></p>
+                            <div style="display: flex; justify-content: space-between; margin-top: 12px;">
+                                <div class="chart-controls" style="display: flex; gap: 10px;">
+                                    <button class="timeframe-btn active" data-period="1M" style="background: rgba(1,195,168,0.15); border: none; color: #01c3a8; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">1M</button>
+                                    <button class="timeframe-btn" data-period="3M" style="background: rgba(255,255,255,0.05); border: none; color: #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">3M</button>
+                                    <button class="timeframe-btn" data-period="6M" style="background: rgba(255,255,255,0.05); border: none; color: #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">6M</button>
+                                    <button class="timeframe-btn" data-period="1Y" style="background: rgba(255,255,255,0.05); border: none; color: #ccc; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">1Y</button>
+                                </div>
+                                <div class="stock-stats" style="display: flex; align-items: center; gap: 15px;">
+                                    <div style="text-align: center;">
+                                        <span style="display: block; color: #ccc; font-size: 0.8rem;">YTD</span>
+                                        <span id="ytd-performance" style="color: #01c3a8; font-weight: 600;">--</span>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <span style="display: block; color: #ccc; font-size: 0.8rem;">52W</span>
+                                        <span id="52w-performance" style="color: #01c3a8; font-weight: 600;">--</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="financial-statements" id="financial-statements">
-                            <!-- Financial statements will be loaded here -->
-                        </div>
-                    </div>
-
-                    <div id="news" class="tab-pane">
-                        <div class="news-feed" id="news-feed">
-                            <!-- News items will be loaded here -->
                         </div>
                     </div>
                 </div>
+                
+                <div id="metrics" class="tab-pane">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Market Cap</div>
+                            <div id="market-cap" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">P/E Ratio</div>
+                            <div id="pe-ratio" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">P/B Ratio</div>
+                            <div id="pb-ratio" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">EPS</div>
+                            <div id="eps" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Revenue</div>
+                            <div id="revenue" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Beta</div>
+                            <div id="beta" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">52W High</div>
+                            <div id="high-52-week" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">52W Low</div>
+                            <div id="low-52-week" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Volume</div>
+                            <div id="avg-volume" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Dividend Yield</div>
+                            <div id="dividend-yield" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">ROE</div>
+                            <div id="roe" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Debt/Equity</div>
+                            <div id="debt-equity" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Profit Margin</div>
+                            <div id="profit-margin" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Revenue Growth</div>
+                            <div id="revenue-growth" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Free Cash Flow</div>
+                            <div id="free-cash-flow" class="metric-value">-</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Forward P/E</div>
+                            <div id="forward-pe" class="metric-value">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="analysis" class="tab-pane">
+                    <div class="analysis-section">
+                        <div class="indicator-summary">
+                            <div class="indicator-item">
+                                <span class="indicator-name">RSI (14)</span>
+                                <span id="rsi" class="indicator-value">-</span>
+                                <span id="rsi-signal" class="signal-badge">-</span>
+                            </div>
+                            <div class="indicator-item">
+                                <span class="indicator-name">MA(50)</span>
+                                <span id="ma50" class="indicator-value">-</span>
+                                <span id="ma50-signal" class="signal-badge">-</span>
+                            </div>
+                            <div class="indicator-item">
+                                <span class="indicator-name">MA(200)</span>
+                                <span id="ma200" class="indicator-value">-</span>
+                                <span id="ma200-signal" class="signal-badge">-</span>
+                            </div>
+                            <div class="indicator-item">
+                                <span class="indicator-name">MACD</span>
+                                <span id="macd" class="indicator-value">-</span>
+                                <span id="macd-signal" class="signal-badge">-</span>
+                            </div>
+                            <div class="indicator-item">
+                                <span class="indicator-name">Volume</span>
+                                <span id="volume-indicator" class="indicator-value">-</span>
+                                <span id="volume-signal" class="signal-badge">-</span>
+                            </div>
+                            <div class="indicator-item">
+                                <span class="indicator-name">Bollinger Bands</span>
+                                <span id="bollinger" class="indicator-value">-</span>
+                                <span id="bollinger-signal" class="signal-badge">-</span>
+                            </div>
+                        </div>
+                        <div class="overall-sentiment">
+                            <div class="sentiment-title">Overall Signal</div>
+                            <div id="overall-signal" class="sentiment-indicator">NEUTRAL</div>
+                        </div>
+                        <div class="analysis-disclaimer">
+                            <div class="disclaimer-icon">⚠️</div>
+                            <div class="disclaimer-text">
+                                <strong>Disclaimer:</strong> This analysis is for informational purposes only and should not be considered as financial advice. Always conduct your own research and consult with a qualified financial advisor before making investment decisions. Past performance does not guarantee future results.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading-overlay" id="loading-overlay">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Analyzing...</div>
             </div>
         </div>
     </div></div>
