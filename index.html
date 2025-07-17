@@ -859,13 +859,6 @@
                 <div id="chart" class="tab-pane active">
                     <div class="chart-wrapper">
                         <div class="stock-chart-container" style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h4 style="color: #01c3a8; margin-top: 0; margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#01c3a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
-                                    <path d="M3 3v18h18"></path>
-                                    <path d="m19 9-5 5-4-4-3 3"></path>
-                                </svg>
-                                Stock Price Chart
-                            </h4>
                             <div id="stock-chart-container" style="width: 100%; height: 350px; background: rgba(0,0,0,0.2); border-radius: 6px; overflow: hidden; position: relative;">
                                 <canvas id="stock-price-chart"></canvas>
                             </div>
@@ -963,35 +956,45 @@
                 <div id="analysis" class="tab-pane">
                     <div class="analysis-section">
                         <div class="indicator-summary">
-                            <div class="indicator-item">
-                                <span class="indicator-name">RSI (14)</span>
-                                <span id="rsi" class="indicator-value">-</span>
-                                <span id="rsi-signal" class="signal-badge">-</span>
+                            <div class="indicator-card-left">
+                                <h4>Technical Indicators</h4>
+                                <div class="indicators-column">
+                                    <div class="indicator-item">
+                                        <span class="indicator-name">RSI (14)</span>
+                                        <span id="rsi" class="indicator-value">-</span>
+                                        <span id="rsi-signal" class="signal-badge">-</span>
+                                    </div>
+                                    <div class="indicator-item">
+                                        <span class="indicator-name">MACD</span>
+                                        <span id="macd" class="indicator-value">-</span>
+                                        <span id="macd-signal" class="signal-badge">-</span>
+                                    </div>
+                                    <div class="indicator-item">
+                                        <span class="indicator-name">Bollinger Bands</span>
+                                        <span id="bollinger" class="indicator-value">-</span>
+                                        <span id="bollinger-signal" class="signal-badge">-</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="indicator-item">
-                                <span class="indicator-name">MA(50)</span>
-                                <span id="ma50" class="indicator-value">-</span>
-                                <span id="ma50-signal" class="signal-badge">-</span>
-                            </div>
-                            <div class="indicator-item">
-                                <span class="indicator-name">MA(200)</span>
-                                <span id="ma200" class="indicator-value">-</span>
-                                <span id="ma200-signal" class="signal-badge">-</span>
-                            </div>
-                            <div class="indicator-item">
-                                <span class="indicator-name">MACD</span>
-                                <span id="macd" class="indicator-value">-</span>
-                                <span id="macd-signal" class="signal-badge">-</span>
-                            </div>
-                            <div class="indicator-item">
-                                <span class="indicator-name">Volume</span>
-                                <span id="volume-indicator" class="indicator-value">-</span>
-                                <span id="volume-signal" class="signal-badge">-</span>
-                            </div>
-                            <div class="indicator-item">
-                                <span class="indicator-name">Bollinger Bands</span>
-                                <span id="bollinger" class="indicator-value">-</span>
-                                <span id="bollinger-signal" class="signal-badge">-</span>
+                            <div class="indicator-card-right">
+                                <h4>Moving Averages & Volume</h4>
+                                <div class="indicators-column">
+                                    <div class="indicator-item">
+                                        <span class="indicator-name">MA(50)</span>
+                                        <span id="ma50" class="indicator-value">-</span>
+                                        <span id="ma50-signal" class="signal-badge">-</span>
+                                    </div>
+                                    <div class="indicator-item">
+                                        <span class="indicator-name">MA(200)</span>
+                                        <span id="ma200" class="indicator-value">-</span>
+                                        <span id="ma200-signal" class="signal-badge">-</span>
+                                    </div>
+                                    <div class="indicator-item">
+                                        <span class="indicator-name">Volume</span>
+                                        <span id="volume-indicator" class="indicator-value">-</span>
+                                        <span id="volume-signal" class="signal-badge">-</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="overall-sentiment">

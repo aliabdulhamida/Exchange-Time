@@ -2014,6 +2014,36 @@ th, td {
     margin-bottom: 30px;
 }
 
+/* Analysis indicators two-card layout */
+.indicator-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.indicator-card-left,
+.indicator-card-right {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.indicator-card-left h4,
+.indicator-card-right h4 {
+    color: #01c3a8;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.indicators-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .indicator-card {
     background: var(--card-bg);
     padding: 20px;
@@ -4817,62 +4847,72 @@ th, td {
    STOCK ANALYSIS MODAL STYLES
    ======================================== */
 
-/* Search Section - Below header */
+/* Search Section - Minimalistic Design */
 .analysis-search-section {
-    margin-bottom: 25px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 30px;
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
 .analysis-search-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    max-width: 500px;
+    gap: 8px;
+    max-width: 420px;
     margin: 0 auto;
 }
 
 .stock-input {
     flex: 1;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+    padding: 14px 0;
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0;
     color: #fff !important;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 400;
     outline: none;
-    transition: all 0.3s ease;
+    transition: border-color 0.2s ease;
 }
 
 .stock-input:focus {
-    border-color: #4CAF50;
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+    border-bottom-color: #01c3a8;
+    background: none;
+    box-shadow: none;
     color: #fff !important;
 }
 
 .stock-input::placeholder {
-    color: rgba(255, 255, 255, 0.5) !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    font-weight: 300;
 }
 
 .analyze-btn {
-    padding: 12px 16px;
-    background: #4CAF50;
-    border: none;
-    border-radius: 10px;
-    color: white;
+    padding: 14px 16px;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0;
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: 50px;
+    font-size: 14px;
+    font-weight: 400;
 }
 
 .analyze-btn:hover {
-    background: #45a049;
-    transform: translateY(-1px);
+    background: none;
+    color: #01c3a8;
+    border-color: #01c3a8;
+    transform: none;
+}
+
+.analyze-btn svg {
+    stroke: currentColor;
 }
 
 /* Stock Overview */
@@ -4925,6 +4965,38 @@ th, td {
     padding: 6px 12px !important;
     border-radius: 8px !important;
     margin-left: 8px !important;
+}
+
+/* Stock statistics (YTD and 52W) styling */
+.stock-stats span {
+    font-size: 0.75rem !important;
+}
+
+.stock-stats span:last-child {
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+}
+
+/* YTD and 52W performance colors with higher specificity */
+.stock-stats #ytd-performance.positive,
+.stock-stats #52w-performance.positive,
+#ytd-performance.positive,
+#52w-performance.positive {
+    color: #4CAF50 !important;
+}
+
+.stock-stats #ytd-performance.negative,
+.stock-stats #52w-performance.negative,
+#ytd-performance.negative,
+#52w-performance.negative {
+    color: #f44336 !important;
+}
+
+.stock-stats #ytd-performance.neutral,
+.stock-stats #52w-performance.neutral,
+#ytd-performance.neutral,
+#52w-performance.neutral {
+    color: rgba(255, 255, 255, 0.6) !important;
 }
 
 /* Percentage color classes for stock price changes */
@@ -4987,40 +5059,46 @@ th, td {
     font-weight: 600 !important;
 }
 
-/* Analysis Tabs */
+/* Analysis Tabs - Minimalistic Design */
 .analysis-tabs {
     display: flex;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    padding: 4px;
+    background: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    padding: 0;
     margin-bottom: 25px;
     overflow-x: auto;
+    gap: 0;
 }
 
 .tab-btn {
     flex: 1;
-    padding: 12px 20px;
+    padding: 16px 24px;
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-size: 15px;
-    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-size: 14px;
+    font-weight: 400;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 12px;
+    transition: all 0.2s ease;
+    border-radius: 0;
     white-space: nowrap;
-    min-width: 100px;
+    min-width: 80px;
+    position: relative;
+    border-bottom: 2px solid transparent;
 }
 
 .tab-btn:hover {
-    color: rgba(255, 255, 255, 0.8) !important;
-    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7) !important;
+    background: none;
 }
 
 .tab-btn.active {
-    color: #fff !important;
-    background: rgba(76, 175, 80, 0.2);
-    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #01c3a8 !important;
+    background: none;
+    border: none;
+    border-bottom: 2px solid #01c3a8;
+    font-weight: 500;
 }
 
 /* Tab Content */
@@ -5381,20 +5459,57 @@ th, td {
 }
 
 #analysis-modal .tab-btn.active {
-    color: #fff !important;
-    background: rgba(76, 175, 80, 0.2) !important;
+    color: #01c3a8 !important;
+    background: none !important;
+    border-bottom: 2px solid #01c3a8 !important;
 }
 
 /* Responsive Design for Stock Analysis */
 @media (max-width: 768px) {
     .analysis-search-header {
         max-width: none;
+        gap: 6px;
+        margin: 0 16px;
+    }
+    
+    .stock-input {
+        font-size: 15px;
+        padding: 12px 0;
+    }
+    
+    .analyze-btn {
+        padding: 12px 14px;
+        font-size: 13px;
+        min-width: 45px;
     }
     
     .stock-title {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         gap: 12px;
+        flex-wrap: wrap;
+    }
+    
+    /* Stack cards vertically on tablets */
+    .indicator-summary {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .indicator-card-left,
+    .indicator-card-right {
+        padding: 16px;
+    }
+    
+    .indicator-card-left h4,
+    .indicator-card-right h4 {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+    
+    .indicators-column {
+        gap: 10px;
     }
     
     .stock-title h2 {
@@ -5402,27 +5517,68 @@ th, td {
     }
     
     .metrics-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .metric-card {
+        padding: 12px;
+        border-radius: 10px;
+    }
+    
+    .metric-label {
+        font-size: 12px;
+        margin-bottom: 6px;
+        letter-spacing: 0.3px;
+    }
+    
+    .metric-value {
+        font-size: 16px;
+        font-weight: 600;
     }
     
     .indicator-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
+        padding: 12px 16px;
+        border-radius: 12px;
     }
     
     .indicator-value {
         margin: 0;
         text-align: left;
+        min-width: auto;
+    }
+    
+    .indicator-name {
+        font-size: 14px;
+    }
+    
+    .signal-badge {
+        padding: 4px 8px;
+        font-size: 11px;
+        min-width: 60px;
+        border-radius: 8px;
+    }
+    
+    .analysis-section {
+        gap: 20px;
+    }
+    
+    .indicator-summary {
+        gap: 10px;
     }
     
     .analysis-tabs {
-        padding: 2px;
+        padding: 0;
+        margin-bottom: 20px;
     }
     
     .tab-btn {
-        padding: 10px 16px;
-        font-size: 14px;
+        padding: 14px 20px;
+        font-size: 13px;
+        min-width: 70px;
     }
 }
 
@@ -5440,6 +5596,359 @@ th, td {
     
     .main-chart {
         height: 280px;
+    }
+    
+    /* Ensure stock title and price stay aligned on small screens */
+    .stock-title {
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+    
+    .stock-title h2 {
+        font-size: 18px;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .price-display {
+        flex-shrink: 0;
+    }
+    
+    .price-display .price {
+        font-size: 18px !important;
+    }
+    
+    /* Fix YTD and 52W performance alignment on mobile */
+    .stock-stats {
+        flex-direction: row !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        gap: 12px !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    .stock-stats > div {
+        text-align: center !important;
+        min-width: 40px !important;
+    }
+    
+    .stock-stats span {
+        font-size: 0.7rem !important;
+    }
+    
+    .stock-stats span:last-child {
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Ensure YTD and 52W colors work on mobile */
+    .stock-stats #ytd-performance.positive,
+    .stock-stats #52w-performance.positive {
+        color: #4CAF50 !important;
+    }
+    
+    .stock-stats #ytd-performance.negative,
+    .stock-stats #52w-performance.negative {
+        color: #f44336 !important;
+    }
+    
+    .stock-stats #ytd-performance.neutral,
+    .stock-stats #52w-performance.neutral {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+    
+    /* Optimize chart controls container on mobile */
+    .chart-wrapper > div[style*="justify-content: space-between"] {
+        flex-direction: column !important;
+        gap: 12px !important;
+        align-items: stretch !important;
+    }
+    
+    .chart-controls {
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+    
+    .chart-controls .timeframe-btn {
+        min-width: 35px !important;
+        padding: 4px 8px !important;
+        font-size: 0.75rem !important;
+    }
+    
+    /* Extra compact analysis for small screens */
+    .analysis-section {
+        gap: 16px;
+    }
+    
+    .indicator-summary {
+        gap: 12px;
+    }
+    
+    .indicator-card-left,
+    .indicator-card-right {
+        padding: 12px;
+        border-radius: 12px;
+    }
+    
+    .indicator-card-left h4,
+    .indicator-card-right h4 {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    
+    .indicators-column {
+        gap: 8px;
+    }
+    
+    .indicator-item {
+        padding: 10px 12px;
+        border-radius: 10px;
+        gap: 6px;
+    }
+    
+    .indicator-name {
+        font-size: 13px;
+        font-weight: 500;
+    }
+    
+    .indicator-value {
+        font-size: 15px;
+        font-weight: 600;
+    }
+    
+    .signal-badge {
+        padding: 3px 6px;
+        font-size: 10px;
+        min-width: 50px;
+        border-radius: 6px;
+        letter-spacing: 0.3px;
+    }
+    
+    /* Extra compact metrics for very small screens */
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .metric-card {
+        padding: 10px 8px;
+        border-radius: 8px;
+    }
+    
+    .metric-label {
+        font-size: 11px;
+        margin-bottom: 4px;
+        letter-spacing: 0.2px;
+    }
+    
+    .metric-value {
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+    
+    /* Ensure text doesn't break on very small cards */
+    .metric-card {
+        min-height: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+/* Ultra compact for very small screens */
+@media (max-width: 360px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+    
+    .metric-card {
+        padding: 8px 12px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: auto;
+        text-align: left;
+    }
+    
+    .metric-label {
+        font-size: 11px;
+        margin-bottom: 0;
+        flex: 1;
+    }
+    
+    .metric-value {
+        font-size: 13px;
+        font-weight: 600;
+        text-align: right;
+        flex-shrink: 0;
+        margin-left: 8px;
+    }
+    
+    /* Ultra compact analysis for very small screens */
+    .analysis-section {
+        gap: 12px;
+    }
+    
+    .indicator-summary {
+        gap: 8px;
+        grid-template-columns: 1fr;
+    }
+    
+    .indicator-card-left,
+    .indicator-card-right {
+        padding: 8px;
+        border-radius: 8px;
+    }
+    
+    .indicator-card-left h4,
+    .indicator-card-right h4 {
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+    
+    /* Ultra compact stock title for very small screens */
+    .stock-title h2 {
+        font-size: 16px;
+    }
+    
+    .price-display .price {
+        font-size: 16px !important;
+    }
+    
+    /* Ultra compact YTD and 52W performance for very small screens */
+    .stock-stats {
+        gap: 8px !important;
+    }
+    
+    .stock-stats > div {
+        min-width: 35px !important;
+    }
+    
+    .stock-stats span {
+        font-size: 0.65rem !important;
+    }
+    
+    .stock-stats span:last-child {
+        font-size: 0.7rem !important;
+    }
+    
+    /* Ensure YTD and 52W colors work on very small screens */
+    .stock-stats #ytd-performance.positive,
+    .stock-stats #52w-performance.positive {
+        color: #4CAF50 !important;
+    }
+    
+    .stock-stats #ytd-performance.negative,
+    .stock-stats #52w-performance.negative {
+        color: #f44336 !important;
+    }
+    
+    .stock-stats #ytd-performance.neutral,
+    .stock-stats #52w-performance.neutral {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+    
+    /* Ultra compact chart controls */
+    .chart-controls .timeframe-btn {
+        min-width: 30px !important;
+        padding: 3px 6px !important;
+        font-size: 0.7rem !important;
+    }
+    
+    .indicators-column {
+        gap: 4px;
+    }
+    
+    .indicator-item {
+        padding: 8px 10px;
+        border-radius: 8px;
+        gap: 4px;
+    }
+    
+    .indicator-name {
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .indicator-value {
+        font-size: 14px;
+        font-weight: 600;
+    }
+    
+    .signal-badge {
+        padding: 2px 5px;
+        font-size: 9px;
+        min-width: 45px;
+        border-radius: 5px;
+        letter-spacing: 0.2px;
+    }
+    
+    /* Compact overall sentiment */
+    .overall-sentiment {
+        margin-top: 12px;
+    }
+    
+    .sentiment-title {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .sentiment-indicator {
+        font-size: 16px;
+        padding: 8px 16px;
+        border-radius: 8px;
+    }
+    
+    /* Compact disclaimer */
+    .analysis-disclaimer {
+        margin-top: 16px;
+        padding: 12px;
+        border-radius: 8px;
+        gap: 8px;
+    }
+    
+    .disclaimer-text {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+    
+    /* Ultra compact tabs for very small screens */
+    .analysis-tabs {
+        margin-bottom: 16px;
+    }
+    
+    .tab-btn {
+        padding: 12px 16px;
+        font-size: 12px;
+        min-width: 60px;
+    }
+    
+    /* Ultra compact search for very small screens */
+    .analysis-search-header {
+        margin: 0 12px;
+        gap: 4px;
+    }
+    
+    .stock-input {
+        font-size: 14px;
+        padding: 10px 0;
+    }
+    
+    .analyze-btn {
+        padding: 10px 12px;
+        min-width: 40px;
+    }
+    
+    .analyze-btn svg {
+        width: 16px;
+        height: 16px;
     }
 }
 
