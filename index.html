@@ -853,7 +853,7 @@
 
             <div class="analysis-tabs">
                 <button class="tab-btn active" data-tab="chart">Chart</button>
-                <button class="tab-btn" data-tab="metrics">Metrics</button>
+                <button class="tab-btn" data-tab="metrics">DCF Valuation</button>
                 <button class="tab-btn" data-tab="analysis">Analysis</button>
             </div>
 
@@ -887,134 +887,318 @@
                 </div>
                 
                 <div id="metrics" class="tab-pane">
-                    <div class="metrics-grid">
-                        <div class="metric-card">
-                            <div class="metric-label">Market Cap</div>
-                            <div id="market-cap" class="metric-value">-</div>
+                    <div class="dcf-card" style="border-radius: 16px; box-shadow: 0 2px 12px rgba(1,195,168,0.10); padding: 28px 32px; margin: 0 auto; max-width: 520px;">
+                        <div class="dcf-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+                            <h3 style="color: #000000; font-size: 1rem; font-weight: 700; margin: 0; letter-spacing: 0.01em; font-family: 'Oswald', sans-serif;">Discounted Cash Flow Valuation</h3>
                         </div>
-                        <div class="metric-card">
-                            <div class="metric-label">P/E Ratio</div>
-                            <div id="pe-ratio" class="metric-value">-</div>
+                        <div id="dcf-loading" style="color: #7FFF8E; margin-bottom: 14px; font-size: 1.08rem; display: none; text-align: left; font-weight: 500; letter-spacing: 0.01em;">
+                            <span class="loading-spinner" style="width: 22px; height: 22px; border: 3px solid #01c3a8; border-radius: 50%; border-top-color: #fff; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px;"></span>
+                            Loading DCF data ...
                         </div>
-                        <div class="metric-card">
-                            <div class="metric-label">P/B Ratio</div>
-                            <div id="pb-ratio" class="metric-value">-</div>
+                        <div class="dcf-chart-row" style="margin-bottom: 18px;">
+                            <canvas id="dcf-comparison-chart" style="width:100%;max-width:420px;height:180px;background:rgba(0,0,0,0.08);border-radius:8px;"></canvas>
                         </div>
-                        <div class="metric-card">
-                            <div class="metric-label">EPS</div>
-                            <div id="eps" class="metric-value">-</div>
+                        <div class="dcf-value-row" style="display: flex; align-items: center; gap: 18px; margin-bottom: 10px;">
+                            <span style="color: #fff; font-size: 2.2rem; font-weight: 800; letter-spacing: 0.02em;" id="dcf-result">--</span>
                         </div>
-                        <div class="metric-card">
-                            <div class="metric-label">Revenue</div>
-                            <div id="revenue" class="metric-value">-</div>
+                        <div class="dcf-details-row" style="margin-top: 8px; margin-bottom: 10px;">
+                            <div id="dcf-details" style="color: #B2DFDB; font-size: 1.08rem; text-align: left; font-weight: 400; border-left: 3px solid #000000; padding-left: 14px;">
+                                <!-- DCF details will be shown here -->
+                            </div>
                         </div>
-                        <div class="metric-card">
-                            <div class="metric-label">Beta</div>
-                            <div id="beta" class="metric-value">-</div>
+                       
+                        <div class="dcf-source-row" style="margin-top: 10px; margin-bottom: 10px; color: #90A4AE; font-size: 0.7rem; text-align: left; font-style: italic;">
+                            <span>Source: Financial Modeling Prep</span>
                         </div>
-                        <div class="metric-card">
-                            <div class="metric-label">52W High</div>
-                            <div id="high-52-week" class="metric-value">-</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">52W Low</div>
-                            <div id="low-52-week" class="metric-value">-</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">Volume</div>
-                            <div id="avg-volume" class="metric-value">-</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">Dividend Yield</div>
-                            <div id="dividend-yield" class="metric-value">-</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">ROE</div>
-                            <div id="roe" class="metric-value">-</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">Debt/Equity</div>
-                            <div id="debt-equity" class="metric-value">-</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">Profit Margin</div>
-                            <div id="profit-margin" class="metric-value">-</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">Revenue Growth</div>
-                            <div id="revenue-growth" class="metric-value">-</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">Free Cash Flow</div>
-                            <div id="free-cash-flow" class="metric-value">-</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-label">Forward P/E</div>
-                            <div id="forward-pe" class="metric-value">-</div>
+                        <div class="dcf-disclaimer-row" style="margin-top: 10px;">
+                            <div class="dcf-disclaimer" style="color: #FFB74D; font-size: 0.7rem; text-align: left; display: flex; align-items: center; gap: 8px; background: rgba(255,183,77,0.08); border-radius: 8px; padding: 10px 14px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="vertical-align: middle;" viewBox="0 0 24 24" fill="none" stroke="#FFB74D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                <span>DCF is an estimate based on future cash flows and assumptions. Not investment advice.</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <!-- Extensive DCF Description with own scroll -->
+                    <div class="dcf-description-scroll" style="
+                        max-height: 340px;
+                        overflow-y: auto;
+                        margin: 36px auto 0 auto;
+                        border-radius: 12px;
+                        padding: 28px 22px;
+                        box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+                        font-size: 1.04rem;
+                        color: #eaeaea;
+                        border: 1px solid #222;
+                    ">
+                        <h3 style="color: #01c3a8; margin-top: 0; margin-bottom: 14px; font-size: 1.18rem; font-family: 'Oswald', sans-serif; font-weight: 700; letter-spacing: 0.01em;">
+                            What is Discounted Cash Flow (DCF)?
+                        </h3>
+                        <p style="margin-bottom: 14px; color: #eaeaea; line-height: 1.6;">
+                            The Discounted Cash Flow (DCF) method estimates the intrinsic value of an investment by forecasting future cash flows and discounting them to present value. DCF is a core valuation technique in finance, focusing on a business’s cash-generating ability.
+                        </p>
+                        <h4 style="color: #01c3a8; margin-bottom: 10px; font-size: 1.05rem; font-weight: 600;">How Does DCF Work?</h4>
+                        <ol style="margin-bottom: 14px; padding-left: 18px;">
+                            <li style="margin-bottom: 10px;">
+                                <strong>Forecast Future Cash Flows:</strong>
+                                Analysts estimate free cash flows (FCF) for 5–10 years.
+                            </li>
+                            <li style="margin-bottom: 10px;">
+                                <strong>Determine Terminal Value:</strong>
+                                Calculates value beyond the forecast period using a growth model or exit multiple.
+                            </li>
+                            <li style="margin-bottom: 10px;">
+                                <strong>Discount to Present Value:</strong>
+                                Uses a discount rate (usually WACC) to reflect time and risk.
+                            </li>
+                            <li style="margin-bottom: 10px;">
+                                <strong>Sum Present Values:</strong>
+                                Adds discounted cash flows and terminal value for enterprise value.
+                            </li>
+                        </ol>
+                        <h4 style="color: #01c3a8; margin-bottom: 10px; font-size: 1.05rem; font-weight: 600;">DCF Formula</h4>
+                        <div style="color: #eaeaea; padding: 10px 14px; border-radius: 6px; font-size: 0.97rem; overflow-x: auto; margin-bottom: 14px; border-left: 2px solid #01c3a8;">
+                            <code style="font-family: 'Fira Mono', 'Consolas', monospace; font-size: 1rem;">
+                                DCF Value = Σ [FCF<sub>t</sub> / (1 + r)<sup>t</sup>] + [Terminal Value / (1 + r)<sup>n</sup>]<br>
+                                <span style="color: #aaa; font-size: 0.95em;">
+                                    Where:<br>
+                                    - FCF<sub>t</sub>: Free Cash Flow in year t<br>
+                                    - r: Discount rate (WACC)<br>
+                                    - n: Final forecast year
+                                </span>
+                            </code>
+                        </div>
+                        <h4 style="color: #01c3a8; margin-bottom: 10px; font-size: 1.05rem; font-weight: 600;">Key Inputs & Assumptions</h4>
+                        <ul style="margin-bottom: 14px; padding-left: 18px;">
+                            <li>Free Cash Flow projections</li>
+                            <li>Discount rate (WACC)</li>
+                            <li>Terminal growth rate</li>
+                            <li>Terminal value calculation method</li>
+                        </ul>
+                        <h4 style="color: #01c3a8; margin-bottom: 10px; font-size: 1.05rem; font-weight: 600;">Strengths</h4>
+                        <ul style="margin-bottom: 14px; padding-left: 18px;">
+                            <li>Focuses on fundamentals</li>
+                            <li>Flexible for scenarios</li>
+                            <li>Highlights intrinsic value</li>
+                        </ul>
+                        <h4 style="color: #01c3a8; margin-bottom: 10px; font-size: 1.05rem; font-weight: 600;">Limitations</h4>
+                        <ul style="margin-bottom: 14px; padding-left: 18px;">
+                            <li>Sensitive to assumptions</li>
+                            <li>Forecasting is uncertain</li>
+                            <li>Small changes impact valuation</li>
+                        </ul>
+                        <h4 style="color: #01c3a8; margin-bottom: 10px; font-size: 1.05rem; font-weight: 600;">When to Use DCF?</h4>
+                        <p style="margin-bottom: 14px; color: #eaeaea; line-height: 1.6;">
+                            DCF is best for companies with stable, predictable cash flows. It’s less reliable for startups or cyclical businesses.
+                        </p>
+                        <div style="
+                            color: #FFB74D;
+                            border-radius: 8px;
+                            padding: 10px 14px;
+                            margin-top: 14px;
+                            font-size: 0.97rem;
+                            border-left: 2px solid #FFB74D;
+                            box-shadow: 0 1px 6px rgba(255,183,77,0.08);
+                            font-weight: 500;
+                        ">
+                            <strong>Note:</strong> DCF is a powerful tool, but results should be compared with other valuation methods and interpreted with caution.
+                        </div>
+                    </div>
 
                 <div id="analysis" class="tab-pane">
                     <div class="analysis-section">
-                        <div class="indicator-summary">
-                            <div class="indicator-card-left">
-                                <h4>Technical Indicators</h4>
-                                <div class="indicators-column">
-                                    <div class="indicator-item">
-                                        <span class="indicator-name">RSI (14)</span>
-                                        <div class="indicator-values">
-                                            <span id="rsi" class="indicator-value">-</span>
-                                            <span id="rsi-signal" class="signal-badge">-</span>
-                                        </div>
+                        <!-- Investment Score Overview -->
+                        <div class="investment-score-card">
+                            <div class="score-header">
+                                <h3>Investment Score</h3>
+                                <div id="investment-score" class="score-value">-</div>
+                            </div>
+                            <div class="score-breakdown">
+                                <div class="score-item">
+                                    <span class="score-label">Value</span>
+                                    <span id="value-score" class="score-indicator">-</span>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-label">Growth</span>
+                                    <span id="growth-score" class="score-indicator">-</span>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-label">Quality</span>
+                                    <span id="quality-score" class="score-indicator">-</span>
+                                </div>
+                                <div class="score-item">
+                                    <span class="score-label">Momentum</span>
+                                    <span id="momentum-score" class="score-indicator">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Key Investment Metrics -->
+                        <div class="key-metrics-grid">
+                            <div class="metric-group">
+                                <h4>Valuation</h4>
+                                <div class="metric-row">
+                                    <span class="metric-name">P/E Ratio</span>
+                                    <div class="metric-values">
+                                        <span id="key-pe" class="metric-value">-</span>
+                                        <span id="key-pe-signal" class="signal-badge">-</span>
                                     </div>
-                                    <div class="indicator-item">
-                                        <span class="indicator-name">MACD</span>
-                                        <div class="indicator-values">
-                                            <span id="macd" class="indicator-value">-</span>
-                                            <span id="macd-signal" class="signal-badge">-</span>
-                                        </div>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-name">PEG Ratio</span>
+                                    <div class="metric-values">
+                                        <span id="key-peg" class="metric-value">-</span>
+                                        <span id="key-peg-signal" class="signal-badge">-</span>
                                     </div>
-                                    <div class="indicator-item">
-                                        <span class="indicator-name">Bollinger Bands</span>
-                                        <div class="indicator-values">
-                                            <span id="bollinger" class="indicator-value">-</span>
-                                            <span id="bollinger-signal" class="signal-badge">-</span>
-                                        </div>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-name">P/B Ratio</span>
+                                    <div class="metric-values">
+                                        <span id="key-pb" class="metric-value">-</span>
+                                        <span id="key-pb-signal" class="signal-badge">-</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="indicator-card-right">
-                                <h4>Moving Averages & Volume</h4>
-                                <div class="indicators-column">
-                                    <div class="indicator-item">
-                                        <span class="indicator-name">MA(50)</span>
-                                        <div class="indicator-values">
-                                            <span id="ma50" class="indicator-value">-</span>
-                                            <span id="ma50-signal" class="signal-badge">-</span>
-                                        </div>
+
+                            <div class="metric-group">
+                                <h4>Profitability</h4>
+                                <div class="metric-row">
+                                    <span class="metric-name">ROE</span>
+                                    <div class="metric-values">
+                                        <span id="key-roe" class="metric-value">-</span>
+                                        <span id="key-roe-signal" class="signal-badge">-</span>
                                     </div>
-                                    <div class="indicator-item">
-                                        <span class="indicator-name">MA(200)</span>
-                                        <div class="indicator-values">
-                                            <span id="ma200" class="indicator-value">-</span>
-                                            <span id="ma200-signal" class="signal-badge">-</span>
-                                        </div>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-name">Net Margin</span>
+                                    <div class="metric-values">
+                                        <span id="key-margin" class="metric-value">-</span>
+                                        <span id="key-margin-signal" class="signal-badge">-</span>
                                     </div>
-                                    <div class="indicator-item">
-                                        <span class="indicator-name">Volume</span>
-                                        <div class="indicator-values">
-                                            <span id="volume-indicator" class="indicator-value">-</span>
-                                            <span id="volume-signal" class="signal-badge">-</span>
-                                        </div>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-name">ROIC</span>
+                                    <div class="metric-values">
+                                        <span id="key-roic" class="metric-value">-</span>
+                                        <span id="key-roic-signal" class="signal-badge">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="metric-group">
+                                <h4>Growth</h4>
+                                <div class="metric-row">
+                                    <span class="metric-name">Revenue Growth</span>
+                                    <div class="metric-values">
+                                        <span id="key-revenue-growth" class="metric-value">-</span>
+                                        <span id="key-revenue-growth-signal" class="signal-badge">-</span>
+                                    </div>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-name">Earnings Growth</span>
+                                    <div class="metric-values">
+                                        <span id="key-earnings-growth" class="metric-value">-</span>
+                                        <span id="key-earnings-growth-signal" class="signal-badge">-</span>
+                                    </div>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-name">EPS Growth</span>
+                                    <div class="metric-values">
+                                        <span id="key-eps-growth" class="metric-value">-</span>
+                                        <span id="key-eps-growth-signal" class="signal-badge">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="metric-group">
+                                <h4>Financial Health</h4>
+                                <div class="metric-row">
+                                    <span class="metric-name">Debt/Equity</span>
+                                    <div class="metric-values">
+                                        <span id="key-debt-equity" class="metric-value">-</span>
+                                        <span id="key-debt-equity-signal" class="signal-badge">-</span>
+                                    </div>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-name">Current Ratio</span>
+                                    <div class="metric-values">
+                                        <span id="key-current-ratio" class="metric-value">-</span>
+                                        <span id="key-current-ratio-signal" class="signal-badge">-</span>
+                                    </div>
+                                </div>
+                                <div class="metric-row">
+                                    <span class="metric-name">Free Cash Flow</span>
+                                    <div class="metric-values">
+                                        <span id="key-fcf" class="metric-value">-</span>
+                                        <span id="key-fcf-signal" class="signal-badge">-</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="overall-sentiment">
-                            <div class="sentiment-title">Overall Signal</div>
-                            <div id="overall-signal" class="sentiment-indicator">NEUTRAL</div>
+
+                        <!-- Technical Signal -->
+                        <div class="technical-signal-card">
+                            <div class="signal-header">
+                                <h4>Technical Signal</h4>
+                                <div id="technical-signal" class="signal-status">-</div>
+                            </div>
+                            <div class="signal-details">
+                                <div class="signal-item">
+                                    <span class="signal-name">Trend (MA50/200)</span>
+                                    <span class="signal-value" id="trend-value">--</span>
+                                    <span id="trend-signal" class="signal-badge">-</span>
+                                    
+                                </div>
+                                <div class="signal-item">
+                                    <span class="signal-name">Momentum (RSI)</span>
+                                    <span class="signal-value" id="rsi-value">--</span>
+                                    <span id="momentum-signal" class="signal-badge">-</span>
+                                    
+                                </div>
+                                <div class="signal-item">
+                                    <span class="signal-name">Volume</span>
+                                    <span class="signal-value" id="volume-value">--</span>
+                                    <span id="volume-signal" class="signal-badge">-</span>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Analyst Consensus -->
+                        <div class="analyst-consensus-card">
+                            <div class="consensus-header">
+                                <h4>Analyst Consensus</h4>
+                                <div id="analyst-rating" class="rating-value">-</div>
+                            </div>
+                            <div class="consensus-details">
+                                <div class="consensus-item">
+                                    <span class="consensus-label">Target Price</span>
+                                    <span id="target-price-consensus" class="consensus-value">-</span>
+                                </div>
+                                <div class="consensus-item">
+                                    <span class="consensus-label">Upside Potential</span>
+                                    <span id="upside-potential" class="consensus-value">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Final Investment Recommendation -->
+                        <div class="investment-recommendation">
+                            <div class="recommendation-header">
+                                <h3>Investment Recommendation</h3>
+                            </div>
+                            <div id="final-recommendation" class="recommendation-status">ANALYZING...</div>
+                            <div class="recommendation-reasoning">
+                                <div id="recommendation-points" class="reasoning-points">
+                                    <div class="reasoning-item positive">
+                                        <span class="reasoning-icon">✓</span>
+                                        <span class="reasoning-text">Analyzing key metrics...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="analysis-disclaimer">
                             <div class="disclaimer-icon">⚠️</div>
                             <div class="disclaimer-text">
