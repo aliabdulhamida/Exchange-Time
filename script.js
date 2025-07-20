@@ -6604,7 +6604,7 @@ async function fetchFearGreedIndex() {
     const options = {
         method: 'GET',
         headers: {
-'x-rapidapi-key': window.ENV && window.ENV.RAPIDAPI_KEY ? window.ENV.RAPIDAPI_KEY : '',
+            'x-rapidapi-key': 'a8d81eea34msh9318a170ad799bdp1a9d7fjsna333e1b65e8a', // Direkt eingefügt
             'x-rapidapi-host': 'fear-and-greed-index.p.rapidapi.com'
         }
     };
@@ -9222,7 +9222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     let chartInstance = null;
-    const API_KEY = window.ENV && window.ENV.API_KEY ? window.ENV.API_KEY : '';
+    const API_KEY = 'dLA2mkbn8dXaP4RoeGungdPJzNTiYRix';
 
     const validateTicker = ticker => /^[A-Z]{1,5}$/.test(ticker.trim().toUpperCase());
 
